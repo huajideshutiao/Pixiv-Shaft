@@ -23,63 +23,89 @@
                 android:id="@+id/toolbar"
                 layout="@layout/toolbar_layout" />
 
-            <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/email_address"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/email_address_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/twenty_four_dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="@dimen/twenty_four_dp"
                 android:hint="@string/email_address"
-                app:met_floatingLabel="highlight"
-                app:met_baseColor="@color/rank_text_color"
-                app:met_primaryColor="?attr/colorPrimary"
-                app:met_textColor="@color/dark_text"
-                app:met_singleLineEllipsis="true" />
+                app:hintTextColor="?attr/colorPrimary"
+                app:boxStrokeColor="?attr/colorPrimary">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/email_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/dark_text"
+                    android:singleLine="true" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
 
-            <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/pixiv_id"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/pixiv_id_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/twenty_four_dp"
                 android:layout_marginTop="@dimen/sixteen_dp"
                 android:layout_marginEnd="@dimen/twenty_four_dp"
                 android:hint="@string/string_51"
-                app:met_floatingLabel="highlight"
-                app:met_baseColor="@color/rank_text_color"
-                app:met_primaryColor="?attr/colorPrimary"
-                app:met_textColor="@color/dark_text"
-                app:met_singleLineEllipsis="true" />
+                app:hintTextColor="?attr/colorPrimary"
+                app:boxStrokeColor="?attr/colorPrimary">
 
-            <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/user_old_password"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/pixiv_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/dark_text"
+                    android:singleLine="true" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/user_old_password_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/twenty_four_dp"
                 android:layout_marginTop="@dimen/sixteen_dp"
                 android:layout_marginEnd="@dimen/twenty_four_dp"
                 android:hint="@string/string_10"
-                app:met_floatingLabel="highlight"
-                app:met_baseColor="@color/rank_text_color"
-                app:met_primaryColor="?attr/colorPrimary"
-                app:met_textColor="@color/dark_text"
-                app:met_singleLineEllipsis="true"
-                android:visibility="gone"/>
+                android:visibility="gone"
+                app:hintTextColor="?attr/colorPrimary"
+                app:boxStrokeColor="?attr/colorPrimary">
 
-            <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/user_new_password"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/user_old_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/dark_text"
+                    android:singleLine="true"
+                    android:inputType="textPassword" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/user_new_password_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/twenty_four_dp"
                 android:layout_marginTop="@dimen/sixteen_dp"
                 android:layout_marginEnd="@dimen/twenty_four_dp"
                 android:hint="@string/string_52"
-                app:met_floatingLabel="highlight"
-                app:met_baseColor="@color/rank_text_color"
-                app:met_primaryColor="?attr/colorPrimary"
-                app:met_textColor="@color/dark_text"
-                app:met_singleLineEllipsis="true" />
+                app:hintTextColor="?attr/colorPrimary"
+                app:boxStrokeColor="?attr/colorPrimary">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/user_new_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/dark_text"
+                    android:singleLine="true"
+                    android:inputType="textPassword" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
 

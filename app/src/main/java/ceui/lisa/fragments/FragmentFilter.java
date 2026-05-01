@@ -6,9 +6,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
-import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
-
-import org.honorato.multistatetogglebutton.ToggleButton;
+import com.google.android.material.datepicker.MaterialDatePicker;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -150,12 +148,16 @@ public class FragmentFilter extends BaseFragment<FragmentFilterBinding> {
                 }
             }
         });*/
-        baseBind.restrictionToggle.setElements(PixivSearchParamUtil.R18_RESTRICTION_NAME);
-        baseBind.restrictionToggle.setColors(Common.resolveThemeAttribute(mContext, androidx.appcompat.R.attr.colorPrimary), getResources().getColor(R.color.fragment_center));
-        baseBind.restrictionToggle.setValue(0);
-        baseBind.restrictionToggle.setOnValueChangedListener(new ToggleButton.OnValueChangedListener() {
-            @Override
-            public void onValueChanged(int value) {
+        baseBind.restrictionToggle.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
+            if (isChecked) {
+                int value;
+                if (checkedId == R.id.restriction_btn_0) {
+                    value = 0;
+                } else if (checkedId == R.id.restriction_btn_1) {
+                    value = 1;
+                } else {
+                    value = 2;
+                }
                 searchModel.getR18Restriction().setValue(value);
                 performSearch();
             }
@@ -191,40 +193,30 @@ public class FragmentFilter extends BaseFragment<FragmentFilterBinding> {
 
     private void setDatePicker(MutableLiveData<String> dateData) {
         String currentDate = dateData.getValue();
-        DatePickerDialog.OnDateSetListener listener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-                String date = LocalDate.of(year, monthOfYear + 1, dayOfMonth).toString();
-                dateData.setValue(date);
-                performSearch();
-            }
-        };
 
-        DatePickerDialog dpd;
+        MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker()
+                .setTheme(com.google.android.material.R.style.ThemeOverlay_MaterialComponents_MaterialCalendar)
+                .build();
+
+        datePicker.addOnPositiveButtonClickListener(selection -> {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(selection);
+            String date = LocalDate.of(calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH) + 1,
+                    calendar.get(Calendar.DAY_OF_MONTH)).toString();
+            dateData.setValue(date);
+            performSearch();
+        });
+
         Calendar now = Calendar.getInstance();
-        Calendar start = Calendar.getInstance();
         if (!TextUtils.isEmpty(currentDate)) {
             String[] t = currentDate.split("-");
-            dpd = DatePickerDialog.newInstance(
-                    listener,
-                    Integer.parseInt(t[0]), // Initial year selection
-                    Integer.parseInt(t[1]) - 1, // Initial month selection
-                    Integer.parseInt(t[2]) // Initial day selection
-            );
-        } else {
-            dpd = DatePickerDialog.newInstance(
-                    listener,
-                    now.get(Calendar.YEAR), // Initial year selection
-                    now.get(Calendar.MONTH), // Initial month selection
-                    now.get(Calendar.DAY_OF_MONTH) // Initial day selection
-            );
+            Calendar initial = Calendar.getInstance();
+            initial.set(Integer.parseInt(t[0]), Integer.parseInt(t[1]) - 1, Integer.parseInt(t[2]));
+            datePicker.setSelection(initial.getTimeInMillis());
         }
-        start.set(1970, 0, 1);
-        dpd.setMinDate(start);
-        dpd.setMaxDate(now);
-        dpd.setAccentColor(Common.resolveThemeAttribute(mContext, androidx.appcompat.R.attr.colorPrimary));
-        dpd.setThemeDark(mContext.getResources().getBoolean(R.bool.is_night_mode));
-        dpd.show(getParentFragmentManager(), "DatePickerDialog");
+
+        datePicker.show(getParentFragmentManager(), "DatePickerDialog");
     }
 
     private void performSearch(){

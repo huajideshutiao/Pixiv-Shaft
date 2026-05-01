@@ -26,7 +26,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <net.csdn.roundview.RoundImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/preview_1"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -36,9 +36,9 @@
             app:layout_constraintEnd_toStartOf="@+id/preview_2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/task_name"
-            app:rRadius="6dp" />
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Rounded6dp" />
 
-        <net.csdn.roundview.RoundImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/preview_2"
             android:layout_width="0dp"
             loadSquareMedia="@{holder.getIllustOrNull(1)}"
@@ -49,9 +49,9 @@
             app:layout_constraintEnd_toStartOf="@+id/preview_3"
             app:layout_constraintStart_toEndOf="@+id/preview_1"
             app:layout_constraintTop_toBottomOf="@+id/task_name"
-            app:rRadius="6dp" />
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Rounded6dp" />
 
-        <net.csdn.roundview.RoundImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/preview_3"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -61,9 +61,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/preview_2"
             app:layout_constraintTop_toBottomOf="@+id/task_name"
-            app:rRadius="6dp" />
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Rounded6dp" />
 
-        <net.csdn.roundview.RoundImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/preview_4"
             android:layout_width="0dp"
             loadSquareMedia="@{holder.getIllustOrNull(3)}"
@@ -73,9 +73,9 @@
             app:layout_constraintEnd_toStartOf="@+id/preview_5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/preview_1"
-            app:rRadius="6dp" />
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Rounded6dp" />
 
-        <net.csdn.roundview.RoundImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/preview_5"
             loadSquareMedia="@{holder.getIllustOrNull(4)}"
             android:layout_width="0dp"
@@ -86,9 +86,9 @@
             app:layout_constraintEnd_toStartOf="@+id/preview_6"
             app:layout_constraintStart_toEndOf="@+id/preview_4"
             app:layout_constraintTop_toBottomOf="@+id/preview_1"
-            app:rRadius="6dp" />
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Rounded6dp" />
 
-        <net.csdn.roundview.RoundImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/preview_6"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -98,7 +98,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/preview_5"
             app:layout_constraintTop_toBottomOf="@+id/preview_1"
-            app:rRadius="6dp" />
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Rounded6dp" />
 
         <TextView
             android:id="@+id/task_size"

@@ -1,5 +1,6 @@
 package ceui.pixiv.ui.works
 
+import android.os.Build
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import ceui.lisa.databinding.FragmentPixivListBinding
@@ -8,10 +9,11 @@ import ceui.loxia.Illust
 import ceui.loxia.ObjectPool
 import ceui.pixiv.ui.task.NamedUrl
 import ceui.pixiv.ui.task.TaskPool
+import ceui.pixiv.utils.FastBlurTransformation
+import ceui.pixiv.utils.applyBlur
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
 import com.bumptech.glide.request.RequestOptions.bitmapTransform
-import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.coroutines.launch
 
 
@@ -47,9 +49,20 @@ fun getGalleryHolders(illust: Illust): List<GalleryHolder>? {
 fun Fragment.blurBackground(binding: FragmentPixivListBinding, illustId: Long) {
     val illust = ObjectPool.get<Illust>(illustId).value ?: return
     binding.dimmer.isVisible = true
-    Glide.with(this)
-        .load(GlideUrlChild(illust.image_urls?.large))
-        .apply(bitmapTransform(BlurTransformation(15, 3)))
-        .transition(withCrossFade())
-        .into(binding.pageBackground)
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        binding.pageBackground.applyBlur(25f)
+        Glide.with(this)
+            .load(GlideUrlChild(illust.image_urls?.large))
+            .override(200) // 限制加载尺寸以极大提升性能
+            .transition(withCrossFade())
+            .into(binding.pageBackground)
+    } else {
+        Glide.with(this)
+            .load(GlideUrlChild(illust.image_urls?.large))
+            .override(200)
+            .apply(bitmapTransform(FastBlurTransformation(15)))
+            .transition(withCrossFade())
+            .into(binding.pageBackground)
+    }
 }

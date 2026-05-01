@@ -83,16 +83,17 @@
                     android:paddingEnd="14dp"
                     android:paddingBottom="10dp">
 
-                    <de.hdodenhof.circleimageview.CircleImageView
+                    <com.google.android.material.imageview.ShapeableImageView
                         android:id="@+id/user_icon"
                         userIcon="@{user}"
                         android:layout_width="36dp"
                         android:layout_height="36dp"
                         android:scaleType="centerCrop"
-                        app:civ_border_color="@color/colorWhite40"
-                        app:civ_border_width="0.5dp"
+                        app:strokeColor="@color/colorWhite40"
+                        app:strokeWidth="0.5dp"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent" 
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Circle" />
 
                     <TextView
                         android:id="@+id/user_name"
@@ -171,7 +172,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <net.csdn.roundview.RoundImageView
+                    <com.google.android.material.imageview.ShapeableImageView
                         android:id="@+id/image"
                         loadMedia="@{holder.illust.image_urls.large}"
                         android:layout_width="match_parent"

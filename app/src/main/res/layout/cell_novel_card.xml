@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <net.csdn.roundview.RoundImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/novel_cover"
             loadMedia="@{novel.image_urls.findMaxSizeUrl()}"
             android:layout_width="100dp"
@@ -28,7 +28,7 @@
             app:layout_constraintDimensionRatio="240:338"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:rRadius="4dp" />
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Rounded4dp" />
 
         <!-- Multi-select indicator overlay. Hidden by default (NovelCardHolder
              flips isVisible to true only when the host fragment implements
@@ -89,17 +89,18 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/novel_cover">
 
-            <de.hdodenhof.circleimageview.CircleImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/user_icon"
                 userIcon="@{novel.user}"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:scaleType="centerCrop"
-                app:civ_border_color="@color/colorWhite40"
-                app:civ_border_width="@dimen/hair_line_width"
+                app:strokeColor="@color/colorWhite40"
+                app:strokeWidth="@dimen/hair_line_width"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent" 
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Circle" />
 
             <TextView
                 android:id="@+id/user_name"

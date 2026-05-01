@@ -49,7 +49,7 @@ public class FragmentEditAccount extends BaseFragment<FragmentEditAccountBinding
                             canChangePixivID = userState.getUser_state().isCan_change_pixiv_id();
                             baseBind.pixivId.setEnabled(canChangePixivID);
                             hasPassword = userState.getUser_state().isHas_password();
-                            baseBind.userOldPassword.setVisibility(hasPassword ? View.VISIBLE : View.GONE);
+                            baseBind.userOldPasswordLayout.setVisibility(hasPassword ? View.VISIBLE : View.GONE);
                         }
                     }
                 });

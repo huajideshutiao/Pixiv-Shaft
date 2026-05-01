@@ -22,10 +22,11 @@ import ceui.lisa.database.MuteEntity;
 import ceui.lisa.databinding.RecyViewHistoryBinding;
 import ceui.lisa.models.IllustsBean;
 import ceui.lisa.models.NovelBean;
-import ceui.lisa.utils.DensityUtil;
 import ceui.lisa.utils.GlideUtil;
 import ceui.lisa.utils.Params;
-import jp.wasabeef.glide.transformations.BlurTransformation;
+import ceui.pixiv.utils.BlurUtilsKt;
+import ceui.pixiv.utils.FastBlurTransformation;
+import ceui.lisa.utils.DensityUtil;
 
 import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
 
@@ -59,11 +60,21 @@ public class MuteWorksAdapter extends BaseAdapter<MuteEntity, RecyViewHistoryBin
             bindView.baseBind.illustImage.setLayoutParams(params);
 
             IllustsBean current = Shaft.sGson.fromJson(allItems.get(position).getTagJson(), IllustsBean.class);
-            Glide.with(mContext)
-                    .load(GlideUtil.getMediumImg(current))
-                    .apply(bitmapTransform(new BlurTransformation(25, 3)))
-                    .placeholder(R.color.light_bg)
-                    .into(bindView.baseBind.illustImage);
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                BlurUtilsKt.applyBlur(bindView.baseBind.illustImage, 25f);
+                Glide.with(mContext)
+                        .load(GlideUtil.getMediumImg(current))
+                        .override(200)
+                        .placeholder(R.color.light_bg)
+                        .into(bindView.baseBind.illustImage);
+            } else {
+                Glide.with(mContext)
+                        .load(GlideUtil.getMediumImg(current))
+                        .override(200)
+                        .apply(bitmapTransform(new FastBlurTransformation(25)))
+                        .placeholder(R.color.light_bg)
+                        .into(bindView.baseBind.illustImage);
+            }
             bindView.baseBind.title.setText(current.getTitle());
             bindView.baseBind.author.setText(String.format("by: %s", current.getUser().getName()));
 
@@ -128,9 +139,8 @@ public class MuteWorksAdapter extends BaseAdapter<MuteEntity, RecyViewHistoryBin
 
         bindView.baseBind.time.setText(mTime.format(allItems.get(position).getSearchTime()));
 
-        //从-400 丝滑滑动到0
-        ((SpringHolder) bindView).spring.setCurrentValue(-400);
-        ((SpringHolder) bindView).spring.setEndValue(0);
+        bindView.itemView.setTranslationX(-400);
+        ((SpringHolder) bindView).spring.start();
     }
 
     @Override

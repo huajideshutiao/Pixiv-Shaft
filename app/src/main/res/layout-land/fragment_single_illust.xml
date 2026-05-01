@@ -129,10 +129,11 @@
                                 android:background="@color/white"
                                 android:layout_height="wrap_content">
 
-                                <de.hdodenhof.circleimageview.CircleImageView
+                                <com.google.android.material.imageview.ShapeableImageView
                                     android:layout_width="48dp"
-                                    app:civ_border_color="#DDDDDD"
-                                    app:civ_border_width="1dp"
+                                    app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Circle"
+                                    app:strokeColor="#DDDDDD"
+                                    app:strokeWidth="1dp"
                                     android:layout_marginStart="@dimen/twelve_dp"
                                     android:layout_marginTop="@dimen/eight_dp"
                                     android:layout_marginBottom="@dimen/eight_dp"

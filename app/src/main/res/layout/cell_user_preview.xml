@@ -26,16 +26,17 @@
             android:layout_height="wrap_content">
 
 
-            <de.hdodenhof.circleimageview.CircleImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/user_icon"
                 userIcon="@{holder.userPreview.user}"
                 android:layout_width="@dimen/user_head_size_feeds"
                 android:layout_height="@dimen/user_head_size_feeds"
-                app:civ_border_color="@color/colorWhite40"
-                app:civ_border_width="1dp"
+                app:strokeColor="@color/colorWhite40"
+                app:strokeWidth="1dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Circle"/>
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -110,7 +111,7 @@
             android:visibility="gone"
             android:layout_marginTop="8dp">
 
-            <net.csdn.roundview.RoundImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/illust_1"
                 visibleOrInvisible="@{holder.illust0 != null}"
                 loadSquareMedia="@{holder.illust0}"
@@ -119,9 +120,9 @@
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:rRadius="2dp" />
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Rounded2dp" />
 
-            <net.csdn.roundview.RoundImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/illust_2"
                 visibleOrInvisible="@{holder.illust1 != null}"
                 loadSquareMedia="@{holder.illust1}"
@@ -132,9 +133,9 @@
                 app:layout_constraintEnd_toStartOf="@+id/illust_3"
                 app:layout_constraintStart_toEndOf="@+id/illust_1"
                 app:layout_constraintTop_toTopOf="parent"
-                app:rRadius="2dp" />
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Rounded2dp" />
 
-            <net.csdn.roundview.RoundImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/illust_3"
                 visibleOrInvisible="@{holder.illust2 != null}"
                 loadSquareMedia="@{holder.illust2}"
@@ -144,7 +145,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/illust_2"
                 app:layout_constraintTop_toTopOf="parent"
-                app:rRadius="2dp" />
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Rounded2dp" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

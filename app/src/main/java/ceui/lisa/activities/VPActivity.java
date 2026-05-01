@@ -3,10 +3,9 @@ package ceui.lisa.activities;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.facebook.rebound.SimpleSpringListener;
-import com.facebook.rebound.Spring;
-import com.facebook.rebound.SpringConfig;
-import com.facebook.rebound.SpringSystem;
+import androidx.dynamicanimation.animation.DynamicAnimation;
+import androidx.dynamicanimation.animation.SpringAnimation;
+import androidx.dynamicanimation.animation.SpringForce;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,8 +19,7 @@ import ceui.lisa.fragments.TestFragment;
 
 public class VPActivity extends BaseActivity<ActivityMultiViewPagerTestBinding> {
 
-    private SpringSystem mSpringSystem;
-    private Spring x, y;
+    private SpringAnimation x, y;
     private String uuid;
 
     @Override
@@ -74,25 +72,16 @@ public class VPActivity extends BaseActivity<ActivityMultiViewPagerTestBinding> 
 
             }
         });
-        mSpringSystem = SpringSystem.create();
-        x = mSpringSystem.createSpring();
-        y = mSpringSystem.createSpring();
-        x.setSpringConfig(SpringConfig.fromOrigamiTensionAndFriction(20, 5));
-        y.setSpringConfig(SpringConfig.fromOrigamiTensionAndFriction(20, 5));
-        x.addListener(new SimpleSpringListener() {
+        x = new SpringAnimation(baseBind.viewPager, DynamicAnimation.SCALE_X, 1.0f);
+        y = new SpringAnimation(baseBind.viewPager, DynamicAnimation.SCALE_Y, 1.0f);
+        SpringForce force = new SpringForce();
+        force.setStiffness(SpringForce.STIFFNESS_LOW);
+        force.setDampingRatio(SpringForce.DAMPING_RATIO_LOW_BOUNCY);
+        x.setSpring(force);
+        y.setSpring(force);
+        y.addEndListener(new DynamicAnimation.OnAnimationEndListener() {
             @Override
-            public void onSpringUpdate(Spring spring) {
-                baseBind.viewPager.setScaleX((float) spring.getCurrentValue());
-            }
-        });
-        y.addListener(new SimpleSpringListener() {
-            @Override
-            public void onSpringUpdate(Spring spring) {
-                baseBind.viewPager.setScaleY((float) spring.getCurrentValue());
-            }
-
-            @Override
-            public void onSpringAtRest(Spring spring) {
+            public void onAnimationEnd(DynamicAnimation animation, boolean canceled, float value, float velocity) {
                 baseBind.viewPagerSmall.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
                     @NonNull
                     @Override
@@ -128,11 +117,8 @@ public class VPActivity extends BaseActivity<ActivityMultiViewPagerTestBinding> 
                 }
 
                 final float size = 0.8f;
-                x.setCurrentValue(1.0f);
-                y.setCurrentValue(1.0f);
-
-                x.setEndValue(size);
-                y.setEndValue(size);
+                x.animateToFinalPosition(size);
+                y.animateToFinalPosition(size);
             }
         });
     }

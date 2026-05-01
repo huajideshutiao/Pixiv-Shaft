@@ -1,6 +1,7 @@
 package ceui.pixiv.ui.user
 
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
@@ -26,13 +27,14 @@ import ceui.pixiv.ui.common.TitledViewPagerFragment
 import ceui.pixiv.ui.common.pixivValueViewModel
 import ceui.pixiv.ui.common.setUpRefreshState
 import ceui.pixiv.ui.common.viewBinding
+import ceui.pixiv.utils.FastBlurTransformation
+import ceui.pixiv.utils.applyBlur
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions.bitmapTransform
 import com.bumptech.glide.request.target.Target
-import jp.wasabeef.glide.transformations.BlurTransformation
 
 class UserFollowingFragment : PixivFragment(R.layout.fragment_pixiv_list) {
 
@@ -148,12 +150,24 @@ fun ImageView.binding_loadMedia(displayUrl: String?) {
 fun ImageView.binding_loadBlurredMedia(displayUrl: String?) {
     val url = displayUrl ?: return
     scaleType = ImageView.ScaleType.CENTER_CROP
-    Glide.with(this)
-        .load(GlideUrlChild(url))
-        .placeholder(R.drawable.image_place_holder)
-        .apply(bitmapTransform(BlurTransformation(25, 3)))
-        .transition(withCrossFade())
-        .into(this)
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        applyBlur(25f)
+        Glide.with(this)
+            .load(GlideUrlChild(url))
+            .placeholder(R.drawable.image_place_holder)
+            .override(200)
+            .transition(withCrossFade())
+            .into(this)
+    } else {
+        Glide.with(this)
+            .load(GlideUrlChild(url))
+            .placeholder(R.drawable.image_place_holder)
+            .override(200)
+            .apply(bitmapTransform(FastBlurTransformation(25)))
+            .transition(withCrossFade())
+            .into(this)
+    }
 }
 
 fun TextView.setTextOrGone(content: String?) {

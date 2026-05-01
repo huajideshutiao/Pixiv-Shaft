@@ -3,10 +3,13 @@ package ceui.lisa.fragments;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.github.panpf.sketch.loadImage;
+
+import java.io.File;
+
 import ceui.lisa.R;
 import ceui.lisa.databinding.FragmentImageDetailLocalBinding;
 import ceui.lisa.utils.Params;
-import xyz.zpayh.hdimage.state.ScaleType;
 
 public class FragmentLocalImageDetail extends BaseFragment<FragmentImageDetailLocalBinding> {
 
@@ -33,10 +36,9 @@ public class FragmentLocalImageDetail extends BaseFragment<FragmentImageDetailLo
     @Override
     public void initView() {
         if (!TextUtils.isEmpty(filePath) && filePath.contains(".zip")) {
-            baseBind.illustImage.setScaleType(ScaleType.CENTER_CROP);
-            baseBind.illustImage.setImageURI("res:///" + R.mipmap.zip);
+            baseBind.illustImage.loadImage(R.mipmap.zip);
         } else {
-            baseBind.illustImage.setImageURI(filePath);
+            baseBind.illustImage.loadImage(new File(filePath));
         }
     }
 }

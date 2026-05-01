@@ -19,12 +19,13 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.viewpager.widget.ViewPager;
 
-import com.mxn.soul.flowingdrawer_core.ElasticDrawer;
 import com.qmuiteam.qmui.skin.QMUISkinManager;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
@@ -148,13 +149,13 @@ public class SearchActivity extends BaseActivity<FragmentNewSearchBinding> {
                 if (fragmentFilter != null) {
                     mPosition = position;
                     if (mPosition == 2) {
-                        baseBind.drawerlayout.setTouchMode(ElasticDrawer.TOUCH_MODE_NONE);
-                        if (baseBind.drawerlayout.isMenuVisible()) {
-                            baseBind.drawerlayout.closeMenu(true);
+                        baseBind.drawerlayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+                        if (baseBind.drawerlayout.isDrawerOpen(GravityCompat.END)) {
+                            baseBind.drawerlayout.closeDrawer(GravityCompat.END);
                         }
                     }
                     if (mPosition != 2) {
-                        baseBind.drawerlayout.setTouchMode(ElasticDrawer.TOUCH_MODE_BEZEL);
+                        baseBind.drawerlayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
                     }
 
                     MutableLiveData<Boolean> isNovel = searchModel.getIsNovel();
@@ -174,14 +175,14 @@ public class SearchActivity extends BaseActivity<FragmentNewSearchBinding> {
         });
         baseBind.viewPager.setOffscreenPageLimit(2);
         baseBind.tabLayout.setupWithViewPager(baseBind.viewPager);
-        baseBind.drawerlayout.setTouchMode(ElasticDrawer.TOUCH_MODE_BEZEL);
+        baseBind.drawerlayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         if (index != 0) {
             baseBind.viewPager.setCurrentItem(index);
         }
 
         if (Shaft.getDefaultPrefs().getBoolean(Params.MMKV_KEY_ISSHOWTIPS_SEARCHSORT, true)) {
             tipDialog(mContext);
-            baseBind.drawerlayout.openMenu(true);
+            baseBind.drawerlayout.openDrawer(GravityCompat.END);
         }
     }
 
@@ -200,10 +201,10 @@ public class SearchActivity extends BaseActivity<FragmentNewSearchBinding> {
                 if (item.getItemId() == R.id.action_filter) {
                     Common.hideKeyboard(mActivity);
                     if (mPosition == 0 || mPosition == 1) {
-                        if (baseBind.drawerlayout.isMenuVisible()) {
-                            baseBind.drawerlayout.closeMenu(true);
+                        if (baseBind.drawerlayout.isDrawerOpen(GravityCompat.END)) {
+                            baseBind.drawerlayout.closeDrawer(GravityCompat.END);
                         } else {
-                            baseBind.drawerlayout.openMenu(true);
+                            baseBind.drawerlayout.openDrawer(GravityCompat.END);
                         }
                     } else {
                         Common.showToast(getString(R.string.string_435));

@@ -121,9 +121,8 @@ public class HistoryAdapter extends BaseAdapter<IllustHistoryEntity, RecyViewHis
                 mOnItemClickListener.onItemClick(v, position, 2);
             }
         });
-        //从-400 丝滑滑动到0
-        ((SpringHolder) bindView).spring.setCurrentValue(-400);
-        ((SpringHolder) bindView).spring.setEndValue(0);
+        bindView.itemView.setTranslationX(-400);
+        ((SpringHolder) bindView).spring.start();
     }
 
     @Override

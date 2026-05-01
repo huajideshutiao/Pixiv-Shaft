@@ -16,7 +16,7 @@ import androidx.annotation.Nullable;
 import com.blankj.utilcode.util.UriUtils;
 import com.bumptech.glide.Glide;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
-import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
+import com.google.android.material.datepicker.MaterialDatePicker;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -52,7 +52,7 @@ import retrofit2.Response;
 import static android.app.Activity.RESULT_OK;
 import ceui.pixiv.session.SessionManager;
 
-public class FragmentEditFile extends SwipeFragment<FragmentEditFileBinding> implements Display<Preset>, DatePickerDialog.OnDateSetListener {
+public class FragmentEditFile extends SwipeFragment<FragmentEditFileBinding> implements Display<Preset> {
 
     private File imageFile = null;
 
@@ -290,31 +290,28 @@ public class FragmentEditFile extends SwipeFragment<FragmentEditFileBinding> imp
                         baseBind.birthdayArea.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                DatePickerDialog dpd;
+                                MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker()
+                                        .setTheme(com.google.android.material.R.style.ThemeOverlay_MaterialComponents_MaterialCalendar)
+                                        .build();
+
+                                datePicker.addOnPositiveButtonClickListener(selection -> {
+                                    Calendar calendar = Calendar.getInstance();
+                                    calendar.setTimeInMillis(selection);
+                                    birthday = LocalDate.of(calendar.get(Calendar.YEAR),
+                                            calendar.get(Calendar.MONTH) + 1,
+                                            calendar.get(Calendar.DAY_OF_MONTH)).toString();
+                                    baseBind.birthday.setText(birthday);
+                                });
+
                                 Calendar now = Calendar.getInstance();
-                                Calendar start = Calendar.getInstance();
                                 if (!TextUtils.isEmpty(birthday)) {
                                     String[] t = birthday.split("-");
-                                    dpd = DatePickerDialog.newInstance(
-                                            FragmentEditFile.this,
-                                            Integer.parseInt(t[0]), // Initial year selection
-                                            Integer.parseInt(t[1]) - 1, // Initial month selection
-                                            Integer.parseInt(t[2]) // Initial day selection
-                                    );
-                                } else {
-                                    dpd = DatePickerDialog.newInstance(
-                                            FragmentEditFile.this,
-                                            now.get(Calendar.YEAR) - 18, // Initial year selection
-                                            0, // Initial month selection
-                                            1 // Initial day selection
-                                    );
+                                    Calendar initial = Calendar.getInstance();
+                                    initial.set(Integer.parseInt(t[0]), Integer.parseInt(t[1]) - 1, Integer.parseInt(t[2]));
+                                    datePicker.setSelection(initial.getTimeInMillis());
                                 }
-                                start.set(now.get(Calendar.YEAR) - 100, 0, 1);
-                                dpd.setMinDate(start);
-                                dpd.setMaxDate(now);
-                                dpd.setAccentColor(Common.resolveThemeAttribute(mContext, androidx.appcompat.R.attr.colorPrimary));
-                                dpd.setThemeDark(mContext.getResources().getBoolean(R.bool.is_night_mode));
-                                dpd.show(getParentFragmentManager(), "DatePickerDialog");
+
+                                datePicker.show(getParentFragmentManager(), "DatePickerDialog");
                             }
                         });
                     }
@@ -328,11 +325,5 @@ public class FragmentEditFile extends SwipeFragment<FragmentEditFileBinding> imp
     @Override
     public SmartRefreshLayout getSmartRefreshLayout() {
         return baseBind.refreshLayout;
-    }
-
-    @Override
-    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-        birthday = LocalDate.of(year, monthOfYear + 1, dayOfMonth).toString();
-        baseBind.birthday.setText(birthday);
     }
 }

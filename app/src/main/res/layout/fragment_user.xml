@@ -84,14 +84,15 @@
 
 
 
-                                <de.hdodenhof.circleimageview.CircleImageView
+                                <com.google.android.material.imageview.ShapeableImageView
                                     android:id="@+id/user_avatar"
                                     userIcon="@{user}"
                                     android:layout_width="100dp"
-                                    app:civ_border_color="@color/text00"
-                                    app:civ_border_width="2dp"
+                                    app:strokeColor="@color/text00"
+                                    app:strokeWidth="2dp"
                                     android:layout_marginBottom="16dp"
-                                    android:layout_height="100dp"/>
+                                    android:layout_height="100dp"
+                                    app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Circle" />
 
                                 <LinearLayout
                                     android:layout_width="wrap_content"

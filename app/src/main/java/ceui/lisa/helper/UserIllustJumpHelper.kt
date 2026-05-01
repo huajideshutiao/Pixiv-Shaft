@@ -15,7 +15,7 @@ import ceui.lisa.http.Retro
 import ceui.lisa.repo.buildOffsetUrl
 import ceui.lisa.utils.Common
 import com.qmuiteam.qmui.widget.dialog.QMUITipDialog
-import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
+import com.google.android.material.datepicker.MaterialDatePicker
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.time.LocalDate
@@ -149,23 +149,20 @@ object UserIllustJumpHelper {
         onJump: OnJumpPicked
     ) {
         val now = Calendar.getInstance()
-        val listener = DatePickerDialog.OnDateSetListener { _, year, month0, day ->
-            val target = LocalDate.of(year, month0 + 1, day)
+        val datePicker = MaterialDatePicker.Builder.datePicker()
+            .setSelection(now.timeInMillis)
+            .build()
+        datePicker.addOnPositiveButtonClickListener { selection ->
+            val calendar = Calendar.getInstance().apply { timeInMillis = selection }
+            val target = LocalDate.of(
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH) + 1,
+                calendar.get(Calendar.DAY_OF_MONTH)
+            )
             locateByDate(activity, userID, kind, total, target, onJump)
         }
-        val dpd = DatePickerDialog.newInstance(
-            listener,
-            now.get(Calendar.YEAR),
-            now.get(Calendar.MONTH),
-            now.get(Calendar.DAY_OF_MONTH)
-        )
-        val start = Calendar.getInstance().apply { set(2007, 0, 1) } // Pixiv 创立于 2007
-        dpd.setMinDate(start)
-        dpd.setMaxDate(now)
-        dpd.setAccentColor(Common.resolveThemeAttribute(activity, androidx.appcompat.R.attr.colorPrimary))
-        dpd.setThemeDark(activity.resources.getBoolean(R.bool.is_night_mode))
         if (activity is FragmentActivity) {
-            dpd.show(activity.supportFragmentManager, "UserIllustJumpDatePicker")
+            datePicker.show(activity.supportFragmentManager, "UserIllustJumpDatePicker")
         }
     }
 

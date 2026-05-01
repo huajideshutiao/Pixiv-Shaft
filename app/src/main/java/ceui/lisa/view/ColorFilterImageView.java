@@ -7,14 +7,9 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
-import com.makeramen.roundedimageview.RoundedImageView;
+import com.google.android.material.imageview.ShapeableImageView;
 
-/**
- * @author sgf
- * @ClassName: ColorFilterImageView
- * @Description: 实现图像根据按下抬起动作变化颜色
- */
-public class ColorFilterImageView extends RoundedImageView implements OnTouchListener {
+public class ColorFilterImageView extends ShapeableImageView implements OnTouchListener {
     public ColorFilterImageView(Context context) {
         this(context, null, 0);
     }

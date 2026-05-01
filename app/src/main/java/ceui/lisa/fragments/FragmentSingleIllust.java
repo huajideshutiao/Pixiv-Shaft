@@ -53,14 +53,15 @@ import ceui.lisa.notification.BaseReceiver;
 import ceui.lisa.notification.CallBackReceiver;
 import ceui.lisa.utils.Common;
 import ceui.lisa.utils.DensityUtil;
-import ceui.lisa.utils.GlideUtil;
 import ceui.lisa.utils.Params;
 import ceui.lisa.utils.PixivOperate;
 import ceui.lisa.utils.ShareIllust;
 import ceui.lisa.view.LinearItemDecorationNoLRTB;
 import ceui.lisa.view.ScrollChange;
 import ceui.lisa.viewmodel.AppLevelViewModel;
-import jp.wasabeef.glide.transformations.BlurTransformation;
+import ceui.pixiv.utils.BlurUtilsKt;
+import ceui.pixiv.utils.FastBlurTransformation;
+import ceui.lisa.utils.GlideUtil;
 
 import static ceui.lisa.utils.SearchTypeUtil.SEARCH_TYPE_DB_KEYWORD;
 import static ceui.lisa.utils.ShareIllust.URL_Head;
@@ -98,11 +99,21 @@ public class FragmentSingleIllust extends BaseFragment<FragmentSingleIllustBindi
         switch (currentNightMode) {
             case Configuration.UI_MODE_NIGHT_NO:
             case Configuration.UI_MODE_NIGHT_UNDEFINED:
-                Glide.with(mContext)
-                        .load(GlideUtil.getSquare(illust))
-                        .apply(bitmapTransform(new BlurTransformation(25, 3)))
-                        .transition(withCrossFade())
-                        .into(baseBind.bgImage);
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                    BlurUtilsKt.applyBlur(baseBind.bgImage, 25f);
+                    Glide.with(mContext)
+                            .load(GlideUtil.getSquare(illust))
+                            .override(200)
+                            .transition(withCrossFade())
+                            .into(baseBind.bgImage);
+                } else {
+                    Glide.with(mContext)
+                            .load(GlideUtil.getSquare(illust))
+                            .override(200)
+                            .apply(bitmapTransform(new FastBlurTransformation(25)))
+                            .transition(withCrossFade())
+                            .into(baseBind.bgImage);
+                }
                 break;
         }
 

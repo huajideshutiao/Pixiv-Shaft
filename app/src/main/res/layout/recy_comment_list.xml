@@ -15,10 +15,11 @@
         android:paddingTop="@dimen/twelve_dp"
         android:paddingEnd="@dimen/twelve_dp">
 
-        <de.hdodenhof.circleimageview.CircleImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/user_head"
             android:layout_width="35dp"
-            android:layout_height="35dp" />
+            android:layout_height="35dp"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Circle"/>
 
         <TextView
             android:id="@+id/user_name"
@@ -77,14 +78,14 @@
             android:textSize="15sp"
             android:textIsSelectable="true" />
 
-        <com.makeramen.roundedimageview.RoundedImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/comment_image"
             android:visibility="gone"
             android:layout_width="100dp"
             android:layout_marginTop="@dimen/eight_dp"
             android:layout_alignStart="@id/user_name"
             android:layout_below="@+id/content"
-            app:riv_corner_radius="6dp"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Rounded6dp"
             android:background="@drawable/image_place_holder"
             android:scaleType="centerCrop"
             android:layout_height="100dp"/>

@@ -13,9 +13,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <net.csdn.roundview.RoundImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/image"
-            app:rRadius="4dp"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Rounded4dp"
             android:layout_width="match_parent"
             android:layout_height="100dp"
             app:layout_constraintTop_toTopOf="parent" />

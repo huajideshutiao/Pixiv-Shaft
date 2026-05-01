@@ -130,15 +130,16 @@
                                 android:layout_height="wrap_content"
                                 android:background="@color/card_user_head">
 
-                                <de.hdodenhof.circleimageview.CircleImageView
+                                <com.google.android.material.imageview.ShapeableImageView
                                     android:id="@+id/user_head"
                                     android:layout_width="48dp"
                                     android:layout_height="48dp"
                                     android:layout_marginStart="@dimen/twelve_dp"
                                     android:layout_marginTop="@dimen/eight_dp"
                                     android:layout_marginBottom="@dimen/eight_dp"
-                                    app:civ_border_color="#DDDDDD"
-                                    app:civ_border_width="1dp" />
+                                    app:strokeColor="#DDDDDD"
+                                    app:strokeWidth="1dp" 
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Circle" />
 
                                 <TextView
                                     android:id="@+id/user_name"

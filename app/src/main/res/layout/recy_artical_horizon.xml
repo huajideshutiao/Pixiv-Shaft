@@ -13,13 +13,11 @@
         app:qmui_borderWidth="0dp"
         android:layout_height="160dp">
 
-        <com.makeramen.roundedimageview.RoundedImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/illust_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            app:riv_border_width="0dp"
-            app:riv_corner_radius="@dimen/twelve_dp" />
+            android:scaleType="centerCrop" app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Rounded12dp" />
 
         <View
             android:layout_width="match_parent"

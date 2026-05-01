@@ -22,7 +22,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.blankj.utilcode.util.PathUtils;
 import com.bumptech.glide.Glide;
 import com.jaredrummler.android.colorpicker.ColorPickerDialog;
-import com.skydoves.transformationlayout.OnTransformFinishListener;
 import com.zhy.view.flowlayout.FlowLayout;
 import com.zhy.view.flowlayout.TagAdapter;
 import com.zhy.view.flowlayout.TagFlowLayout;
@@ -70,8 +69,6 @@ import ceui.loxia.TextDescHolder;
 import ceui.loxia.WebNovel;
 import ceui.pixiv.ui.common.CommonAdapter;
 import ceui.pixiv.ui.common.ListItemHolder;
-import gdut.bsx.share2.Share2;
-import gdut.bsx.share2.ShareContentType;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import me.zhanghai.android.fastscroll.FastScroller;
@@ -120,16 +117,10 @@ public class FragmentNovelHolder extends BaseFragment<FragmentNovelHolderBinding
         baseBind.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                baseBind.transformationLayout.startTransform();
+                isOpen = !isOpen;
+                Common.showLog(className + isOpen);
             }
         });
-        baseBind.transformationLayout.onTransformFinishListener = new OnTransformFinishListener() {
-            @Override
-            public void onFinish(boolean isTransformed) {
-                Common.showLog(className + isTransformed);
-                isOpen = isTransformed;
-            }
-        };
     }
 
     @Override
@@ -294,7 +285,6 @@ public class FragmentNovelHolder extends BaseFragment<FragmentNovelHolderBinding
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (isOpen) {
-                    baseBind.transformationLayout.finishTransform();
                     isOpen = false;
                     return true;
                 }
@@ -309,7 +299,7 @@ public class FragmentNovelHolder extends BaseFragment<FragmentNovelHolderBinding
             baseBind.showPrev.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    baseBind.transformationLayout.finishTransform();
+                    isOpen = false;
                     Retro.getAppApi().getNovelByID(novelDetail.getSeries_prev().getId())
                             .subscribeOn(Schedulers.newThread())
                             .observeOn(AndroidSchedulers.mainThread())
@@ -329,7 +319,7 @@ public class FragmentNovelHolder extends BaseFragment<FragmentNovelHolderBinding
             baseBind.showNext.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    baseBind.transformationLayout.finishTransform();
+                    isOpen = false;
                     Retro.getAppApi().getNovelByID(novelDetail.getSeries_next().getId())
                             .subscribeOn(Schedulers.newThread())
                             .observeOn(AndroidSchedulers.mainThread())
@@ -402,7 +392,7 @@ public class FragmentNovelHolder extends BaseFragment<FragmentNovelHolderBinding
                     downloadEntity.setIllustGson(Shaft.sGson.toJson(mNovelBean));
                     AppDatabase.getAppDatabase(Shaft.getContext()).downloadDao().insert(downloadEntity);
                     Common.showToast(getString(R.string.string_181), 2);
-                    baseBind.transformationLayout.finishTransform();
+                    isOpen = false;
                     return true;
                 } else if (item.getItemId() == R.id.action_txt) {
                     //需要下载txt文件
@@ -414,16 +404,14 @@ public class FragmentNovelHolder extends BaseFragment<FragmentNovelHolderBinding
                     });
                     return true;
                 } else if (item.getItemId() == R.id.action_txt_and_share) {
-                    //不需要下载txt文件
                     IllustDownload.downloadNovel((BaseActivity<?>) mActivity, mNovelBean, novelDetail, new Callback<Uri>() {
                         @Override
                         public void doSomething(Uri uri) {
-                            new Share2.Builder(mActivity)
-                                    .setContentType(ShareContentType.FILE)
-                                    .setShareFileUri(uri)
-                                    .setTitle("Share File")
-                                    .build()
-                                    .shareBySystem();
+                            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                            shareIntent.setType("text/plain");
+                            shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+                            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                            mActivity.startActivity(Intent.createChooser(shareIntent, getString(R.string.share)));
                         }
                     });
                     Common.showToast(getString(R.string.string_279), 2);

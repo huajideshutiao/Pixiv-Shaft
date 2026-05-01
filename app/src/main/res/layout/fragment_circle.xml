@@ -70,10 +70,10 @@
                             android:paddingBottom="10dp"
                             android:layout_height="wrap_content">
 
-                            <net.csdn.roundview.RoundImageView
+                            <com.google.android.material.imageview.ShapeableImageView
                                 android:id="@+id/tag_icon"
                                 app:loadMedia="@{circle.body.meta.pixpedia.illust.url}"
-                                app:rRadius="10dp"
+                                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Rounded10dp"
                                 app:layout_constraintTop_toTopOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
                                 android:layout_width="94dp"

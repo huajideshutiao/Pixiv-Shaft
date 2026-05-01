@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -31,7 +32,6 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
-import com.tbruyelle.rxpermissions3.RxPermissions;
 
 import java.io.File;
 
@@ -233,18 +233,14 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
                 initFragment();
 //                startActivity(new Intent(this, ListActivity.class));
             } else {
-                new RxPermissions(mActivity)
-                        .requestEachCombined(
-                                Manifest.permission.WRITE_EXTERNAL_STORAGE
-                        )
-                        .subscribe(permission -> {
-                            if (permission.granted) {
-                                initFragment();
-                            } else {
-                                Common.showToast(mActivity.getString(R.string.access_denied));
-                                finish();
-                            }
-                        });
+                registerForActivityResult(new ActivityResultContracts.RequestPermission(), granted -> {
+                    if (granted) {
+                        initFragment();
+                    } else {
+                        Common.showToast(mActivity.getString(R.string.access_denied));
+                        finish();
+                    }
+                }).launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
             }
         } else {
             Intent intent = new Intent(mContext, TemplateActivity.class);

@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <net.csdn.roundview.RoundImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/novel_cover"
             loadMedia="@{novel.image_urls.findMaxSizeUrl()}"
             android:layout_width="130dp"
@@ -21,7 +21,7 @@
             app:layout_constraintDimensionRatio="240:338"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:rRadius="4dp" />
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Rounded4dp" />
 
         <TextView
             android:id="@+id/title"

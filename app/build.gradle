@@ -149,8 +149,6 @@ dependencies {
     implementation "com.github.bumptech.glide:okhttp3-integration:${rootProject.ext.glide_version}"
     ksp "com.github.bumptech.glide:compiler:${rootProject.ext.glide_version}"
 
-    implementation 'com.github.lzyzsd:circleprogress:1.2.1'
-
     def refresh_version = "2.1.0"
     implementation "io.github.scwang90:refresh-layout-kernel:$refresh_version"
     implementation "io.github.scwang90:refresh-header-classics:$refresh_version"
@@ -159,38 +157,28 @@ dependencies {
     implementation "io.github.scwang90:refresh-footer-classics:$refresh_version"
 
     implementation "com.squareup.okhttp3:logging-interceptor:${rootProject.ext.okhttp_version}"
-    implementation 'com.rengwuxian.materialedittext:library:2.1.4'
     implementation 'jp.wasabeef:glide-transformations:4.3.0'
-    implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation 'com.github.ybq:Android-SpinKit:1.4.0'
+    implementation 'com.github.yalantis:ucrop:2.2.8'
     
     // Room
     implementation "androidx.room:room-runtime:${rootProject.ext.room_version}"
     implementation "androidx.room:room-ktx:${rootProject.ext.room_version}"
     ksp "androidx.room:room-compiler:${rootProject.ext.room_version}"
     
-    implementation 'com.facebook.rebound:rebound:0.3.8'
     implementation "org.sufficientlysecure:html-textview:4.0"
-    implementation 'com.wdullaer:materialdatetimepicker:4.2.3'
     implementation 'com.qmuiteam:qmui:2.0.1'
-    implementation 'com.mxn.soul:flowingdrawer-core:2.1.0'
     implementation 'com.ToxicBakery.viewpager.transforms:view-pager-transforms:2.0.24'
     implementation 'jp.wasabeef:recyclerview-animators:4.0.2'
-    implementation 'gdut.bsx:share2:0.9.3'
-    implementation 'com.github.skydoves:transformationlayout:1.1.1'
     implementation 'com.blankj:utilcodex:1.31.1'
-    implementation 'com.safframework.log:saf-logginginterceptor:1.6.0'
 
     implementation 'com.google.android.play:review:2.0.2'
     implementation 'com.google.android.play:review-ktx:2.0.2'
 
-    implementation 'com.afollestad:drag-select-recyclerview:2.4.0'
     implementation 'com.jaredrummler:colorpicker:1.1.0'
     implementation 'androidx.core:core-splashscreen:1.0.1'
 
     implementation 'com.effective.android:panelSwitchHelper-androidx:1.3.13'
-    implementation 'com.makeramen:roundedimageview:2.3.0'
-    implementation 'io.github.csdn-mobile:RoundView:1.8.0'
 
     implementation "com.squareup.okhttp3:okhttp:${rootProject.ext.okhttp_version}"
 
@@ -202,12 +190,10 @@ dependencies {
     implementation 'com.github.liujingxing.rxlife:rxlife-rxjava3:2.2.2'
 
     implementation "com.airbnb.android:lottie:6.7.1"
-    implementation 'xyz.zpayh:hdimageview:3.0.2'
 
     implementation project(':models')
     implementation project(':progressmanager')
     implementation project(':flowlayout-lib')
-    implementation 'com.github.tbruyelle:RxPermissions:0.12'
 
     implementation 'androidx.webkit:webkit:1.12.1'
     implementation 'androidx.browser:browser:1.8.0'
@@ -219,8 +205,6 @@ dependencies {
     implementation 'com.jakewharton.timber:timber:5.0.1'
 
     implementation "androidx.documentfile:documentfile:1.0.1"
-    implementation 'com.billy.android:smart-swipe:1.1.2'
-    implementation 'org.honorato.multistatetogglebutton:multistatetogglebutton:0.2.2'
     implementation "io.noties.markwon:core:4.6.2"
     implementation "androidx.activity:activity-ktx:${rootProject.ext.activity_ktx_version}"
     implementation "com.google.android.flexbox:flexbox:3.0.0"

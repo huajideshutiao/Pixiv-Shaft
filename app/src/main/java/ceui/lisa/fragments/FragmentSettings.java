@@ -17,6 +17,7 @@ import android.widget.CompoundButton;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.activity.result.contract.ActivityResultContracts;
 
 import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.UriUtils;
@@ -26,7 +27,6 @@ import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
 import com.scwang.smart.refresh.header.FalsifyFooter;
 import com.scwang.smart.refresh.header.FalsifyHeader;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
-import com.tbruyelle.rxpermissions3.RxPermissions;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -919,13 +919,12 @@ public class FragmentSettings extends SwipeFragment<FragmentSettingsBinding> {
         baseBind.refreshLayout.setRefreshFooter(new FalsifyFooter(mContext));
 
         if (!Common.isAndroidQ()) {
-            new RxPermissions(this).requestEachCombined(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .subscribe(permission -> {
-                    if (!permission.granted) {
-                        Common.showToast(getString(R.string.access_denied));
-                        finish();
-                    }
-                });
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), granted -> {
+                if (!granted) {
+                    Common.showToast(getString(R.string.access_denied));
+                    finish();
+                }
+            }).launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         }
     }
 

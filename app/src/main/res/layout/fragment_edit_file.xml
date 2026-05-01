@@ -33,14 +33,15 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
 
-                            <de.hdodenhof.circleimageview.CircleImageView
+                            <com.google.android.material.imageview.ShapeableImageView
                                 android:id="@+id/user_head"
                                 android:layout_width="80dp"
                                 android:layout_height="80dp"
                                 android:layout_centerHorizontal="true"
                                 android:layout_marginTop="40dp"
                                 android:scaleType="centerCrop"
-                                android:src="@drawable/avatar" />
+                                android:src="@drawable/avatar" 
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Circle" />
 
                             <Button
                                 android:id="@+id/change_head"

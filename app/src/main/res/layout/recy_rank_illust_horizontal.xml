@@ -53,7 +53,7 @@
                 android:layout_height="wrap_content">
 
 
-                <de.hdodenhof.circleimageview.CircleImageView
+                <com.google.android.material.imageview.ShapeableImageView
                     android:layout_width="20sp"
 
                     android:id="@+id/user_head"
@@ -61,7 +61,8 @@
                     android:layout_marginBottom="@dimen/eight_dp"
                     android:layout_marginTop="@dimen/eight_dp"
                     android:layout_marginEnd="@dimen/four_dp"
-                    android:layout_height="20sp" />
+                    android:layout_height="20sp" 
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Circle" />
 
 
                 <TextView
