@@ -81,14 +81,14 @@ class FragmentLogin : BaseFragment<ActivityLoginBinding>() {
         setupInsets()
         setupToolbar()
 
-        baseBind.loadingSpinner.visibility = View.GONE
+        baseBind.loadingSpinner.isVisible = false
 
         if (AppLocales.hasUserConfigured) {
-            baseBind.languagePage.root.visibility = View.GONE
-            baseBind.loginPage.root.visibility = View.VISIBLE
+            baseBind.languagePage.root.isVisible = false
+            baseBind.loginPage.root.isVisible = true
         } else {
-            baseBind.languagePage.root.visibility = View.VISIBLE
-            baseBind.loginPage.root.visibility = View.GONE
+            baseBind.languagePage.root.isVisible = true
+            baseBind.loginPage.root.isVisible = false
             setupLanguagePage()
         }
         setupLoginPage()
