@@ -59,8 +59,6 @@
                         android:background="@color/white_and_black"
                         android:orientation="vertical">
 
-                        <View style="@style/full_divider" />
-
                         <RelativeLayout
                             android:id="@+id/user_manage"
                             style="@style/ripple_rela">
@@ -72,8 +70,6 @@
                             <TextView style="@style/setting_right_arrow" />
 
                         </RelativeLayout>
-
-                        <View style="@style/half_divider" />
 
                         <RelativeLayout
                             android:id="@+id/edit_account"
@@ -87,8 +83,6 @@
                             <TextView style="@style/setting_right_arrow" />
 
                         </RelativeLayout>
-
-                        <View style="@style/half_divider" />
 
                         <RelativeLayout
                             android:id="@+id/edit_file"
@@ -105,8 +99,6 @@
 
                         </RelativeLayout>
 
-                        <View style="@style/half_divider" />
-
                         <RelativeLayout
                             android:id="@+id/work_space"
                             style="@style/ripple_rela">
@@ -122,8 +114,6 @@
 
                         </RelativeLayout>
 
-                        <View style="@style/half_divider" />
-
                         <RelativeLayout
                             android:id="@+id/r18_space"
                             style="@style/ripple_rela">
@@ -135,10 +125,6 @@
                             <TextView style="@style/setting_right_arrow" />
 
                         </RelativeLayout>
-
-                        <View
-                            style="@style/half_divider"
-                            android:visibility="gone" />
 
                         <RelativeLayout
                             android:id="@+id/premium_space"
@@ -153,8 +139,6 @@
 
                         </RelativeLayout>
 
-                        <View style="@style/half_divider" />
-
                         <RelativeLayout
                             android:id="@+id/login_out"
                             style="@style/ripple_rela">
@@ -166,8 +150,6 @@
                             <TextView style="@style/setting_right_arrow" />
 
                         </RelativeLayout>
-
-                        <View style="@style/full_divider" />
 
                     </LinearLayout>
 
@@ -181,8 +163,6 @@
                         android:layout_height="wrap_content"
                         android:background="@color/white_and_black"
                         android:orientation="vertical">
-
-                        <View style="@style/full_divider" />
 
                         <RelativeLayout
                             android:id="@+id/direct_connect_rela"
@@ -215,8 +195,6 @@
 
                         </RelativeLayout>
 
-                        <View style="@style/half_divider" />
-
                         <RelativeLayout
                             android:id="@+id/show_large_thumbnail_image_rela"
                             style="@style/ripple_rela">
@@ -245,8 +223,6 @@
                                 style="@style/setting_right_switch" />
 
                         </RelativeLayout>
-
-                        <View style="@style/half_divider" />
 
                         <RelativeLayout
                             android:id="@+id/show_original_preview_image_rela"
@@ -277,8 +253,6 @@
 
                         </RelativeLayout>
 
-                        <View style="@style/half_divider" />
-
                     </LinearLayout>
 
                     <TextView
@@ -290,8 +264,6 @@
                         android:layout_height="wrap_content"
                         android:background="@color/white_and_black"
                         android:orientation="vertical">
-
-                        <View style="@style/full_divider" />
 
                         <RelativeLayout
                             android:id="@+id/save_history_rela"
@@ -308,8 +280,6 @@
 
                         </RelativeLayout>
 
-                        <View style="@style/half_divider" />
-
                         <RelativeLayout
                             android:id="@+id/delete_star_illust_rela"
                             style="@style/ripple_rela">
@@ -324,8 +294,6 @@
 
 
                         </RelativeLayout>
-
-                        <View style="@style/half_divider" />
 
                         <RelativeLayout
                             android:id="@+id/filter_rank_bookmarked_rela"
@@ -342,8 +310,6 @@
 
                         </RelativeLayout>
 
-                        <View style="@style/half_divider" />
-
                         <RelativeLayout
                             android:id="@+id/filter_invalid_bookmarks_rela"
                             style="@style/ripple_rela">
@@ -358,8 +324,6 @@
 
 
                         </RelativeLayout>
-
-                        <View style="@style/half_divider" />
 
                         <RelativeLayout
                             android:id="@+id/delete_ai_illust_rela"
@@ -376,8 +340,6 @@
 
                         </RelativeLayout>
 
-                        <View style="@style/half_divider" />
-
 
                         <RelativeLayout
                             android:id="@+id/toast_download_result_rela"
@@ -393,8 +355,6 @@
 
 
                         </RelativeLayout>
-
-                        <View style="@style/half_divider" />
 
                         <RelativeLayout
                             android:id="@+id/search_filter_rela"
@@ -417,8 +377,6 @@
 
                         </RelativeLayout>
 
-                        <View style="@style/half_divider" />
-
                         <RelativeLayout
                             android:id="@+id/search_default_sort_type_rela"
                             style="@style/ripple_rela">
@@ -440,10 +398,6 @@
 
                         </RelativeLayout>
 
-
-                        <View
-                            style="@style/half_divider"
-                            android:visibility="gone" />
 
                         <RelativeLayout
                             android:id="@+id/bottom_bar_order_rela"
@@ -469,8 +423,6 @@
 
                         </RelativeLayout>
 
-                        <View style="@style/half_divider" />
-
                         <RelativeLayout
                             android:id="@+id/filter_comment_rela"
                             style="@style/ripple_rela">
@@ -484,8 +436,6 @@
                                 style="@style/setting_right_switch" />
 
                         </RelativeLayout>
-
-                        <View style="@style/half_divider" />
 
                         <RelativeLayout
                             android:id="@+id/r18_filter_default_enable_rela"
@@ -518,8 +468,6 @@
 
                     </LinearLayout>
 
-                    <View style="@style/full_divider" />
-
                     <TextView
                         style="@style/setting_text_head"
                         android:text="@string/string_376" />
@@ -529,8 +477,6 @@
                         android:layout_height="wrap_content"
                         android:background="@color/white_and_black"
                         android:orientation="vertical">
-
-                        <View style="@style/full_divider" />
 
                         <RelativeLayout
                             android:id="@+id/main_view_r18_rela"
@@ -545,8 +491,6 @@
                                 style="@style/setting_right_switch" />
 
                         </RelativeLayout>
-
-                        <View style="@style/half_divider" />
 
                         <RelativeLayout
                             android:id="@+id/navigation_init_position_rela"
@@ -568,8 +512,6 @@
                                 android:textSize="14sp"></TextView>
 
                         </RelativeLayout>
-
-                        <View style="@style/half_divider" />
 
                         <RelativeLayout
                             android:id="@+id/theme_mode_rela"
@@ -596,8 +538,6 @@
 
                         </RelativeLayout>
 
-                        <View style="@style/half_divider" />
-
                         <RelativeLayout
                             android:id="@+id/color_select_rela"
                             style="@style/ripple_rela">
@@ -620,8 +560,6 @@
 
                         </RelativeLayout>
 
-                        <View style="@style/half_divider" />
-
                         <RelativeLayout
                             android:id="@+id/layout_mode_rela"
                             style="@style/ripple_rela">
@@ -641,8 +579,6 @@
                                 android:textSize="14sp" />
 
                         </RelativeLayout>
-
-                        <View style="@style/half_divider" />
 
                         <RelativeLayout
                             android:id="@+id/line_count_rela"
@@ -666,8 +602,6 @@
 
                         </RelativeLayout>
 
-                        <View style="@style/half_divider" />
-
                         <RelativeLayout
                             android:id="@+id/app_language_rela"
                             style="@style/ripple_rela">
@@ -690,8 +624,6 @@
 
                         </RelativeLayout>
 
-                        <View style="@style/full_divider" />
-
                     </LinearLayout>
 
                     <TextView
@@ -703,8 +635,6 @@
                         android:layout_height="wrap_content"
                         android:background="@color/white_and_black"
                         android:orientation="vertical">
-
-                        <View style="@style/full_divider" />
 
                         <RelativeLayout
                             android:id="@+id/r18_divide_save_rela"
@@ -720,8 +650,6 @@
 
                         </RelativeLayout>
 
-                        <View style="@style/half_divider" />
-
                         <RelativeLayout
                             android:id="@+id/ai_divide_save_rela"
                             style="@style/ripple_rela">
@@ -735,8 +663,6 @@
                                 style="@style/setting_right_switch" />
 
                         </RelativeLayout>
-
-                        <View style="@style/half_divider" />
 
                         <LinearLayout
                             android:id="@+id/file_name_rela"
@@ -782,8 +708,6 @@
                                 app:tint="@color/black_to_grey" />
                         </LinearLayout>
 
-                        <View style="@style/half_divider" />
-
                         <LinearLayout
                             android:id="@+id/novel_header_rela"
                             style="@style/ripple_rela"
@@ -828,8 +752,6 @@
                                 app:tint="@color/black_to_grey" />
                         </LinearLayout>
 
-                        <View style="@style/half_divider" />
-
                         <RelativeLayout
                             android:id="@+id/default_novel_format_rela"
                             style="@style/ripple_rela">
@@ -849,8 +771,6 @@
                                 android:textSize="14sp" />
 
                         </RelativeLayout>
-
-                        <View style="@style/half_divider" />
 
                         <RelativeLayout
                             android:id="@+id/default_image_resolution_rela"
@@ -872,8 +792,6 @@
 
                         </RelativeLayout>
 
-                        <View style="@style/half_divider" />
-
                         <RelativeLayout
                             android:id="@+id/overwrite_policy_rela"
                             style="@style/ripple_rela">
@@ -893,8 +811,6 @@
                                 android:textSize="14sp" />
 
                         </RelativeLayout>
-
-                        <View style="@style/half_divider" />
 
                         <RelativeLayout
                             android:id="@+id/storage_choice_rela"
@@ -916,8 +832,6 @@
 
                         </RelativeLayout>
 
-                        <View style="@style/half_divider" />
-
                         <RelativeLayout
                             android:id="@+id/page_index_rela"
                             style="@style/ripple_rela">
@@ -937,8 +851,6 @@
                                 android:textSize="14sp" />
 
                         </RelativeLayout>
-
-                        <View style="@style/half_divider" />
 
                         <RelativeLayout
                             android:id="@+id/save_for_separate_author_rela"
@@ -962,8 +874,6 @@
 
                         </RelativeLayout>
 
-                        <View style="@style/half_divider" />
-
                         <RelativeLayout
                             android:id="@+id/illust_long_press_download_rela"
                             style="@style/ripple_rela">
@@ -977,8 +887,6 @@
                                 style="@style/setting_right_switch" />
 
                         </RelativeLayout>
-
-                        <View style="@style/half_divider" />
 
                         <RelativeLayout
                             android:id="@+id/download_limit_type_rela"
@@ -1001,8 +909,6 @@
                             </TextView>
 
                         </RelativeLayout>
-
-                        <View style="@style/half_divider" />
 
                         <RelativeLayout
                             android:id="@+id/download_way_rela"
@@ -1027,8 +933,6 @@
 
 
                         </RelativeLayout>
-
-                        <View style="@style/half_divider" />
 
                         <RelativeLayout
                             android:id="@+id/single_illust_path"
@@ -1056,8 +960,6 @@
 
                         </RelativeLayout>
 
-                        <View style="@style/half_divider" />
-
                         <RelativeLayout
                             android:id="@+id/novel_path_rela"
                             style="@style/ripple_rela">
@@ -1080,8 +982,6 @@
 
                         </RelativeLayout>
 
-                        <View style="@style/full_divider" />
-
                     </LinearLayout>
 
 
@@ -1094,8 +994,6 @@
                         android:layout_height="wrap_content"
                         android:background="@color/white_and_black"
                         android:orientation="vertical">
-
-                        <View style="@style/full_divider" />
 
                         <RelativeLayout
                             android:id="@+id/show_like_button_rela"
@@ -1112,8 +1010,6 @@
 
                         </RelativeLayout>
 
-                        <View style="@style/half_divider" />
-
                         <RelativeLayout
                             android:id="@+id/show_novel_card_tags_rela"
                             style="@style/ripple_rela">
@@ -1129,10 +1025,8 @@
 
                         </RelativeLayout>
 
-                        <View style="@style/half_divider" />
-
                         <RelativeLayout
-                            android:id="@+id/hide_star_bar_rela"
+                            android:id="@+id/hide_star_button_rela"
                             style="@style/ripple_rela">
 
                             <TextView
@@ -1145,8 +1039,6 @@
 
 
                         </RelativeLayout>
-
-                        <View style="@style/half_divider" />
 
                         <RelativeLayout
                             android:id="@+id/select_all_tag_rela"
@@ -1162,8 +1054,6 @@
 
 
                         </RelativeLayout>
-
-                        <View style="@style/half_divider" />
 
                         <RelativeLayout
                             android:id="@+id/transform_type_rela"
@@ -1188,8 +1078,6 @@
 
                         </RelativeLayout>
 
-                        <View style="@style/half_divider" />
-
                         <RelativeLayout
                             android:id="@+id/show_related_when_star_rela"
                             style="@style/ripple_rela">
@@ -1205,8 +1093,6 @@
 
                         </RelativeLayout>
 
-                        <View style="@style/half_divider" />
-
                         <RelativeLayout
                             android:id="@+id/download_auto_post_like_rela"
                             style="@style/ripple_rela">
@@ -1220,8 +1106,6 @@
                                 style="@style/setting_right_switch" />
 
                         </RelativeLayout>
-
-                        <View style="@style/half_divider" />
 
                         <RelativeLayout
                             android:id="@+id/auto_follow_after_star_rela"
@@ -1237,8 +1121,6 @@
 
                         </RelativeLayout>
 
-                        <View style="@style/half_divider" />
-
                         <RelativeLayout
                             android:id="@+id/illust_detail_keep_screen_on_rela"
                             style="@style/ripple_rela">
@@ -1253,8 +1135,6 @@
 
                         </RelativeLayout>
 
-                        <View style="@style/full_divider" />
-
                     </LinearLayout>
 
 
@@ -1267,8 +1147,6 @@
                         android:layout_height="wrap_content"
                         android:background="@color/white_and_black"
                         android:orientation="vertical">
-
-                        <View style="@style/full_divider" />
 
                         <RelativeLayout
                             android:id="@+id/clear_image_cache"
@@ -1285,8 +1163,6 @@
 
                         </RelativeLayout>
 
-                        <View style="@style/half_divider" />
-
                         <RelativeLayout
                             android:id="@+id/clear_gif_cache"
                             style="@style/ripple_rela">
@@ -1302,8 +1178,6 @@
 
                         </RelativeLayout>
 
-                        <View style="@style/full_divider" />
-
                     </LinearLayout>
 
                     <TextView
@@ -1317,8 +1191,6 @@
                         android:background="@color/white_and_black"
                         android:orientation="vertical">
 
-                        <View style="@style/full_divider" />
-
                         <RelativeLayout
                             android:id="@+id/backup_rela"
                             style="@style/ripple_rela">
@@ -1328,8 +1200,6 @@
                                 android:text="@string/string_420" />
 
                         </RelativeLayout>
-
-                        <View style="@style/half_divider" />
 
                         <RelativeLayout
                             android:id="@+id/restore_rela"
@@ -1341,8 +1211,6 @@
 
                         </RelativeLayout>
 
-                        <View style="@style/full_divider" />
-
                     </LinearLayout>
 
 
@@ -1353,4 +1221,3 @@
 
     </LinearLayout>
 </layout>
-

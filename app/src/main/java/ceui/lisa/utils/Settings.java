@@ -36,7 +36,7 @@ public class Settings {
 
     public static final String FILE_PATH_BACKUP = PathUtils.getExternalDownloadsPath() + "/ShaftBackups";
 
-    private int themeIndex;
+    private int themeIndex = 2;
 
     private int lineCount = 2;
 

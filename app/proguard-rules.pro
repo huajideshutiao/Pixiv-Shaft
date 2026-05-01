@@ -1,3 +1,6 @@
+# Optimization passes for R8/ProGuard
+-optimizationpasses 5
+
 # Add project specific ProGuard rules here.
 # You can control the set of applied configuration files using the
 # proguardFiles setting in build.gradle.

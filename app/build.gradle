@@ -17,6 +17,7 @@ android {
         versionCode 40580
         versionName "4.6.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        resConfigs "zh-rCN", "zh-rTW", "zh-rHK", "en", "ja", "ko", "ru", "tr"
         ndk {
             abiFilters 'arm64-v8a'
         }
@@ -71,7 +72,8 @@ android {
             resValue "string", "app_name", "Shaft(Debug)"
         }
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             buildConfigField "boolean", "IS_DEBUG_MODE", "false"
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release

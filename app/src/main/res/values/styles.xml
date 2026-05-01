@@ -342,27 +342,29 @@
     </style>
 
     <style name="textMontserratRegular">
-        <item name="fontFamily">@font/montserrat_regular</item>
+        <item name="android:fontFamily">sans-serif</item>
     </style>
 
     <style name="textMontserratBold">
-        <item name="fontFamily">@font/montserrat_bold</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="textBlack">
-        <item name="fontFamily">@font/montserrat_extra_bold</item>
+        <item name="android:fontFamily">sans-serif-black</item>
     </style>
 
     <style name="textMontserratMedium">
-        <item name="fontFamily">@font/montserrat_medium</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
     <style name="textMontserratSemiBold">
-        <item name="fontFamily">@font/montserrat_semi_bold</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="textMontserratExtraBold">
-        <item name="fontFamily">@font/montserrat_extra_bold</item>
+        <item name="android:fontFamily">sans-serif-black</item>
     </style>
 
     <style name="SplashTheme" parent="Theme.SplashScreen">

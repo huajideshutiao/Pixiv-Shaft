@@ -62,4 +62,15 @@ public class FragmentColors extends LocalListFragment<FragmentBaseListBinding, C
     };
     @Override
     public String getToolbarTitle() {return getString(R.string.string_324);}
+
+    @Override
+    public boolean autoRefresh() {
+        return false;
+    }
+
+    @Override
+    public void initView() {
+        super.initView();
+        fresh();
+    }
 }

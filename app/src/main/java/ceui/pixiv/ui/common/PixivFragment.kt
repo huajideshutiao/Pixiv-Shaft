@@ -425,12 +425,6 @@ fun Fragment.setUpLayoutManager(listView: RecyclerView, listMode: Int = ListMode
         )
     } else if (listMode == ListMode.VERTICAL_TABCELL) {
         listView.layoutManager = LinearLayoutManager(requireContext())
-        listView.addItemDecoration(
-            BottomDividerDecoration(
-                requireContext(),
-                R.drawable.list_divider,
-            )
-        )
     } else if (listMode == ListMode.VERTICAL_NO_MARGIN) {
         listView.layoutManager = LinearLayoutManager(ctx)
     } else if (listMode == ListMode.GRID) {
