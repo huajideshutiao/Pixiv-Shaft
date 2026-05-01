@@ -34,7 +34,7 @@ import ceui.pixiv.download.header.HeaderField
 import ceui.pixiv.download.header.HeaderPreset
 import ceui.pixiv.download.header.NovelHeaderRenderer
 import ceui.pixiv.ui.common.viewBinding
-import com.hjq.toast.ToastUtils
+import com.hjq.toast.Toaster
 
 /**
  * "下载内容信息头设置" — lets the user choose which metadata fields are
@@ -90,7 +90,7 @@ class NovelHeaderSettingsFragment : Fragment(R.layout.fragment_novel_header_sett
             setTextAppearance(R.style.textMontserratBold)
             textSize = 18f
         }
-        (toolbar.naviBack as ImageView).setColorFilter(resources.getColor(R.color.v3_text_1, null))
+        toolbar.naviBack.setColorFilter(resources.getColor(R.color.v3_text_1, null))
         toolbar.naviBack.setOnClickListener {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
@@ -226,7 +226,7 @@ class NovelHeaderSettingsFragment : Fragment(R.layout.fragment_novel_header_sett
             hint = getString(R.string.novel_header_preset_name_hint),
         ) { entered ->
             if (store.presets.any { it.name == entered }) {
-                ToastUtils.show(getString(R.string.novel_header_preset_name_taken))
+                Toaster.show(getString(R.string.novel_header_preset_name_taken))
                 return@promptForName
             }
             commitDraftIntoStore(persist = false)
@@ -250,7 +250,7 @@ class NovelHeaderSettingsFragment : Fragment(R.layout.fragment_novel_header_sett
         ) { entered ->
             if (entered == draftPresetName) return@promptForName
             if (store.presets.any { it.name == entered }) {
-                ToastUtils.show(getString(R.string.novel_header_preset_name_taken))
+                Toaster.show(getString(R.string.novel_header_preset_name_taken))
                 return@promptForName
             }
             commitDraftIntoStore(persist = false)
@@ -266,7 +266,7 @@ class NovelHeaderSettingsFragment : Fragment(R.layout.fragment_novel_header_sett
 
     private fun onDeletePreset() {
         if (store.presets.size <= 1) {
-            ToastUtils.show(getString(R.string.novel_header_preset_delete_last))
+            Toaster.show(getString(R.string.novel_header_preset_delete_last))
             return
         }
         AlertDialog.Builder(requireContext())
@@ -308,7 +308,7 @@ class NovelHeaderSettingsFragment : Fragment(R.layout.fragment_novel_header_sett
             .setPositiveButton(android.R.string.ok) { _, _ ->
                 val entered = edit.text?.toString()?.trim().orEmpty()
                 if (entered.isBlank()) {
-                    ToastUtils.show(getString(R.string.novel_header_preset_name_blank))
+                    Toaster.show(getString(R.string.novel_header_preset_name_blank))
                 } else {
                     onConfirm(entered)
                 }
@@ -433,7 +433,7 @@ class NovelHeaderSettingsFragment : Fragment(R.layout.fragment_novel_header_sett
 
     private fun onSave() {
         commitDraftIntoStore(persist = true)
-        ToastUtils.show(getString(R.string.novel_header_saved))
+        Toaster.show(getString(R.string.novel_header_saved))
     }
 
     private fun commitDraftIntoStore(persist: Boolean) {
@@ -458,7 +458,7 @@ class NovelHeaderSettingsFragment : Fragment(R.layout.fragment_novel_header_sett
                 draftPresetName = store.activeName
                 loadDraftFromActive()
                 render()
-                ToastUtils.show(getString(R.string.novel_header_reset_done))
+                Toaster.show(getString(R.string.novel_header_reset_done))
             }
             .show()
     }

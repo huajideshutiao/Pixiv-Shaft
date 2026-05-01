@@ -58,6 +58,7 @@ public final class DownloadEntity implements Serializable {
         this.downloadTime = downloadTime;
     }
 
+    @NonNull
     public String getFileName() {
         return fileName;
     }

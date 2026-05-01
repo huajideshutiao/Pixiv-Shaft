@@ -7,7 +7,6 @@ import java.lang.Exception
 import javax.annotation.processing.AbstractProcessor
 import javax.annotation.processing.Processor
 import javax.annotation.processing.RoundEnvironment
-import javax.annotation.processing.SupportedOptions
 import javax.annotation.processing.SupportedSourceVersion
 import javax.lang.model.SourceVersion
 import javax.lang.model.element.ElementKind
@@ -28,13 +27,19 @@ fun getClassName(clsProvider: ()-> KClass<*>): String {
 
 @AutoService(Processor::class) // For registering the service
 @SupportedSourceVersion(SourceVersion.RELEASE_17) // to support Java 8
-@SupportedOptions(FileGenerator.KAPT_KOTLIN_GENERATED_OPTION_NAME)
 class FileGenerator : AbstractProcessor() {
 
     private val logger by lazy { ProcessorLogger(processingEnv) }
 
     companion object {
         const val KAPT_KOTLIN_GENERATED_OPTION_NAME = "kapt.kotlin.generated"
+    }
+
+    override fun getSupportedOptions(): MutableSet<String> {
+        return mutableSetOf(
+            KAPT_KOTLIN_GENERATED_OPTION_NAME,
+            "org.gradle.annotation.processing.aggregating"
+        )
     }
 
     override fun getSupportedAnnotationTypes(): MutableSet<String> {

@@ -160,7 +160,7 @@
   <string name="never_show_again">再度表示しない</string>  
   <string name="add">追加</string>  
   <string name="fullscreen_layout">フルスクリーンレイアウト</string>  
-  <string name="how_many_novels">%d部/%d文字 %d時間%d分ほどで読めます。</string>
+  <string name="how_many_novels">%1$d部/%2$d文字 %3$d時間%4$d分ほどで読めます。</string>
   <string name="scroll_behavior">ceui.lisa.pixiv.ScrollBehavior</string>  
   <string name="head_behavior">ceui.lisa.pixiv.HeadBehavior</string>  
   <string name="title_activity_splash">title_activity_splash</string>  
@@ -221,7 +221,7 @@
   <string name="string_46">テーブル：</string>  
   <string name="string_47">椅子：</string>
   <string name="string_48">コンテンツなし</string>
-  <string name="string_49">コメントする...</string>
+  <string name="string_49">コメントする…</string>
   <string name="string_50">寄付する</string>  
   <string name="string_51">pixiv ID（小文字の英数字のみ使用可）</string>
   <string name="string_52">新しいパスワード</string>  
@@ -326,7 +326,7 @@
   <string name="string_160">キャンセル</string>
   <string name="string_161">コメントを入力</string>
   <string name="string_162">コメントを入力</string>
-  <string name="string_163">コメントする...</string>  
+  <string name="string_163">コメントする…</string>
   <string name="string_164">すき！したイラスト・漫画</string>
   <string name="string_165">ミュートするタグの選択</string>
   <string name="string_166">すき！した小説</string>  
@@ -372,7 +372,7 @@
   <string name="string_207">ホーム</string>  
   <string name="string_209">既にミュートしています</string>
   <string name="string_210">タグをミュートする</string>
-  <string name="string_211">タグ名を入力...</string>
+  <string name="string_211">タグ名を入力…</string>
   <string name="string_212">キャンセル</string>  
   <string name="string_213">追加</string>  
   <string name="string_214">タグを記入してください</string>
@@ -616,7 +616,7 @@
   <string name="string_454">最初の画像を共有</string>
   <string name="terms_of_service">利用規約</string>
   <string name="privacy_policy">プライバシーポリシー</string>
-  <string name="landing_terms_base">%sと%sに同意する</string>
+  <string name="landing_terms_base">%1$sと%2$sに同意する</string>
   <string name="read_agreement">[利用規約とプライバシーポリシーに同意する]のチェックが必要です</string>
   <string name="empty_content_here">コンテンツがありません</string>
   <string name="refresh">リロード</string>

@@ -37,7 +37,7 @@ import ceui.pixiv.ui.common.viewBinding
 import ceui.pixiv.ui.task.BatchDownloadNovelsTask
 import ceui.pixiv.ui.task.FailedNovel
 import ceui.pixiv.utils.setOnClick
-import com.hjq.toast.ToastUtils
+import com.hjq.toast.Toaster
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -201,7 +201,7 @@ class UncategorizedNovelsFragment : PixivFragment(R.layout.fragment_pixiv_list),
             layoutParams = lp
         }
 
-        val rootLayout = binding.root as ConstraintLayout
+        val rootLayout = binding.root
         rootLayout.addView(toggle)
         topToggleBtn = toggle
     }
@@ -235,7 +235,7 @@ class UncategorizedNovelsFragment : PixivFragment(R.layout.fragment_pixiv_list),
     private fun launchBatchDownloadSelected() {
         val novels = viewModel.selectedNovels()
         if (novels.isEmpty()) {
-            ToastUtils.show(getString(R.string.batch_download_no_selection))
+            Toaster.show(getString(R.string.batch_download_no_selection))
             return
         }
         BatchDownloadNovelsTask(
@@ -256,7 +256,7 @@ class UncategorizedNovelsFragment : PixivFragment(R.layout.fragment_pixiv_list),
     private fun launchDownloadAllLoaded() {
         val allNovels = viewModel.allLoadedNovels()
         if (allNovels.isEmpty()) {
-            ToastUtils.show(getString(R.string.batch_download_no_selection))
+            Toaster.show(getString(R.string.batch_download_no_selection))
             return
         }
         BatchDownloadNovelsTask(
@@ -269,7 +269,7 @@ class UncategorizedNovelsFragment : PixivFragment(R.layout.fragment_pixiv_list),
     private fun onBatchDownloadFinished(failures: List<FailedNovel>) {
         if (!isAdded) return
         if (failures.isEmpty()) {
-            ToastUtils.show(getString(R.string.batch_download_all_ok))
+            Toaster.show(getString(R.string.batch_download_all_ok))
             viewModel.setMultiSelectMode(false)
             return
         }

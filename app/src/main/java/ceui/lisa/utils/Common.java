@@ -27,7 +27,7 @@ import com.blankj.utilcode.util.Utils;
 import com.facebook.rebound.SimpleSpringListener;
 import com.facebook.rebound.Spring;
 import com.facebook.rebound.SpringChain;
-import com.hjq.toast.ToastUtils;
+import com.hjq.toast.Toaster;
 import com.qmuiteam.qmui.skin.QMUISkinManager;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
@@ -69,6 +69,7 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import okio.Buffer;
 import okio.BufferedSource;
+import timber.log.Timber;
 
 public class Common {
 
@@ -123,15 +124,15 @@ public class Common {
     }
 
     public static <T> void showLog(T t) {
-        Log.d("==SHAFT==>", String.valueOf(t));
+        Timber.tag("==SHAFT==>").d(String.valueOf(t));
     }
 
     public static <T> void showToast(T t) {
-        ToastUtils.show(t);
+        Toaster.show(t);
     }
 
     public static void showToast(int id) {
-        ToastUtils.show(id);
+        Toaster.show(id);
     }
 
     /**
@@ -147,7 +148,7 @@ public class Common {
      * */
     //2成功， 3失败， 4info
     public static <T> void showToast(T t, int type) {
-        ToastUtils.show(t);
+        Toaster.show(t);
     }
 
     public static String getAppVersionCode(Context context) {
@@ -181,7 +182,7 @@ public class Common {
     }
 
     public static <T> void showToast(T t, boolean isLong) {
-        ToastUtils.show(t);
+        Toaster.show(t);
     }
 
     public static void copy(Context context, String s) {

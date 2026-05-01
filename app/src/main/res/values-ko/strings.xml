@@ -160,7 +160,7 @@
   <string name="never_show_again">다시 표시 안 함</string>  
   <string name="add">첨가 하 다.</string>  
   <string name="fullscreen_layout">전체 화면 레이아웃</string>  
-  <string name="how_many_novels">% d 개 작품,% d 개 글자, 보고:% d 시간% d 분</string>  
+  <string name="how_many_novels">%1$d 개 작품,%2$d 개 글자, 보고:%3$d 시간%4$d 분</string>
   <string name="scroll_behavior">ceuilisa. pixiv구르다</string>  
   <string name="head_behavior">ceuilisa. pixiv두부 행위</string>  
   <string name="title_activity_splash">분사 활동</string>  

@@ -4,7 +4,7 @@ import ceui.lisa.R
 import ceui.lisa.activities.Shaft
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import com.hjq.toast.ToastUtils
+import com.hjq.toast.Toaster
 import timber.log.Timber
 
 /**
@@ -60,7 +60,7 @@ class DownloadConfigStore(
             store.edit { putString(KEY, DownloadConfigJson.toJson(config)) }
         } catch (t: Throwable) {
             Timber.e(t, "DownloadConfigStore.save failed")
-            ToastUtils.show(
+            Toaster.show(
                 Shaft.getContext().getString(
                     R.string.download_settings_save_failed,
                     t.message ?: t.javaClass.simpleName,

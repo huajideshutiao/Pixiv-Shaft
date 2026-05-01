@@ -160,7 +160,7 @@
   <string name="never_show_again">Не показывать</string>  
   <string name="add">Добавить</string>  
   <string name="fullscreen_layout">панельная схема</string>  
-  <string name="how_many_novels">% d - произведение,% d - слово, которое требуется для чтения:% d час% d мин</string>  
+  <string name="how_many_novels">%1$d - произведение,%2$d - слово, которое требуется для чтения:%3$d час%4$d мин</string>
   <string name="scroll_behavior">ceui.lisa.pixiv.ScrollBehavior</string>  
   <string name="head_behavior">ceui.lisa.pixiv.HeadBehavior</string>  
   <string name="title_activity_splash">разбрызгивающая деятельность</string>  

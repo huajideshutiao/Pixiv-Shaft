@@ -44,7 +44,7 @@ import ceui.pixiv.ui.task.FetchAllTask
 import ceui.pixiv.ui.task.MergeDownloadNovelSeriesTask
 import ceui.pixiv.ui.task.PixivTaskType
 import ceui.pixiv.utils.setOnClick
-import com.hjq.toast.ToastUtils
+import com.hjq.toast.Toaster
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -162,7 +162,7 @@ class NovelSeriesFragment : PixivFragment(R.layout.fragment_pixiv_list), NovelMu
     private fun launchMergeDownload() {
         val detail = viewModel.series.value?.novel_series_detail
         if (detail == null) {
-            ToastUtils.show(getString(R.string.merge_download_failed_empty))
+            Toaster.show(getString(R.string.merge_download_failed_empty))
             return
         }
         val known = viewModel.series.value?.novels.orEmpty() + viewModel.allLoadedNovels()
@@ -304,7 +304,7 @@ class NovelSeriesFragment : PixivFragment(R.layout.fragment_pixiv_list), NovelMu
     private fun launchBatchDownloadSelected() {
         val novels = viewModel.selectedNovels()
         if (novels.isEmpty()) {
-            ToastUtils.show(getString(R.string.batch_download_no_selection))
+            Toaster.show(getString(R.string.batch_download_no_selection))
             return
         }
         BatchDownloadNovelsTask(
@@ -321,7 +321,7 @@ class NovelSeriesFragment : PixivFragment(R.layout.fragment_pixiv_list), NovelMu
     private fun onBatchDownloadFinished(failures: List<FailedNovel>) {
         if (!isAdded) return
         if (failures.isEmpty()) {
-            ToastUtils.show(getString(R.string.batch_download_all_ok))
+            Toaster.show(getString(R.string.batch_download_all_ok))
             // Exit multi-select on full success — matches the user's mental
             // model ("I'm done, clean up").
             viewModel.setMultiSelectMode(false)

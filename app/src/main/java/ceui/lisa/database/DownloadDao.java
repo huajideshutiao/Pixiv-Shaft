@@ -1,5 +1,6 @@
 package ceui.lisa.database;
 
+import androidx.annotation.NonNull;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -44,6 +45,7 @@ public interface DownloadDao {
      * @return
      */
     @Query("SELECT * FROM illust_download_table ORDER BY downloadTime DESC LIMIT :limit OFFSET :offset")
+    @NonNull
     List<DownloadEntity> getAll(int limit, int offset);
 
     /**
@@ -56,9 +58,11 @@ public interface DownloadDao {
     boolean hasDownloadRecordByIllustId(long illustId);
 
     @Query("SELECT * FROM illust_downloading_table")
+    @NonNull
     List<DownloadingEntity> getAllDownloading();
 
     @Query("SELECT * FROM illust_downloading_table ORDER BY rowid DESC LIMIT :limit")
+    @NonNull
     List<DownloadingEntity> getRecentDownloading(int limit);
 
     @Query("DELETE FROM illust_downloading_table WHERE rowid NOT IN (SELECT rowid FROM illust_downloading_table ORDER BY rowid DESC LIMIT :keep)")
@@ -104,6 +108,7 @@ public interface DownloadDao {
      * @return
      */
     @Query("SELECT * FROM illust_table ORDER BY time DESC LIMIT :limit OFFSET :offset")
+    @NonNull
     List<IllustHistoryEntity> getAllViewHistory(int limit, int offset);
 
     /**
@@ -112,6 +117,7 @@ public interface DownloadDao {
      * @return
      */
     @Query("SELECT * FROM illust_table")
+    @NonNull
     List<IllustHistoryEntity> getAllViewHistoryEntities();
 
     /**
@@ -124,6 +130,7 @@ public interface DownloadDao {
      * 按 type 分页查询浏览历史（0=插画/漫画, 1=小说）
      */
     @Query("SELECT * FROM illust_table WHERE type = :type ORDER BY time DESC LIMIT :limit OFFSET :offset")
+    @NonNull
     List<IllustHistoryEntity> getViewHistoryByType(int type, int limit, int offset);
 
     @Query("SELECT COUNT(*) FROM illust_table WHERE type = :type")
@@ -151,12 +158,14 @@ public interface DownloadDao {
     void deleteUser(UserEntity userEntity);
 
     @Query("SELECT * FROM user_table ORDER BY loginTime DESC")
+    @NonNull
     List<UserEntity> getAllUser();
 
     @Query("SELECT * FROM user_table limit 1")
     UserEntity getCurrentUser();
 
     @Query("SELECT * FROM upload_image_table ORDER BY uploadTime DESC")
+    @NonNull
     List<ImageEntity> getUploadedImage();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -166,6 +175,7 @@ public interface DownloadDao {
     void insertFeature(FeatureEntity holder);
 
     @Query("SELECT * FROM feature_table ORDER BY dateTime DESC LIMIT :limit OFFSET :offset")
+    @NonNull
     List<FeatureEntity> getFeatureList(int limit, int offset);
 
     @Delete
@@ -175,5 +185,6 @@ public interface DownloadDao {
     void deleteAllFeature();
 
     @Query("SELECT * FROM feature_table")
+    @NonNull
     List<FeatureEntity> getAllFeatureEntities();
 }

@@ -28,7 +28,7 @@ import ceui.pixiv.download.template.DefaultTemplates
 import ceui.pixiv.download.template.TemplateSamples
 import ceui.pixiv.download.template.TemplateValidator
 import ceui.pixiv.ui.common.viewBinding
-import com.hjq.toast.ToastUtils
+import com.hjq.toast.Toaster
 
 /**
  * Download path / filename settings, styled to the V3 design language used by
@@ -178,7 +178,7 @@ class DownloadPathSettingsFragment : Fragment(R.layout.fragment_download_path_se
         val next = ConfigPresets.of(id, images, downloads)
         DownloadsRegistry.store.save(next)
         DownloadsRegistry.invalidateBackends()
-        ToastUtils.show(getString(R.string.download_path_preset_applied))
+        Toaster.show(getString(R.string.download_path_preset_applied))
         render()
     }
 
@@ -320,7 +320,7 @@ class DownloadPathSettingsFragment : Fragment(R.layout.fragment_download_path_se
     private fun insertIntoFocused(snippet: String) {
         val editor = focusedEditor
         if (editor == null) {
-            ToastUtils.show(getString(R.string.download_path_teach_tip_focus))
+            Toaster.show(getString(R.string.download_path_teach_tip_focus))
             return
         }
         val editable: Editable = editor.editableText
@@ -333,7 +333,7 @@ class DownloadPathSettingsFragment : Fragment(R.layout.fragment_download_path_se
     private fun replaceFocused(template: String) {
         val editor = focusedEditor
         if (editor == null) {
-            ToastUtils.show(getString(R.string.download_path_teach_tip_focus))
+            Toaster.show(getString(R.string.download_path_teach_tip_focus))
             return
         }
         editor.setText(template)
@@ -386,7 +386,7 @@ class DownloadPathSettingsFragment : Fragment(R.layout.fragment_download_path_se
     private fun saveBucketTemplate(bucket: Bucket, source: String) {
         val result = TemplateValidator.validate(source, bucket)
         if (!result.ok) {
-            ToastUtils.show(
+            Toaster.show(
                 getString(R.string.download_path_invalid_template) +
                     "\n" + result.errors.joinToString("\n") { it.message },
             )
@@ -396,7 +396,7 @@ class DownloadPathSettingsFragment : Fragment(R.layout.fragment_download_path_se
             val existing = cfg.perBucket[bucket] ?: BucketConfig()
             cfg.withBucket(bucket, existing.copy(template = source))
         }
-        ToastUtils.show(getString(R.string.download_path_saved))
+        Toaster.show(getString(R.string.download_path_saved))
     }
 
     private fun refreshPreview(source: String, bucket: Bucket, out: TextView) {
@@ -431,7 +431,7 @@ class DownloadPathSettingsFragment : Fragment(R.layout.fragment_download_path_se
                 )
                 DownloadsRegistry.store.save(cleared)
                 DownloadsRegistry.invalidateBackends()
-                ToastUtils.show(getString(R.string.download_path_reset_done))
+                Toaster.show(getString(R.string.download_path_reset_done))
                 render()
             }
         }

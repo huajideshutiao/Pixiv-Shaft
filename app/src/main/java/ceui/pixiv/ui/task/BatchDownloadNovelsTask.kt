@@ -12,7 +12,7 @@ import ceui.pixiv.download.header.NovelHeaderRenderer
 import ceui.pixiv.ui.common.getTxtFileIdInDownloads
 import ceui.pixiv.ui.common.saveToDownloadsScopedStorage
 import ceui.pixiv.download.config.DownloadItems
-import com.hjq.toast.ToastUtils
+import com.hjq.toast.Toaster
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -84,7 +84,7 @@ class BatchDownloadNovelsTask(
                     failures += FailedNovel(novel, ex.message ?: ex::class.java.simpleName)
                 }
                 onProgress(done, total)
-                ToastUtils.show(ctx.getString(R.string.batch_download_progress, done, total))
+                Toaster.show(ctx.getString(R.string.batch_download_progress, done, total))
                 // Match DownloadNovelTask's own delays — Pixiv is quick to
                 // 429 if we hammer getNovelText back to back.
                 if (done < total) delay(1500L)
@@ -137,7 +137,7 @@ class BatchDownloadNovelsTask(
             append("\n\n")
         }
 
-        val ok = saveToDownloadsScopedStorage(ctx, fileName, buffer.toString())
+        val ok = saveToDownloadsScopedStorage(fileName, buffer.toString())
         if (!ok) {
             throw RuntimeException("saveToDownloadsScopedStorage returned false")
         }

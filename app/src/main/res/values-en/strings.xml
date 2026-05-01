@@ -160,7 +160,7 @@
   <string name="never_show_again">Don\'t show again</string>  
   <string name="add">Add to</string>  
   <string name="fullscreen_layout">fullscreen layout</string>  
-  <string name="how_many_novels" tools:ignore="PluralsCandidate">A work %d, %d characters, reading requires: %d hours %d minute</string>  
+  <string name="how_many_novels" tools:ignore="PluralsCandidate">A work %1$d, %2$d characters, reading requires: %3$d hours %4$d minute</string>
   <string name="scroll_behavior">ceui.lisa.pixiv.ScrollBehavior</string>  
   <string name="head_behavior">ceui.lisa.pixiv.HeadBehavior</string>  
   <string name="title_activity_splash">SplashActivity</string>  

@@ -9,7 +9,7 @@ import ceui.lisa.models.NovelSeriesItem
 import ceui.loxia.Client
 import ceui.loxia.Novel
 import ceui.pixiv.ui.common.saveToDownloadsScopedStorage
-import com.hjq.toast.ToastUtils
+import com.hjq.toast.Toaster
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -61,7 +61,7 @@ object CrossSeriesDownloadTask {
             seriesList.forEachIndexed { index, seriesItem ->
                 val title = seriesItem.title.orEmpty()
                 val pos = index + 1
-                ToastUtils.show(
+                Toaster.show(
                     ctx.getString(
                         R.string.cross_series_download_starting_series,
                         pos, seriesList.size, title,
@@ -72,7 +72,7 @@ object CrossSeriesDownloadTask {
                         downloadOneSeriesToSingleFile(seriesItem)
                     }
                     successCount++
-                    ToastUtils.show(
+                    Toaster.show(
                         ctx.getString(R.string.cross_series_download_series_ok, title)
                     )
                 } catch (ex: Exception) {
@@ -81,7 +81,7 @@ object CrossSeriesDownloadTask {
                         seriesTitle = title,
                         reason = ex.message ?: ex::class.java.simpleName,
                     )
-                    ToastUtils.show(
+                    Toaster.show(
                         ctx.getString(
                             R.string.cross_series_download_series_failed,
                             title, ex.message ?: ""
@@ -90,7 +90,7 @@ object CrossSeriesDownloadTask {
                 }
                 if (pos < seriesList.size) delay(1500L)
             }
-            ToastUtils.show(
+            Toaster.show(
                 ctx.getString(
                     R.string.cross_series_download_all_done,
                     successCount, failures.size,
@@ -156,7 +156,7 @@ object CrossSeriesDownloadTask {
 
                     allNovels.forEachIndexed { cIdx, novel ->
                         val cPos = cIdx + 1
-                        ToastUtils.show(
+                        Toaster.show(
                             ctx.getString(
                                 R.string.cross_series_download_merge_progress,
                                 sPos, seriesList.size, cPos, allNovels.size,
@@ -178,21 +178,21 @@ object CrossSeriesDownloadTask {
 
                 val fileName = buildMergedFileName(authorName, authorId)
                 val ok = withContext(Dispatchers.IO) {
-                    saveToDownloadsScopedStorage(ctx, fileName, out.toString())
+                    saveToDownloadsScopedStorage(fileName, out.toString())
                 }
                 if (ok) {
-                    ToastUtils.show(
+                    Toaster.show(
                         ctx.getString(R.string.cross_series_download_merge_finished, fileName)
                     )
                 } else {
-                    ToastUtils.show(
+                    Toaster.show(
                         ctx.getString(R.string.cross_series_download_merge_failed_save)
                     )
                 }
                 onFinished(ok, skippedChapters)
             } catch (ex: Exception) {
                 Timber.e(ex, "CrossSeriesDownloadTask.runAllMergedOne failed")
-                ToastUtils.show(ex.message ?: ex::class.java.simpleName)
+                Toaster.show(ex.message ?: ex::class.java.simpleName)
                 onFinished(false, -1)
             }
         }
@@ -248,7 +248,7 @@ object CrossSeriesDownloadTask {
         val ctx = Shaft.getContext()
         val fileName = buildPerSeriesFileName(detail.title.orEmpty(), detail.id)
         val content = header + body.toString()
-        val ok = saveToDownloadsScopedStorage(ctx, fileName, content)
+        val ok = saveToDownloadsScopedStorage(fileName, content)
         if (!ok) throw RuntimeException("saveToDownloadsScopedStorage returned false")
     }
 

@@ -3,7 +3,6 @@ package ceui.pixiv.widgets
 import android.content.Context
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.graphics.Rect
-import android.os.Build
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
@@ -12,6 +11,7 @@ import android.view.WindowInsets
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -211,13 +211,15 @@ open class InsetLayout(context: Context, attrs: AttributeSet?, defStyle: Int, de
         val fragment = findFragmentOrNull<Fragment>()
         val isBottomSheet = fragment?.findAncestorOrSelf<BottomSheetDialogFragment>() != null
 
-        val trueInsets = insets
+        val trueInsets = insets ?: return super.onApplyWindowInsets(insets)
+        val compatInsets = WindowInsetsCompat.toWindowInsetsCompat(trueInsets)
+        val systemBarInsets = compatInsets.getInsets(WindowInsetsCompat.Type.systemBars())
 
         // Somehow we will be called with systemWindowInsetTop as 0 (when I nested a common view pager fragment into home tab) even it is not bottom sheet. Not sure why
         // it is ok for bottom sheet with 0 top inset
-        if (trueInsets != null && (trueInsets.systemWindowInsetTop > 0 || isBottomSheet )) {
-            _currentTopInset = trueInsets.systemWindowInsetTop
-            _currentBottomInset = trueInsets.systemWindowInsetBottom
+        if (systemBarInsets.top > 0 || isBottomSheet) {
+            _currentTopInset = systemBarInsets.top
+            _currentBottomInset = systemBarInsets.bottom
 
 
             var actionBarHeight = 0
@@ -247,7 +249,7 @@ open class InsetLayout(context: Context, attrs: AttributeSet?, defStyle: Int, de
                 val imm = activity.getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
                 if (imm != null) {
                     keyboardOpened =
-                        imm.isAcceptingText && (trueInsets.systemWindowInsetBottom > activity.window.decorView.height / 3)
+                        imm.isAcceptingText && (systemBarInsets.bottom > activity.window.decorView.height / 3)
                 }
             }
 
@@ -275,14 +277,14 @@ open class InsetLayout(context: Context, attrs: AttributeSet?, defStyle: Int, de
                     val initial = marginTarget.getTag(R.id.initial_insets) as InsetState
                     if ((lp.marginAdjust and LayoutParams.EdgeMask.TOP > 0) && !ignoreAllTops) {
                         (marginTarget.layoutParams as MarginLayoutParams).topMargin =
-                            initial.margin.top + trueInsets.systemWindowInsetTop + (if (ignoresActionBar) 0 else actionBarHeight) + (if (ignoreTopBarInset) 0 else barInsets.top)
+                            initial.margin.top + systemBarInsets.top + (if (ignoresActionBar) 0 else actionBarHeight) + (if (ignoreTopBarInset) 0 else barInsets.top)
                         marginChanged = true
                     }
 
                     if (lp.marginAdjust and LayoutParams.EdgeMask.BOTTOM > 0 && !isIgnoreInset) {
                         if (!lp.ignoresKeyboard || !keyboardOpened) {
                             (marginTarget.layoutParams as MarginLayoutParams).bottomMargin =
-                                initial.margin.bottom + trueInsets.systemWindowInsetBottom + (if (ignoreBottomBarInset) 0 else barInsets.bottom)
+                                initial.margin.bottom + systemBarInsets.bottom + (if (ignoreBottomBarInset) 0 else barInsets.bottom)
                             marginChanged = true
                         }
                     }
@@ -304,12 +306,12 @@ open class InsetLayout(context: Context, attrs: AttributeSet?, defStyle: Int, de
                     var paddingBottom = (paddingBottomTarget.getTag(R.id.initial_insets) as InsetState).padding.bottom
 
                     if ((lp.paddingAdjust and LayoutParams.EdgeMask.TOP > 0) && !ignoreAllTops) {
-                        paddingTop += trueInsets.systemWindowInsetTop + actionBarHeight + (if (ignoreTopBarInset) 0 else barInsets.top)
+                        paddingTop += systemBarInsets.top + actionBarHeight + (if (ignoreTopBarInset) 0 else barInsets.top)
                     }
 
                     if (lp.paddingAdjust and LayoutParams.EdgeMask.BOTTOM > 0 && !isIgnoreInset) {
                         if (!lp.ignoresKeyboard || !keyboardOpened) {
-                            paddingBottom += trueInsets.systemWindowInsetBottom + (if (ignoreBottomBarInset) 0 else barInsets.bottom)
+                            paddingBottom += systemBarInsets.bottom + (if (ignoreBottomBarInset) 0 else barInsets.bottom)
                         }
                     }
 
@@ -324,15 +326,10 @@ open class InsetLayout(context: Context, attrs: AttributeSet?, defStyle: Int, de
     }
 
     private fun getTop(insets: WindowInsets): Int {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            if (insets.isVisible(WindowInsets.Type.statusBars())) {
-                insets.getInsets(WindowInsets.Type.systemBars()).top
-            } else 0
-        } else {
-            if (rootView.windowSystemUiVisibility and View.SYSTEM_UI_FLAG_FULLSCREEN == 0) {
-                insets.systemWindowInsetTop
-            } else 0
-        }
+        val compatInsets = WindowInsetsCompat.toWindowInsetsCompat(insets)
+        return if (compatInsets.isVisible(WindowInsetsCompat.Type.statusBars())) {
+            compatInsets.getInsets(WindowInsetsCompat.Type.systemBars()).top
+        } else 0
     }
 
     override fun generateLayoutParams(attrs: AttributeSet?): LayoutParams? {

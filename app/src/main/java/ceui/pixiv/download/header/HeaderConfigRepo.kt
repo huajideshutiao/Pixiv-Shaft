@@ -5,8 +5,8 @@ import ceui.lisa.activities.Shaft
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
-import com.hjq.toast.ToastUtils
 import androidx.core.content.edit
+import com.hjq.toast.Toaster
 import timber.log.Timber
 
 /**
@@ -70,7 +70,7 @@ object HeaderConfigRepo {
             prefs.edit { putString(KEY, gson.toJson(sanitize(store))) }
         } catch (t: Throwable) {
             Timber.e(t, "HeaderConfigRepo.save failed")
-            ToastUtils.show(
+            Toaster.show(
                 Shaft.getContext().getString(
                     R.string.header_preset_save_failed,
                     t.message ?: t.javaClass.simpleName,

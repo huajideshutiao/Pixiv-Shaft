@@ -250,8 +250,23 @@ var TextView.updateTextOneLine: CharSequence?
 
 fun Context.screenDisplay(): DisplayMetrics {
     val displayMetrics = DisplayMetrics()
-    val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
-    windowManager.defaultDisplay.getRealMetrics(displayMetrics)
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        val metrics = windowManager.currentWindowMetrics
+        val windowBounds = metrics.bounds
+        displayMetrics.widthPixels = windowBounds.width()
+        displayMetrics.heightPixels = windowBounds.height()
+        displayMetrics.density = resources.displayMetrics.density
+        @Suppress("DEPRECATION")
+        displayMetrics.scaledDensity = resources.displayMetrics.scaledDensity
+        displayMetrics.xdpi = resources.displayMetrics.xdpi
+        displayMetrics.ydpi = resources.displayMetrics.ydpi
+        displayMetrics.densityDpi = resources.displayMetrics.densityDpi
+    } else {
+        val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        @Suppress("DEPRECATION")
+        windowManager.defaultDisplay.getRealMetrics(displayMetrics)
+    }
     return displayMetrics
 }
 
@@ -438,6 +453,7 @@ fun Bitmap.saveAsWebpToFile(file: File, quality: Int): File {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
         compress(Bitmap.CompressFormat.WEBP_LOSSLESS, quality, outputStream)
     } else {
+        @Suppress("DEPRECATION")
         compress(Bitmap.CompressFormat.WEBP, quality, outputStream)
     }
     outputStream.flush()

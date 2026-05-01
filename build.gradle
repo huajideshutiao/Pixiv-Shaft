@@ -1,41 +1,41 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.kotlin_version = '2.1.20'
-    repositories {
-        google()
-        mavenCentral()
-        maven { url 'https://jitpack.io' }
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:8.7.3'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        // kotlinter 会把 kotlin-compiler-embeddable 拉进 buildscript classpath
-        // 与 Kotlin 2.1 KGP 冲突（GradleKotlinCompilerWorkArguments 序列化失败）。
-        // 暂时停用；需要格式化时独立跑 ktlint 即可。
-        // classpath "org.jmailen.gradle:kotlinter-gradle:4.4.1"
+    ext {
+        kotlin_version = '2.1.20'
+        nav_version = '2.8.5'
+        ksp_version = '2.1.20-2.0.1'
         
-        def nav_version = '2.8.5'
-        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version"
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        // SDK Versions
+        compile_sdk = 35
+        min_sdk = 24
+        target_sdk = 35
+        
+        // Library Versions
+        lifecycle_version = '2.8.7'
+        room_version = '2.8.4'
+        glide_version = '4.16.0'
+        retrofit_version = '2.11.0'
+        okhttp_version = '4.12.0'
+        rxjava3_version = '3.1.10'
+        rxandroid3_version = '3.0.2'
+        
+        core_ktx_version = '1.15.0'
+        activity_ktx_version = '1.10.0'
+        work_version = '2.10.0'
+        desugar_version = '2.1.4'
     }
 }
 
 plugins {
+    id 'com.android.application' version '8.7.3' apply false
+    id 'com.android.library' version '8.7.3' apply false
     id 'org.jetbrains.kotlin.android' version '2.1.20' apply false
     id 'org.jetbrains.kotlin.jvm' version '2.1.20' apply false
+    id 'com.google.devtools.ksp' version '2.1.20-2.0.1' apply false
+    id 'androidx.navigation.safeargs.kotlin' version '2.8.5' apply false
 }
 
-allprojects {
-    repositories {
-        maven { url 'https://maven.aliyun.com/repository/public/' }
-        google()
-        mavenCentral()
-        maven { url 'https://jitpack.io' }
-    }
-}
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
+tasks.register('clean', Delete) {
+    delete rootProject.layout.buildDirectory
 }

@@ -1,5 +1,6 @@
 package ceui.lisa.database;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
@@ -21,8 +22,10 @@ public interface ComicBookmarkDao {
     void clearForIllust(long illustId);
 
     @Query("SELECT * FROM comic_bookmark_table WHERE illustId = :illustId ORDER BY createdTime DESC")
+    @NonNull
     LiveData<List<ComicBookmarkEntity>> observeForIllust(long illustId);
 
     @Query("SELECT * FROM comic_bookmark_table WHERE illustId = :illustId ORDER BY createdTime DESC")
+    @NonNull
     List<ComicBookmarkEntity> listForIllust(long illustId);
 }

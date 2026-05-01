@@ -9,7 +9,7 @@ import ceui.loxia.Client
 import ceui.loxia.Novel
 import ceui.loxia.NovelSeriesDetail
 import ceui.pixiv.ui.common.saveToDownloadsScopedStorage
-import com.hjq.toast.ToastUtils
+import com.hjq.toast.Toaster
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -45,13 +45,13 @@ class MergeDownloadNovelSeriesTask(
                 //    比如用户刚打开就点了合并下载）。有 next_url 就继续翻页。
                 val allNovels = withContext(Dispatchers.IO) { fetchAllNovels(seriesDetail.id, knownNovels) }
                 if (allNovels.isEmpty()) {
-                    ToastUtils.show(ctx.getString(R.string.merge_download_failed_empty))
+                    Toaster.show(ctx.getString(R.string.merge_download_failed_empty))
                     onFinished(false, 0)
                     return@launch
                 }
 
                 val total = allNovels.size
-                ToastUtils.show(ctx.getString(R.string.merge_download_preparing, total))
+                Toaster.show(ctx.getString(R.string.merge_download_preparing, total))
 
                 // 2) 构造系列信息头（模仿原 Java 版格式）
                 val lineSep = "\n"
@@ -76,7 +76,7 @@ class MergeDownloadNovelSeriesTask(
                 var failedCount = 0
                 allNovels.forEachIndexed { index, novel ->
                     val done = index + 1
-                    ToastUtils.show(ctx.getString(R.string.merge_download_progress, done, total))
+                    Toaster.show(ctx.getString(R.string.merge_download_progress, done, total))
                     try {
                         val body = withContext(Dispatchers.IO) { fetchChapterBody(novel, done) }
                         chapterBodies.append(body).append(lineSep)
@@ -91,23 +91,23 @@ class MergeDownloadNovelSeriesTask(
                 val fileName = buildMergeFileName(seriesDetail)
                 val content = header + chapterBodies.toString()
                 val ok = withContext(Dispatchers.IO) {
-                    saveToDownloadsScopedStorage(ctx, fileName, content)
+                    saveToDownloadsScopedStorage(fileName, content)
                 }
                 if (!ok) {
-                    ToastUtils.show(ctx.getString(R.string.merge_download_failed_save))
+                    Toaster.show(ctx.getString(R.string.merge_download_failed_save))
                     onFinished(false, failedCount)
                     return@launch
                 }
 
                 if (failedCount > 0) {
-                    ToastUtils.show(ctx.getString(R.string.merge_download_some_chapters_failed, failedCount))
+                    Toaster.show(ctx.getString(R.string.merge_download_some_chapters_failed, failedCount))
                 } else {
-                    ToastUtils.show(ctx.getString(R.string.merge_download_finished, fileName))
+                    Toaster.show(ctx.getString(R.string.merge_download_finished, fileName))
                 }
                 onFinished(true, failedCount)
             } catch (ex: Exception) {
                 Timber.e(ex, "MergeDownloadNovelSeriesTask failed")
-                ToastUtils.show(ex.message ?: ex::class.java.simpleName)
+                Toaster.show(ex.message ?: ex::class.java.simpleName)
                 onFinished(false, -1)
             }
         }

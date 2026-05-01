@@ -37,7 +37,7 @@ import ceui.pixiv.ui.novel.reader.paginate.ContentParser
 import ceui.pixiv.ui.novel.reader.ui.ExportFormatCallback
 import ceui.pixiv.ui.novel.reader.ui.ExportSheet
 import ceui.pixiv.utils.setOnClick
-import com.hjq.toast.ToastUtils
+import com.hjq.toast.Toaster
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -168,7 +168,7 @@ class NovelTextFragment : PixivFragment(R.layout.fragment_pixiv_list), FitsSyste
 
     private fun executeExport(format: ExportFormat) {
         val appContext = requireContext().applicationContext
-        ToastUtils.show(getString(R.string.msg_export_start, getString(format.displayNameResId)))
+        Toaster.show(getString(R.string.msg_export_start, getString(format.displayNameResId)))
         viewLifecycleOwner.lifecycleScope.launch {
             val result = runCatching {
                 val novel = ObjectPool.get<Novel>(novelId).value
@@ -193,14 +193,14 @@ class NovelTextFragment : PixivFragment(R.layout.fragment_pixiv_list), FitsSyste
                 )
             }.getOrElse { ExportResult.Failure(it.message ?: "导出失败", it) }
             when (result) {
-                is ExportResult.Success -> ToastUtils.show(
+                is ExportResult.Success -> Toaster.show(
                     appContext.getString(
                         R.string.msg_export_success,
                         result.fileName
                     )
                 )
 
-                is ExportResult.Failure -> ToastUtils.show(
+                is ExportResult.Failure -> Toaster.show(
                     appContext.getString(
                         R.string.msg_export_fail,
                         result.message

@@ -1,5 +1,6 @@
 package ceui.lisa.database;
 
+import androidx.annotation.NonNull;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -23,6 +24,7 @@ public interface IllustRecmdDao {
 
 
     @Query("SELECT * FROM (SELECT * FROM illust_recmd_table ORDER BY time DESC LIMIT 20) ORDER BY time")
+    @NonNull
     List<IllustRecmdEntity> getAll();
 
 }

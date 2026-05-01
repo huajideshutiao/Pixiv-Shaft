@@ -53,6 +53,7 @@ import ceui.lisa.utils.ReverseWebviewCallback;
 import ceui.lisa.view.DrawerLayoutViewPager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import ceui.pixiv.session.SessionManager;
+import timber.log.Timber;
 
 /**
  * 主页
@@ -70,7 +71,7 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
     private final android.content.BroadcastReceiver profileReadyReceiver = new android.content.BroadcastReceiver() {
         @Override
         public void onReceive(android.content.Context context, Intent intent) {
-            android.util.Log.d("Discovery/Gate", "received PROFILE_READY broadcast");
+            Timber.tag("Discovery/Gate").d("received PROFILE_READY broadcast");
             updateDiscoveryVisibility();
         }
     };
@@ -102,69 +103,57 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
         username = baseBind.navView.getHeaderView(0).findViewById(R.id.user_name);
         user_email = baseBind.navView.getHeaderView(0).findViewById(R.id.user_email);
         initDrawerHeader();
-        userHead.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent userIntent = new Intent(mContext, UActivity.class);
-                userIntent.putExtra(Params.USER_ID, (int) SessionManager.INSTANCE.getLoggedInUid());
-                startActivity(userIntent);
-                baseBind.drawerLayout.closeDrawer(GravityCompat.START);
-            }
+        userHead.setOnClickListener(v -> {
+            Intent userIntent = new Intent(mContext, UActivity.class);
+            userIntent.putExtra(Params.USER_ID, (int) SessionManager.INSTANCE.getLoggedInUid());
+            startActivity(userIntent);
+            baseBind.drawerLayout.closeDrawer(GravityCompat.START);
         });
-        userHead.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                boolean filterEnable = Shaft.sSettings.isR18FilterTempEnable();
-                Shaft.sSettings.setR18FilterTempEnable(!filterEnable);
-                Common.showToast(filterEnable ? "ԅ(♡﹃♡ԅ)" : "X﹏X");
+        userHead.setOnLongClickListener(v -> {
+            boolean filterEnable = Shaft.sSettings.isR18FilterTempEnable();
+            Shaft.sSettings.setR18FilterTempEnable(!filterEnable);
+            Common.showToast(filterEnable ? "ԅ(♡﹃♡ԅ)" : "X﹏X");
+            return true;
+        });
+        baseBind.navigationView.setOnNavigationItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.action_1) {
+                baseBind.viewPager.setCurrentItem(0);
+                return true;
+            } else if (item.getItemId() == R.id.action_2) {
+                baseBind.viewPager.setCurrentItem(1);
+                return true;
+            } else if (item.getItemId() == R.id.action_3) {
+                baseBind.viewPager.setCurrentItem(2);
+                return true;
+            } else if (item.getItemId() == R.id.action_4) {
+                baseBind.viewPager.setCurrentItem(3);
                 return true;
             }
+            return false;
         });
-        baseBind.navigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                if (item.getItemId() == R.id.action_1) {
-                    baseBind.viewPager.setCurrentItem(0);
-                    return true;
-                } else if (item.getItemId() == R.id.action_2) {
-                    baseBind.viewPager.setCurrentItem(1);
-                    return true;
-                } else if (item.getItemId() == R.id.action_3) {
-                    baseBind.viewPager.setCurrentItem(2);
-                    return true;
-                } else if (item.getItemId() == R.id.action_4) {
-                    baseBind.viewPager.setCurrentItem(3);
-                    return true;
+        baseBind.navigationView.setOnNavigationItemReselectedListener(item -> {
+            if (item.getItemId() == R.id.action_1) {
+                for (Fragment baseFragment : baseFragments) {
+                    if (baseFragment instanceof FragmentLeft) {
+                        ((FragmentLeft) baseFragment).forceRefresh();
+                    }
                 }
-                return false;
-            }
-        });
-        baseBind.navigationView.setOnNavigationItemReselectedListener(new BottomNavigationView.OnNavigationItemReselectedListener() {
-            @Override
-            public void onNavigationItemReselected(@NonNull MenuItem item) {
-                if (item.getItemId() == R.id.action_1) {
-                    for (Fragment baseFragment : baseFragments) {
-                        if (baseFragment instanceof FragmentLeft) {
-                            ((FragmentLeft) baseFragment).forceRefresh();
-                        }
+            } else if (item.getItemId() == R.id.action_2) {
+                for (Fragment baseFragment : baseFragments) {
+                    if (baseFragment instanceof FragmentCenter) {
+                        ((FragmentCenter) baseFragment).forceRefresh();
                     }
-                } else if (item.getItemId() == R.id.action_2) {
-                    for (Fragment baseFragment : baseFragments) {
-                        if (baseFragment instanceof FragmentCenter) {
-                            ((FragmentCenter) baseFragment).forceRefresh();
-                        }
+                }
+            } else if (item.getItemId() == R.id.action_3) {
+                for (Fragment baseFragment : baseFragments) {
+                    if (baseFragment instanceof FragmentRight) {
+                        ((FragmentRight) baseFragment).forceRefresh();
                     }
-                } else if (item.getItemId() == R.id.action_3) {
-                    for (Fragment baseFragment : baseFragments) {
-                        if (baseFragment instanceof FragmentRight) {
-                            ((FragmentRight) baseFragment).forceRefresh();
-                        }
-                    }
-                } else if (item.getItemId() == R.id.action_4) {
-                    for (Fragment baseFragment : baseFragments) {
-                        if (baseFragment instanceof FragmentViewPager) {
-                            ((FragmentViewPager) baseFragment).forceRefresh();
-                        }
+                }
+            } else if (item.getItemId() == R.id.action_4) {
+                for (Fragment baseFragment : baseFragments) {
+                    if (baseFragment instanceof FragmentViewPager) {
+                        ((FragmentViewPager) baseFragment).forceRefresh();
                     }
                 }
             }
@@ -194,12 +183,7 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
             }
         });
 
-        baseBind.viewPager.setTouchEventForwarder(new DrawerLayoutViewPager.IForwardTouchEvent() {
-            @Override
-            public void forwardTouchEvent(MotionEvent ev) {
-                getDrawer().onTouchEvent(ev);
-            }
-        });
+        baseBind.viewPager.setTouchEventForwarder(ev -> getDrawer().onTouchEvent(ev));
         DrawerLayoutHelper.setCustomLeftEdgeSize(getDrawer(), 1.0f);
     }
 
@@ -382,22 +366,20 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
 
     private void selectPhoto() {
         new QMUIDialog.CheckableDialogBuilder(mActivity)
-                .addItems(ALL_SELECT_WAY, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (which == 0) {
-                            Intent intentToPickPic = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                            intentToPickPic.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-                            startActivityForResult(intentToPickPic, Params.REQUEST_CODE_CHOOSE);
-                        } else {
-                            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                            intent.addCategory(Intent.CATEGORY_OPENABLE);//必须
-                            intent.setType("image/*");//必须
-                            startActivityForResult(intent, Params.REQUEST_CODE_CHOOSE);
-                        }
-                        dialog.dismiss();
+                .addItems(ALL_SELECT_WAY, (dialog, which) -> {
+                    if (which == 0) {
+                        Intent intentToPickPic = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        intentToPickPic.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+                        startActivityForResult(intentToPickPic, Params.REQUEST_CODE_CHOOSE);
+                    } else {
+                        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                        intent.addCategory(Intent.CATEGORY_OPENABLE);//必须
+                        intent.setType("image/*");//必须
+                        startActivityForResult(intent, Params.REQUEST_CODE_CHOOSE);
                     }
-                })
+                    dialog.dismiss();
+                }
+                )
                 .show();
     }
 
@@ -453,13 +435,11 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                 builder.setTitle(getString(R.string.shaft_hint));
                 builder.setMessage(mContext.getString(R.string.you_have_download_plan));
-                builder.setPositiveButton(mContext.getString(R.string.sure), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Manager.get().stopAll();
-                        finish();
-                    }
-                });
+                builder.setPositiveButton(mContext.getString(R.string.sure), (dialog, which) -> {
+                    Manager.get().stopAll();
+                    finish();
+                }
+                );
                 builder.setNegativeButton(mContext.getString(R.string.cancel), null);
                 builder.setNeutralButton(getString(R.string.see_download_task), (dialog, which) -> {
                     Intent intent = new Intent(mContext, TemplateActivity.class);

@@ -15,7 +15,7 @@ import android.os.Looper;
 import android.view.Gravity;
 
 import com.google.gson.Gson;
-import com.hjq.toast.ToastUtils;
+import com.hjq.toast.Toaster;
 
 import com.scwang.smart.refresh.footer.ClassicsFooter;
 import com.scwang.smart.refresh.header.ClassicsHeader;
@@ -147,7 +147,7 @@ public class Shaft extends Application implements ServicesProvider {
         sPreferences = getSharedPreferences(LOCAL_DATA, Context.MODE_PRIVATE);
         sDefaultPrefs = getSharedPreferences("shaft_prefs", Context.MODE_PRIVATE);
 
-        Timber.plant(new Timber.DebugTree());
+        Timber.plant();
         networkStateManager = new NetworkStateManager(this);
         sSettings = Local.getSettings();
 
@@ -213,9 +213,9 @@ public class Shaft extends Application implements ServicesProvider {
         }
 
         //Init Toast utils
-        ToastUtils.init(this);
+        Toaster.init(this);
         int bottomOffset = ceui.lisa.page.ScreenUtils.getNavigationBarHeight() + (int) (48 * getResources().getDisplayMetrics().density);
-        ToastUtils.setGravity(Gravity.BOTTOM, 0, bottomOffset);
+        Toaster.setGravity(Gravity.BOTTOM, 0, bottomOffset);
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
@@ -308,23 +308,6 @@ public class Shaft extends Application implements ServicesProvider {
                 setTheme(R.style.AppTheme_Default);
                 break;
         }
-    }
-
-    public static String getThemeColor() {
-        int current = Shaft.sSettings.getThemeIndex();
-        return switch (current) {
-            case 0 -> "#686bdd";
-            case 1 -> "#56baec";
-            case 2 -> "#008BF3";
-            case 3 -> "#03d0bf";
-            case 4 -> "#fee65e";
-            case 5 -> "#fe83a2";
-            case 6 -> "#F44336";
-            case 7 -> "#673AB7";
-            case 8 -> "#4CAF50";
-            case 9 -> "#E91E63";
-            default -> "#686bdd";
-        };
     }
 
     @Override

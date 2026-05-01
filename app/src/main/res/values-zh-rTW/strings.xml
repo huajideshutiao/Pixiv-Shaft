@@ -162,7 +162,7 @@
   <string name="never_show_again">不再顯示</string>
   <string name="add">添加</string>
   <string name="fullscreen_layout">全螢幕佈局</string>
-  <string name="how_many_novels">%d個作品，%d個字，看完需要：%d小時%d分鐘</string>
+  <string name="how_many_novels">%1$d個作品，%2$d個字，看完需要：%3$d小時%4$d分鐘</string>
   <string name="scroll_behavior">ceui.lisa.pixiv.ScrollBehavior</string>
   <string name="head_behavior">ceui.lisa.pixiv.HeadBehavior</string>
   <string name="title_activity_splash">噴濺活動</string>
@@ -620,7 +620,7 @@
   <string name="core_string_novel_marker">小說書籤</string>
   <string name="terms_of_service">服務條款</string>
   <string name="privacy_policy">隱私政策</string>
-  <string name="landing_terms_base">歡迎使用！繼續即表示你同意 Shaft 的 %s 並且確認已閱讀我們的 %s.</string>
+  <string name="landing_terms_base">歡迎使用！繼續即表示你同意 Shaft 的 %1$s 並且確認已閱讀我們的 %2$s.</string>
   <string name="read_agreement">請先閱讀協議</string>
   <string name="empty_content_here">這裡好像空空的</string>
   <string name="refresh">重新整理</string>

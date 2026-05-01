@@ -12,9 +12,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission
-        android:name="android.permission.READ_PHONE_STATE"
-        tools:node="remove" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
@@ -181,9 +178,6 @@
         <meta-data
             android:name="notch.config"
             android:value="portrait|landscape" />
-        <meta-data
-            android:name="ceui.lisa.core.GlideConfiguration"
-            android:value="GlideModule" />
 
         <activity
             android:name=".activities.SearchActivity"
@@ -193,10 +187,6 @@
         <activity android:name=".activities.VActivity" />
         <activity
             android:name=".activities.UActivity"
-            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
-            android:theme="@style/SplashTheme" />
-        <activity
-            android:name=".activities.UserActivityV3"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:theme="@style/SplashTheme" />
         <activity

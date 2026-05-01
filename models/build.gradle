@@ -1,12 +1,14 @@
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+}
 
 android {
-    compileSdk 36
+    compileSdk rootProject.ext.compile_sdk
 
     defaultConfig {
-        minSdkVersion 24
-        targetSdkVersion 36
+        minSdkVersion rootProject.ext.min_sdk
+        targetSdkVersion rootProject.ext.target_sdk
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
@@ -25,16 +27,13 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17
+        jvmTarget = "17"
     }
     namespace 'ceui.lisa.models'
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.core:core-ktx:1.6.0'
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
-}
-repositories {
-    mavenCentral()
+    implementation "androidx.core:core-ktx:${rootProject.ext.core_ktx_version}"
+    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:${rootProject.ext.desugar_version}"
 }

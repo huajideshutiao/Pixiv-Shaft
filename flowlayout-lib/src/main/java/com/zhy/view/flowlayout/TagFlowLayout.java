@@ -2,16 +2,15 @@ package com.zhy.view.flowlayout;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
+
+import androidx.core.os.BundleCompat;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -23,11 +22,11 @@ import java.util.Set;
 public class TagFlowLayout extends FlowLayout
         implements TagAdapter.OnDataChangedListener {
 
-    private TagAdapter mTagAdapter;
-    private int mSelectedMax = -1;//-1为不限制数量
+    private TagAdapter<?> mTagAdapter;
+    private int mSelectedMax;//-1为不限制数量
     private static final String TAG = "TagFlowLayout";
 
-    private Set<Integer> mSelectedView = new HashSet<Integer>();
+    private final Set<Integer> mSelectedView = new HashSet<>();
 
     private OnSelectListener mOnSelectListener;
     private OnTagClickListener mOnTagClickListener;
@@ -89,19 +88,19 @@ public class TagFlowLayout extends FlowLayout
         mOnTagLongClickListener = onTagLongClickListener;
     }
 
-    public void setAdapter(TagAdapter adapter) {
+    public void setAdapter(TagAdapter<?> adapter) {
         mTagAdapter = adapter;
         mTagAdapter.setOnDataChangedListener(this);
         mSelectedView.clear();
         changeAdapter();
     }
 
-    @SuppressWarnings("ResourceType")
+    @SuppressWarnings({"ResourceType", "unchecked", "rawtypes", "deprecation"})
     private void changeAdapter() {
         removeAllViews();
         TagAdapter adapter = mTagAdapter;
-        TagView tagViewContainer = null;
-        HashSet preCheckedList = mTagAdapter.getPreCheckedList();
+        TagView tagViewContainer;
+        HashSet<Integer> preCheckedList = mTagAdapter.getPreCheckedList();
         for (int i = 0; i < adapter.getCount(); i++) {
             View tagView = adapter.getView(this, i, adapter.getItem(i));
 
@@ -130,7 +129,7 @@ public class TagFlowLayout extends FlowLayout
                 setChildChecked(i, tagViewContainer);
             }
 
-            if (mTagAdapter.setSelected(i, adapter.getItem(i))) {
+            if (adapter.setSelected(i, adapter.getItem(i))) {
                 setChildChecked(i, tagViewContainer);
             }
             tagView.setClickable(false);
@@ -220,7 +219,7 @@ public class TagFlowLayout extends FlowLayout
         }
     }
 
-    public TagAdapter getAdapter() {
+    public TagAdapter<?> getAdapter() {
         return mTagAdapter;
     }
 
@@ -234,21 +233,20 @@ public class TagFlowLayout extends FlowLayout
         Bundle bundle = new Bundle();
         bundle.putParcelable(KEY_DEFAULT, super.onSaveInstanceState());
 
-        String selectPos = "";
-        if (mSelectedView.size() > 0) {
+        StringBuilder selectPos = new StringBuilder();
+        if (!mSelectedView.isEmpty()) {
             for (int key : mSelectedView) {
-                selectPos += key + "|";
+                selectPos.append(key).append("|");
             }
-            selectPos = selectPos.substring(0, selectPos.length() - 1);
+            selectPos.deleteCharAt(selectPos.length() - 1);
         }
-        bundle.putString(KEY_CHOOSE_POS, selectPos);
+        bundle.putString(KEY_CHOOSE_POS, selectPos.toString());
         return bundle;
     }
 
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
-        if (state instanceof Bundle) {
-            Bundle bundle = (Bundle) state;
+        if (state instanceof Bundle bundle) {
             String mSelectPos = bundle.getString(KEY_CHOOSE_POS);
             if (!TextUtils.isEmpty(mSelectPos)) {
                 String[] split = mSelectPos.split("\\|");
@@ -263,7 +261,7 @@ public class TagFlowLayout extends FlowLayout
                 }
 
             }
-            super.onRestoreInstanceState(bundle.getParcelable(KEY_DEFAULT));
+            super.onRestoreInstanceState(BundleCompat.getParcelable(bundle, KEY_DEFAULT, Parcelable.class));
             return;
         }
         super.onRestoreInstanceState(state);

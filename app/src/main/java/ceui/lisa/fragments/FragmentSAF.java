@@ -17,6 +17,8 @@ import ceui.lisa.utils.Params;
 
 import static android.provider.DocumentsContract.EXTRA_INITIAL_URI;
 
+import com.hjq.toast.Toaster;
+
 public class FragmentSAF extends BaseFragment<FragmentSafBinding> {
 
     @Override
@@ -55,7 +57,7 @@ public class FragmentSAF extends BaseFragment<FragmentSafBinding> {
                     }
                 } catch (Throwable t) {
                     t.printStackTrace();
-                    com.hjq.toast.ToastUtils.show(getString(R.string.saf_write_failed,
+                    Toaster.show(getString(R.string.saf_write_failed,
                             t.getMessage() != null ? t.getMessage() : t.getClass().getSimpleName()));
                 }
             }

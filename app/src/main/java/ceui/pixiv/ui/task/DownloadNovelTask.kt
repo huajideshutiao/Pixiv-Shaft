@@ -1,29 +1,22 @@
 package ceui.pixiv.ui.task
 
 import ceui.lisa.R
-import ceui.lisa.activities.Shaft
 import ceui.lisa.fragments.WebNovelParser
 import ceui.loxia.Client
 import ceui.loxia.Novel
 import ceui.loxia.WebNovel
 import ceui.pixiv.download.header.HeaderConfigRepo
 import ceui.pixiv.download.header.NovelHeaderRenderer
-import ceui.pixiv.ui.common.getImageIdInGallery
 import ceui.pixiv.ui.common.getTxtFileIdInDownloads
 import ceui.pixiv.ui.common.saveToDownloadsScopedStorage
 import ceui.pixiv.download.config.DownloadItems
-import com.blankj.utilcode.util.PathUtils
-import com.hjq.toast.ToastUtils
+import com.hjq.toast.Toaster
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import java.io.BufferedWriter
-import java.io.File
-import java.io.FileOutputStream
-import java.io.OutputStreamWriter
 
 class DownloadNovelTask(
     private val coroutineScope: CoroutineScope,
@@ -100,13 +93,13 @@ class DownloadNovelTask(
             stringBuffer.append("<===== Shaft Novel End =====>")
             stringBuffer.append("\n\n")
 
-            val b = saveToDownloadsScopedStorage(context, fileName, stringBuffer.toString())
+            val b = saveToDownloadsScopedStorage(fileName, stringBuffer.toString())
             if (b) {
-                ToastUtils.show(context.getString(R.string.string_181))
+                Toaster.show(context.getString(R.string.string_181))
                 _status.value = TaskStatus.Finished
                 onEnd(Unit)
             } else {
-                ToastUtils.show(context.getString(R.string.save_novel_failed, fileName))
+                Toaster.show(context.getString(R.string.save_novel_failed, fileName))
                 onError(RuntimeException("saveToDownloadsScopedStorage returned false"))
             }
 

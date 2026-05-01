@@ -18,7 +18,7 @@ import ceui.pixiv.ui.common.getFileSize
 import com.blankj.utilcode.util.PathUtils
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.hjq.toast.ToastUtils
+import com.hjq.toast.Toaster
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -86,6 +86,7 @@ open class FetchAllTask<Item, ResponseT: KListShow<Item>>(
                         delay(1500L)
                         val responseBody = Client.appApi.generalGet(nextPageUrl)
                         val responseJson = responseBody.string()
+                        @Suppress("UNCHECKED_CAST")
                         val response = gson.fromJson(responseJson, responseClass) as ResponseT
 
                         if (response.displayList.isNotEmpty()) {
@@ -123,7 +124,7 @@ open class FetchAllTask<Item, ResponseT: KListShow<Item>>(
 
     open fun onEnd(humanReadableTask: HumanReadableTask, results: List<Item>) {
         activity.findCurrentFragmentOrNull()?.pushFragment(R.id.navigation_cache_list, CacheFileFragmentArgs(task = humanReadableTask).toBundle())
-        ToastUtils.show("全部结束")
+        Toaster.show("全部结束")
         Common.showLog("FetchAllTask all end ${this.results.size}")
     }
 }
