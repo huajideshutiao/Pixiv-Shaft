@@ -168,21 +168,30 @@ class WebFragment : PixivFragment(R.layout.fragment_web) {
             }
 
             override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
-                val destiny = request?.url?.toString() ?: return false
+                val uri = request?.url ?: return false
+                val destiny = uri.toString()
                 if (destiny.contains("www.pixiv.net")) {
-                    if (destiny.contains("logout.php") || destiny.contains("login.php") || 
-                        destiny.contains("settings.php") || destiny.contains("/settings/") || 
-                        destiny.contains("upload.php")) {
-                        return false
-                    } else {
+                    val segments = uri.pathSegments
+                    val isNativeContent = segments.contains("artworks") ||
+                            segments.contains("i") ||
+                            segments.contains("users") ||
+                            segments.contains("u") ||
+                            (segments.contains("novel") && uri.getQueryParameter("id") != null) ||
+                            segments.contains("n") ||
+                            uri.getQueryParameter("illust_id") != null ||
+                            (uri.getQueryParameter("id") != null && uri.path?.contains("member") == true)
+
+                    if (isNativeContent) {
                         return try {
                             val intent = Intent(requireContext(), OutWakeActivity::class.java)
-                            intent.setData(Uri.parse(destiny))
+                            intent.setData(uri)
                             startActivity(intent)
                             true
                         } catch (e: Exception) {
                             false
                         }
+                    } else {
+                        return false
                     }
                 } else if (destiny.contains("intent://account/")) {
                     return try {
