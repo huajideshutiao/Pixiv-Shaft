@@ -289,9 +289,6 @@ interface ITitledViewPager : ViewPagerFragment {
     fun getTitleLiveData(index: Int): MutableLiveData<String>
 }
 
-interface HomeTabContainer : ViewPagerFragment {
-    fun bottomExtraSpacing(): Int = 100.ppppx
-}
 
 fun Fragment.setUpToolbar(binding: LayoutToolbarBinding, content: ViewGroup) {
     val parentFrag = parentFragment
@@ -299,11 +296,7 @@ fun Fragment.setUpToolbar(binding: LayoutToolbarBinding, content: ViewGroup) {
         binding.toolbarLayout.isVisible = false
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
-            if (parentFrag is HomeTabContainer) {
-                content.updatePadding(0, 0, 0, insets.bottom + parentFrag.bottomExtraSpacing())
-            } else {
-                content.updatePadding(0, 0, 0, insets.bottom)
-            }
+            content.updatePadding(0, 0, 0, insets.bottom)
             WindowInsetsCompat.CONSUMED
         }
     } else {

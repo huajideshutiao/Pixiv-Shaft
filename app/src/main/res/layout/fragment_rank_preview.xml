@@ -6,7 +6,6 @@
 
     <FrameLayout
         android:id="@+id/illust_items"
-        android:background="@drawable/bg__section_header"
         android:layout_width="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_height="wrap_content">
@@ -31,7 +30,6 @@
 
     <FrameLayout
         android:id="@+id/manga_items"
-        android:background="@drawable/bg__section_header"
         android:layout_width="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_height="wrap_content">
