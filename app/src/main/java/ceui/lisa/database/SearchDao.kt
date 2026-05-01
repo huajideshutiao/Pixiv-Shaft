@@ -9,7 +9,7 @@ interface SearchDao {
     fun insert(searchEntity: SearchEntity)
 
     @Query("SELECT * FROM search_table WHERE id = :id LIMIT 1")
-    fun getSearchEntity(id: Int): SearchEntity
+    fun getSearchEntity(id: Int): SearchEntity?
 
     @Delete
     fun deleteSearchEntity(searchEntity: SearchEntity)

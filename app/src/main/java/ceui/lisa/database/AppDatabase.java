@@ -41,7 +41,7 @@ import ceui.pixiv.db.queue.DownloadQueueEntity;
                 NovelCustomFontEntity.class, // V3 阅读器自定义字体
                 DownloadQueueEntity.class, // 批量下载队列（v33）
         },
-        version = 33,
+        version = 34,
         exportSchema = false
 )
 public abstract class AppDatabase extends RoomDatabase {
@@ -236,6 +236,14 @@ public abstract class AppDatabase extends RoomDatabase {
             database.execSQL("CREATE INDEX IF NOT EXISTS index_download_queue_illustId ON download_queue(illustId)");
         }
     };
+    // 迁移 33 -> 34：移除漫画阅读器相关表
+    private static final Migration MIGRATION_33_34 = new Migration(33, 34) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("DROP TABLE IF EXISTS comic_bookmark_table");
+            database.execSQL("DROP TABLE IF EXISTS comic_reading_stats_table");
+        }
+    };
     // 关于 "ONE downloading" 不变量：原本计划用 partial unique index 在 DB 层强制
     //   CREATE UNIQUE INDEX uniq_download_queue_one_downloading ON download_queue(status) WHERE status = 'DOWNLOADING'
     // 但 androidx.room.Index 不支持 partial 索引（无 where 子句），手写 migration 加索引会让
@@ -259,6 +267,7 @@ public abstract class AppDatabase extends RoomDatabase {
                             .addMigrations(MIGRATION_28_29) // 注册 28 -> 29 迁移 (discovery_table + authorId)
                             .addMigrations(MIGRATION_29_30) // 注册 29 -> 30 迁移 (V3 阅读器 6 张表)
                             .addMigrations(MIGRATION_32_33) // 注册 32 -> 33 迁移 (批量下载队列)
+                            .addMigrations(MIGRATION_33_34) // 注册 33 -> 34 迁移 (移除漫画阅读器)
                             .build();
         }
         return INSTANCE;

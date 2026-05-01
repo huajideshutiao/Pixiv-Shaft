@@ -68,7 +68,7 @@ import ceui.lisa.fragments.FragmentUserManga;
 import ceui.lisa.fragments.FragmentUserNovel;
 import ceui.lisa.fragments.FragmentViewPager;
 import ceui.lisa.fragments.FragmentWalkThrough;
-import ceui.lisa.fragments.FragmentWebView;
+import ceui.pixiv.ui.web.WebFragment;
 import ceui.lisa.fragments.FragmentWhoFollowThisUser;
 import ceui.lisa.fragments.FragmentWorkSpace;
 import ceui.lisa.fragments.RecmdUserMap;
@@ -114,8 +114,7 @@ public class TemplateActivity extends BaseActivity<ActivityFragmentBinding> impl
                 case "网页链接": {
                     String url = intent.getStringExtra(Params.URL);
                     String title = intent.getStringExtra(Params.TITLE);
-                    boolean preferPreserve = intent.getBooleanExtra(Params.PREFER_PRESERVE, false);
-                    return FragmentWebView.newInstance(title, url, preferPreserve);
+                    return WebFragment.newInstance(url, title);
                 }
                 case "设置":
                     return new FragmentSettings();
@@ -142,8 +141,7 @@ public class TemplateActivity extends BaseActivity<ActivityFragmentBinding> impl
                 }
                 case "以图搜图":
                     ReverseResult result = intent.getParcelableExtra(Params.REVERSE_SEARCH_RESULT);
-                    Uri imageUri = intent.getParcelableExtra(Params.REVERSE_SEARCH_IMAGE_URI);
-                    return FragmentWebView.newInstance(result.getTitle(), result.getUrl(), result.getResponseBody(), result.getMime(), result.getEncoding(), result.getHistory_url(), imageUri);
+                    return WebFragment.newInstance(result.getTitle(), result.getUrl(), result.getResponseBody(), result.getMime(), result.getEncoding(), result.getHistory_url());
                 case "相关评论": {
                     return getCommentsFragment(intent);
                 }
@@ -235,8 +233,9 @@ public class TemplateActivity extends BaseActivity<ActivityFragmentBinding> impl
                 case "Web页面": {
                     String webUrl = intent.getStringExtra(Params.URL);
                     boolean saveCookies = intent.getBooleanExtra("saveCookies", false);
-                    return ceui.pixiv.ui.web.WebFragment.Companion.newInstance(
+                    return WebFragment.newInstance(
                             webUrl != null ? webUrl : "https://www.pixiv.net/",
+                            null,
                             saveCookies);
                 }
                 case "图片详情":
@@ -354,10 +353,6 @@ public class TemplateActivity extends BaseActivity<ActivityFragmentBinding> impl
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (childFragment instanceof FragmentWebView) {
-            return ((FragmentWebView) childFragment).getAgentWeb().handleKeyEvent(keyCode, event) ||
-                    super.onKeyDown(keyCode, event);
-        }
         if ((keyCode == KeyEvent.KEYCODE_VOLUME_UP || keyCode == KeyEvent.KEYCODE_VOLUME_DOWN)
                 && childFragment instanceof NovelReaderV3Fragment) {
             if (((NovelReaderV3Fragment) childFragment).handleVolumeKey(keyCode)) {
