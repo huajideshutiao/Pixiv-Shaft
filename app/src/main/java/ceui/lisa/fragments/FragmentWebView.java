@@ -64,7 +64,6 @@ import ceui.lisa.utils.ReverseImage;
 import ceui.lisa.utils.ReverseWebviewCallback;
 import ceui.lisa.view.ContextMenuTitleView;
 import ceui.pixiv.session.SessionManager;
-import com.tencent.mmkv.MMKV;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -250,7 +249,7 @@ public class FragmentWebView extends BaseFragment<FragmentWebviewBinding> {
                 .ready();
 
         // 注入已同步的 Cookie，确保 pixiv 设置页等需要登录的页面能正常加载
-        String savedCookies = MMKV.defaultMMKV().getString(SessionManager.COOKIE_KEY, "");
+        String savedCookies = ceui.lisa.activities.Shaft.getDefaultPrefs().getString(SessionManager.COOKIE_KEY, "");
         if (savedCookies != null && !savedCookies.isEmpty()) {
             CookieManager cookieManager = CookieManager.getInstance();
             cookieManager.setAcceptCookie(true);

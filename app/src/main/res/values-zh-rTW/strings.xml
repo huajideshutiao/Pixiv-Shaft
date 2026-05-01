@@ -153,8 +153,6 @@
   <string name="show_like_button">清單頁展示收藏按鈕</string>
   <string name="theme_mode">主題模式</string>
   <string name="custom_file_name">自訂下載檔名</string>
-  <string name="illust_detail">作品詳情使用新介面</string>
-  <string name="user_detail">個人中心使用新介面</string>
   <string name="file_name_type">檔案命名格式</string>
   <string name="novel_txt_download_path">小說 TXT 保存路徑</string>
   <string name="email_address">信箱地址</string>
@@ -528,7 +526,6 @@
   <string name="string_364">SAF 模式</string>
   <string name="string_365">創建檔案失敗，已授權的下載目錄不存在</string>
   <string name="string_366">重新授權</string>
-  <string name="string_367">啟用 Firebase 資訊蒐集</string>
   <string name="string_368">第%d頁已加入書籤</string>
   <string name="string_369">已刪除書籤</string>
   <string name="string_370">個性化</string>
@@ -616,13 +613,9 @@
   <string name="string_449">重置</string>
   <string name="string_450">縮略圖顯示大圖</string>
   <string name="string_451">插畫二級詳情保持屏幕常亮</string>
-  <string name="artwork_v3_fab_order_title">下載/收藏按鈕順序</string>
-  <string name="artwork_v3_fab_order_download_left">左側下載，右側收藏</string>
-  <string name="artwork_v3_fab_order_bookmark_left">左側收藏，右側下載</string>
   <string name="string_452">下載限制類型</string>
   <string name="string_453">不自動下載</string>
   <string name="string_454">分享首圖</string>
-  <string name="string_455">AI 作品下載至另一目錄</string>
   <string name="theme_nowUsing">（正在使用）</string>
   <string name="core_string_novel_marker">小說書籤</string>
   <string name="terms_of_service">服務條款</string>
@@ -731,34 +724,6 @@
   <string name="rate_dialog_rate_now">去評分</string>
   <string name="rate_dialog_maybe_later">以後再說</string>
   <string name="rate_dialog_never">不再提醒</string>
-  <string name="string_ai_upscale">畫質增強 (2x)</string>
-  <string name="string_ai_upscale_running">%s 增強中，請稍候…</string>
-  <string name="string_ai_upscale_done">畫質增強完成</string>
-  <string name="string_ai_upscale_failed">畫質增強失敗</string>
-  <string name="string_ai_upscale_standalone">畫質提升</string>
-  <string name="string_ai_upscale_hero_title">超解析度</string>
-  <string name="string_ai_upscale_hero_subtitle">2倍畫質提升</string>
-  <string name="string_ai_upscale_pick_image">選擇圖片</string>
-  <string name="string_ai_upscale_start">開始增強</string>
-  <string name="string_ai_upscale_pick_hint">從相簿選擇一張圖片\n體驗畫質提升</string>
-  <string name="string_ai_upscale_ready">圖片已就緒，點擊開始增強</string>
-  <string name="string_default_upscale_model">超分辨率模型</string>
-  <string name="string_not_set">未設定</string>
-  <string name="string_model_picker_title">選擇模型</string>
-  <string name="string_model_picker_subtitle">不同模型擅長不同風格，選一個試試吧</string>
-  <string name="string_model_cugan_desc">B站專為動漫/插畫打造的模型。線條更銳利、色塊更乾淨，特別適合 Pixiv 上的插畫和漫畫。畫質天花板更高，追求極致效果時推薦使用。</string>
-  <string name="string_model_esrgan_desc">通用型超解析度模型，適合各種類型的圖片。處理速度較快，能看到逐步進度。不確定選哪個的話，也可以試試這個。</string>
-  <string name="string_model_tag_recommend">推薦</string>
-  <string name="string_model_tag_quality">畫質好</string>
-  <string name="string_model_tag_fast">速度快</string>
-  <string name="string_chip_cugan_desc">B站動漫專用，畫質好</string>
-  <string name="string_chip_esrgan_desc">通用超分，速度快</string>
-  <string name="string_repick">更換</string>
-  <string name="string_compare_original">原圖</string>
-  <string name="string_compare_enhanced">增強</string>
-  <string name="string_save_original">儲存原圖</string>
-  <string name="string_save_enhanced">儲存增強</string>
-  <string name="string_cancel">取消</string>
 
   <string name="show_novel_card_tags_setting">小說列表顯示標籤</string>
 
@@ -960,9 +925,6 @@
     <string name="action_unmute_user">取消封鎖該使用者</string>
     <string name="action_leave_page">離開目前頁面</string>
     <string name="preview_text">預覽文字</string>
-    <string name="ai_upscaling_in_progress">AI 畫質增強中</string>
-    <string name="ai_upscaling_complete">AI 畫質增強已完成</string>
-    <string name="action_view_comparison">檢視對比</string>
     <string name="action_start_reading">開始閱讀正文</string>
     <string name="action_zoom_out">縮小</string>
     <string name="action_zoom_in">放大</string>
@@ -996,15 +958,6 @@
     <string name="task_status_downloading">下載中 - %1$d%%</string>
     <string name="task_status_done">完成了</string>
     <string name="task_status_error">出錯了</string>
-
-    <string name="translator_loading_ocr">正在載入 OCR 模型…</string>
-    <string name="translator_recognizing">正在識別文字…</string>
-    <string name="translator_no_text">未偵測到文字</string>
-    <string name="translator_translating">正在翻譯…</string>
-    <string name="translator_progress">翻譯中 (%1$d/%2$d)</string>
-    <string name="translator_erasing">正在擦除原文…</string>
-    <string name="translator_rendering">正在渲染譯文…</string>
-    <string name="translator_done">翻譯完成</string>
 
     <string name="series_bookmarked_feature">已收藏到精華</string>
     <string name="title_popular_live">人氣直播</string>
@@ -1128,9 +1081,6 @@
     <string name="comic_reader_long_press_save">儲存目前頁面</string>
     <string name="comic_reader_long_press_share">分享目前頁面</string>
     <string name="comic_reader_long_press_bookmark">為此頁加入書籤</string>
-    <string name="comic_reader_long_press_translate">漫畫翻譯</string>
-    <string name="comic_reader_long_press_upscale">AI 畫質提升</string>
-    <string name="comic_reader_long_press_rembg">AI 去背</string>
     <string name="comic_reader_anim_label">翻頁動畫</string>
     <string name="comic_reader_anim_slide">平移</string>
     <string name="comic_reader_anim_cover">覆蓋</string>
@@ -1143,7 +1093,6 @@
     <string name="comic_reader_series_first">已是系列第一篇</string>
     <string name="comic_reader_series_last">已是系列最後一篇</string>
     <string name="comic_reader_series_loading">正在尋找系列⋯</string>
-    <string name="comic_reader_long_press_open_advanced">進階檢視（AI / 翻譯）</string>
     <string name="comic_reader_total_minutes">已閱讀 %1$d 分鐘</string>
 
     <!-- Bulk download -->

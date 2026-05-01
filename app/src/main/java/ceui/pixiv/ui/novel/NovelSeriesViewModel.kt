@@ -11,15 +11,15 @@ import ceui.loxia.ObjectPool
 import ceui.loxia.RefreshHint
 import ceui.loxia.RefreshState
 import ceui.loxia.User
-import ceui.pixiv.ui.common.ArtworkV3Holder
 import ceui.pixiv.ui.common.DataSource
 import ceui.pixiv.ui.common.HoldersViewModel
 import ceui.pixiv.ui.common.ListItemHolder
 import ceui.pixiv.ui.common.LoadingHolder
 import ceui.pixiv.ui.common.NovelV3Holder
-import ceui.pixiv.ui.common.V3SectionLabelHolder
+import ceui.pixiv.ui.chats.RedSectionHeaderHolder
 import ceui.pixiv.ui.common.createResponseStore
 import ceui.pixiv.ui.detail.ArtworksMap
+import ceui.pixiv.ui.detail.UserInfoHolder
 import timber.log.Timber
 
 class NovelSeriesViewModel(
@@ -142,8 +142,8 @@ class NovelSeriesViewModel(
             detail.user?.let { user -> ObjectPool.update(user) }
             result.add(NovelSeriesHeroHolder(detail))
             result.add(
-                ArtworkV3Holder(
-                    ObjectPool.get<User>(detail.user?.id ?: 0L) as LiveData<User?>
+                UserInfoHolder(
+                    detail.user?.id ?: 0L
                 )
             )
             result.add(NovelSeriesProfileHolder(detail))
@@ -152,7 +152,7 @@ class NovelSeriesViewModel(
             }
         }
         result.add(
-            V3SectionLabelHolder(
+            RedSectionHeaderHolder(
                 context.getString(R.string.novel_series_section_works)
             )
         )

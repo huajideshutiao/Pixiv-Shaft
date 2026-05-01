@@ -2,13 +2,13 @@ package ceui.loxia
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import android.content.SharedPreferences
 import ceui.pixiv.db.EntityWrapper
 import ceui.pixiv.utils.NetworkStateManager
-import com.tencent.mmkv.MMKV
 
 
 interface ServicesProvider {
-    val prefStore: MMKV
+    val prefStore: SharedPreferences
     val networkStateManager: NetworkStateManager
     val entityWrapper: EntityWrapper
 }

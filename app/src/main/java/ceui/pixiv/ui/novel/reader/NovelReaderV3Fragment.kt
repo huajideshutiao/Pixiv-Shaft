@@ -36,7 +36,6 @@ import ceui.pixiv.ui.common.NOVEL_URL_HEAD
 import ceui.pixiv.ui.common.shareNovel
 import ceui.pixiv.ui.common.viewBinding
 import java.util.UUID
-import ceui.pixiv.ui.detail.showV3Menu
 import ceui.pixiv.ui.novel.reader.model.PageGeometry
 import ceui.pixiv.ui.novel.reader.export.ExportFormat
 import ceui.pixiv.ui.novel.reader.export.ExportResult
@@ -535,52 +534,10 @@ class NovelReaderV3Fragment : Fragment(R.layout.fragment_novel_reader_v3),
                 Toast.makeText(requireContext(), getString(R.string.msg_novel_loading), Toast.LENGTH_SHORT).show()
                 return@launch
             }
-            showV3Menu {
-                item(getString(R.string.view_comments), R.drawable.ic_baseline_comment_24) {
-                    val intent = Intent(requireContext(), ceui.lisa.activities.TemplateActivity::class.java).apply {
-                        putExtra(ceui.lisa.activities.TemplateActivity.EXTRA_FRAGMENT, "相关评论")
-                        putExtra(Params.NOVEL_ID, novelId.toInt())
-                    }
-                    startActivity(intent)
-                }
-                item(getString(R.string.string_110), R.drawable.ic_share_black_24dp) {
-                    shareNovel(novel)
-                }
-                item(getString(R.string.menu_copy_link), R.drawable.ic_baseline_launch_24) {
-                    val cm = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                    cm.setPrimaryClip(ClipData.newPlainText("pixiv-novel", NOVEL_URL_HEAD + novelId))
-                    Toast.makeText(requireContext(), getString(R.string.msg_link_copied), Toast.LENGTH_SHORT).show()
-                }
-            }
         }
     }
 
     private fun showReaderOverflowMenu() {
-        showV3Menu {
-            item(getString(R.string.menu_annotations), R.drawable.ic_reader_annotations) {
-                showAnnotationsSheet()
-            }
-            item(getString(R.string.menu_bookmarks), R.drawable.ic_baseline_bookmark_24) {
-                showBookmarksSheet()
-            }
-            item(getString(R.string.menu_save_position), R.drawable.ic_baseline_bookmark_24) {
-                viewModel.addBookmarkAtCurrentPage(readerView?.currentPageIndex() ?: 0)
-                Toast.makeText(requireContext(), getString(R.string.msg_bookmark_saved), Toast.LENGTH_SHORT).show()
-            }
-            item(getString(R.string.menu_export), R.drawable.ic_baseline_get_app_24) {
-                if (viewModel.loadState.value !is NovelReaderV3ViewModel.LoadState.Loaded) {
-                    Toast.makeText(requireContext(), getString(R.string.msg_novel_not_ready), Toast.LENGTH_SHORT).show()
-                    return@item
-                }
-                val defaultFormat = Shaft.sSettings.defaultNovelExportFormat
-                val format = ExportFormat.entries.firstOrNull { it.name == defaultFormat }
-                if (format != null) {
-                    executeExport(format)
-                } else {
-                    showExportSheet()
-                }
-            }
-        }
     }
 
     private fun showExportSheet() {

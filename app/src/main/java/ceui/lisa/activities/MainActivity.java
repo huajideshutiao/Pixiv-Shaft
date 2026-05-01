@@ -315,9 +315,6 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
         } else if (id == R.id.nav_manage) {
             intent = new Intent(mContext, TemplateActivity.class);
             intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "设置");
-        } else if (id == R.id.nav_prime_tags) {
-            intent = new Intent(mContext, TemplateActivity.class);
-            intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "PrimeTagsList");
         } else if (id == R.id.nav_discovery) {
             intent = new Intent(mContext, TemplateActivity.class);
             intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "发现");
@@ -327,12 +324,6 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
         } else if (id == R.id.main_page) {
             intent = new Intent(mContext, UActivity.class);
             intent.putExtra(Params.USER_ID, (int) SessionManager.INSTANCE.getLoggedInUid());
-        } else if (id == R.id.nav_ai_upscale) {
-            intent = new Intent(mContext, TemplateActivity.class);
-            intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "AI画质提升");
-        } else if (id == R.id.nav_sakura_translate) {
-            intent = new Intent(mContext, TemplateActivity.class);
-            intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "Sakura翻译");
         } else if (id == R.id.nav_reverse) {
             selectPhoto();
         } else if (id == R.id.nav_new_work) {
@@ -506,7 +497,7 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
     @Override
     public void finish() {
         int currentPosition = baseBind.viewPager.getCurrentItem();
-        Shaft.getMMKV().putInt(Params.MAIN_ACTIVITY_NAVIGATION_POSITION, currentPosition);
+        Shaft.getDefaultPrefs().edit().putInt(Params.MAIN_ACTIVITY_NAVIGATION_POSITION, currentPosition).apply();
         super.finish();
     }
 
@@ -514,7 +505,7 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
         int defaultPosition = 0;
         String settingValue = Shaft.sSettings.getNavigationInitPosition();
         if (settingValue.equals(NavigationLocationHelper.LATEST)) {
-            int latestPosition = Shaft.getMMKV().getInt(Params.MAIN_ACTIVITY_NAVIGATION_POSITION, 0);
+            int latestPosition = Shaft.getDefaultPrefs().getInt(Params.MAIN_ACTIVITY_NAVIGATION_POSITION, 0);
             return latestPosition < baseFragments.length ? latestPosition : defaultPosition;
         }
         NavigationLocationHelper.NavigationItem navigationValue = NavigationLocationHelper.NAVIGATION_MAP.getOrDefault(settingValue, null);

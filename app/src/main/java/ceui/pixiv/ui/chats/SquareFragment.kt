@@ -31,13 +31,12 @@ import ceui.pixiv.utils.setOnClick
 import ceui.pixiv.ui.common.viewBinding
 import ceui.pixiv.ui.detail.ArtworksMap
 import com.bumptech.glide.Glide
-import com.tencent.mmkv.MMKV
 
 class SquareFragment : PixivFragment(R.layout.fragment_pixiv_list) {
 
     private val binding by viewBinding(FragmentPixivListBinding::bind)
     private val safeArgs by navArgs<SquareFragmentArgs>()
-    private val viewModel by pixivValueViewModel({ Pair(safeArgs.objectType, MMKV.defaultMMKV()) },
+    private val viewModel by pixivValueViewModel({ Pair(safeArgs.objectType, ceui.lisa.activities.Shaft.getDefaultPrefs()) },
         responseStore = createResponseStore({ "home-square-${safeArgs.objectType}" })) { (objectType, prefStore) ->
         if (prefStore.getString(SessionManager.COOKIE_KEY, "").isNullOrEmpty()) {
             throw CookieNotSyncException("Pixiv cookie not synced")

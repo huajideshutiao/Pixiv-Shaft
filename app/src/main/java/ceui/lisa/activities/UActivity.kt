@@ -123,13 +123,6 @@ class UActivity : BaseActivity<ActivityNewUserBinding>(), Display<UserDetailResp
     }
 
     override fun initData() {
-        if (Shaft.sSettings.isUseArtworkV3) {
-            val intent = Intent(mContext, UserActivityV3::class.java)
-            intent.putExtra(Params.USER_ID, userId)
-            startActivity(intent)
-            finish()
-            return
-        }
         baseBind.progress.visibility = View.VISIBLE
         Retro.getAppApi().getUserDetail(userId)
             .subscribeOn(Schedulers.newThread())

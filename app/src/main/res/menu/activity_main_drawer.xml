@@ -16,11 +16,6 @@
             android:title="@string/string_discovery" />
 
         <item
-            android:id="@+id/nav_prime_tags"
-            android:icon="@drawable/outline_whatshot_24"
-            android:title="@string/prime_tags" />
-
-        <item
             android:id="@+id/nav_gallery"
             android:icon="@drawable/ic_file_download_black_24dp"
             android:title="@string/download_manager" />
@@ -82,16 +77,6 @@
 
     <item android:title="@string/the_others">
         <menu>
-            <item
-                android:id="@+id/nav_ai_upscale"
-                android:icon="@drawable/baseline_auto_awesome_24"
-                android:title="@string/string_ai_upscale_standalone" />
-
-            <item
-                android:id="@+id/nav_sakura_translate"
-                android:icon="@drawable/ic_baseline_translate_24"
-                android:title="@string/sakura_demo_entry" />
-
             <item
                 android:id="@+id/nav_share"
                 android:icon="@drawable/ic_error_black_24dp"

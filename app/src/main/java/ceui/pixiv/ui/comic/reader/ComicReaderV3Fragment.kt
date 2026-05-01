@@ -25,7 +25,6 @@ import ceui.lisa.utils.ShareIllust
 import ceui.loxia.ObjectPool
 import ceui.lisa.models.IllustsBean
 import ceui.pixiv.ui.common.viewBinding
-import ceui.pixiv.ui.detail.showV3Menu
 import com.github.panpf.zoomimage.zoom.ContentScaleCompat
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -319,17 +318,6 @@ class ComicReaderV3Fragment : Fragment(R.layout.fragment_comic_reader_v3) {
     }
 
     private fun showOverflowMenu() {
-        showV3Menu {
-            item(getString(R.string.comic_reader_bookmarks_button), R.drawable.ic_baseline_bookmark_24) { showBookmarksSheet() }
-            item(getString(R.string.string_110), R.drawable.ic_share_black_24dp) { shareCurrentIllust() }
-            item(getString(R.string.view_comments), R.drawable.ic_baseline_comment_24) {
-                val intent = Intent(requireContext(), TemplateActivity::class.java).apply {
-                    putExtra(TemplateActivity.EXTRA_FRAGMENT, "相关评论")
-                    putExtra(Params.ILLUST_ID, resolveIllustId().toInt())
-                }
-                startActivity(intent)
-            }
-        }
     }
 
     private fun showBookmarksSheet() {
@@ -360,31 +348,6 @@ class ComicReaderV3Fragment : Fragment(R.layout.fragment_comic_reader_v3) {
     }
 
     private fun showLongPressMenu(pageIndex: Int) {
-        val state = (viewModel.loadState.value as? ComicReaderV3ViewModel.LoadState.Loaded) ?: return
-        val illust = state.illust
-        val activity = (activity as? BaseActivity<*>) ?: return
-        showV3Menu {
-            item(getString(R.string.comic_reader_long_press_save), R.drawable.ic_baseline_get_app_24) {
-                IllustDownload.downloadIllustCertainPage(illust, pageIndex, activity)
-                if (Shaft.sSettings.isAutoPostLikeWhenDownload && !illust.isIs_bookmarked) {
-                    PixivOperate.postLikeDefaultStarType(illust)
-                }
-            }
-            item(getString(R.string.comic_reader_long_press_share), R.drawable.ic_share_black_24dp) {
-                shareCurrentIllust()
-            }
-            item(getString(R.string.comic_reader_long_press_bookmark), R.drawable.ic_baseline_bookmark_24) {
-                viewModel.addBookmarkAt(pageIndex)
-            }
-            item(getString(R.string.comic_reader_long_press_open_advanced), R.drawable.ic_baseline_settings_24) {
-                val intent = Intent(requireContext(), ceui.lisa.activities.ImageDetailActivity::class.java).apply {
-                    putExtra("illust", illust)
-                    putExtra("dataType", "二级详情")
-                    putExtra("index", pageIndex)
-                }
-                startActivity(intent)
-            }
-        }
     }
 
     // ---- Lifecycle / volume keys -------------------------------------------

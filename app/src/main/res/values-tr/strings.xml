@@ -131,9 +131,7 @@
   <string name="language_follow_system">Sistem ayarı</string>
   <string name="theme_mode">Tema</string>  
   <string name="custom_file_name">Özel dosya adı</string>  
-  <string name="illust_detail">İllüstrasyon detay sayfasında yeni tasarım</string>  
-  <string name="user_detail">Profil sayfasında yeni tasarım</string>  
-  <string name="file_name_type">Dosya adlandırma biçimi</string>  
+  <string name="file_name_type">Dosya adlandırma biçimi</string>
   <string name="download_path">İndirme yolu</string>  
   <string name="illust_download_path">İllüstrasyon indirme yolu</string>  
   <string name="novel_txt_download_path">Roman (TXT) indirme yolu</string>  
@@ -517,8 +515,7 @@
   <string name="string_364">Modern Mod (SAF)</string>  
   <string name="string_365">Dosya oluşturamadım. Seçtiğin klasöre ulaşılamıyor.</string>  
   <string name="string_366">Tekrar yetkilendir</string>  
-  <string name="string_367">Hata raporlarını gönder (Firebase)</string>  
-  <string name="string_369">Yer işareti silindi</string>  
+  <string name="string_369">Yer işareti silindi</string>
   <string name="string_368">%d. sayfaya yer işareti eklendi</string>  
   <string name="string_370">Kişiselleştirme</string>  
   <string name="string_371">Favorilerim sayfasında kalbi gizle</string>  
@@ -605,47 +602,15 @@
   <string name="string_449">Sıfırla</string>
   <string name="string_450">Küçük resimleri büyük göster</string>
   <string name="string_451">Resim sayfasında ekranı açık tut</string>
-  <string name="artwork_v3_fab_order_title">İndirme/yer imi düğme sırası</string>
-  <string name="artwork_v3_fab_order_download_left">Sol indir, sağ yer imi</string>
-  <string name="artwork_v3_fab_order_bookmark_left">Sol yer imi, sağ indir</string>
   <string name="string_452">İndirme sınırı</string>
   <string name="string_453">Otomatik başlat</string>
   <string name="string_454">İlk resmi paylaş</string>
-  <string name="string_455">AI eserlerini ayrı klasöre kaydet</string>
   <string name="string_font_size">Yazı tipi boyutu</string>
   <string name="rate_dialog_title">Shaft hoşuna gidiyor mu?</string>
   <string name="rate_dialog_subtitle">Eğer uygulamayı beğendiysen puan vererek bize destek olabilirsin. Çok makbule geçer!</string>
   <string name="rate_dialog_rate_now">Puan Ver</string>
   <string name="rate_dialog_maybe_later">Sonra</string>
   <string name="rate_dialog_never">Bir daha sorma</string>
-  <string name="string_ai_upscale">AI Kalite Artırma (2x)</string>
-  <string name="string_ai_upscale_running">%s ile işleniyor...</string>
-  <string name="string_ai_upscale_done">İyileştirme bitti</string>
-  <string name="string_ai_upscale_failed">İyileştirme başarısız</string>
-  <string name="string_ai_upscale_standalone">AI Kalite Artırma</string>
-  <string name="string_ai_upscale_hero_title">AI Süper Çözünürlük</string>
-  <string name="string_ai_upscale_hero_subtitle">2x Kalite Artırma</string>
-  <string name="string_ai_upscale_pick_image">Resim Seç</string>
-  <string name="string_ai_upscale_start">Başlat</string>
-  <string name="string_ai_upscale_pick_hint">Galeriden bir resim seçip\nAI kalitesini deneyebilirsin</string>
-  <string name="string_ai_upscale_ready">Resim hazır, başlatmak için dokun</string>
-  <string name="string_default_upscale_model">Varsayılan AI modeli</string>
-  <string name="string_not_set">Ayarlanmadı</string>
-  <string name="string_model_picker_title">AI modeli seç</string>
-  <string name="string_model_picker_subtitle">Her model farklı tarzlarda daha iyidir</string>
-  <string name="string_model_cugan_desc">Anime ve illüstrasyonlar için idealdir. Daha keskin çizgiler ve temiz renkler sağlar. Pixiv eserleri için en iyisi budur.</string>
-  <string name="string_model_esrgan_desc">Genel amaçlı bir modeldir. Hızlıdır ve gerçek zamanlı ilerleme gösterir. Kararsızsan iyi bir seçenektir.</string>
-  <string name="string_model_tag_recommend">Önerilen</string>
-  <string name="string_model_tag_quality">Kaliteli</string>
-  <string name="string_model_tag_fast">Hızlı</string>
-  <string name="string_chip_cugan_desc">Anime, kaliteli</string>
-  <string name="string_chip_esrgan_desc">Genel, hızlı</string>
-  <string name="string_repick">Değiştir</string>
-  <string name="string_compare_original">Orijinal</string>
-  <string name="string_compare_enhanced">AI İyileştirme</string>
-  <string name="string_save_original">Orijinali Kaydet</string>
-  <string name="string_save_enhanced">İyileştirilmişi Kaydet</string>
-  <string name="string_cancel">İptal</string>
 
   <string name="download_records_export">İndirme kayıtlarını dışa aktar</string>
   <string name="download_records_import">İndirme kayıtlarını içe aktar</string>
@@ -845,9 +810,6 @@
     <string name="action_unmute_user">Bu kullanıcının engelini kaldır</string>
     <string name="action_leave_page">Bu sayfadan ayrıl</string>
     <string name="preview_text">Önizleme metni</string>
-    <string name="ai_upscaling_in_progress">AI kalite iyileştirme devam ediyor</string>
-    <string name="ai_upscaling_complete">AI kalite iyileştirme tamamlandı</string>
-    <string name="action_view_comparison">Karşılaştırmayı gör</string>
     <string name="action_start_reading">Okumaya başla</string>
     <string name="action_zoom_out">Küçült</string>
     <string name="action_zoom_in">Büyüt</string>
@@ -881,15 +843,6 @@
     <string name="task_status_downloading">İndiriliyor - %1$d%%</string>
     <string name="task_status_done">Tamamlandı</string>
     <string name="task_status_error">Hata</string>
-
-    <string name="translator_loading_ocr">OCR modeli yükleniyor…</string>
-    <string name="translator_recognizing">Metin tanınıyor…</string>
-    <string name="translator_no_text">Metin bulunamadı</string>
-    <string name="translator_translating">Çevriliyor…</string>
-    <string name="translator_progress">Çevriliyor (%1$d/%2$d)</string>
-    <string name="translator_erasing">Orijinal metin siliniyor…</string>
-    <string name="translator_rendering">Çeviri oluşturuluyor…</string>
-    <string name="translator_done">Çeviri tamamlandı</string>
 
     <string name="series_bookmarked_feature">Öne çıkanlara eklendi</string>
     <string name="title_popular_live">Popüler Canlı Yayın</string>
@@ -1013,9 +966,6 @@
     <string name="comic_reader_long_press_save">Bu sayfayı kaydet</string>
     <string name="comic_reader_long_press_share">Bu sayfayı paylaş</string>
     <string name="comic_reader_long_press_bookmark">Bu sayfaya yer imi</string>
-    <string name="comic_reader_long_press_translate">Manga çevirisi</string>
-    <string name="comic_reader_long_press_upscale">AI ile iyileştir</string>
-    <string name="comic_reader_long_press_rembg">AI ile arka plan kaldır</string>
     <string name="comic_reader_anim_label">Sayfa geçiş animasyonu</string>
     <string name="comic_reader_anim_slide">Kayma</string>
     <string name="comic_reader_anim_cover">Üzerine</string>
@@ -1028,7 +978,6 @@
     <string name="comic_reader_series_first">Serinin ilki</string>
     <string name="comic_reader_series_last">Serinin sonu</string>
     <string name="comic_reader_series_loading">Seri aranıyor…</string>
-    <string name="comic_reader_long_press_open_advanced">Gelişmiş görünüm (AI / çeviri)</string>
     <string name="comic_reader_total_minutes">%1$d dakika okundu</string>
 
     <!-- Bulk download -->

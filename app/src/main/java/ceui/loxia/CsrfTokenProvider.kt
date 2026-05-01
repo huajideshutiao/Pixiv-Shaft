@@ -1,7 +1,9 @@
 package ceui.loxia
 
 import ceui.pixiv.session.SessionManager
-import com.tencent.mmkv.MMKV
+import android.content.SharedPreferences
+import androidx.core.content.edit
+import ceui.lisa.activities.Shaft
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import timber.log.Timber
@@ -14,16 +16,16 @@ import timber.log.Timber
 object CsrfTokenProvider {
 
     private const val KEY_CSRF = "web-api-csrf-token"
-    private val store: MMKV by lazy { MMKV.defaultMMKV() }
+    private val store: SharedPreferences by lazy { Shaft.getDefaultPrefs() }
 
     @Volatile
     private var cached: String? = null
 
-    fun get(): String? = cached ?: store.decodeString(KEY_CSRF, null)?.also { cached = it }
+    fun get(): String? = cached ?: store.getString(KEY_CSRF, null)?.also { cached = it }
 
     fun set(token: String) {
         cached = token
-        store.encode(KEY_CSRF, token)
+        store.edit { putString(KEY_CSRF, token) }
     }
 
     /**
@@ -35,7 +37,7 @@ object CsrfTokenProvider {
 
     fun fetch(): String? {
         return try {
-            val cookies = store.decodeString(SessionManager.COOKIE_KEY, "") ?: ""
+            val cookies = store.getString(SessionManager.COOKIE_KEY, "") ?: ""
             Timber.d("CsrfToken: cookie length=${cookies.length}, empty=${cookies.isEmpty()}")
             if (cookies.isEmpty()) {
                 Timber.w("CsrfToken: no web cookie stored, cannot fetch token")
@@ -58,7 +60,7 @@ object CsrfTokenProvider {
             if (token != null) {
                 Timber.d("CsrfToken: parsed token=${token.take(8)}...")
                 cached = token
-                store.encode(KEY_CSRF, token)
+                store.edit { putString(KEY_CSRF, token) }
             } else {
                 // 打印 HTML 片段帮助调试
                 val snippet = body.take(2000)
@@ -96,6 +98,6 @@ object CsrfTokenProvider {
 
     fun clear() {
         cached = null
-        store.removeValueForKey(KEY_CSRF)
+        store.edit { remove(KEY_CSRF) }
     }
 }

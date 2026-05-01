@@ -496,7 +496,7 @@ public class FragmentSearch extends BaseFragment<FragmentSearchBinding> {
             @Override
             public void run() {
                 String content = ClipBoardUtils.getClipboardContent(mContext);
-                String previousClipboardValue = Shaft.getMMKV().getString(Params.FRAGMENT_SEARCH_CLIPBOARD_VALUE, "");
+                String previousClipboardValue = Shaft.getDefaultPrefs().getString(Params.FRAGMENT_SEARCH_CLIPBOARD_VALUE, "");
                 // 如果之前确认过的剪贴板值和本次相同，不进行预测
                 if (!TextUtils.isEmpty(previousClipboardValue) && previousClipboardValue.equals(content)) {
                     return;
@@ -531,7 +531,7 @@ public class FragmentSearch extends BaseFragment<FragmentSearchBinding> {
                         }
                         // 只要选中过任何选项，就不再进行相同内容的剪贴板预测
                         if (fromClipboard) {
-                            Shaft.getMMKV().putString(Params.FRAGMENT_SEARCH_CLIPBOARD_VALUE, clipboardContent);
+                            Shaft.getDefaultPrefs().edit().putString(Params.FRAGMENT_SEARCH_CLIPBOARD_VALUE, clipboardContent).apply();
                         }
                         // 对非标签搜索且非综合搜索的，进行填充
                         if (fromClipboard && (searchType != SearchTypeUtil.SEARCH_TYPE_DB_KEYWORD && searchType != SearchTypeUtil.defaultSearchType)) {

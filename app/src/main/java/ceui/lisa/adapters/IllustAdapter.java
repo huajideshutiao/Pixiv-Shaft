@@ -239,7 +239,7 @@ public class IllustAdapter extends AbstractIllustAdapter<ViewHolder<RecyIllustDe
                             holder.baseBind.reload.setVisibility(View.GONE);
                             holder.baseBind.progressLayout.donutProgress.setVisibility(View.GONE);
                             if (isLoadOriginalImage) {
-                                Shaft.getMMKV().encode(imageUrl, true);
+                                Shaft.getDefaultPrefs().edit().putBoolean(imageUrl.toString(), true).apply();
                             }
                             return false;
                         }

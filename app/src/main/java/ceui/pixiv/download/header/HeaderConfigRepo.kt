@@ -2,18 +2,18 @@ package ceui.pixiv.download.header
 
 import ceui.lisa.R
 import ceui.lisa.activities.Shaft
+import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.hjq.toast.ToastUtils
-import com.tencent.mmkv.MMKV
+import androidx.core.content.edit
 import timber.log.Timber
 
 /**
- * MMKV-backed persistence for the user's novel TXT header presets.
+ * SharedPreferences-backed persistence for the user's novel TXT header presets.
  *
  * Stored as a single JSON blob (Gson, compact) under `store` in the
- * `novel_header_config_v1` MMKV id. We intentionally do not migrate older
- * shapes — the feature is new.
+ * `novel_header_config_v1` SharedPreferences file.
  *
  * All reads go through [load] which falls back to the default preset set
  * if nothing is stored or the payload fails to parse (the corrupt blob is
@@ -22,14 +22,14 @@ import timber.log.Timber
  */
 object HeaderConfigRepo {
 
-    private const val MMKV_ID = "novel_header_config_v1"
+    private const val PREFS_NAME = "novel_header_config_v1"
     private const val KEY = "store"
 
     const val DEFAULT_PRESET_NAME = "默认"
 
     private val gson = Gson()
 
-    private val mmkv: MMKV by lazy { MMKV.mmkvWithID(MMKV_ID) }
+    private val prefs: SharedPreferences by lazy { Shaft.getNamedPrefs(PREFS_NAME) }
 
     /**
      * The system-recommended default preset — rich enough that TXT files
@@ -48,9 +48,9 @@ object HeaderConfigRepo {
 
     fun load(): HeaderConfigStore {
         val raw = try {
-            mmkv.decodeString(KEY)
+            prefs.getString(KEY, null)
         } catch (t: Throwable) {
-            Timber.w(t, "HeaderConfigRepo: MMKV decodeString failed, falling back to default")
+            Timber.w(t, "HeaderConfigRepo: SharedPreferences getString failed, falling back to default")
             return defaultStore()
         } ?: return defaultStore()
         return try {
@@ -67,7 +67,7 @@ object HeaderConfigRepo {
 
     fun save(store: HeaderConfigStore) {
         try {
-            mmkv.encode(KEY, gson.toJson(sanitize(store)))
+            prefs.edit { putString(KEY, gson.toJson(sanitize(store))) }
         } catch (t: Throwable) {
             Timber.e(t, "HeaderConfigRepo.save failed")
             ToastUtils.show(

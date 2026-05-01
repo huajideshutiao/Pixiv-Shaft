@@ -59,7 +59,7 @@ object PixivLogin {
         return PixivOAuthClient(
             config = PixivOAuthConfig.PIXIV_ANDROID,
             baseClient = builder.build(),
-            verifierStore = MmkvVerifierStore(),
+            verifierStore = PrefsVerifierStore(),
         )
     }
 }

@@ -1,9 +1,11 @@
 package ceui.lisa.update
 
+import android.content.SharedPreferences
+import androidx.core.content.edit
+import ceui.lisa.activities.Shaft
 import ceui.lisa.BuildConfig
 import ceui.lisa.http.Retro
 import com.google.gson.GsonBuilder
-import com.tencent.mmkv.MMKV
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -56,21 +58,21 @@ object AppUpdateChecker {
 
     fun shouldAutoCheck(): Boolean {
         if (BuildConfig.UPDATE_CHANNEL != "github") return false
-        val mmkv = MMKV.defaultMMKV()
-        val lastCheck = mmkv.decodeLong(KEY_LAST_CHECK_TIME, 0L)
+        val prefs = Shaft.getDefaultPrefs()
+        val lastCheck = prefs.getLong(KEY_LAST_CHECK_TIME, 0L)
         return System.currentTimeMillis() - lastCheck > CHECK_INTERVAL_MS
     }
 
     fun markChecked() {
-        MMKV.defaultMMKV().encode(KEY_LAST_CHECK_TIME, System.currentTimeMillis())
+        Shaft.getDefaultPrefs().edit { putLong(KEY_LAST_CHECK_TIME, System.currentTimeMillis()) }
     }
 
     fun skipVersion(version: String) {
-        MMKV.defaultMMKV().encode(KEY_SKIPPED_VERSION, version)
+        Shaft.getDefaultPrefs().edit { putString(KEY_SKIPPED_VERSION, version) }
     }
 
     fun isVersionSkipped(version: String): Boolean {
-        return MMKV.defaultMMKV().decodeString(KEY_SKIPPED_VERSION, "") == version
+        return Shaft.getDefaultPrefs().getString(KEY_SKIPPED_VERSION, "") == version
     }
 
     fun isNewerVersion(remote: String, current: String): Boolean {

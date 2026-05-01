@@ -1,9 +1,9 @@
 package ceui.pixiv.ui.common
 
+import android.content.SharedPreferences
 import ceui.loxia.Client
 import ceui.loxia.RefreshHint
 import com.google.gson.Gson
-import com.tencent.mmkv.MMKV
 import kotlinx.coroutines.delay
 import timber.log.Timber
 import java.lang.reflect.Method
@@ -22,14 +22,16 @@ class ResponseStore<T> private constructor(
     private val timeKey: String
         get() = "time-key-${keyProvider()}"
 
-    private val preferences: MMKV by lazy {
-        MMKV.mmkvWithID("api-cache")
+    private val preferences: SharedPreferences by lazy {
+        ceui.lisa.activities.Shaft.getNamedPrefs("api-cache")
     }
 
     fun writeToCache(data: T) {
         val currentTime = System.currentTimeMillis()
-        preferences.putString(jsonKey, gson.toJson(data))
-        preferences.putLong(timeKey, currentTime)
+        preferences.edit()
+            .putString(jsonKey, gson.toJson(data))
+            .putLong(timeKey, currentTime)
+            .apply()
     }
 
     fun isCacheExpired(): Boolean {

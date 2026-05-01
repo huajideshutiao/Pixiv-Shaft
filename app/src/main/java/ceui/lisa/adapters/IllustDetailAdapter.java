@@ -95,7 +95,7 @@ public class IllustDetailAdapter extends AbstractIllustAdapter<RecyclerView.View
                         public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                             currentOne.illust.setImageBitmap(resource);
                             if(isLoadOriginalImage){
-                                Shaft.getMMKV().encode(imageUrl.toStringUrl(), true);
+                                Shaft.getDefaultPrefs().edit().putBoolean(imageUrl.toStringUrl(), true).apply();
                             }
                         }
                     });
@@ -115,7 +115,7 @@ public class IllustDetailAdapter extends AbstractIllustAdapter<RecyclerView.View
                             currentOne.illust.setLayoutParams(params);
                             currentOne.illust.setImageBitmap(resource);
                             if(isLoadOriginalImage){
-                                Shaft.getMMKV().encode(imageUrl.toStringUrl(), true);
+                                Shaft.getDefaultPrefs().edit().putBoolean(imageUrl.toStringUrl(), true).apply();
                             }
                         }
                     });

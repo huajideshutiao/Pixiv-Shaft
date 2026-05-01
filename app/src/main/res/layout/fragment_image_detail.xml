@@ -57,8 +57,6 @@
                 android:textSize="14sp" />
         </LinearLayout>
 
-        <include layout="@layout/view_ai_upscale_overlay" />
-
         <com.google.android.material.progressindicator.CircularProgressIndicator
             android:id="@+id/progress_circular"
             android:layout_width="wrap_content"

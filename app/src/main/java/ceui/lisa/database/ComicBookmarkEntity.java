@@ -27,15 +27,4 @@ public class ComicBookmarkEntity {
     public long createdTime;
 
     public ComicBookmarkEntity() {}
-
-    public ComicBookmarkEntity(long illustId, int pageIndex, int totalPages,
-                               @NonNull String previewUrl, @NonNull String note,
-                               long createdTime) {
-        this.illustId = illustId;
-        this.pageIndex = pageIndex;
-        this.totalPages = totalPages;
-        this.previewUrl = previewUrl;
-        this.note = note;
-        this.createdTime = createdTime;
-    }
 }

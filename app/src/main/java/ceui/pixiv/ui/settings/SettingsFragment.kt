@@ -25,14 +25,14 @@ import ceui.pixiv.ui.web.WebFragmentArgs
 import ceui.pixiv.widgets.alertYesOrCancel
 import ceui.pixiv.ui.common.viewBinding
 import ceui.lisa.utils.Local
-import com.tencent.mmkv.MMKV
+import android.content.SharedPreferences
 import timber.log.Timber
 
 class SettingsFragment : PixivFragment(R.layout.fragment_pixiv_list), LogOutActionReceiver {
 
     private val binding by viewBinding(FragmentPixivListBinding::bind)
-    private val prefStore: MMKV by lazy {
-        MMKV.defaultMMKV()
+    private val prefStore: SharedPreferences by lazy {
+        Shaft.getDefaultPrefs()
     }
     private val viewModel by pixivValueViewModel {
         Client.appApi.getSelfProfile()

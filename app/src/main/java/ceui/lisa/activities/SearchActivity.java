@@ -13,12 +13,6 @@ import android.view.View;
 import android.webkit.URLUtil;
 import android.widget.TextView;
 
-import com.mxn.soul.flowingdrawer_core.ElasticDrawer;
-import com.qmuiteam.qmui.skin.QMUISkinManager;
-import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
-import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
-import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
@@ -29,6 +23,13 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.viewpager.widget.ViewPager;
+
+import com.mxn.soul.flowingdrawer_core.ElasticDrawer;
+import com.qmuiteam.qmui.skin.QMUISkinManager;
+import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
+import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
+import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
+
 import ceui.lisa.R;
 import ceui.lisa.adapters.SearchHintAdapter;
 import ceui.lisa.databinding.FragmentNewSearchBinding;
@@ -41,16 +42,14 @@ import ceui.lisa.interfaces.Callback;
 import ceui.lisa.utils.Common;
 import ceui.lisa.utils.Params;
 import ceui.lisa.utils.PixivOperate;
-import ceui.lisa.utils.PixivSearchParamUtil;
 import ceui.lisa.utils.SearchTypeUtil;
 import ceui.lisa.viewmodel.SearchModel;
 import ceui.pixiv.session.SessionManager;
-import ceui.pixiv.ui.prime.PrimeIllustLoader;
 import ceui.pixiv.ui.search.SearchHintViewModel;
 
 public class SearchActivity extends BaseActivity<FragmentNewSearchBinding> {
 
-    private final BaseFragment<?>[] allPages = new BaseFragment[]{null, null,null};
+    private final BaseFragment<?>[] allPages = new BaseFragment[]{null, null, null};
     private FragmentFilter fragmentFilter;
     private String keyWord = "";
     private SearchModel searchModel;
@@ -87,11 +86,8 @@ public class SearchActivity extends BaseActivity<FragmentNewSearchBinding> {
 
     @Override
     protected void initView() {
-        final String[] TITLES = new String[]{
-                getString(R.string.string_136),
-                getString(R.string.string_138),
-                getString(R.string.string_432)
-        };
+        final String[] TITLES =
+            new String[]{getString(R.string.string_136), getString(R.string.string_138), getString(R.string.string_432)};
         // Seed committed chips from the incoming keyword (space-separated), clear
         // the input itself — the chip row represents the active query.
         if (!TextUtils.isEmpty(keyWord)) {
@@ -115,9 +111,9 @@ public class SearchActivity extends BaseActivity<FragmentNewSearchBinding> {
                 if (allPages[position] == null) {
                     if (position == 0) {
                         allPages[position] = FragmentSearchIllust.newInstance();
-                    } else if(position == 1){
+                    } else if (position == 1) {
                         allPages[position] = FragmentSearchNovel.newInstance();
-                    } else if(position == 2){
+                    } else if (position == 2) {
                         allPages[position] = FragmentSearchUser.newInstance(keyWord);
                     }
                 }
@@ -136,9 +132,14 @@ public class SearchActivity extends BaseActivity<FragmentNewSearchBinding> {
                 return TITLES[position];
             }
         });
-        baseBind.viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener(){
+        baseBind.viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) { }
+            public void onPageScrolled(
+                int position,
+                float positionOffset,
+                int positionOffsetPixels
+            ) {
+            }
 
             @Override
             public void onPageSelected(int position) {
@@ -178,7 +179,7 @@ public class SearchActivity extends BaseActivity<FragmentNewSearchBinding> {
             baseBind.viewPager.setCurrentItem(index);
         }
 
-        if (Shaft.getMMKV().decodeBool(Params.MMKV_KEY_ISSHOWTIPS_SEARCHSORT, true)) {
+        if (Shaft.getDefaultPrefs().getBoolean(Params.MMKV_KEY_ISSHOWTIPS_SEARCHSORT, true)) {
             tipDialog(mContext);
             baseBind.drawerlayout.openMenu(true);
         }
@@ -249,125 +250,141 @@ public class SearchActivity extends BaseActivity<FragmentNewSearchBinding> {
                 }
             }
         });
-        baseBind.searchTagsFlow.getEditor().setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                String trimmedKeyword = baseBind.searchTagsFlow.getEditor().getText().toString().trim();
-                if (TextUtils.isEmpty(trimmedKeyword) && TextUtils.isEmpty(searchModel.getStarSize().getValue())) {
-                    if (!committedTags.isEmpty()) {
-                        // Enter with empty input + existing chips → just fire the search.
+        baseBind.searchTagsFlow.getEditor()
+            .setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    String trimmedKeyword =
+                        baseBind.searchTagsFlow.getEditor().getText().toString().trim();
+                    if (TextUtils.isEmpty(trimmedKeyword) && TextUtils.isEmpty(searchModel.getStarSize()
+                        .getValue())) {
+                        if (!committedTags.isEmpty()) {
+                            // Enter with empty input + existing chips → just fire the search.
+                            searchModel.getKeyword().setValue(joinedChips());
+                            searchModel.getNowGo().setValue("search_now");
+                            Common.hideKeyboard(mActivity);
+                            return true;
+                        }
+                        Common.showToast(getString(R.string.string_139));
+                        return false;
+                    }
+
+                    if (URLUtil.isValidUrl(trimmedKeyword)) {
+                        try {
+                            PixivOperate.insertSearchHistory(
+                                trimmedKeyword,
+                                SearchTypeUtil.SEARCH_TYPE_DB_URL
+                            );
+                            Intent intent = new Intent(mContext, OutWakeActivity.class);
+                            intent.setData(Uri.parse(trimmedKeyword));
+                            startActivity(intent);
+                            mActivity.finish();
+                        } catch (Exception e) {
+                            Common.showToast(e.toString());
+                            e.printStackTrace();
+                        }
+                    } else if (Common.isNumeric(trimmedKeyword)) {
+                        QMUITipDialog tipDialog =
+                            new QMUITipDialog.Builder(mContext).setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING)
+                                .setTipWord(getString(R.string.string_429)).create();
+                        tipDialog.show();
+                        //先假定为作品id
+                        PixivOperate.getIllustByID(
+                            tryParseId(trimmedKeyword), mContext, new Callback<Void>() {
+                                @Override
+                                public void doSomething(Void t) {
+                                    PixivOperate.insertSearchHistory(
+                                        trimmedKeyword,
+                                        SearchTypeUtil.SEARCH_TYPE_DB_ILLUSTSID
+                                    );
+                                    tipDialog.dismiss();
+                                    mActivity.finish();
+                                }
+                            }, new Callback<Void>() {
+                                @Override
+                                public void doSomething(Void t) {
+                                    tipDialog.dismiss();
+                                    PixivOperate.insertSearchHistory(
+                                        trimmedKeyword,
+                                        SearchTypeUtil.SEARCH_TYPE_DB_USERID
+                                    );
+                                    Intent intent = new Intent(mContext, UActivity.class);
+                                    intent.putExtra(
+                                        Params.USER_ID,
+                                        Integer.valueOf(trimmedKeyword)
+                                    );
+                                    startActivity(intent);
+                                    mActivity.finish();
+                                }
+                            }
+                        );
+                    } else {
+                        // Commit the freshly-typed keyword as a chip, clear the input,
+                        // re-join all chips into the search keyword, then fire search.
+                        if (!committedTags.contains(trimmedKeyword)) {
+                            committedTags.add(trimmedKeyword);
+                            refreshChipsUI();
+                        }
+                        baseBind.searchTagsFlow.getEditor().setText("");
                         searchModel.getKeyword().setValue(joinedChips());
                         searchModel.getNowGo().setValue("search_now");
                         Common.hideKeyboard(mActivity);
-                        return true;
                     }
-                    Common.showToast(getString(R.string.string_139));
-                    return false;
-                }
 
-                if (URLUtil.isValidUrl(trimmedKeyword)) {
-                    try {
-                        PixivOperate.insertSearchHistory(trimmedKeyword, SearchTypeUtil.SEARCH_TYPE_DB_URL);
-                        Intent intent = new Intent(mContext, OutWakeActivity.class);
-                        intent.setData(Uri.parse(trimmedKeyword));
-                        startActivity(intent);
-                        mActivity.finish();
-                    } catch (Exception e) {
-                        Common.showToast(e.toString());
-                        e.printStackTrace();
-                    }
+                    hintViewModel.hideHints();
+                    return true;
                 }
-                else if(Common.isNumeric(trimmedKeyword)){
-                    QMUITipDialog tipDialog = new QMUITipDialog.Builder(mContext)
-                            .setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING)
-                            .setTipWord(getString(R.string.string_429))
-                            .create();
-                    tipDialog.show();
-                    //先假定为作品id
-                    PixivOperate.getIllustByID(tryParseId(trimmedKeyword), mContext, new Callback<Void>() {
-                        @Override
-                        public void doSomething(Void t) {
-                            PixivOperate.insertSearchHistory(trimmedKeyword, SearchTypeUtil.SEARCH_TYPE_DB_ILLUSTSID);
-                            tipDialog.dismiss();
-                            mActivity.finish();
-                        }
-                    }, new Callback<Void>() {
-                        @Override
-                        public void doSomething(Void t) {
-                            tipDialog.dismiss();
-                            PixivOperate.insertSearchHistory(trimmedKeyword, SearchTypeUtil.SEARCH_TYPE_DB_USERID);
-                            Intent intent = new Intent(mContext, UActivity.class);
-                            intent.putExtra(Params.USER_ID, Integer.valueOf(trimmedKeyword));
-                            startActivity(intent);
-                            mActivity.finish();
-                        }
-                    });
-                }
-                else{
-                    // Commit the freshly-typed keyword as a chip, clear the input,
-                    // re-join all chips into the search keyword, then fire search.
-                    if (!committedTags.contains(trimmedKeyword)) {
-                        committedTags.add(trimmedKeyword);
-                        refreshChipsUI();
-                    }
-                    baseBind.searchTagsFlow.getEditor().setText("");
-                    searchModel.getKeyword().setValue(joinedChips());
-                    searchModel.getNowGo().setValue("search_now");
-                    Common.hideKeyboard(mActivity);
-                }
-
-                hintViewModel.hideHints();
-                return true;
-            }
-        });
+            });
 
         // ── Autocomplete hint list ──────────────────────────────────────
         // Position hint list right below the toolbar (above tabs + content)
         baseBind.toolbar.post(() -> {
             androidx.coordinatorlayout.widget.CoordinatorLayout.LayoutParams lp =
-                    (androidx.coordinatorlayout.widget.CoordinatorLayout.LayoutParams) baseBind.hintList.getLayoutParams();
+                (androidx.coordinatorlayout.widget.CoordinatorLayout.LayoutParams) baseBind.hintList.getLayoutParams();
             lp.topMargin = baseBind.toolbar.getBottom();
             baseBind.hintList.setLayoutParams(lp);
         });
         baseBind.hintList.setLayoutManager(new LinearLayoutManager(mContext));
-        hintViewModel.getHints().observe(this, hints -> {
-            if (hints == null || hints.isEmpty()) return;
-            String keyword = hintViewModel.getCurrentKeyword().getValue();
-            SearchHintAdapter adapter = new SearchHintAdapter(hints, mContext, keyword != null ? keyword : "");
-            adapter.setOnItemClickListener((v, position, viewType) -> {
-                hintViewModel.hideHints();
-                String tag = hints.get(position).getTag();
-                if (!committedTags.contains(tag)) {
-                    committedTags.add(tag);
-                    refreshChipsUI();
-                }
-                baseBind.searchTagsFlow.getEditor().setText("");
-                pushKeywordFromChipsAndInput();
-                triggerSearchIfNotEmpty();
-                Common.hideKeyboard(mActivity);
-            });
-            adapter.setOnItemLongClickListener((v, position, viewType) -> {
-                hintViewModel.hideHints();
-                String tagName = hints.get(position).getTag();
-                baseBind.searchTagsFlow.getEditor().setText(tagName);
-                baseBind.searchTagsFlow.getEditor().setSelection(tagName.length());
-            });
-            baseBind.hintList.setAdapter(adapter);
-        });
-        hintViewModel.getHintsVisible().observe(this, visible -> {
-            animateHintList(visible != null && visible);
-        });
+        hintViewModel.getHints().observe(
+            this, hints -> {
+                if (hints == null || hints.isEmpty()) return;
+                String keyword = hintViewModel.getCurrentKeyword().getValue();
+                SearchHintAdapter adapter =
+                    new SearchHintAdapter(hints, mContext, keyword != null ? keyword : "");
+                adapter.setOnItemClickListener((v, position, viewType) -> {
+                    hintViewModel.hideHints();
+                    String tag = hints.get(position).getTag();
+                    if (!committedTags.contains(tag)) {
+                        committedTags.add(tag);
+                        refreshChipsUI();
+                    }
+                    baseBind.searchTagsFlow.getEditor().setText("");
+                    pushKeywordFromChipsAndInput();
+                    triggerSearchIfNotEmpty();
+                    Common.hideKeyboard(mActivity);
+                });
+                adapter.setOnItemLongClickListener((v, position, viewType) -> {
+                    hintViewModel.hideHints();
+                    String tagName = hints.get(position).getTag();
+                    baseBind.searchTagsFlow.getEditor().setText(tagName);
+                    baseBind.searchTagsFlow.getEditor().setSelection(tagName.length());
+                });
+                baseBind.hintList.setAdapter(adapter);
+            }
+        );
+        hintViewModel.getHintsVisible().observe(
+            this, visible -> {
+                animateHintList(visible != null && visible);
+            }
+        );
 
         fragmentFilter = new FragmentFilter();
         FragmentManager fragmentManager = getSupportFragmentManager();
         if (!fragmentFilter.isAdded()) {
-            fragmentManager.beginTransaction()
-                    .add(R.id.id_container_menu, fragmentFilter)
-                    .commitNowAllowingStateLoss();
+            fragmentManager.beginTransaction().add(R.id.id_container_menu, fragmentFilter)
+                .commitNowAllowingStateLoss();
         } else {
-            fragmentManager.beginTransaction()
-                    .show(fragmentFilter)
-                    .commitNowAllowingStateLoss();
+            fragmentManager.beginTransaction().show(fragmentFilter).commitNowAllowingStateLoss();
         }
     }
 
@@ -418,40 +435,32 @@ public class SearchActivity extends BaseActivity<FragmentNewSearchBinding> {
             baseBind.hintList.setAlpha(0f);
             baseBind.hintList.setTranslationY(-24f);
             baseBind.hintList.setVisibility(View.VISIBLE);
-            baseBind.hintList.animate()
-                    .alpha(1f)
-                    .translationY(0f)
-                    .setDuration(220)
-                    .setInterpolator(new android.view.animation.DecelerateInterpolator())
-                    .start();
+            baseBind.hintList.animate().alpha(1f).translationY(0f).setDuration(220)
+                .setInterpolator(new android.view.animation.DecelerateInterpolator()).start();
         } else {
             if (baseBind.hintList.getVisibility() != View.VISIBLE) return;
-            baseBind.hintList.animate()
-                    .alpha(0f)
-                    .translationY(-16f)
-                    .setDuration(160)
-                    .setInterpolator(new android.view.animation.AccelerateInterpolator())
-                    .withEndAction(() -> {
-                        baseBind.hintList.setVisibility(View.GONE);
-                        baseBind.hintList.setTranslationY(0f);
-                    })
-                    .start();
+            baseBind.hintList.animate().alpha(0f).translationY(-16f).setDuration(160)
+                .setInterpolator(new android.view.animation.AccelerateInterpolator())
+                .withEndAction(() -> {
+                    baseBind.hintList.setVisibility(View.GONE);
+                    baseBind.hintList.setTranslationY(0f);
+                }).start();
         }
     }
 
-    private void tipDialog(Context context){
-        QMUIDialog qmuiDialog = new QMUIDialog.MessageDialogBuilder(context)
-                .setTitle(context.getString(R.string.string_433))
+    private void tipDialog(Context context) {
+        QMUIDialog qmuiDialog =
+            new QMUIDialog.MessageDialogBuilder(context).setTitle(context.getString(R.string.string_433))
                 .setMessage(context.getString(R.string.string_434))
-                .setSkinManager(QMUISkinManager.defaultInstance(context))
-                .addAction(context.getString(R.string.string_190), new QMUIDialogAction.ActionListener() {
-                    @Override
-                    public void onClick(QMUIDialog dialog, int index) {
-                        Shaft.getMMKV().encode(Params.MMKV_KEY_ISSHOWTIPS_SEARCHSORT, false);
-                        dialog.dismiss();
+                .setSkinManager(QMUISkinManager.defaultInstance(context)).addAction(
+                    context.getString(R.string.string_190), new QMUIDialogAction.ActionListener() {
+                        @Override
+                        public void onClick(QMUIDialog dialog, int index) {
+                            Shaft.getDefaultPrefs().edit().putBoolean(Params.MMKV_KEY_ISSHOWTIPS_SEARCHSORT, false).apply();
+                            dialog.dismiss();
+                        }
                     }
-                })
-                .create();
+                ).create();
         qmuiDialog.show();
     }
 }

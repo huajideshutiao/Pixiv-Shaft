@@ -1,7 +1,8 @@
 package ceui.pixiv.widgets
 
 import ceui.lisa.activities.Shaft
-import com.tencent.mmkv.MMKV
+import android.content.SharedPreferences
+import androidx.core.content.edit
 
 /**
  * Manages the timing and display logic for the Play Store rating dialog.
@@ -19,23 +20,23 @@ object RateAppManager {
 
     private const val ENGAGEMENT_THRESHOLD = 50
 
-    private val mmkv: MMKV get() = Shaft.getMMKV()
+    private val prefs: SharedPreferences get() = Shaft.getDefaultPrefs()
 
     /**
      * Call this after a successful bookmark-add or follow-add operation.
      */
     fun onUserEngaged() {
-        val count = mmkv.decodeInt(KEY_ENGAGEMENT_COUNT, 0)
-        mmkv.encode(KEY_ENGAGEMENT_COUNT, count + 1)
+        val count = prefs.getInt(KEY_ENGAGEMENT_COUNT, 0)
+        prefs.edit { putInt(KEY_ENGAGEMENT_COUNT, count + 1) }
     }
 
     /**
      * Returns true if we should auto-show the rating dialog.
      */
     fun shouldShowRateDialog(): Boolean {
-        if (mmkv.decodeBool(KEY_AUTO_SHOWN, false)) return false
+        if (prefs.getBoolean(KEY_AUTO_SHOWN, false)) return false
 
-        val count = mmkv.decodeInt(KEY_ENGAGEMENT_COUNT, 0)
+        val count = prefs.getInt(KEY_ENGAGEMENT_COUNT, 0)
         return count >= ENGAGEMENT_THRESHOLD
     }
 
@@ -43,6 +44,6 @@ object RateAppManager {
      * Call this right after auto-showing the dialog, so it never auto-shows again.
      */
     fun onAutoShown() {
-        mmkv.encode(KEY_AUTO_SHOWN, true)
+        prefs.edit { putBoolean(KEY_AUTO_SHOWN, true) }
     }
 }

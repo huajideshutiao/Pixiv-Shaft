@@ -131,9 +131,7 @@
   <string name="language">Language</string>
   <string name="language_follow_system">Follow system</string>
   <string name="theme_mode">Theme</string>
-  <string name="custom_file_name">Custom filename</string>  
-  <string name="illust_detail">Illust details use new UI</string>  
-  <string name="user_detail">Personal center use new UI</string>  
+  <string name="custom_file_name">Custom filename</string>
   <string name="file_name_type">File naming format</string>  
   <string name="download_path">Download path</string>  
   <string name="illust_download_path">Pictures download path</string>  
@@ -525,8 +523,7 @@
   <string name="string_364">SAF mode</string>  
   <string name="string_365">Failed to create file. The authorized download directory does not exist</string>  
   <string name="string_366">Reauthorization</string>  
-  <string name="string_367">Enable firebase information gathering</string>  
-  <string name="string_369">Bookmark deleted</string>  
+  <string name="string_369">Bookmark deleted</string>
   <string name="string_368">Bookmark added on page %d</string>  
   <string name="string_370">Personalization</string>  
   <string name="string_371">Hide favorite button in My favorites page</string>  
@@ -613,13 +610,9 @@
   <string name="string_449">Reset</string>
   <string name="string_450">Thumbnail display large image</string>
   <string name="string_451">Keep screen on in illust detail</string>
-  <string name="artwork_v3_fab_order_title">Download / bookmark button order</string>
-  <string name="artwork_v3_fab_order_download_left">Download left, bookmark right</string>
-  <string name="artwork_v3_fab_order_bookmark_left">Bookmark left, download right</string>
   <string name="string_452">Download limit type</string>
   <string name="string_453">Do not auto start</string>
   <string name="string_454">Share first image</string>
-  <string name="string_455">AI works download to another directory</string>
   <string name="refresh">Refresh</string>
   <string name="now_loading">Loading…</string>
   <string name="retry">Retry</string>
@@ -682,34 +675,6 @@
   <string name="rate_dialog_rate_now">Rate Now</string>
   <string name="rate_dialog_maybe_later">Maybe Later</string>
   <string name="rate_dialog_never">Don\'t ask again</string>
-  <string name="string_ai_upscale">AI Enhance (2x)</string>
-  <string name="string_ai_upscale_running">%s enhancing, please wait…</string>
-  <string name="string_ai_upscale_done">Enhancement complete</string>
-  <string name="string_ai_upscale_failed">Enhancement failed</string>
-  <string name="string_ai_upscale_standalone">AI Enhance</string>
-  <string name="string_ai_upscale_hero_title">AI Super Resolution</string>
-  <string name="string_ai_upscale_hero_subtitle">2x quality enhancement</string>
-  <string name="string_ai_upscale_pick_image">Choose Image</string>
-  <string name="string_ai_upscale_start">Start Enhancement</string>
-  <string name="string_ai_upscale_pick_hint">Pick an image from gallery\nto experience AI enhancement</string>
-  <string name="string_ai_upscale_ready">Image ready, tap to start</string>
-  <string name="string_default_upscale_model">Default AI Model</string>
-  <string name="string_not_set">Not set</string>
-  <string name="string_model_picker_title">Choose AI Model</string>
-  <string name="string_model_picker_subtitle">Different models excel at different styles</string>
-  <string name="string_model_cugan_desc">Built by Bilibili for anime and illustrations. Sharper lines, cleaner colors — ideal for Pixiv artwork. Best quality ceiling, recommended for maximum fidelity.</string>
-  <string name="string_model_esrgan_desc">General-purpose super-resolution model for all image types. Faster processing with real-time progress. A solid choice if you\'re unsure.</string>
-  <string name="string_model_tag_recommend">Recommended</string>
-  <string name="string_model_tag_quality">Quality</string>
-  <string name="string_model_tag_fast">Fast</string>
-  <string name="string_chip_cugan_desc">Bilibili anime, quality</string>
-  <string name="string_chip_esrgan_desc">General, fast</string>
-  <string name="string_repick">Change</string>
-  <string name="string_compare_original">Original</string>
-  <string name="string_compare_enhanced">AI Enhanced</string>
-  <string name="string_save_original">Save Original</string>
-  <string name="string_save_enhanced">Save Enhanced</string>
-  <string name="string_cancel">Cancel</string>
 
   <string name="show_novel_card_tags_setting">Show tags on novel cards</string>
 
@@ -913,9 +878,6 @@
     <string name="action_unmute_user">Unmute this user</string>
     <string name="action_leave_page">Leave this page</string>
     <string name="preview_text">Preview text</string>
-    <string name="ai_upscaling_in_progress">AI upscaling in progress</string>
-    <string name="ai_upscaling_complete">AI upscaling complete</string>
-    <string name="action_view_comparison">View comparison</string>
     <string name="action_start_reading">Start reading</string>
     <string name="action_zoom_out">Zoom out</string>
     <string name="action_zoom_in">Zoom in</string>
@@ -949,15 +911,6 @@
     <string name="task_status_downloading">Downloading - %1$d%%</string>
     <string name="task_status_done">Done</string>
     <string name="task_status_error">Error</string>
-
-    <string name="translator_loading_ocr">Loading OCR model…</string>
-    <string name="translator_recognizing">Recognizing text…</string>
-    <string name="translator_no_text">No text detected</string>
-    <string name="translator_translating">Translating…</string>
-    <string name="translator_progress">Translating (%1$d/%2$d)</string>
-    <string name="translator_erasing">Erasing original text…</string>
-    <string name="translator_rendering">Rendering translation…</string>
-    <string name="translator_done">Translation complete</string>
 
     <string name="series_bookmarked_feature">Bookmarked to features</string>
     <string name="title_popular_live">Popular Live</string>
@@ -1081,9 +1034,6 @@
     <string name="comic_reader_long_press_save">Save current page</string>
     <string name="comic_reader_long_press_share">Share current page</string>
     <string name="comic_reader_long_press_bookmark">Bookmark this page</string>
-    <string name="comic_reader_long_press_translate">Manga translation</string>
-    <string name="comic_reader_long_press_upscale">AI upscale</string>
-    <string name="comic_reader_long_press_rembg">AI background removal</string>
     <string name="comic_reader_anim_label">Flip animation</string>
     <string name="comic_reader_anim_slide">Slide</string>
     <string name="comic_reader_anim_cover">Cover</string>
@@ -1096,7 +1046,6 @@
     <string name="comic_reader_series_first">First in series</string>
     <string name="comic_reader_series_last">Last in series</string>
     <string name="comic_reader_series_loading">Looking up series…</string>
-    <string name="comic_reader_long_press_open_advanced">Advanced view (AI / translation)</string>
     <string name="comic_reader_total_minutes">Read for %1$d min</string>
 
     <!-- Bulk download · entry menus -->

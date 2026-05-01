@@ -2,6 +2,7 @@ package ceui.pixiv.ui.task
 
 import android.os.Parcelable
 import androidx.fragment.app.FragmentActivity
+import androidx.core.content.edit
 import androidx.lifecycle.lifecycleScope
 import ceui.lisa.utils.Common
 import ceui.loxia.Client
@@ -18,7 +19,6 @@ import com.blankj.utilcode.util.PathUtils
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.hjq.toast.ToastUtils
-import com.tencent.mmkv.MMKV
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -56,8 +56,8 @@ open class FetchAllTask<Item, ResponseT: KListShow<Item>>(
 
     private val results = mutableListOf<Item>()
     private val gson = Gson()
-    private val prefStore: MMKV by lazy {
-        MMKV.mmkvWithID("user-tasks")
+    private val prefStore by lazy {
+        ceui.lisa.activities.Shaft.getNamedPrefs("user-tasks")
     }
 
     init {
@@ -105,7 +105,7 @@ open class FetchAllTask<Item, ResponseT: KListShow<Item>>(
                     }
 
                     val humanReadableTask = HumanReadableTask(taskUUID, taskFullName, taskType, System.currentTimeMillis())
-                    prefStore.putString(taskUUID, gson.toJson(humanReadableTask))
+                    prefStore.edit { putString(taskUUID, gson.toJson(humanReadableTask)) }
 
                     val fileSize = getFileSize(cacheFile)
                     Common.showLog("FetchAllTask fileSize ${fileSize}")

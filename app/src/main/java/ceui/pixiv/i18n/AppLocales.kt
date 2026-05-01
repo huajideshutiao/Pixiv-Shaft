@@ -1,8 +1,10 @@
 package ceui.pixiv.i18n
 
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.edit
 import androidx.core.os.LocaleListCompat
-import com.tencent.mmkv.MMKV
+import ceui.lisa.activities.Shaft
 import java.util.Locale
 
 /**
@@ -48,10 +50,10 @@ object AppLocales {
         supportedTags.map { Locale.forLanguageTag(it) }
     }
 
-    private val mmkv: MMKV by lazy { MMKV.defaultMMKV() }
+    private val prefs: SharedPreferences by lazy { Shaft.getDefaultPrefs() }
 
     /** 用户是否显式配置过语言（包括显式选了"跟随系统"）。 */
-    val hasUserConfigured: Boolean get() = mmkv.decodeBool(CONFIGURED_KEY, false)
+    val hasUserConfigured: Boolean get() = prefs.getBoolean(CONFIGURED_KEY, false)
 
     /**
      * 仅在用户从未显式配置过时才按系统 locale 做合理默认：
@@ -82,7 +84,7 @@ object AppLocales {
 
     /** 供 [AppLocalesBootstrap] 在迁移旧字段后调用，表达"这个用户已经有过显式语言偏好"。 */
     internal fun markUserConfigured() {
-        mmkv.encode(CONFIGURED_KEY, true)
+        prefs.edit { putBoolean(CONFIGURED_KEY, true) }
     }
 
     /** 当前应用实际生效的 locale（跟随系统时返回系统匹配后的那一个，无匹配时 fallback English）。 */

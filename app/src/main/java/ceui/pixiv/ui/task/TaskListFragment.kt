@@ -16,34 +16,33 @@ import ceui.pixiv.ui.list.pixivListViewModel
 import ceui.pixiv.ui.common.viewBinding
 import ceui.pixiv.utils.setOnClick
 import com.google.gson.Gson
-import com.tencent.mmkv.MMKV
 import timber.log.Timber
 
 class TaskListFragment : PixivFragment(R.layout.fragment_pixiv_list), TaskPreviewActionReceiver {
 
-    private val prefStore by lazy { MMKV.mmkvWithID("user-tasks") }
+    private val prefStore by lazy { ceui.lisa.activities.Shaft.getNamedPrefs("user-tasks") }
     private val binding by viewBinding(FragmentPixivListBinding::bind)
     private val viewModel by pixivListViewModel {
         val maps = hashMapOf<String, List<Illust>>()
         DataSource(
-            dataFetcher = {
-                val gson = Gson()
-                val humanReadableTasks = prefStore.allKeys()
-                    ?.mapNotNull { uuid ->
-                        val illusts = loadIllustsFromCache(uuid) ?: listOf()
-                        maps[uuid] = illusts
-                        prefStore.getString(uuid, "")?.let {
-                            try {
-                                val task = gson.fromJson(it, HumanReadableTask::class.java)
-                                Timber.d("task $task")
-                                task
-                            } catch (ex: Exception) {
-                                Timber.e(ex)
-                                null
+                dataFetcher = {
+                    val gson = Gson()
+                    val humanReadableTasks = prefStore.all?.keys
+                        ?.mapNotNull { uuid ->
+                            val illusts = loadIllustsFromCache(uuid) ?: listOf()
+                            maps[uuid] = illusts
+                            prefStore.getString(uuid, "")?.let {
+                                try {
+                                    val task = gson.fromJson(it, HumanReadableTask::class.java)
+                                    Timber.d("task $task")
+                                    task
+                                } catch (ex: Exception) {
+                                    Timber.e(ex)
+                                    null
+                                }
                             }
                         }
-                    }
-                    ?: emptyList()
+                        ?: emptyList()
 
                 object : KListShow<HumanReadableTask> {
                     override val displayList: List<HumanReadableTask>

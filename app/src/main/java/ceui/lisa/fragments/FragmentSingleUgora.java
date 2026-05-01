@@ -268,7 +268,7 @@ public class FragmentSingleUgora extends BaseFragment<FragmentUgoraBinding> {
             }
 
             stopFrameAnimation();
-            boolean hasDownload = Shaft.getMMKV().decodeBool(Params.ILLUST_ID + "_" + illust.getId());
+            boolean hasDownload = Shaft.getDefaultPrefs().getBoolean(Params.ILLUST_ID + "_" + illust.getId(), false);
             File zipFile = LegacyFile.gifZipFile(mContext, illust);
             if (hasDownload && zipFile.exists() && zipFile.length() > 1024) {
                 baseBind.playGif.setVisibility(View.INVISIBLE);

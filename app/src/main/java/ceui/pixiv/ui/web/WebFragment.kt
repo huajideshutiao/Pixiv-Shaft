@@ -1,5 +1,6 @@
 package ceui.pixiv.ui.web
 
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.View
@@ -18,15 +19,19 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import androidx.navigation.fragment.navArgs
 import ceui.lisa.R
+import ceui.lisa.activities.Shaft
 import ceui.lisa.databinding.FragmentWebBinding
 import ceui.lisa.utils.Common
 import ceui.pixiv.session.SessionManager
 import ceui.pixiv.ui.common.PixivFragment
-import ceui.pixiv.ui.common.viewBinding
+import androidx.core.content.edit
 import ceui.loxia.ClientManager
 import ceui.loxia.CsrfTokenProvider
+import ceui.pixiv.ui.common.viewBinding
 import com.scwang.smart.refresh.header.MaterialHeader
-import com.tencent.mmkv.MMKV
+
+
+
 
 
 class WebFragment : PixivFragment(R.layout.fragment_web) {
@@ -46,8 +51,8 @@ class WebFragment : PixivFragment(R.layout.fragment_web) {
         }
     }
     private val binding by viewBinding(FragmentWebBinding::bind)
-    private val prefStore: MMKV by lazy {
-        MMKV.defaultMMKV()
+    private val prefStore: SharedPreferences by lazy {
+        Shaft.getDefaultPrefs()
     }
 
     private inner class CsrfBridge {
@@ -117,7 +122,7 @@ class WebFragment : PixivFragment(R.layout.fragment_web) {
                     val cookie = CookieManager.getInstance().getCookie("https://www.pixiv.net")
                     if (!cookie.isNullOrEmpty() && cookie.contains("PHPSESSID")) {
                         Common.showLog("dsaadsdsaaww2 set $cookie")
-                        prefStore.putString(SessionManager.COOKIE_KEY, cookie)
+                        prefStore.edit { putString(SessionManager.COOKIE_KEY, cookie) }
                     }
                     // 在 pixiv 页面提取 CSRF token
                     if (url?.contains("www.pixiv.net") == true && view != null) {

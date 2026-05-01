@@ -13,9 +13,9 @@ import ceui.loxia.RefreshHint
 import ceui.loxia.RefreshState
 import ceui.loxia.SpaceHolder
 import ceui.loxia.WebNovel
-import ceui.pixiv.ui.common.ArtworkV3Holder
 import ceui.pixiv.ui.common.HoldersViewModel
 import ceui.pixiv.ui.common.ListItemHolder
+import ceui.pixiv.ui.detail.UserInfoHolder
 import ceui.pixiv.ui.novel.reader.NovelTextCache
 import ceui.pixiv.ui.novel.reader.paginate.ContentParser
 import kotlinx.coroutines.Dispatchers
@@ -37,8 +37,9 @@ class NovelTextViewModel(
     override suspend fun refreshImpl(hint: RefreshHint) {
         super.refreshImpl(hint)
         val context = Shaft.getContext()
+        val novelResponse = Client.appApi.getNovel(novelId)
         coroutineScope {
-            Client.appApi.getNovel(novelId).novel?.let {
+            novelResponse.novel?.let {
                 ObjectPool.update(it)
                 it.user?.let { user ->
                     ObjectPool.update(user)
@@ -50,7 +51,7 @@ class NovelTextViewModel(
         // 顺序：标题+系列 → 作者 → 作品档案 → 功能按钮 → 标签 → 简介。
         val result = mutableListOf<ListItemHolder>()
         result.add(NovelHeaderHolder(novelId))
-        result.add(ArtworkV3Holder(ObjectPool.get<Novel>(novelId).map { it.user }))
+        result.add(UserInfoHolder(novelResponse.novel?.user?.id ?: 0L))
         result.add(NovelProfileHolder(novelId))
         result.add(NovelActionsHolder(novelId))
         result.add(NovelTagsHolder(novelId))

@@ -131,9 +131,7 @@
   <string name="language">язык</string>
   <string name="language_follow_system">Как в системе</string>
   <string name="theme_mode">тематический режим</string>  
-  <string name="custom_file_name">Пользовательское имя файла для загрузки</string>  
-  <string name="illust_detail">новый интерфейс</string>  
-  <string name="user_detail">персональный Центр использует новый интерфейс</string>  
+  <string name="custom_file_name">Пользовательское имя файла для загрузки</string>
   <string name="file_name_type">Формат имени файла</string>  
   <string name="download_path">путь к загрузке</string>  
   <string name="illust_download_path">путь к загрузке изображений</string>  
@@ -517,8 +515,7 @@
   <string name="string_363">традиционный режим</string>  
   <string name="string_364">SAF - режим</string>  
   <string name="string_365">Ошибка создания файла, папка с разрешением на загрузку не существует</string>  
-  <string name="string_366">повторное Делегирование полномочий</string>  
-  <string name="string_367">Включить коллекцию информации Firebase</string>  
+  <string name="string_366">повторное Делегирование полномочий</string>
   <string name="string_368">Закладка добавлена ​​на страницу %d</string>  
   <string name="string_369">Закладка удалена</string>  
   <string name="string_370">индивидуализация</string>  
@@ -606,13 +603,9 @@
   <string name="string_449">Сброс</string>
   <string name="string_450">Миниатюры отображают большое изображение</string>
   <string name="string_451">Держите экран включенным в деталях иллюстраций</string>
-  <string name="artwork_v3_fab_order_title">Порядок кнопок скачивания/закладок</string>
-  <string name="artwork_v3_fab_order_download_left">Скачать слева, закладка справа</string>
-  <string name="artwork_v3_fab_order_bookmark_left">Закладка слева, скачать справа</string>
   <string name="string_452">Тип лимита загрузки</string>
   <string name="string_453">Не автозапуск</string>
   <string name="string_454">Поделитесь первой картинкой</string>
-  <string name="string_455">работа AI загружена в другой каталог</string>
   <string name="string_font_size">Размер шрифта</string>
 
   <string name="rate_dialog_title">Нравится Shaft?</string>
@@ -620,34 +613,6 @@
   <string name="rate_dialog_rate_now">Оценить</string>
   <string name="rate_dialog_maybe_later">Позже</string>
   <string name="rate_dialog_never">Больше не спрашивать</string>
-  <string name="string_ai_upscale">AI улучшение (2x)</string>
-  <string name="string_ai_upscale_running">%s обработка…</string>
-  <string name="string_ai_upscale_done">Улучшение завершено</string>
-  <string name="string_ai_upscale_failed">Ошибка улучшения</string>
-  <string name="string_ai_upscale_standalone">AI улучшение</string>
-  <string name="string_ai_upscale_hero_title">AI суперразрешение</string>
-  <string name="string_ai_upscale_hero_subtitle">2x улучшение качества</string>
-  <string name="string_ai_upscale_pick_image">Выбрать изображение</string>
-  <string name="string_ai_upscale_start">Начать</string>
-  <string name="string_ai_upscale_pick_hint">Выберите изображение из галереи\nдля AI улучшения</string>
-  <string name="string_ai_upscale_ready">Изображение готово, нажмите для начала</string>
-  <string name="string_default_upscale_model">Модель AI по умолчанию</string>
-  <string name="string_not_set">Не задано</string>
-  <string name="string_model_picker_title">Выбор AI модели</string>
-  <string name="string_model_picker_subtitle">Разные модели подходят для разных стилей</string>
-  <string name="string_model_cugan_desc">Модель от Bilibili для аниме и иллюстраций. Чёткие линии, чистые цвета — идеально для работ с Pixiv. Лучшее качество.</string>
-  <string name="string_model_esrgan_desc">Универсальная модель суперразрешения. Быстрая обработка с отображением прогресса. Хороший выбор, если не уверены.</string>
-  <string name="string_model_tag_recommend">Рекомендуем</string>
-  <string name="string_model_tag_quality">Качество</string>
-  <string name="string_model_tag_fast">Быстро</string>
-  <string name="string_chip_cugan_desc">Bilibili аниме, качество</string>
-  <string name="string_chip_esrgan_desc">Универсальная, быстро</string>
-  <string name="string_repick">Изменить</string>
-  <string name="string_compare_original">Оригинал</string>
-  <string name="string_compare_enhanced">AI улучшение</string>
-  <string name="string_save_original">Сохранить оригинал</string>
-  <string name="string_save_enhanced">Сохранить улучшенное</string>
-  <string name="string_cancel">Отмена</string>
 
   <string name="download_records_export">Экспорт истории загрузок</string>
   <string name="download_records_import">Импорт истории загрузок</string>
@@ -847,9 +812,6 @@
     <string name="action_unmute_user">Разблокировать пользователя</string>
     <string name="action_leave_page">Покинуть страницу</string>
     <string name="preview_text">Предпросмотр</string>
-    <string name="ai_upscaling_in_progress">AI-улучшение качества</string>
-    <string name="ai_upscaling_complete">AI-улучшение завершено</string>
-    <string name="action_view_comparison">Сравнить</string>
     <string name="action_start_reading">Начать чтение</string>
     <string name="action_zoom_out">Уменьшить</string>
     <string name="action_zoom_in">Увеличить</string>
@@ -883,15 +845,6 @@
     <string name="task_status_downloading">Загрузка - %1$d%%</string>
     <string name="task_status_done">Готово</string>
     <string name="task_status_error">Ошибка</string>
-
-    <string name="translator_loading_ocr">Загрузка модели OCR…</string>
-    <string name="translator_recognizing">Распознавание текста…</string>
-    <string name="translator_no_text">Текст не обнаружен</string>
-    <string name="translator_translating">Перевод…</string>
-    <string name="translator_progress">Перевод (%1$d/%2$d)</string>
-    <string name="translator_erasing">Удаление исходного текста…</string>
-    <string name="translator_rendering">Рендеринг перевода…</string>
-    <string name="translator_done">Перевод завершён</string>
 
     <string name="series_bookmarked_feature">Добавлено в избранное</string>
     <string name="title_popular_live">Популярные трансляции</string>
@@ -1015,9 +968,6 @@
     <string name="comic_reader_long_press_save">Сохранить страницу</string>
     <string name="comic_reader_long_press_share">Поделиться страницей</string>
     <string name="comic_reader_long_press_bookmark">В закладки</string>
-    <string name="comic_reader_long_press_translate">Перевод манги</string>
-    <string name="comic_reader_long_press_upscale">AI улучшение</string>
-    <string name="comic_reader_long_press_rembg">AI удаление фона</string>
     <string name="comic_reader_anim_label">Анимация листания</string>
     <string name="comic_reader_anim_slide">Скольжение</string>
     <string name="comic_reader_anim_cover">Перекрытие</string>
@@ -1030,7 +980,6 @@
     <string name="comic_reader_series_first">Первая в серии</string>
     <string name="comic_reader_series_last">Последняя в серии</string>
     <string name="comic_reader_series_loading">Поиск серии…</string>
-    <string name="comic_reader_long_press_open_advanced">Расширенный просмотр (AI / перевод)</string>
     <string name="comic_reader_total_minutes">Прочитано %1$d мин</string>
 
     <!-- Bulk download -->

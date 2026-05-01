@@ -14,14 +14,12 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.Gravity;
 
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
 import com.hjq.toast.ToastUtils;
 
 import com.scwang.smart.refresh.footer.ClassicsFooter;
 import com.scwang.smart.refresh.header.ClassicsHeader;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
-import com.tencent.mmkv.MMKV;
 
 import androidx.annotation.NonNull;
 
@@ -60,7 +58,7 @@ public class Shaft extends Application implements ServicesProvider {
     protected NetWorkStateReceiver netWorkStateReceiver;
     private NetworkStateManager networkStateManager;
     private OkHttpClient mOkHttpClient;
-    private static MMKV mmkv;
+    private static SharedPreferences sDefaultPrefs;
     public static AppLevelViewModel appViewModel;
 
     private EntityWrapper entityWrapper;
@@ -147,10 +145,9 @@ public class Shaft extends Application implements ServicesProvider {
         //0.0127254
 
         sPreferences = getSharedPreferences(LOCAL_DATA, Context.MODE_PRIVATE);
+        sDefaultPrefs = getSharedPreferences("shaft_prefs", Context.MODE_PRIVATE);
 
         Timber.plant(new Timber.DebugTree());
-
-        MMKV.initialize(this);
         networkStateManager = new NetworkStateManager(this);
         sSettings = Local.getSettings();
 
@@ -219,14 +216,6 @@ public class Shaft extends Application implements ServicesProvider {
         ToastUtils.init(this);
         int bottomOffset = ceui.lisa.page.ScreenUtils.getNavigationBarHeight() + (int) (48 * getResources().getDisplayMetrics().density);
         ToastUtils.setGravity(Gravity.BOTTOM, 0, bottomOffset);
-
-        try {
-            FirebaseAnalytics.getInstance(this).setAnalyticsCollectionEnabled(
-                    sSettings.isFirebaseEnable()
-            );
-        } catch (Exception e) {
-            Timber.w(e, "Failed to initialize Firebase Analytics");
-        }
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
@@ -347,11 +336,12 @@ public class Shaft extends Application implements ServicesProvider {
         }
     }
 
-    public static MMKV getMMKV() {
-        if (mmkv == null) {
-            mmkv = MMKV.defaultMMKV();
-        }
-        return mmkv;
+    public static SharedPreferences getDefaultPrefs() {
+        return sDefaultPrefs;
+    }
+
+    public static SharedPreferences getNamedPrefs(String name) {
+        return getContext().getSharedPreferences(name, Context.MODE_PRIVATE);
     }
 
     @Override
@@ -367,8 +357,8 @@ public class Shaft extends Application implements ServicesProvider {
     }
 
     @Override
-    public @NotNull MMKV getPrefStore() {
-        return getMMKV();
+    public @NotNull SharedPreferences getPrefStore() {
+        return sDefaultPrefs;
     }
 
     @Override

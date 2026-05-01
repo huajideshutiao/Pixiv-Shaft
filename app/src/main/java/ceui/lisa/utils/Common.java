@@ -235,7 +235,7 @@ public class Common {
                     @Override
                     public void onClick(QMUIDialog dialog, int index) {
                         //保存SHOW_DIALOG 为false，不再提示
-                        Shaft.getMMKV().encode(Params.SHOW_DIALOG, false);
+                        Shaft.getDefaultPrefs().edit().putBoolean(Params.SHOW_DIALOG, false).apply();
                         dialog.dismiss();
                     }
                 })
@@ -243,7 +243,7 @@ public class Common {
                     @Override
                     public void onClick(QMUIDialog dialog, int index) {
                         //保存SHOW_DIALOG 为true，需要继续提示
-                        Shaft.getMMKV().encode(Params.SHOW_DIALOG, true);
+                        Shaft.getDefaultPrefs().edit().putBoolean(Params.SHOW_DIALOG, true).apply();
                         dialog.dismiss();
                     }
                 })

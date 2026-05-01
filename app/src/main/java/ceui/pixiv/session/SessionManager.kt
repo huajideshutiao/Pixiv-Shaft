@@ -4,7 +4,6 @@ import android.text.TextUtils
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import ceui.lisa.R
-import ceui.lisa.activities.Shaft
 import ceui.lisa.models.UserModel
 import ceui.lisa.utils.Common
 import ceui.loxia.AccountResponse
@@ -14,7 +13,9 @@ import ceui.loxia.User
 import ceui.pixiv.login.InvalidRefreshTokenException
 import ceui.pixiv.login.PixivLogin
 import com.google.gson.Gson
-import com.tencent.mmkv.MMKV
+import android.content.SharedPreferences
+import androidx.core.content.edit
+import ceui.lisa.activities.Shaft
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
@@ -40,8 +41,8 @@ object SessionManager {
         _newTokenEvent.postValue(Event(System.currentTimeMillis()))
     }
 
-    private val prefStore: MMKV by lazy {
-        MMKV.defaultMMKV()
+    private val prefStore: SharedPreferences by lazy {
+        Shaft.getDefaultPrefs()
     }
 
     val isLoggedIn: Boolean
@@ -85,61 +86,40 @@ object SessionManager {
         }
 
     fun initialize() {
-        val json = prefStore.getString(USER_KEY, "")
-        if (json?.isNotEmpty() == true) {
+        val json = prefStore.getString(USER_KEY, "") ?: ""
+        if (json.isNotEmpty()) {
             try {
                 val accountResponse = gson.fromJson(json, AccountResponse::class.java)
                 _loggedInAccount.value = accountResponse
                 accountResponse.user?.let {
                     ObjectPool.update(it)
                 }
-                return
             } catch (ex: Exception) {
                 ex.printStackTrace()
             }
-        }
-
-        // Migration: if MMKV has no data, try loading from legacy SharedPreferences
-        migrateFromLegacyIfNeeded()
-    }
-
-    /**
-     * Migrate user data from old SharedPreferences (Local.getUser()) to MMKV.
-     * Only migrates when SessionManager has no data AND SharedPreferences has data.
-     */
-    private fun migrateFromLegacyIfNeeded() {
-        try {
-            val legacyJson = Shaft.sPreferences?.getString("user", "") ?: return
-            if (legacyJson.isEmpty()) return
-
-            val userModel = gson.fromJson(legacyJson, UserModel::class.java) ?: return
-            Timber.d("Migrating user data from SharedPreferences to SessionManager (MMKV)")
-            updateSession(userModel)
-        } catch (ex: Exception) {
-            Timber.e(ex, "Failed to migrate legacy user data")
         }
     }
 
     fun updateSession(userModel: UserModel?) {
         if (userModel == null) {
-            prefStore.putString(USER_KEY, "")
+            prefStore.edit { putString(USER_KEY, "") }
             _loggedInAccount.value = AccountResponse()
         } else {
             val javaJson = gson.toJson(userModel)
             val accountResponse = gson.fromJson(javaJson, AccountResponse::class.java)
-            prefStore.putString(USER_KEY, gson.toJson(accountResponse))
+            prefStore.edit { putString(USER_KEY, gson.toJson(accountResponse)) }
             _loggedInAccount.value = accountResponse
         }
     }
 
     fun postUpdateSession(userModel: UserModel?) {
         if (userModel == null) {
-            prefStore.putString(USER_KEY, "")
+            prefStore.edit { putString(USER_KEY, "") }
             _loggedInAccount.postValue(AccountResponse())
         } else {
             val javaJson = gson.toJson(userModel)
             val accountResponse = gson.fromJson(javaJson, AccountResponse::class.java)
-            prefStore.putString(USER_KEY, gson.toJson(accountResponse))
+            prefStore.edit { putString(USER_KEY, gson.toJson(accountResponse)) }
             _loggedInAccount.postValue(accountResponse)
         }
     }
@@ -208,7 +188,7 @@ object SessionManager {
             refresh_token = refreshToken,
             expires_in = expiresIn,
         )
-        prefStore.putString(USER_KEY, gson.toJson(updated))
+        prefStore.edit { putString(USER_KEY, gson.toJson(updated)) }
         _loggedInAccount.value = updated
     }
 

@@ -6,15 +6,16 @@ import ceui.pixiv.session.SessionManager
 import ceui.pixiv.ui.settings.SettingsFragment
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.tencent.mmkv.MMKV
+import android.content.SharedPreferences
+import ceui.lisa.activities.Shaft
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
 
 class WebHeaderInterceptor : Interceptor {
 
-    private val prefStore: MMKV by lazy {
-        MMKV.defaultMMKV()
+    private val prefStore: SharedPreferences by lazy {
+        Shaft.getDefaultPrefs()
     }
     private val gson by lazy { Gson() }
 

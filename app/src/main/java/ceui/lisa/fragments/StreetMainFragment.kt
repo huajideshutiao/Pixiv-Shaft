@@ -14,6 +14,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import ceui.lisa.R
+import android.content.SharedPreferences
+import androidx.core.content.edit
 import ceui.lisa.activities.Shaft
 import ceui.lisa.activities.TemplateActivity
 import ceui.lisa.activities.VActivity
@@ -34,7 +36,6 @@ import ceui.loxia.StreetThumbnail
 import ceui.pixiv.session.SessionManager
 import com.bumptech.glide.Glide
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
-import com.tencent.mmkv.MMKV
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -63,6 +64,8 @@ class StreetMainFragment : SwipeFragment<FragmentBaseListBinding>() {
 
     private val viewModel: StreetMainViewModel by viewModels()
     private val adapter = StreetAdapter()
+
+    private val prefs: SharedPreferences by lazy { Shaft.getDefaultPrefs() }
 
     override fun initLayout() {
         mLayoutID = R.layout.fragment_base_list
@@ -105,7 +108,7 @@ class StreetMainFragment : SwipeFragment<FragmentBaseListBinding>() {
     private var loginWebView: WebView? = null
 
     override fun lazyData() {
-        val cookies = MMKV.defaultMMKV().getString(SessionManager.COOKIE_KEY, "")
+        val cookies = Shaft.getDefaultPrefs().getString(SessionManager.COOKIE_KEY, "")
         if (cookies.isNullOrEmpty() || !cookies.contains("PHPSESSID")) {
             showWebLoginDialog()
         } else if (CsrfTokenProvider.get() == null) {
@@ -132,7 +135,7 @@ class StreetMainFragment : SwipeFragment<FragmentBaseListBinding>() {
         }
         loginWebView = webView
 
-        val cookies = MMKV.defaultMMKV().getString(SessionManager.COOKIE_KEY, "") ?: ""
+        val cookies = Shaft.getDefaultPrefs().getString(SessionManager.COOKIE_KEY, "") ?: ""
         val cm = CookieManager.getInstance()
         cm.setAcceptCookie(true)
         cm.setAcceptThirdPartyCookies(webView, true)
@@ -149,12 +152,11 @@ class StreetMainFragment : SwipeFragment<FragmentBaseListBinding>() {
                     val token = result?.trim('"')?.takeIf { it.matches(Regex("[a-f0-9]{32}")) }
                     Timber.d("StreetMain: evaluateJavascript token=${token?.take(8)}")
                     if (token != null) {
-                        MMKV.defaultMMKV().encode("web-api-csrf-token", token)
+                        prefs.edit { putString("web-api-csrf-token", token) }
                     }
-                    // 顺便更新 cookie（WebView 可能刷新了 cf_clearance 等）
                     CookieManager.getInstance().getCookie("https://www.pixiv.net")?.let { freshCookie ->
                         if (freshCookie.contains("PHPSESSID")) {
-                            MMKV.defaultMMKV().putString(SessionManager.COOKIE_KEY, freshCookie)
+                            prefs.edit { putString(SessionManager.COOKIE_KEY, freshCookie) }
                         }
                     }
                     cleanupWebView()
@@ -221,7 +223,7 @@ class StreetMainFragment : SwipeFragment<FragmentBaseListBinding>() {
                         val token = result?.trim('"')?.takeIf { it.matches(Regex("[a-f0-9]{32}")) }
                         Timber.d("StreetMain: login evaluateJavascript token=${token?.take(8)}")
                         if (token != null) {
-                            MMKV.defaultMMKV().encode("web-api-csrf-token", token)
+                            prefs.edit { putString("web-api-csrf-token", token) }
                         }
                         cleanupWebView()
                         Toast.makeText(mContext, getString(R.string.street_web_login_success), Toast.LENGTH_SHORT).show()
@@ -250,7 +252,7 @@ class StreetMainFragment : SwipeFragment<FragmentBaseListBinding>() {
 
         cookieSaved = true
         Timber.d("StreetMain: PHPSESSID found, saving cookie")
-        MMKV.defaultMMKV().putString(SessionManager.COOKIE_KEY, cookie)
+        prefs.edit { putString(SessionManager.COOKIE_KEY, cookie) }
         CsrfTokenProvider.clear()
 
         // Cookie 拿到了，接下来用 WebView 加载 pixiv.net 首页来提取 CSRF token

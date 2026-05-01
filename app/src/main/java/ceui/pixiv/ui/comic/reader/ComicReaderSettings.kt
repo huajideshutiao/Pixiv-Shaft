@@ -1,17 +1,19 @@
 package ceui.pixiv.ui.comic.reader
 
+import android.content.SharedPreferences
+import androidx.core.content.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tencent.mmkv.MMKV
+import ceui.lisa.activities.Shaft
 
 /**
- * 漫画 reader 的持久化设置。独立 MMKV namespace 与小说 reader 隔离。
+ * 漫画 reader 的持久化设置。独立 SharedPreferences 文件与小说 reader 隔离。
  * 任何字段写入后会通过 [changes] 通知 UI 即时刷新。
  */
 object ComicReaderSettings {
 
-    private const val MMKV_ID = "comic_reader_v3"
-    private val store: MMKV by lazy { MMKV.mmkvWithID(MMKV_ID) }
+    private const val PREFS_NAME = "comic_reader_v3"
+    private val store: SharedPreferences by lazy { Shaft.getNamedPrefs(PREFS_NAME) }
 
     private val _changes = MutableLiveData<ChangeEvent>()
     val changes: LiveData<ChangeEvent> = _changes
@@ -33,75 +35,75 @@ object ComicReaderSettings {
 
     var readingMode: ReadingMode
         get() = runCatching {
-            ReadingMode.valueOf(store.decodeString(K_MODE, ReadingMode.Paged.name) ?: ReadingMode.Paged.name)
+            ReadingMode.valueOf(store.getString(K_MODE, ReadingMode.Paged.name) ?: ReadingMode.Paged.name)
         }.getOrDefault(ReadingMode.Paged)
-        set(value) { store.encode(K_MODE, value.name); emit(ChangeEvent.Layout) }
+        set(value) { store.edit { putString(K_MODE, value.name) }; emit(ChangeEvent.Layout) }
 
     var pageDirection: PageDirection
         get() = runCatching {
-            PageDirection.valueOf(store.decodeString(K_DIRECTION, PageDirection.LTR.name) ?: PageDirection.LTR.name)
+            PageDirection.valueOf(store.getString(K_DIRECTION, PageDirection.LTR.name) ?: PageDirection.LTR.name)
         }.getOrDefault(PageDirection.LTR)
-        set(value) { store.encode(K_DIRECTION, value.name); emit(ChangeEvent.Layout) }
+        set(value) { store.edit { putString(K_DIRECTION, value.name) }; emit(ChangeEvent.Layout) }
 
     var fitMode: FitMode
         get() = runCatching {
-            FitMode.valueOf(store.decodeString(K_FIT, FitMode.FitWidth.name) ?: FitMode.FitWidth.name)
+            FitMode.valueOf(store.getString(K_FIT, FitMode.FitWidth.name) ?: FitMode.FitWidth.name)
         }.getOrDefault(FitMode.FitWidth)
-        set(value) { store.encode(K_FIT, value.name); emit(ChangeEvent.Image) }
+        set(value) { store.edit { putString(K_FIT, value.name) }; emit(ChangeEvent.Image) }
 
     var backgroundDark: Boolean
-        get() = store.decodeBool(K_BG_DARK, true)
-        set(value) { store.encode(K_BG_DARK, value); emit(ChangeEvent.Theme) }
+        get() = store.getBoolean(K_BG_DARK, true)
+        set(value) { store.edit { putBoolean(K_BG_DARK, value) }; emit(ChangeEvent.Theme) }
 
     var useSystemBrightness: Boolean
-        get() = store.decodeBool(K_SYS_BRIGHTNESS, true)
-        set(value) { store.encode(K_SYS_BRIGHTNESS, value); emit(ChangeEvent.Brightness) }
+        get() = store.getBoolean(K_SYS_BRIGHTNESS, true)
+        set(value) { store.edit { putBoolean(K_SYS_BRIGHTNESS, value) }; emit(ChangeEvent.Brightness) }
 
     var customBrightness: Float
-        get() = store.decodeFloat(K_BRIGHTNESS, 0.5f).coerceIn(0.01f, 1f)
-        set(value) { store.encode(K_BRIGHTNESS, value.coerceIn(0.01f, 1f)); emit(ChangeEvent.Brightness) }
+        get() = store.getFloat(K_BRIGHTNESS, 0.5f).coerceIn(0.01f, 1f)
+        set(value) { store.edit { putFloat(K_BRIGHTNESS, value.coerceIn(0.01f, 1f)) }; emit(ChangeEvent.Brightness) }
 
     var warmFilterStrength: Float
-        get() = store.decodeFloat(K_WARM_FILTER, 0f).coerceIn(0f, 0.6f)
-        set(value) { store.encode(K_WARM_FILTER, value.coerceIn(0f, 0.6f)); emit(ChangeEvent.Theme) }
+        get() = store.getFloat(K_WARM_FILTER, 0f).coerceIn(0f, 0.6f)
+        set(value) { store.edit { putFloat(K_WARM_FILTER, value.coerceIn(0f, 0.6f)) }; emit(ChangeEvent.Theme) }
 
     var keepScreenOn: Boolean
-        get() = store.decodeBool(K_KEEP_SCREEN_ON, true)
-        set(value) { store.encode(K_KEEP_SCREEN_ON, value); emit(ChangeEvent.Interaction) }
+        get() = store.getBoolean(K_KEEP_SCREEN_ON, true)
+        set(value) { store.edit { putBoolean(K_KEEP_SCREEN_ON, value) }; emit(ChangeEvent.Interaction) }
 
     var immersive: Boolean
-        get() = store.decodeBool(K_IMMERSIVE, true)
-        set(value) { store.encode(K_IMMERSIVE, value); emit(ChangeEvent.Interaction) }
+        get() = store.getBoolean(K_IMMERSIVE, true)
+        set(value) { store.edit { putBoolean(K_IMMERSIVE, value) }; emit(ChangeEvent.Interaction) }
 
     var tapZoneReversed: Boolean
-        get() = store.decodeBool(K_TAP_REVERSED, false)
-        set(value) { store.encode(K_TAP_REVERSED, value); emit(ChangeEvent.Interaction) }
+        get() = store.getBoolean(K_TAP_REVERSED, false)
+        set(value) { store.edit { putBoolean(K_TAP_REVERSED, value) }; emit(ChangeEvent.Interaction) }
 
     var volumeKeyFlip: Boolean
-        get() = store.decodeBool(K_VOLUME_FLIP, true)
-        set(value) { store.encode(K_VOLUME_FLIP, value); emit(ChangeEvent.Interaction) }
+        get() = store.getBoolean(K_VOLUME_FLIP, true)
+        set(value) { store.edit { putBoolean(K_VOLUME_FLIP, value) }; emit(ChangeEvent.Interaction) }
 
     var preloadAhead: Int
-        get() = store.decodeInt(K_PRELOAD, 2).coerceIn(0, 8)
-        set(value) { store.encode(K_PRELOAD, value.coerceIn(0, 8)); emit(ChangeEvent.Image) }
+        get() = store.getInt(K_PRELOAD, 2).coerceIn(0, 8)
+        set(value) { store.edit { putInt(K_PRELOAD, value.coerceIn(0, 8)) }; emit(ChangeEvent.Image) }
 
     var showPageNumber: Boolean
-        get() = store.decodeBool(K_PAGE_NUM, true)
-        set(value) { store.encode(K_PAGE_NUM, value); emit(ChangeEvent.Layout) }
+        get() = store.getBoolean(K_PAGE_NUM, true)
+        set(value) { store.edit { putBoolean(K_PAGE_NUM, value) }; emit(ChangeEvent.Layout) }
 
     var loadOriginal: Boolean
-        get() = store.decodeBool(K_LOAD_ORIGINAL, true)
-        set(value) { store.encode(K_LOAD_ORIGINAL, value); emit(ChangeEvent.Image) }
+        get() = store.getBoolean(K_LOAD_ORIGINAL, true)
+        set(value) { store.edit { putBoolean(K_LOAD_ORIGINAL, value) }; emit(ChangeEvent.Image) }
 
     var flipAnim: FlipAnim
         get() = runCatching {
-            FlipAnim.valueOf(store.decodeString(K_FLIP_ANIM, FlipAnim.Slide.name) ?: FlipAnim.Slide.name)
+            FlipAnim.valueOf(store.getString(K_FLIP_ANIM, FlipAnim.Slide.name) ?: FlipAnim.Slide.name)
         }.getOrDefault(FlipAnim.Slide)
-        set(value) { store.encode(K_FLIP_ANIM, value.name); emit(ChangeEvent.Layout) }
+        set(value) { store.edit { putString(K_FLIP_ANIM, value.name) }; emit(ChangeEvent.Layout) }
 
     var doubleTapZoomLevel: Float
-        get() = store.decodeFloat(K_DBLTAP_ZOOM, 2.5f).coerceIn(1.5f, 5f)
-        set(value) { store.encode(K_DBLTAP_ZOOM, value.coerceIn(1.5f, 5f)); emit(ChangeEvent.Image) }
+        get() = store.getFloat(K_DBLTAP_ZOOM, 2.5f).coerceIn(1.5f, 5f)
+        set(value) { store.edit { putFloat(K_DBLTAP_ZOOM, value.coerceIn(1.5f, 5f)) }; emit(ChangeEvent.Image) }
 
     /** 漫画通常右翻页（RTL）；Pixiv 多页插画一般 LTR。提供一键切换。 */
     fun toggleDirection() {

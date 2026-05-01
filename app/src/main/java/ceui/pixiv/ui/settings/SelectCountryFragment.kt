@@ -10,14 +10,16 @@ import ceui.pixiv.ui.common.ListMode
 import ceui.pixiv.ui.common.PixivFragment
 import ceui.pixiv.ui.common.setUpCustomAdapter
 import ceui.pixiv.ui.common.viewBinding
-import com.tencent.mmkv.MMKV
+import android.content.SharedPreferences
+import androidx.core.content.edit
+import ceui.lisa.activities.Shaft
 
 class SelectCountryFragment : PixivFragment(R.layout.fragment_pixiv_list), SelectCountryActionReceiver {
 
     private val binding by viewBinding(FragmentPixivListBinding::bind)
     private val viewModel by viewModels<SelectCountryViewModel>()
-    private val prefStore: MMKV by lazy {
-        MMKV.defaultMMKV()
+    private val prefStore: SharedPreferences by lazy {
+        Shaft.getDefaultPrefs()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -31,7 +33,7 @@ class SelectCountryFragment : PixivFragment(R.layout.fragment_pixiv_list), Selec
     }
 
     override fun selectCountry(country: Country) {
-        prefStore.putString(SessionManager.CONTENT_LANGUAGE_KEY, country.nameCode)
+        prefStore.edit { putString(SessionManager.CONTENT_LANGUAGE_KEY, country.nameCode) }
     }
 }
 

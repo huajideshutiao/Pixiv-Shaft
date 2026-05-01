@@ -2,12 +2,13 @@ package ceui.pixiv.download.config
 
 import ceui.lisa.R
 import ceui.lisa.activities.Shaft
+import android.content.SharedPreferences
+import androidx.core.content.edit
 import com.hjq.toast.ToastUtils
-import com.tencent.mmkv.MMKV
 import timber.log.Timber
 
 /**
- * MMKV-backed persistence for [DownloadConfig].
+ * SharedPreferences-backed persistence for [DownloadConfig].
  *
  * First launch:
  *   [load] sees no stored value → returns `LoadResult.FirstRun(fallback())` without
@@ -24,10 +25,10 @@ import timber.log.Timber
  */
 class DownloadConfigStore(
     private val fallback: () -> DownloadConfig,
-    mmkvId: String = DEFAULT_MMKV_ID,
+    prefsName: String = DEFAULT_PREFS_NAME,
 ) {
 
-    private val store: MMKV by lazy { MMKV.mmkvWithID(mmkvId) }
+    private val store: SharedPreferences by lazy { Shaft.getNamedPrefs(prefsName) }
 
     sealed interface LoadResult {
         val config: DownloadConfig
@@ -39,11 +40,9 @@ class DownloadConfigStore(
 
     fun load(): LoadResult {
         val raw = try {
-            store.decodeString(KEY)
+            store.getString(KEY, null)
         } catch (t: Throwable) {
-            // MMKV native error or not-yet-initialised — fall back without
-            // claiming the stored payload is corrupt, since we never read it.
-            Timber.e(t, "DownloadConfigStore.load: MMKV decodeString failed")
+            Timber.e(t, "DownloadConfigStore.load: SharedPreferences getString failed")
             return LoadResult.Corrupt(fallback(), t)
         } ?: return LoadResult.FirstRun(fallback())
         return try {
@@ -58,7 +57,7 @@ class DownloadConfigStore(
 
     fun save(config: DownloadConfig) {
         try {
-            store.encode(KEY, DownloadConfigJson.toJson(config))
+            store.edit { putString(KEY, DownloadConfigJson.toJson(config)) }
         } catch (t: Throwable) {
             Timber.e(t, "DownloadConfigStore.save failed")
             ToastUtils.show(
@@ -77,11 +76,11 @@ class DownloadConfigStore(
     }
 
     fun reset() {
-        store.removeValueForKey(KEY)
+        store.edit { remove(KEY) }
     }
 
     companion object {
-        const val DEFAULT_MMKV_ID = "download_config_v1"
+        const val DEFAULT_PREFS_NAME = "download_config_v1"
         private const val KEY = "config"
     }
 }

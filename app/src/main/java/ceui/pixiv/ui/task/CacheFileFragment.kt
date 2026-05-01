@@ -14,14 +14,13 @@ import ceui.pixiv.utils.setOnClick
 import ceui.pixiv.ui.common.viewBinding
 import ceui.pixiv.utils.animateWiggle
 import com.google.gson.Gson
-import com.tencent.mmkv.MMKV
 import timber.log.Timber
 
 class CacheFileFragment : PixivFragment(R.layout.fragment_pixiv_list) {
 
     private val binding by viewBinding(FragmentPixivListBinding::bind)
     private val args by navArgs<CacheFileFragmentArgs>()
-    private val prefStore by lazy { MMKV.mmkvWithID("user-tasks") }
+    private val prefStore by lazy { ceui.lisa.activities.Shaft.getNamedPrefs("user-tasks") }
     private val viewModel by pixivListViewModel({ Pair(requireActivity(), args.task) }) { (activity, task) ->
         Timber.d("task: ${task}")
         if (task.taskType == PixivTaskType.DownloadSeriesNovels) {

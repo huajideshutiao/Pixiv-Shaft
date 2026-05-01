@@ -86,8 +86,6 @@ import ceui.loxia.ObjectType;
 import ceui.loxia.flag.FlagDescFragment;
 import ceui.loxia.flag.FlagReasonFragment;
 import ceui.pixiv.ui.comments.CommentsFragment;
-import ceui.pixiv.ui.prime.PrimeTagDetailFragment;
-import ceui.pixiv.ui.prime.PrimeTagsFragment;
 
 public class TemplateActivity extends BaseActivity<ActivityFragmentBinding> implements ColorPickerDialogListener {
 
@@ -249,43 +247,6 @@ public class TemplateActivity extends BaseActivity<ActivityFragmentBinding> impl
                 }
                 case "图片详情":
                     return FragmentImageDetail.newInstance(intent.getStringExtra(Params.URL), intent.getStringExtra(Params.TITLE));
-                case "画质增强对比":
-                    return ceui.pixiv.ui.upscale.UpscaleCompareFragment.newInstance(
-                            intent.getStringExtra("upscaled_path"),
-                            intent.getStringExtra("original_path"));
-                case "AI画质提升":
-                    return new ceui.pixiv.ui.upscale.FragmentAiUpscale();
-                case "OCR结果":
-                    return ceui.pixiv.ui.upscale.OcrResultFragment.newInstance(
-                            intent.getStringArrayListExtra("ocr_texts"));
-                case "主体高亮":
-                    return ceui.pixiv.ui.upscale.RembgHighlightFragment.newInstance(
-                            intent.getStringExtra("original_path"),
-                            intent.getStringExtra("rembg_path"));
-                case "抠图预览":
-                    return ceui.pixiv.ui.upscale.RembgPreviewFragment.newInstance(
-                            intent.getStringExtra("rembg_path"));
-                case "模型下载":
-                    return ceui.pixiv.ui.upscale.RembgModelDownloadFragment.newInstance(
-                            intent.getStringExtra("model_name"));
-                case "翻译模型下载":
-                    return ceui.pixiv.ui.translate.TranslationModelDownloadFragment.newInstance(
-                            intent.getStringExtra("translation_model_name"));
-                case "漫画翻译":
-                    return ceui.pixiv.ui.translate.MangaTranslationFragment.newInstance(
-                            intent.getStringExtra("translated_path"),
-                            intent.getStringExtra("original_path"));
-                case "漫画OCR模型下载":
-                    return ceui.pixiv.ui.translate.MangaOcrDownloadFragment.newInstance(
-                            intent.getStringExtra("manga_ocr_model_name"));
-                case "NLLB翻译模型下载":
-                    return ceui.pixiv.ui.translate.NllbDownloadFragment.newInstance(
-                            intent.getStringExtra("nllb_model_name"));
-                case "Sakura翻译模型下载":
-                    return ceui.pixiv.ui.translate.SakuraDownloadFragment.newInstance(
-                            intent.getStringExtra("sakura_model_name"));
-                case "Sakura翻译":
-                    return new ceui.pixiv.ui.translate.SakuraTranslateDemoFragment();
                 case "绑定邮箱":
                     return new FragmentEditAccount();
                 case "编辑个人资料":
@@ -314,16 +275,6 @@ public class TemplateActivity extends BaseActivity<ActivityFragmentBinding> impl
                     return new FragmentFeature();
                 case "我的作业环境":
                     return new FragmentWorkSpace();
-                case "PrimeTagsList":
-                    return new PrimeTagsFragment();
-                case "PrimeTagDetail":
-                    String path = intent.getStringExtra("path");
-                    assert path != null;
-
-                    String name = intent.getStringExtra("name");
-                    assert name != null;
-
-                    return PrimeTagDetailFragment.Companion.newInstance(name, path);
                 case "存储访问":
                     return new FragmentStorage();
                 case "任务中心":

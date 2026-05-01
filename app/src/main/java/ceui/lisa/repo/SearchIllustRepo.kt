@@ -1,7 +1,6 @@
 package ceui.lisa.repo
 
 import android.text.TextUtils
-import ceui.lisa.activities.Shaft
 import ceui.lisa.core.FilterMapper
 import ceui.lisa.core.RemoteRepo
 import ceui.lisa.http.Retro
@@ -10,7 +9,6 @@ import ceui.lisa.utils.PixivOperate
 import ceui.lisa.utils.PixivSearchParamUtil
 import ceui.lisa.utils.SearchTypeUtil
 import ceui.lisa.viewmodel.SearchModel
-import ceui.pixiv.ui.prime.PrimeIllustLoader
 import io.reactivex.Observable
 import io.reactivex.functions.Function
 
@@ -71,10 +69,6 @@ class SearchIllustRepo(
     }
 
     private fun loadTrendingBuiltinIllusts(): Observable<ListIllust> {
-        val result = PrimeIllustLoader.loadForKeyword(keyword)
-        if (result != null) {
-            return Observable.just(result)
-        }
         return Retro.getAppApi().popularPreview(
             keyword ?: "", startDate, endDate, searchType
         )

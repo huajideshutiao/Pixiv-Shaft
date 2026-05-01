@@ -38,12 +38,6 @@ class AddComicBookmarkUseCase(private val repo: ComicBookmarkRepository) {
         val preview = page.previewUrl.ifEmpty { page.originalUrl }
         repo.add(
             ComicBookmarkEntity(
-                illust.id.toLong(),
-                pageIndex,
-                pages.size,
-                preview,
-                note,
-                System.currentTimeMillis(),
             )
         )
         return Result.Added(pageIndex)

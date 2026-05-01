@@ -69,9 +69,6 @@ public class Settings {
     //主页显示R18
     private boolean mainViewR18 = false;
 
-    //是否启用 FIREBASE_ANALYTICS_COLLECTION
-    private boolean isFirebaseEnable = true;
-
     private long currentProgress = 0L;
 
     public long getCurrentProgress() {
@@ -146,12 +143,6 @@ public class Settings {
 
     //单P作品的文件名是否带P0
     private boolean hasP0 = false;
-
-    //作品详情使用新页面
-    private boolean useFragmentIllust = true;
-
-    //作品详情使用V3沉浸式页面
-    private boolean useArtworkV3 = false;
 
     private String illustPath = "";
 
@@ -294,14 +285,6 @@ public class Settings {
         }
     }
 
-    public boolean isFirebaseEnable() {
-        return isFirebaseEnable;
-    }
-
-    public void setFirebaseEnable(boolean firebaseEnable) {
-        isFirebaseEnable = firebaseEnable;
-    }
-
     public void setThemeType(AppCompatActivity activity, ThemeHelper.ThemeType themeType) {
         this.themeType = themeType.name();
         ThemeHelper.applyTheme(activity, themeType);
@@ -386,22 +369,6 @@ public class Settings {
 
     public void setMainViewR18(boolean mainViewR18) {
         this.mainViewR18 = mainViewR18;
-    }
-
-    public boolean isUseFragmentIllust() {
-        return useFragmentIllust;
-    }
-
-    public void setUseFragmentIllust(boolean useFragmentIllust) {
-        this.useFragmentIllust = useFragmentIllust;
-    }
-
-    public boolean isUseArtworkV3() {
-        return useArtworkV3;
-    }
-
-    public void setUseArtworkV3(boolean useArtworkV3) {
-        this.useArtworkV3 = useArtworkV3;
     }
 
     public boolean isViewHistoryAnimate() {
@@ -713,26 +680,6 @@ public class Settings {
 
     public void setArtworkV3FabDownloadOnLeft(boolean artworkV3FabDownloadOnLeft) {
         this.artworkV3FabDownloadOnLeft = artworkV3FabDownloadOnLeft;
-    }
-
-    private String defaultUpscaleModel = "";
-
-    public String getDefaultUpscaleModel() {
-        return defaultUpscaleModel == null ? "" : defaultUpscaleModel;
-    }
-
-    public void setDefaultUpscaleModel(String defaultUpscaleModel) {
-        this.defaultUpscaleModel = defaultUpscaleModel;
-    }
-
-    private String defaultRembgModel = "";
-
-    public String getDefaultRembgModel() {
-        return defaultRembgModel == null ? "" : defaultRembgModel;
-    }
-
-    public void setDefaultRembgModel(String defaultRembgModel) {
-        this.defaultRembgModel = defaultRembgModel;
     }
 
     // "" = 每次询问（弹出格式选择），否则存 ExportFormat 枚举名（Txt / Markdown / Epub / Pdf）

@@ -47,6 +47,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.util.Locale
 import kotlin.math.roundToInt
+import androidx.core.view.isVisible
 
 class LandingViewModel : ViewModel() {
     val isChecked = MutableLiveData(false)
@@ -68,7 +69,6 @@ class FragmentLogin : BaseFragment<ActivityLoginBinding>() {
 
     private var selectedTag = "en"
     private var cycleIndex = 0
-    private var greetingCycleJob: Job? = null
     private val rowChecks = mutableMapOf<String, View>()
 
     // ── Lifecycle ──
@@ -81,44 +81,14 @@ class FragmentLogin : BaseFragment<ActivityLoginBinding>() {
         setupInsets()
         setupToolbar()
 
-        // On API 33+, wait for shader to compile before showing content
-        val waitForShader = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
-
-        if (waitForShader) {
-            baseBind.tunnelBackground.alpha = 0f
-            baseBind.gradientScrim.alpha = 0f
-            baseBind.toolbar.alpha = 0f
-            baseBind.tunnelBackground.onReadyListener = {
-                val dur = 800L
-                baseBind.tunnelBackground.animate().alpha(1f).setDuration(1200).start()
-                baseBind.gradientScrim.animate().alpha(1f).setDuration(dur).start()
-                baseBind.toolbar.animate().alpha(1f).setDuration(dur).start()
-                baseBind.loadingSpinner.animate()
-                    .alpha(0f)
-                    .setDuration(300)
-                    .withEndAction { baseBind.loadingSpinner.visibility = View.GONE }
-                    .start()
-                val activePage = if (baseBind.languagePage.root.visibility != View.GONE)
-                    baseBind.languagePage.root else baseBind.loginPage.root
-                activePage.animate().alpha(1f).setDuration(dur).start()
-            }
-        } else {
-            baseBind.loadingSpinner.visibility = View.GONE
-        }
+        baseBind.loadingSpinner.visibility = View.GONE
 
         if (AppLocales.hasUserConfigured) {
             baseBind.languagePage.root.visibility = View.GONE
-            baseBind.loginPage.root.apply {
-                visibility = View.VISIBLE
-                alpha = 0f
-                if (!waitForShader) {
-                    animate().alpha(1f).setDuration(500).start()
-                }
-            }
+            baseBind.loginPage.root.visibility = View.VISIBLE
         } else {
-            if (waitForShader) {
-                baseBind.languagePage.root.alpha = 0f
-            }
+            baseBind.languagePage.root.visibility = View.VISIBLE
+            baseBind.loginPage.root.visibility = View.GONE
             setupLanguagePage()
         }
         setupLoginPage()
@@ -187,7 +157,6 @@ class FragmentLogin : BaseFragment<ActivityLoginBinding>() {
 
         buildRows(baseBind.languagePage.rowsContainer)
         applyContinueLabel()
-        startGreetingCycle()
 
         baseBind.languagePage.continueButton.setOnClickListener { transitionToLogin() }
     }
@@ -206,7 +175,7 @@ class FragmentLogin : BaseFragment<ActivityLoginBinding>() {
             rowChecks[tag] = row.languageCheck
 
             if (idx < AppLocales.supportedTags.lastIndex) {
-                View(container.context).apply { setBackgroundColor(0x33FFFFFF) }.also {
+                View(container.context).apply { setBackgroundColor(0x1A000000) }.also {
                     container.addView(
                         it, ViewGroup.LayoutParams(
                             ViewGroup.LayoutParams.MATCH_PARENT, dp(0.5f).coerceAtLeast(1)
@@ -227,32 +196,13 @@ class FragmentLogin : BaseFragment<ActivityLoginBinding>() {
         applyContinueLabel()
     }
 
-    private fun startGreetingCycle() {
-        greetingCycleJob = viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                while (isActive) {
-                    delay(2200L)
-                    cycleIndex = (cycleIndex + 1) % greetings.size
-                    fadeGreetingTo(greetings[cycleIndex])
-                }
-            }
-        }
-    }
-
     private fun applyGreeting(g: Greeting) {
         baseBind.languagePage.greetingHero.text = g.hero
         baseBind.languagePage.greetingSubtitle.text = g.subtitle
     }
 
     private fun fadeGreetingTo(g: Greeting) {
-        val hero = baseBind.languagePage.greetingHero
-        val subtitle = baseBind.languagePage.greetingSubtitle
-        subtitle.animate().alpha(0f).setDuration(180).start()
-        hero.animate().alpha(0f).setDuration(180).withEndAction {
-            applyGreeting(g)
-            hero.animate().alpha(1f).setDuration(260).start()
-            subtitle.animate().alpha(0.75f).setDuration(260).start()
-        }.start()
+        applyGreeting(g)
     }
 
     private fun applyContinueLabel() {
@@ -282,7 +232,6 @@ class FragmentLogin : BaseFragment<ActivityLoginBinding>() {
     // ── Page transition ──
 
     private fun transitionToLogin() {
-        greetingCycleJob?.cancel()
         // Apply locale immediately — triggers Activity recreation.
         // After recreation, hasUserConfigured=true → login page shows
         // directly with correct locale strings + fade-in animation.

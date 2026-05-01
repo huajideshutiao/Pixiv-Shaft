@@ -541,7 +541,7 @@ public class Manager {
             Common.showLog("downloadOne " + s);
 
             if(downloadItem.getIllust().isGif()){
-                Shaft.getMMKV().encode(Params.ILLUST_ID + "_" + downloadItem.getIllust().getId(), true);
+                Shaft.getDefaultPrefs().edit().putBoolean(Params.ILLUST_ID + "_" + downloadItem.getIllust().getId(), true).apply();
                 AndroidSchedulers.mainThread().scheduleDirect(() ->
                     PixivOperate.unzipAndPlay(context, downloadItem.getIllust(), downloadItem.isAutoSave()));
             }
