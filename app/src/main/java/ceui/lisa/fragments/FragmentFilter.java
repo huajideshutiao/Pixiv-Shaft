@@ -6,24 +6,22 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
+import androidx.annotation.Nullable;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.google.android.material.datepicker.MaterialDatePicker;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Calendar;
 
-import androidx.annotation.Nullable;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
 import ceui.lisa.R;
 import ceui.lisa.activities.Shaft;
 import ceui.lisa.databinding.FragmentFilterBinding;
-import ceui.lisa.utils.Common;
-import ceui.lisa.viewmodel.SearchModel;
-
 import ceui.lisa.utils.PixivSearchParamUtil;
+import ceui.lisa.viewmodel.SearchModel;
 
 public class FragmentFilter extends BaseFragment<FragmentFilterBinding> {
 
@@ -148,20 +146,25 @@ public class FragmentFilter extends BaseFragment<FragmentFilterBinding> {
                 }
             }
         });*/
-        baseBind.restrictionToggle.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
-            if (isChecked) {
-                int value;
-                if (checkedId == R.id.restriction_btn_0) {
-                    value = 0;
-                } else if (checkedId == R.id.restriction_btn_1) {
-                    value = 1;
-                } else {
-                    value = 2;
-                }
-                searchModel.getR18Restriction().setValue(value);
-                performSearch();
+        baseBind.restrictionBtn0.setSelected(true);
+        View.OnClickListener restrictionListener = v -> {
+            int value;
+            if (v.getId() == R.id.restriction_btn_0) {
+                value = 0;
+            } else if (v.getId() == R.id.restriction_btn_1) {
+                value = 1;
+            } else {
+                value = 2;
             }
-        });
+            baseBind.restrictionBtn0.setSelected(v.getId() == R.id.restriction_btn_0);
+            baseBind.restrictionBtn1.setSelected(v.getId() == R.id.restriction_btn_1);
+            baseBind.restrictionBtn2.setSelected(v.getId() == R.id.restriction_btn_2);
+            searchModel.getR18Restriction().setValue(value);
+            performSearch();
+        };
+        baseBind.restrictionBtn0.setOnClickListener(restrictionListener);
+        baseBind.restrictionBtn1.setOnClickListener(restrictionListener);
+        baseBind.restrictionBtn2.setOnClickListener(restrictionListener);
 
     }
 

@@ -1,5 +1,7 @@
 package ceui.lisa.adapters;
 
+import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -22,13 +24,10 @@ import ceui.lisa.database.MuteEntity;
 import ceui.lisa.databinding.RecyViewHistoryBinding;
 import ceui.lisa.models.IllustsBean;
 import ceui.lisa.models.NovelBean;
+import ceui.lisa.utils.DensityUtil;
 import ceui.lisa.utils.GlideUtil;
 import ceui.lisa.utils.Params;
-import ceui.pixiv.utils.BlurUtilsKt;
 import ceui.pixiv.utils.FastBlurTransformation;
-import ceui.lisa.utils.DensityUtil;
-
-import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
 
 //屏蔽作品历史
 public class MuteWorksAdapter extends BaseAdapter<MuteEntity, RecyViewHistoryBinding> {
@@ -60,21 +59,12 @@ public class MuteWorksAdapter extends BaseAdapter<MuteEntity, RecyViewHistoryBin
             bindView.baseBind.illustImage.setLayoutParams(params);
 
             IllustsBean current = Shaft.sGson.fromJson(allItems.get(position).getTagJson(), IllustsBean.class);
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-                BlurUtilsKt.applyBlur(bindView.baseBind.illustImage, 25f);
-                Glide.with(mContext)
-                        .load(GlideUtil.getMediumImg(current))
-                        .override(200)
-                        .placeholder(R.color.light_bg)
-                        .into(bindView.baseBind.illustImage);
-            } else {
-                Glide.with(mContext)
-                        .load(GlideUtil.getMediumImg(current))
-                        .override(200)
-                        .apply(bitmapTransform(new FastBlurTransformation(25)))
-                        .placeholder(R.color.light_bg)
-                        .into(bindView.baseBind.illustImage);
-            }
+            Glide.with(mContext)
+                .load(GlideUtil.getMediumImg(current))
+                .override(200)
+                .apply(bitmapTransform(new FastBlurTransformation(25)))
+                .placeholder(R.color.light_bg)
+                .into(bindView.baseBind.illustImage);
             bindView.baseBind.title.setText(current.getTitle());
             bindView.baseBind.author.setText(String.format("by: %s", current.getUser().getName()));
 

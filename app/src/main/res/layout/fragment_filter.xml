@@ -251,38 +251,34 @@
                 android:layout_height="wrap_content" />
 
 
-            <com.google.android.material.button.MaterialButtonToggleGroup
+            <LinearLayout
                 android:id="@+id/restriction_toggle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/restriction_label"
                 android:layout_marginHorizontal="@dimen/sixteen_dp"
                 android:layout_marginBottom="@dimen/sixteen_dp"
-                app:singleSelection="true"
-                app:checkedButton="@+id/restriction_btn_0">
+                android:orientation="horizontal">
 
-                <com.google.android.material.button.MaterialButton
+                <Button
                     android:id="@+id/restriction_btn_0"
-                    style="?attr/materialButtonOutlinedStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/string_289" />
 
-                <com.google.android.material.button.MaterialButton
+                <Button
                     android:id="@+id/restriction_btn_1"
-                    style="?attr/materialButtonOutlinedStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/string_440" />
 
-                <com.google.android.material.button.MaterialButton
+                <Button
                     android:id="@+id/restriction_btn_2"
-                    style="?attr/materialButtonOutlinedStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/string_441" />
 
-            </com.google.android.material.button.MaterialButtonToggleGroup>
+            </LinearLayout>
 
         </RelativeLayout>
 

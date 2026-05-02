@@ -12,8 +12,6 @@ import java.security.MessageDigest
 
 /**
  * 高性能模糊方案
- * 方案A: 针对旧版本，通过降采样 + FastBlur 实现
- * 方案B: 针对 Android 12+，使用 RenderEffect 实现硬件加速模糊
  */
 
 class FastBlurTransformation(private val radius: Int = 15) : BitmapTransformation() {
@@ -33,7 +31,6 @@ class FastBlurTransformation(private val radius: Int = 15) : BitmapTransformatio
         return radius
     }
 }
-
 fun ImageView.applyBlur(radius: Float = 25f) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         this.setRenderEffect(RenderEffect.createBlurEffect(radius, radius, Shader.TileMode.CLAMP))

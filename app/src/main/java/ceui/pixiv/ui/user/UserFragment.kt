@@ -1,6 +1,5 @@
 package ceui.pixiv.ui.user
 
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -16,32 +15,23 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import ceui.lisa.R
 import ceui.lisa.activities.followUser
 import ceui.lisa.activities.unfollowUser
-import ceui.lisa.databinding.FragmentPixivListBinding
 import ceui.lisa.databinding.FragmentUserBinding
 import ceui.lisa.utils.GlideUrlChild
 import ceui.lisa.utils.Params
-import ceui.loxia.Illust
-import ceui.loxia.ObjectPool
 import ceui.loxia.ObjectType
 import ceui.loxia.RefreshHint
 import ceui.loxia.RefreshState
-import ceui.loxia.User
 import ceui.loxia.pushFragment
 import ceui.loxia.requireEntityWrapper
-import ceui.pixiv.db.EntityWrapper
 import ceui.pixiv.ui.chats.SeeMoreAction
 import ceui.pixiv.ui.chats.SeeMoreType
-import ceui.pixiv.ui.circles.SmartFragmentPagerAdapter
 import ceui.pixiv.ui.common.FitsSystemWindowFragment
+import ceui.pixiv.ui.common.ImageUrlViewer
 import ceui.pixiv.ui.common.PixivFragment
 import ceui.pixiv.ui.common.ViewPagerFragment
 import ceui.pixiv.ui.common.constructVM
 import ceui.pixiv.ui.common.viewBinding
-import ceui.pixiv.ui.common.ImageUrlViewer
-import ceui.pixiv.ui.detail.ArtworksMap
-import ceui.pixiv.ui.works.blurBackground
 import ceui.pixiv.utils.FastBlurTransformation
-import ceui.pixiv.utils.applyBlur
 import ceui.pixiv.utils.ppppx
 import ceui.pixiv.utils.setOnClick
 import com.blankj.utilcode.util.BarUtils
@@ -95,19 +85,11 @@ class UserFragment : PixivFragment(R.layout.fragment_user), ViewPagerFragment, S
             binding.iconPrime.isVisible = profile.isPremium()
             val bannerUrl = profile.profile?.background_image_url
             if (!bannerUrl.isNullOrEmpty()) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    binding.pageBackground.applyBlur(25f)
-                    Glide.with(this).load(GlideUrlChild(bannerUrl))
-                        .override(200)
-                        .transition(withCrossFade())
-                        .into(binding.pageBackground)
-                } else {
-                    Glide.with(this).load(GlideUrlChild(bannerUrl))
-                        .override(200)
-                        .apply(bitmapTransform(FastBlurTransformation(15)))
-                        .transition(withCrossFade())
-                        .into(binding.pageBackground)
-                }
+                Glide.with(this).load(GlideUrlChild(bannerUrl))
+                    .override(200)
+                    .apply(bitmapTransform(FastBlurTransformation(15)))
+                    .transition(withCrossFade())
+                    .into(binding.pageBackground)
                 val uid = profile.user?.id ?: safeArgs.userId
                 val uname = profile.user?.name ?: ""
                 binding.pageBackground.setOnClick {
@@ -126,19 +108,11 @@ class UserFragment : PixivFragment(R.layout.fragment_user), ViewPagerFragment, S
             if (viewModel.userProfile.value?.profile?.background_image_url.isNullOrEmpty()) {
                 val url = blurIllust?.image_urls?.large
                 if (url?.isNotEmpty() == true) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                        binding.pageBackground.applyBlur(25f)
-                        Glide.with(this).load(GlideUrlChild(url))
-                            .override(200)
-                            .transition(withCrossFade())
-                            .into(binding.pageBackground)
-                    } else {
-                        Glide.with(this).load(GlideUrlChild(url))
-                            .override(200)
-                            .apply(bitmapTransform(FastBlurTransformation(15)))
-                            .transition(withCrossFade())
-                            .into(binding.pageBackground)
-                    }
+                    Glide.with(this).load(GlideUrlChild(url))
+                        .override(200)
+                        .apply(bitmapTransform(FastBlurTransformation(15)))
+                        .transition(withCrossFade())
+                        .into(binding.pageBackground)
                 }
             }
         }

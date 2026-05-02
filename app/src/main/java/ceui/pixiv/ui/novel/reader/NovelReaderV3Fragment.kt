@@ -10,13 +10,13 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.appcompat.app.AlertDialog
 import ceui.lisa.R
 import ceui.lisa.activities.Shaft
 import ceui.lisa.activities.VActivity
@@ -35,30 +35,29 @@ import ceui.pixiv.ui.common.ImageUrlViewer
 import ceui.pixiv.ui.common.NOVEL_URL_HEAD
 import ceui.pixiv.ui.common.shareNovel
 import ceui.pixiv.ui.common.viewBinding
-import java.util.UUID
-import ceui.pixiv.ui.novel.reader.model.PageGeometry
 import ceui.pixiv.ui.novel.reader.export.ExportFormat
 import ceui.pixiv.ui.novel.reader.export.ExportResult
 import ceui.pixiv.ui.novel.reader.model.HighlightColor
 import ceui.pixiv.ui.novel.reader.model.HighlightSpan
+import ceui.pixiv.ui.novel.reader.model.PageGeometry
+import ceui.pixiv.ui.novel.reader.model.ReadingDirection
 import ceui.pixiv.ui.novel.reader.model.SearchHit
 import ceui.pixiv.ui.novel.reader.model.TextSelection
+import ceui.pixiv.ui.novel.reader.paginate.ChapterOutlineEntry
+import ceui.pixiv.ui.novel.reader.paginate.ImageResolver
 import ceui.pixiv.ui.novel.reader.paginate.TypeStyle
 import ceui.pixiv.ui.novel.reader.render.GlideImageBitmapSource
 import ceui.pixiv.ui.novel.reader.render.HighlightRange
-import ceui.pixiv.ui.novel.reader.model.ReadingDirection
-import ceui.pixiv.ui.novel.reader.paginate.ImageResolver
 import ceui.pixiv.ui.novel.reader.render.NovelReaderView
 import ceui.pixiv.ui.novel.reader.render.NovelScrollReaderView
-import ceui.pixiv.ui.novel.reader.render.ReaderTextBlockView
 import ceui.pixiv.ui.novel.reader.render.PageOverlays
+import ceui.pixiv.ui.novel.reader.render.ReaderTextBlockView
 import ceui.pixiv.ui.novel.reader.settings.ReaderSettings
 import ceui.pixiv.ui.novel.reader.settings.ReaderTheme
 import ceui.pixiv.ui.novel.reader.ui.AnnotationSheetCallback
 import ceui.pixiv.ui.novel.reader.ui.AnnotationsSheet
 import ceui.pixiv.ui.novel.reader.ui.BookmarkSheetCallback
 import ceui.pixiv.ui.novel.reader.ui.BookmarksSheet
-import ceui.pixiv.ui.novel.reader.paginate.ChapterOutlineEntry
 import ceui.pixiv.ui.novel.reader.ui.ChapterListSheet
 import ceui.pixiv.ui.novel.reader.ui.ChapterSheetCallback
 import ceui.pixiv.ui.novel.reader.ui.ExportFormatCallback
@@ -75,7 +74,7 @@ import ceui.pixiv.ui.novel.reader.ui.SearchHitsSheet
 import ceui.pixiv.ui.novel.reader.ui.SeriesListSheet
 import ceui.pixiv.ui.novel.reader.ui.SeriesNavCallback
 import kotlinx.coroutines.launch
-import timber.log.Timber
+import java.util.UUID
 
 class NovelReaderV3Fragment : Fragment(R.layout.fragment_novel_reader_v3),
     SeriesNavCallback, ExportFormatCallback, BookmarkSheetCallback, AnnotationSheetCallback,
@@ -92,6 +91,7 @@ class NovelReaderV3Fragment : Fragment(R.layout.fragment_novel_reader_v3),
     // Held so ensureScrollReaderView's onScrollProgressChanged callback can
     // drive the bottom seekbar without having to be inlined into onViewCreated.
     private var bottomBar: ReaderBottomBar? = null
+    private var topBar: ReaderTopBar? = null
 
     private var searchRegex: Boolean = false
     private var activeSelection: TextSelection? = null
@@ -120,6 +120,7 @@ class NovelReaderV3Fragment : Fragment(R.layout.fragment_novel_reader_v3),
         }.also { rv.setBitmapSource(it) }
 
         val tb = ReaderTopBar(binding.readerTopBar)
+        topBar = tb
         val bb = ReaderBottomBar(binding.readerBottomBar)
         bottomBar = bb
         val ch = ReaderChrome(tb, bb)
@@ -524,6 +525,40 @@ class NovelReaderV3Fragment : Fragment(R.layout.fragment_novel_reader_v3),
         ReaderTheme.findPresetById(ReaderSettings.themeId)?.isDark == true
 
     private fun showTopMoreMenu() {
+        val anchor = topBar?.moreButtonView ?: return
+        val popup = android.widget.PopupMenu(requireContext(), anchor)
+        popup.menu.add(0, 1, 0, getString(R.string.export_novel))
+        popup.menu.add(0, 2, 0, getString(R.string.novel_actions_share))
+        popup.menu.add(0, 3, 0, getString(R.string.webview_handler_open_in_browser))
+        popup.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                1 -> showExportSheet()
+                2 -> doShareNovel()
+                3 -> openInBrowser()
+            }
+            true
+        }
+        popup.show()
+    }
+
+    private fun showReaderOverflowMenu() {
+        val anchor = bottomBar?.moreButtonView ?: return
+        val popup = android.widget.PopupMenu(requireContext(), anchor)
+        popup.menu.add(0, 1, 0, getString(R.string.export_novel))
+        popup.menu.add(0, 2, 0, getString(R.string.novel_actions_share))
+        popup.menu.add(0, 3, 0, getString(R.string.webview_handler_open_in_browser))
+        popup.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                1 -> showExportSheet()
+                2 -> doShareNovel()
+                3 -> openInBrowser()
+            }
+            true
+        }
+        popup.show()
+    }
+
+    private fun doShareNovel() {
         val novelId = resolveNovelId()
         if (novelId == 0L) return
         viewLifecycleOwner.lifecycleScope.launch {
@@ -534,10 +569,20 @@ class NovelReaderV3Fragment : Fragment(R.layout.fragment_novel_reader_v3),
                 Toast.makeText(requireContext(), getString(R.string.msg_novel_loading), Toast.LENGTH_SHORT).show()
                 return@launch
             }
+            shareNovel(novel)
         }
     }
 
-    private fun showReaderOverflowMenu() {
+    private fun openInBrowser() {
+        val novelId = resolveNovelId()
+        if (novelId == 0L) return
+        val url = "$NOVEL_URL_HEAD$novelId"
+        try {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+        } catch (e: Exception) {
+            Toast.makeText(requireContext(), getString(R.string.msg_no_browser), Toast.LENGTH_SHORT)
+                .show()
+        }
     }
 
     private fun showExportSheet() {

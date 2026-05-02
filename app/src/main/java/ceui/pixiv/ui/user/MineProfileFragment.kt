@@ -1,7 +1,6 @@
 package ceui.pixiv.ui.user
 
 import android.os.Bundle
-import android.os.Build
 import android.view.View
 import androidx.core.view.isVisible
 import ceui.lisa.R
@@ -22,7 +21,6 @@ import ceui.pixiv.ui.common.pixivValueViewModel
 import ceui.pixiv.ui.common.setUpRefreshState
 import ceui.pixiv.ui.common.viewBinding
 import ceui.pixiv.utils.FastBlurTransformation
-import ceui.pixiv.utils.applyBlur
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
 import com.bumptech.glide.request.RequestOptions.bitmapTransform
@@ -51,19 +49,11 @@ class MineProfileFragment : PixivFragment(R.layout.fragment_pixiv_list) {
 
             if (!bannerUrl.isNullOrEmpty()) {
                 binding.dimmer.isVisible = true
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    binding.pageBackground.applyBlur(25f)
-                    Glide.with(this).load(GlideUrlChild(bannerUrl))
-                        .override(200)
-                        .transition(withCrossFade())
-                        .into(binding.pageBackground)
-                } else {
-                    Glide.with(this).load(GlideUrlChild(bannerUrl))
-                        .override(200)
-                        .apply(bitmapTransform(FastBlurTransformation(15)))
-                        .transition(withCrossFade())
-                        .into(binding.pageBackground)
-                }
+                Glide.with(this).load(GlideUrlChild(bannerUrl))
+                    .override(200)
+                    .apply(bitmapTransform(FastBlurTransformation(15)))
+                    .transition(withCrossFade())
+                    .into(binding.pageBackground)
             }
         }
         val liveUser = ObjectPool.get<User>(SessionManager.loggedInUid)

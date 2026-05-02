@@ -7,6 +7,7 @@ import ceui.lisa.databinding.LayoutReaderTopBarBinding
 class ReaderTopBar(private val binding: LayoutReaderTopBarBinding) {
 
     val view: View get() = binding.root
+    val moreButtonView: View get() = binding.btnMore
 
     var onBackClick: (() -> Unit)? = null
     var onAnnotationsClick: (() -> Unit)? = null

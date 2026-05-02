@@ -3,12 +3,14 @@ package ceui.pixiv.ui.novel.reader.ui
 import android.view.View
 import android.widget.SeekBar
 import ceui.lisa.databinding.LayoutReaderBottomBarBinding
+import ceui.pixiv.ui.novel.reader.ui.ReaderBottomBar.Companion.SCROLL_MAX
 
 class ReaderBottomBar(private val binding: LayoutReaderBottomBarBinding) {
 
     enum class Mode { Paged, VerticalScroll }
 
     val view: View get() = binding.root
+    val moreButtonView: View get() = binding.btnMore
 
     var onPrevChapter: (() -> Unit)? = null
     var onNextChapter: (() -> Unit)? = null

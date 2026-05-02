@@ -1,7 +1,6 @@
 package ceui.pixiv.ui.user
 
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
@@ -20,15 +19,14 @@ import ceui.loxia.User
 import ceui.loxia.UserResponse
 import ceui.pixiv.session.SessionManager
 import ceui.pixiv.ui.common.DataSource
-import ceui.pixiv.ui.common.PixivFragment
-import ceui.pixiv.ui.list.pixivListViewModel
 import ceui.pixiv.ui.common.ListMode
+import ceui.pixiv.ui.common.PixivFragment
 import ceui.pixiv.ui.common.TitledViewPagerFragment
 import ceui.pixiv.ui.common.pixivValueViewModel
 import ceui.pixiv.ui.common.setUpRefreshState
 import ceui.pixiv.ui.common.viewBinding
+import ceui.pixiv.ui.list.pixivListViewModel
 import ceui.pixiv.utils.FastBlurTransformation
-import ceui.pixiv.utils.applyBlur
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
@@ -151,23 +149,13 @@ fun ImageView.binding_loadBlurredMedia(displayUrl: String?) {
     val url = displayUrl ?: return
     scaleType = ImageView.ScaleType.CENTER_CROP
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        applyBlur(25f)
-        Glide.with(this)
-            .load(GlideUrlChild(url))
-            .placeholder(R.drawable.image_place_holder)
-            .override(200)
-            .transition(withCrossFade())
-            .into(this)
-    } else {
-        Glide.with(this)
-            .load(GlideUrlChild(url))
-            .placeholder(R.drawable.image_place_holder)
-            .override(200)
-            .apply(bitmapTransform(FastBlurTransformation(25)))
-            .transition(withCrossFade())
-            .into(this)
-    }
+    Glide.with(this)
+        .load(GlideUrlChild(url))
+        .placeholder(R.drawable.image_place_holder)
+        .override(200)
+        .apply(bitmapTransform(FastBlurTransformation(25)))
+        .transition(withCrossFade())
+        .into(this)
 }
 
 fun TextView.setTextOrGone(content: String?) {

@@ -9,8 +9,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -47,11 +51,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Handler;
-import android.os.Looper;
-
 import ceui.lisa.R;
 import ceui.lisa.activities.SearchActivity;
 import ceui.lisa.activities.Shaft;
@@ -63,6 +62,7 @@ import ceui.lisa.core.Manager;
 import ceui.lisa.database.SearchEntity;
 import ceui.lisa.databinding.FragmentUgoraBinding;
 import ceui.lisa.dialogs.MuteDialog;
+import ceui.lisa.download.DownloadProgress;
 import ceui.lisa.download.IllustDownload;
 import ceui.lisa.file.LegacyFile;
 import ceui.lisa.file.OutPut;
@@ -76,14 +76,12 @@ import ceui.lisa.models.TagsBean;
 import ceui.lisa.notification.BaseReceiver;
 import ceui.lisa.notification.CallBackReceiver;
 import ceui.lisa.utils.Common;
+import ceui.lisa.utils.GlideUtil;
 import ceui.lisa.utils.Params;
 import ceui.lisa.utils.PixivOperate;
 import ceui.lisa.utils.ShareIllust;
 import ceui.lisa.viewmodel.AppLevelViewModel;
-import ceui.pixiv.utils.BlurUtilsKt;
 import ceui.pixiv.utils.FastBlurTransformation;
-import ceui.lisa.utils.GlideUtil;
-import ceui.lisa.download.DownloadProgress;
 
 /**
  * 插画详情
@@ -119,21 +117,12 @@ public class FragmentSingleUgora extends BaseFragment<FragmentUgoraBinding> {
         switch (currentNightMode) {
             case Configuration.UI_MODE_NIGHT_NO:
             case Configuration.UI_MODE_NIGHT_UNDEFINED:
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-                    BlurUtilsKt.applyBlur(baseBind.bgImage, 25f);
-                    Glide.with(mContext)
-                            .load(GlideUtil.getSquare(illust))
-                            .override(200)
-                            .transition(withCrossFade())
-                            .into(baseBind.bgImage);
-                } else {
-                    Glide.with(mContext)
-                            .load(GlideUtil.getSquare(illust))
-                            .override(200)
-                            .apply(bitmapTransform(new FastBlurTransformation(25)))
-                            .transition(withCrossFade())
-                            .into(baseBind.bgImage);
-                }
+                Glide.with(mContext)
+                    .load(GlideUtil.getSquare(illust))
+                    .override(200)
+                    .apply(bitmapTransform(new FastBlurTransformation(25)))
+                    .transition(withCrossFade())
+                    .into(baseBind.bgImage);
                 break;
         }
 

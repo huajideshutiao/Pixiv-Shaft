@@ -71,6 +71,11 @@ public class FragmentColors extends LocalListFragment<FragmentBaseListBinding, C
     @Override
     public void initView() {
         super.initView();
+    }
+
+    @Override
+    protected void initData() {
+        super.initData();
         fresh();
     }
 }
