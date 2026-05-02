@@ -32,7 +32,7 @@ import com.hjq.toast.Toaster
 
 /**
  * Download path / filename settings, styled to the V3 design language used by
- * [ceui.pixiv.ui.detail.ArtworkV3Fragment] and [ceui.pixiv.ui.user.MineProfileFragment]:
+ * [ceui.pixiv.ui.detail.ArtworkV3Fragment]:
  * soft rounded 28dp cards on an off-white background, hairline borders, pill
  * chips and pills for interactive controls, Montserrat bold titles.
  *
