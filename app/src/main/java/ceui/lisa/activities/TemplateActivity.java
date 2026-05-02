@@ -1,7 +1,6 @@
 package ceui.lisa.activities;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -18,7 +17,6 @@ import ceui.lisa.fragments.FragmentAboutApp;
 import ceui.lisa.fragments.FragmentBookedTag;
 import ceui.lisa.fragments.FragmentCollection;
 import ceui.lisa.fragments.FragmentColors;
-import ceui.lisa.fragments.FragmentDiscovery;
 import ceui.lisa.fragments.FragmentDoing;
 import ceui.lisa.fragments.FragmentDonate;
 import ceui.lisa.fragments.FragmentEditAccount;
@@ -26,7 +24,6 @@ import ceui.lisa.fragments.FragmentEditFile;
 import ceui.lisa.fragments.FragmentFeature;
 import ceui.lisa.fragments.FragmentFileName;
 import ceui.lisa.fragments.FragmentFollowUser;
-import ceui.lisa.fragments.FragmentHistory;
 import ceui.lisa.fragments.FragmentHistoryTabs;
 import ceui.lisa.fragments.FragmentImageDetail;
 import ceui.lisa.fragments.FragmentLikeIllust;
@@ -43,10 +40,6 @@ import ceui.lisa.fragments.FragmentNewNovel;
 import ceui.lisa.fragments.FragmentNewNovels;
 import ceui.lisa.fragments.FragmentNiceFriend;
 import ceui.lisa.fragments.FragmentNovelHolder;
-import ceui.pixiv.ui.novel.reader.NovelReaderV3Fragment;
-import ceui.pixiv.ui.novel.NovelSeriesFragment;
-import ceui.pixiv.ui.novel.NovelTextFragment;
-import ceui.pixiv.ui.novel.UncategorizedNovelsFragment;
 import ceui.lisa.fragments.FragmentNovelMarkers;
 import ceui.lisa.fragments.FragmentNovelSeries;
 import ceui.lisa.fragments.FragmentNovelSeriesDetail;
@@ -68,7 +61,6 @@ import ceui.lisa.fragments.FragmentUserManga;
 import ceui.lisa.fragments.FragmentUserNovel;
 import ceui.lisa.fragments.FragmentViewPager;
 import ceui.lisa.fragments.FragmentWalkThrough;
-import ceui.pixiv.ui.web.WebFragment;
 import ceui.lisa.fragments.FragmentWhoFollowThisUser;
 import ceui.lisa.fragments.FragmentWorkSpace;
 import ceui.lisa.fragments.RecmdUserMap;
@@ -85,6 +77,11 @@ import ceui.loxia.ObjectType;
 import ceui.loxia.flag.FlagDescFragment;
 import ceui.loxia.flag.FlagReasonFragment;
 import ceui.pixiv.ui.comments.CommentsFragment;
+import ceui.pixiv.ui.novel.NovelSeriesFragment;
+import ceui.pixiv.ui.novel.NovelTextFragment;
+import ceui.pixiv.ui.novel.UncategorizedNovelsFragment;
+import ceui.pixiv.ui.novel.reader.NovelReaderV3Fragment;
+import ceui.pixiv.ui.web.WebFragment;
 
 public class TemplateActivity extends BaseActivity<ActivityFragmentBinding> implements ColorPickerDialogListener {
 
@@ -304,8 +301,6 @@ public class TemplateActivity extends BaseActivity<ActivityFragmentBinding> impl
                     return FragmentMarkdown.newInstance(url);
                 case "版本历史":
                     return new ceui.lisa.update.FragmentVersionHistory();
-                case "发现":
-                    return FragmentDiscovery.newInstance();
                 default:
                     return new Fragment();
             }

@@ -23,7 +23,6 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
@@ -48,7 +47,6 @@ import ceui.lisa.utils.Params;
 import ceui.lisa.utils.ReverseImage;
 import ceui.lisa.utils.ReverseWebviewCallback;
 import ceui.pixiv.session.SessionManager;
-import timber.log.Timber;
 
 /**
  * 主页
@@ -62,14 +60,6 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
     private TextView user_email;
     private long mExitTime;
     private Fragment[] baseFragments = null;
-
-    private final android.content.BroadcastReceiver profileReadyReceiver = new android.content.BroadcastReceiver() {
-        @Override
-        public void onReceive(android.content.Context context, Intent intent) {
-            Timber.tag("Discovery/Gate").d("received PROFILE_READY broadcast");
-            updateDiscoveryVisibility();
-        }
-    };
 
     @Override
     protected int initLayout() {
@@ -85,30 +75,17 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
     protected void initView() {
         baseBind.drawerLayout.setScrimColor(Color.TRANSPARENT);
         baseBind.navView.setNavigationItemSelectedListener(this);
-        // 发现入口默认隐藏，画像完备后才展示
-        baseBind.navView.getMenu().findItem(R.id.nav_discovery).setVisible(false);
-        updateDiscoveryVisibility();
 
-        // 监听画像构建完成，刷新发现入口可见性
-        android.content.IntentFilter profileFilter = new android.content.IntentFilter(
-                ceui.pixiv.db.discovery.ProfileManager.ACTION_PROFILE_READY);
-        LocalBroadcastManager.getInstance(this).registerReceiver(profileReadyReceiver, profileFilter);
-
-        userHead = baseBind.navView.getHeaderView(0).findViewById(R.id.user_head);
-        username = baseBind.navView.getHeaderView(0).findViewById(R.id.user_name);
-        user_email = baseBind.navView.getHeaderView(0).findViewById(R.id.user_email);
+        android.view.View headerView = baseBind.navView.getHeaderView(0);
+        userHead = headerView.findViewById(R.id.user_head);
+        username = headerView.findViewById(R.id.user_name);
+        user_email = headerView.findViewById(R.id.user_email);
         initDrawerHeader();
-        userHead.setOnClickListener(v -> {
+        headerView.setOnClickListener(v -> {
             Intent userIntent = new Intent(mContext, UActivity.class);
             userIntent.putExtra(Params.USER_ID, (int) SessionManager.INSTANCE.getLoggedInUid());
             startActivity(userIntent);
             baseBind.drawerLayout.closeDrawer(GravityCompat.START);
-        });
-        userHead.setOnLongClickListener(v -> {
-            boolean filterEnable = Shaft.sSettings.isR18FilterTempEnable();
-            Shaft.sSettings.setR18FilterTempEnable(!filterEnable);
-            Common.showToast(filterEnable ? "ԅ(♡﹃♡ԅ)" : "X﹏X");
-            return true;
         });
         baseBind.navigationView.setOnNavigationItemSelectedListener(item -> {
             if (item.getItemId() == R.id.action_1) {
@@ -245,30 +222,6 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
         }
     }
 
-    /**
-     * 每次打开侧边栏时重新检查画像是否完备，决定发现入口是否可见。
-     */
-    private void updateDiscoveryVisibility() {
-        ceui.pixiv.db.discovery.UserProfile profile = ceui.pixiv.db.discovery.ProfileManager.INSTANCE.cached();
-        if (profile == null) {
-            baseBind.navView.getMenu().findItem(R.id.nav_discovery).setVisible(false);
-            Timber.tag("Discovery/Gate").d("profile=null, hide discovery");
-            return;
-        }
-        int tagCount = profile.getTagScores().size();
-        int seedCount = profile.getSeedIllusts().size();
-        int strongAuthors = 0;
-        for (Float v : profile.getAuthorScores().values()) {
-            if (v >= 3f) strongAuthors++;
-        }
-        boolean ready = profile.isReady();
-        baseBind.navView.getMenu().findItem(R.id.nav_discovery).setVisible(ready);
-        Timber.tag("Discovery/Gate").d("isReady=" + ready
-            + " | tags=" + tagCount + "/15"
-            + " seeds=" + seedCount + "/5"
-            + " strongAuthors=" + strongAuthors + "/10");
-    }
-
     public DrawerLayout getDrawer() {
         return baseBind.drawerLayout;
     }
@@ -290,15 +243,9 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
         } else if (id == R.id.nav_manage) {
             intent = new Intent(mContext, TemplateActivity.class);
             intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "设置");
-        } else if (id == R.id.nav_discovery) {
-            intent = new Intent(mContext, TemplateActivity.class);
-            intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "发现");
         } else if (id == R.id.nav_share) {
             intent = new Intent(mContext, TemplateActivity.class);
             intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "关于软件");
-        } else if (id == R.id.main_page) {
-            intent = new Intent(mContext, UActivity.class);
-            intent.putExtra(Params.USER_ID, (int) SessionManager.INSTANCE.getLoggedInUid());
         } else if (id == R.id.nav_reverse) {
             selectPhoto();
         } else if (id == R.id.nav_new_work) {
@@ -456,13 +403,11 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
             initDrawerHeader();
             Dev.refreshUser = false;
         }
-        updateDiscoveryVisibility();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(profileReadyReceiver);
     }
 
     @Override

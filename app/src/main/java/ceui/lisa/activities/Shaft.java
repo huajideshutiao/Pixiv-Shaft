@@ -1,5 +1,7 @@
 package ceui.lisa.activities;
 
+import static ceui.lisa.utils.Local.LOCAL_DATA;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Application;
@@ -14,17 +16,17 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.Gravity;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.Gson;
 import com.hjq.toast.Toaster;
-
 import com.scwang.smart.refresh.footer.ClassicsFooter;
 import com.scwang.smart.refresh.header.ClassicsHeader;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 
-import androidx.annotation.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 import ceui.lisa.R;
-
 import ceui.lisa.helper.ShortcutHelper;
 import ceui.lisa.helper.ThemeHelper;
 import ceui.lisa.notification.NetWorkStateReceiver;
@@ -42,10 +44,6 @@ import io.reactivex.plugins.RxJavaPlugins;
 import me.jessyan.progressmanager.ProgressManager;
 import okhttp3.OkHttpClient;
 import timber.log.Timber;
-
-import static ceui.lisa.utils.Local.LOCAL_DATA;
-
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Where the app code starts.
@@ -161,19 +159,6 @@ public class Shaft extends Application implements ServicesProvider {
 
         // 批量下载持久化队列（v33）：冷启动恢复 + 单并发消费循环
         ceui.pixiv.ui.bulk.QueueDownloadManager.INSTANCE.init(this);
-
-        // 初始化发现池 + 异步构建用户画像
-        Timber.d("Discovery/Init >>> initializing DiscoveryPool");
-        ceui.pixiv.db.discovery.DiscoveryPool.INSTANCE.initialize();
-        Timber.d("Discovery/Init >>> starting ProfileManager.buildProfile on background thread");
-        new Thread(() -> {
-            try {
-                ceui.pixiv.db.discovery.ProfileManager.INSTANCE.buildProfile();
-                Timber.d("Discovery/Init <<< ProfileManager.buildProfile completed");
-            } catch (Exception e) {
-                Timber.e(e, "Discovery/Init <<< ProfileManager.buildProfile FAILED");
-            }
-        }).start();
 
         updateTheme();
 

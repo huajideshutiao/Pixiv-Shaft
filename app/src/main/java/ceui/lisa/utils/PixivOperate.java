@@ -1,6 +1,9 @@
 package ceui.lisa.utils;
 
 
+import static com.blankj.utilcode.util.ColorUtils.getColor;
+import static com.blankj.utilcode.util.StringUtils.getString;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -19,7 +22,6 @@ import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.ZipUtils;
 import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
@@ -47,8 +49,6 @@ import ceui.lisa.database.MuteEntity;
 import ceui.lisa.database.SearchEntity;
 import ceui.lisa.file.LegacyFile;
 import ceui.lisa.file.OutPut;
-
-import ceui.pixiv.login.PixivOAuthConfig;
 import ceui.lisa.http.ErrorCtrl;
 import ceui.lisa.http.NullCtrl;
 import ceui.lisa.http.Retro;
@@ -57,6 +57,7 @@ import ceui.lisa.model.ListIllust;
 import ceui.lisa.models.FramesBean;
 import ceui.lisa.models.GifResponse;
 import ceui.lisa.models.IllustSearchResponse;
+import ceui.lisa.models.IllustsBean;
 import ceui.lisa.models.MarkedNovelItem;
 import ceui.lisa.models.NovelBean;
 import ceui.lisa.models.NovelDetail;
@@ -66,20 +67,15 @@ import ceui.lisa.models.NullResponse;
 import ceui.lisa.models.TagsBean;
 import ceui.lisa.models.UserBean;
 import ceui.lisa.models.UserModel;
-import ceui.lisa.models.IllustsBean;
 import ceui.lisa.viewmodel.AppLevelViewModel;
 import ceui.loxia.ObjectPool;
-import io.reactivex.Observable;
+import ceui.pixiv.login.PixivOAuthConfig;
+import ceui.pixiv.session.SessionManager;
+import ceui.pixiv.widgets.RateAppManager;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
-
-import ceui.pixiv.session.SessionManager;
-import ceui.pixiv.widgets.RateAppManager;
-
-import static com.blankj.utilcode.util.ColorUtils.getColor;
-import static com.blankj.utilcode.util.StringUtils.getString;
 
 /**
  * A class about Pixiv operations.
@@ -126,10 +122,6 @@ public class PixivOperate {
                             Shaft.appViewModel.updateFollowUserStatus(userID, AppLevelViewModel.FollowUserStatus.FOLLOWED_PRIVATE);
                             Common.showToast(getString(R.string.like_success_private));
                         }
-
-                        // 关注行为更新画像
-                        Common.showLog("Discovery/Hook followUser userId=" + userID);
-                        ceui.pixiv.db.discovery.ProfileManager.INSTANCE.onFollowUser((long) userID);
                     }
                 });
     }
@@ -149,10 +141,6 @@ public class PixivOperate {
                         Shaft.appViewModel.updateFollowUserStatus(userID, AppLevelViewModel.FollowUserStatus.NOT_FOLLOW);
                         ObjectPool.INSTANCE.unFollowUser(userID);
                         Common.showToast(getString(R.string.cancel_like));
-
-                        // 取消关注更新画像
-                        Common.showLog("Discovery/Hook unfollowUser userId=" + userID);
-                        ceui.pixiv.db.discovery.ProfileManager.INSTANCE.onUnfollowUser((long) userID);
                     }
                 });
     }
@@ -210,10 +198,6 @@ public class PixivOperate {
                                 Common.showToast(getString(R.string.like_novel_success_private));
                             }
 
-                            // 收藏行为更新画像：提升画师和标签偏好，让后续推荐更精准
-                            Common.showLog("Discovery/Hook bookmarkIllust id=" + illustsBean.getId());
-                            ceui.pixiv.db.discovery.ProfileManager.INSTANCE.onBookmarkIllust(illustsBean);
-
                             //收藏后自动关注作者
                             if (Shaft.sSettings.isAutoFollowAfterStar()
                                     && illustsBean.getUser() != null
@@ -236,11 +220,6 @@ public class PixivOperate {
                                 intent.putExtra(Params.CONTENT, listIllust);
                                 intent.putExtra(Params.INDEX, index);
                                 LocalBroadcastManager.getInstance(Shaft.getContext()).sendBroadcast(intent);
-
-                                // 寄生收集：收藏时的相关作品进发现池
-                                Common.showLog("Discovery/Hook postLike star_related illust=" + illustsBean.getId() + " got " + (listIllust.getIllusts() != null ? listIllust.getIllusts().size() : 0) + " related");
-                                ceui.pixiv.db.discovery.DiscoveryPool.INSTANCE.collect(
-                                        listIllust.getIllusts(), "star_related:" + illustsBean.getId());
                             }
                         });
             }

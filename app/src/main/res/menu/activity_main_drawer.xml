@@ -6,33 +6,23 @@
     <group android:checkableBehavior="none">
 
         <item
-            android:id="@+id/main_page"
-            android:icon="@drawable/ic_home_black_24dp"
-            android:title="@string/user_main_page" />
+            android:id="@+id/nav_new_work"
+            android:icon="@drawable/ic_fiber_new_black_24dp"
+            android:title="@string/latest_work" />
 
         <item
-            android:id="@+id/nav_discovery"
-            android:icon="@drawable/ic_baseline_explore_24"
-            android:title="@string/string_discovery" />
+            android:id="@+id/nav_feature"
+            android:icon="@mipmap/jinhua"
+            android:title="@string/string_248" />
 
-        <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_file_download_black_24dp"
-            android:title="@string/download_manager" />
         <item
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/ic_history_black_24dp"
             android:title="@string/view_history" />
-
         <item
             android:id="@+id/muted_list"
             android:icon="@drawable/ic_not_interested_black_24dp"
             android:title="@string/muted_history" />
-
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_baseline_settings_24"
-            android:title="@string/app_settings" />
     </group>
 
     <item android:title="@string/string_318">
@@ -66,35 +56,33 @@
                 android:id="@+id/nav_fans"
                 android:icon="@mipmap/fans"
                 android:title="@string/string_322" />
-
-            <item
-                android:id="@+id/new_work"
-                android:icon="@drawable/ic_baseline_post_work_48"
-                android:title="@string/string_444" />
         </menu>
-
     </item>
 
     <item android:title="@string/the_others">
         <menu>
             <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_error_black_24dp"
-                android:title="@string/about_app" />
+                android:id="@+id/nav_gallery"
+                android:icon="@drawable/ic_file_download_black_24dp"
+                android:title="@string/download_manager" />
+
+            <item
+                android:id="@+id/new_work"
+                android:icon="@drawable/ic_baseline_post_work_48"
+                android:title="@string/string_444" />
+
             <item
                 android:id="@+id/nav_reverse"
                 android:icon="@drawable/ic_collections_black_24dp"
                 android:title="@string/search_image_origin" />
-
             <item
-                android:id="@+id/nav_new_work"
-                android:icon="@drawable/ic_fiber_new_black_24dp"
-                android:title="@string/latest_work" />
-
+                android:id="@+id/nav_manage"
+                android:icon="@drawable/ic_baseline_settings_24"
+                android:title="@string/app_settings" />
             <item
-                android:id="@+id/nav_feature"
-                android:icon="@mipmap/jinhua"
-                android:title="@string/string_248" />
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_error_black_24dp"
+                android:title="@string/full_about_app" />
 
         </menu>
     </item>

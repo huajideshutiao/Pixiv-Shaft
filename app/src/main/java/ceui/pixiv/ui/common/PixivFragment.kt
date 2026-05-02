@@ -1,11 +1,11 @@
 package ceui.pixiv.ui.common
 
 import android.content.Intent
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.graphics.drawable.toDrawable
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
@@ -56,7 +56,6 @@ import ceui.pixiv.ui.novel.NovelSeriesActionReceiver
 import ceui.pixiv.ui.user.UserActionReceiver
 import ceui.pixiv.ui.user.UserFragmentArgs
 import ceui.pixiv.ui.web.WebFragmentArgs
-import ceui.pixiv.utils.animateWiggle
 import ceui.pixiv.utils.ppppx
 import ceui.pixiv.utils.setOnClick
 import ceui.pixiv.widgets.RateAppManager
@@ -294,7 +293,7 @@ fun Fragment.setUpToolbar(binding: LayoutToolbarBinding, content: ViewGroup) {
     val parentFrag = parentFragment
     if (parentFrag is ViewPagerFragment) {
         binding.toolbarLayout.isVisible = false
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, windowInsets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
             content.updatePadding(0, 0, 0, insets.bottom)
             WindowInsetsCompat.CONSUMED
@@ -306,20 +305,15 @@ fun Fragment.setUpToolbar(binding: LayoutToolbarBinding, content: ViewGroup) {
                 findNavController().popBackStack()
             }
         } else {
-            binding.toolbarLayout.background = ColorDrawable(
-                Common.resolveThemeAttribute(
-                    requireContext(),
-                    androidx.appcompat.R.attr.colorPrimary
-                )
-            )
+            binding.toolbarLayout.background = Common.resolveThemeAttribute(
+                requireContext(),
+                androidx.appcompat.R.attr.colorPrimary
+            ).toDrawable()
             binding.naviBack.setOnClick {
                 requireActivity().finish()
             }
         }
-        binding.naviMore.setOnClick {
-            requireActivity().findCurrentFragmentOrNull()?.view?.animateWiggle()
-        }
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, windowInsets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
             binding.toolbarLayout.updatePaddingRelative(top = insets.top)
             content.updatePadding(0, 0, 0, insets.bottom)

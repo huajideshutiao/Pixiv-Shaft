@@ -1,11 +1,9 @@
 package ceui.pixiv.ui.user
 
-import androidx.core.text.HtmlCompat
 import ceui.lisa.annotations.ItemHolder
 import ceui.lisa.databinding.CellUserTextBinding
 import ceui.pixiv.ui.common.ListItemHolder
 import ceui.pixiv.ui.common.ListItemViewHolder
-
 
 
 class UserTextHolder(val text: String?) : ListItemHolder() {
@@ -15,7 +13,8 @@ class UserTextHolder(val text: String?) : ListItemHolder() {
 }
 
 @ItemHolder(UserTextHolder::class)
-class UserTextiewHolder(bd: CellUserTextBinding) : ListItemViewHolder<CellUserTextBinding, UserTextHolder>(bd) {
+class UserTextViewHolder(bd: CellUserTextBinding) :
+    ListItemViewHolder<CellUserTextBinding, UserTextHolder>(bd) {
 
     override fun onBindViewHolder(holder: UserTextHolder, position: Int) {
         super.onBindViewHolder(holder, position)

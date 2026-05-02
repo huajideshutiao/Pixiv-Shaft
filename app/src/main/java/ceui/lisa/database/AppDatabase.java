@@ -10,8 +10,6 @@ import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import ceui.lisa.feature.FeatureEntity;
-import ceui.pixiv.db.DiscoveryDao;
-import ceui.pixiv.db.DiscoveryEntity;
 import ceui.pixiv.db.GeneralDao;
 import ceui.pixiv.db.GeneralEntity;
 import ceui.pixiv.db.RemoteKey;
@@ -32,7 +30,6 @@ import ceui.pixiv.db.queue.DownloadQueueEntity;
                 DownloadingEntity.class, //记录用户正在下载中的列表
                 GeneralEntity.class, // 新增的 GeneralEntity
                 RemoteKey.class,
-                DiscoveryEntity.class, // 发现池候选作品
                 NovelBookmarkEntity.class, // V3 阅读器书签
                 NovelAnnotationEntity.class, // V3 阅读器划线/笔记
                 NovelReadingStatsEntity.class, // V3 阅读器单本统计
@@ -41,7 +38,7 @@ import ceui.pixiv.db.queue.DownloadQueueEntity;
                 NovelCustomFontEntity.class, // V3 阅读器自定义字体
                 DownloadQueueEntity.class, // 批量下载队列（v33）
         },
-        version = 34,
+    version = 35,
         exportSchema = false
 )
 public abstract class AppDatabase extends RoomDatabase {
@@ -85,31 +82,6 @@ public abstract class AppDatabase extends RoomDatabase {
                             "nextPageUrl TEXT, " +
                             "lastUpdatedTime INTEGER NOT NULL DEFAULT (strftime('%s', 'now') * 1000)" +
                             ")"
-            );
-        }
-    };
-    private static final Migration MIGRATION_27_28 = new Migration(27, 28) {
-        @Override
-        public void migrate(@NonNull SupportSQLiteDatabase database) {
-            // 创建 discovery_table 发现池表
-            database.execSQL(
-                    "CREATE TABLE IF NOT EXISTS discovery_table (" +
-                            "illustId INTEGER NOT NULL PRIMARY KEY, " +
-                            "illustJson TEXT NOT NULL, " +
-                            "score REAL NOT NULL, " +
-                            "source TEXT NOT NULL, " +
-                            "collectedTime INTEGER NOT NULL, " +
-                            "shown INTEGER NOT NULL DEFAULT 0" +
-                            ")"
-            );
-        }
-    };
-    private static final Migration MIGRATION_28_29 = new Migration(28, 29) {
-        @Override
-        public void migrate(@NonNull SupportSQLiteDatabase database) {
-            // discovery_table 新增 authorId 列，用于采样时的画师去重（避免逐条 JSON 反序列化）
-            database.execSQL(
-                    "ALTER TABLE discovery_table ADD COLUMN authorId INTEGER NOT NULL DEFAULT 0"
             );
         }
     };
@@ -263,11 +235,10 @@ public abstract class AppDatabase extends RoomDatabase {
                             .addMigrations(MIGRATION_24_25)
                             .addMigrations(MIGRATION_25_26) // 注册 25 -> 26 迁移
                             .addMigrations(MIGRATION_26_27) // 注册 26 -> 27 迁移
-                            .addMigrations(MIGRATION_27_28) // 注册 27 -> 28 迁移 (discovery_table)
-                            .addMigrations(MIGRATION_28_29) // 注册 28 -> 29 迁移 (discovery_table + authorId)
                             .addMigrations(MIGRATION_29_30) // 注册 29 -> 30 迁移 (V3 阅读器 6 张表)
                             .addMigrations(MIGRATION_32_33) // 注册 32 -> 33 迁移 (批量下载队列)
                             .addMigrations(MIGRATION_33_34) // 注册 33 -> 34 迁移 (移除漫画阅读器)
+                        .fallbackToDestructiveMigration()
                             .build();
         }
         return INSTANCE;
@@ -284,8 +255,6 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract SearchDao searchDao();
 
     public abstract GeneralDao generalDao();
-
-    public abstract DiscoveryDao discoveryDao();
 
     public abstract NovelBookmarkDao novelBookmarkDao();
 
