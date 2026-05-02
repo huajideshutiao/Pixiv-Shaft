@@ -1,16 +1,12 @@
 package ceui.lisa.fragments;
 
 import android.content.Intent;
-import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
-
 
 import ceui.lisa.R;
 import ceui.lisa.activities.MainActivity;
@@ -37,82 +33,54 @@ public class FragmentCenter extends SwipeFragment<FragmentNewCenterBinding> {
         }
 
         baseBind.toolbar.inflateMenu(R.menu.fragment_left);
-        baseBind.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mActivity instanceof MainActivity) {
-                    ((MainActivity) mActivity).getDrawer().openDrawer(GravityCompat.START, true);
-                }
+        baseBind.toolbar.setNavigationOnClickListener(v -> {
+            if (mActivity instanceof MainActivity) {
+                ((MainActivity) mActivity).getDrawer().openDrawer(GravityCompat.START, true);
             }
         });
-        baseBind.toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                if (item.getItemId() == R.id.action_search) {
-                    Intent intent = new Intent(mContext, TemplateActivity.class);
-                    intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "搜索");
-                    startActivity(intent);
-                    return true;
-                }
-                return false;
+        baseBind.toolbar.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == R.id.action_search) {
+                Intent intent = new Intent(mContext, TemplateActivity.class);
+                intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "搜索");
+                startActivity(intent);
+                return true;
             }
+            return false;
         });
 
+        baseBind.latestWork.setClipToOutline(true);
         baseBind.manga.setClipToOutline(true);
         baseBind.novel.setClipToOutline(true);
         baseBind.walkThrough.setClipToOutline(true);
         baseBind.followNovels.setClipToOutline(true);
-        baseBind.webStreet.setClipToOutline(true);
 
-        baseBind.manga.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mContext, TemplateActivity.class);
-                intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "推荐漫画");
-                startActivity(intent);
-            }
+        baseBind.latestWork.setOnClickListener(v -> {
+            Intent intent = new Intent(mContext, TemplateActivity.class);
+            intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "最新作品");
+            intent.putExtra("hideStatusBar", false);
+            startActivity(intent);
         });
-        baseBind.novel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mContext, TemplateActivity.class);
-                intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "推荐小说");
-                intent.putExtra("hideStatusBar", false);
-                startActivity(intent);
-            }
+        baseBind.manga.setOnClickListener(v -> {
+            Intent intent = new Intent(mContext, TemplateActivity.class);
+            intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "推荐漫画");
+            startActivity(intent);
+        });
+        baseBind.novel.setOnClickListener(v -> {
+            Intent intent = new Intent(mContext, TemplateActivity.class);
+            intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "推荐小说");
+            intent.putExtra("hideStatusBar", false);
+            startActivity(intent);
         });
 
-        baseBind.walkThrough.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mContext, TemplateActivity.class);
-                intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "画廊");
-                startActivity(intent);
-            }
+        baseBind.walkThrough.setOnClickListener(v -> {
+            Intent intent = new Intent(mContext, TemplateActivity.class);
+            intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "画廊");
+            startActivity(intent);
         });
-        baseBind.followNovels.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mContext, TemplateActivity.class);
-                intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "关注者的小说");
-                startActivity(intent);
-            }
-        });
-        baseBind.webStreet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new com.qmuiteam.qmui.widget.dialog.QMUIDialog.MessageDialogBuilder(mActivity)
-                        .setTitle("Web 首页")
-                        .setMessage("Coming soon...")
-                        .setSkinManager(com.qmuiteam.qmui.skin.QMUISkinManager.defaultInstance(mContext))
-                        .addAction("OK", new com.qmuiteam.qmui.widget.dialog.QMUIDialogAction.ActionListener() {
-                            @Override
-                            public void onClick(com.qmuiteam.qmui.widget.dialog.QMUIDialog dialog, int index) {
-                                dialog.dismiss();
-                            }
-                        })
-                        .show();
-            }
+        baseBind.followNovels.setOnClickListener(v -> {
+            Intent intent = new Intent(mContext, TemplateActivity.class);
+            intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "关注者的小说");
+            startActivity(intent);
         });
     }
 

@@ -91,10 +91,10 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
             if (item.getItemId() == R.id.action_1) {
                 baseBind.viewPager.setCurrentItem(0);
                 return true;
-            } else if (item.getItemId() == R.id.action_2) {
+            } else if (item.getItemId() == R.id.action_3) {
                 baseBind.viewPager.setCurrentItem(1);
                 return true;
-            } else if (item.getItemId() == R.id.action_3) {
+            } else if (item.getItemId() == R.id.action_2) {
                 baseBind.viewPager.setCurrentItem(2);
                 return true;
             } else if (item.getItemId() == R.id.action_4) {
@@ -110,16 +110,16 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
                         ((FragmentLeft) baseFragment).forceRefresh();
                     }
                 }
-            } else if (item.getItemId() == R.id.action_2) {
-                for (Fragment baseFragment : baseFragments) {
-                    if (baseFragment instanceof FragmentCenter) {
-                        ((FragmentCenter) baseFragment).forceRefresh();
-                    }
-                }
             } else if (item.getItemId() == R.id.action_3) {
                 for (Fragment baseFragment : baseFragments) {
                     if (baseFragment instanceof FragmentRight) {
                         ((FragmentRight) baseFragment).forceRefresh();
+                    }
+                }
+            } else if (item.getItemId() == R.id.action_2) {
+                for (Fragment baseFragment : baseFragments) {
+                    if (baseFragment instanceof FragmentCenter) {
+                        ((FragmentCenter) baseFragment).forceRefresh();
                     }
                 }
             } else if (item.getItemId() == R.id.action_4) {
@@ -141,9 +141,9 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
                 if (position == 0) {
                     baseBind.navigationView.setSelectedItemId(R.id.action_1);
                 } else if (position == 1) {
-                    baseBind.navigationView.setSelectedItemId(R.id.action_2);
-                } else if (position == 2) {
                     baseBind.navigationView.setSelectedItemId(R.id.action_3);
+                } else if (position == 2) {
+                    baseBind.navigationView.setSelectedItemId(R.id.action_2);
                 } else if (position == 3) {
                     baseBind.navigationView.setSelectedItemId(R.id.action_4);
                 }
@@ -164,16 +164,16 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
             baseBind.navigationView.inflateMenu(R.menu.main_activity0_with_r18);
             baseFragments = new Fragment[]{
                     new FragmentLeft(),
+                new FragmentRight(),
                     new FragmentCenter(),
-                    new FragmentRight(),
                     FragmentViewPager.newInstance(Params.VIEW_PAGER_R18),
             };
         } else {
             baseBind.navigationView.inflateMenu(R.menu.main_activity0);
             baseFragments = new Fragment[]{
                     new FragmentLeft(),
-                    new FragmentCenter(),
-                    new FragmentRight()
+                new FragmentRight(),
+                new FragmentCenter()
             };
         }
         baseBind.viewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
@@ -248,10 +248,6 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
             intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "关于软件");
         } else if (id == R.id.nav_reverse) {
             selectPhoto();
-        } else if (id == R.id.nav_new_work) {
-            intent = new Intent(mContext, TemplateActivity.class);
-            intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "最新作品");
-            intent.putExtra("hideStatusBar", false);
         } else if (id == R.id.muted_list) {
             intent = new Intent(mContext, TemplateActivity.class);
             intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "标签屏蔽记录");

@@ -82,13 +82,49 @@
                                 app:qmui_radius="10dp"
                                 android:layout_width="0dp"
                                 android:layout_height="0dp"
-                                android:id="@+id/manga"
+                                android:id="@+id/latest_work"
                                 android:stateListAnimator="@animator/button_press_scale"
                                 android:layout_rowWeight="1"
                                 android:layout_columnWeight="1"
                                 android:layout_marginStart="@dimen/twelve_dp"
                                 android:layout_marginTop="@dimen/twelve_dp"
                                 android:layout_marginEnd="@dimen/six_dp"
+                                android:layout_marginBottom="@dimen/six_dp">
+
+                                <ImageView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:scaleType="centerCrop"
+                                    android:src="@drawable/latest_work_bg"
+                                    android:background="@drawable/shape_round_outline"
+                                    android:outlineProvider="background" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="10dp"
+                                    android:shadowColor="#FF000000"
+                                    android:shadowDx="2"
+                                    android:shadowDy="2"
+                                    android:shadowRadius="2"
+                                    android:text="@string/latest_work"
+                                    android:textColor="@color/always_white"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold" />
+
+                            </com.qmuiteam.qmui.widget.roundwidget.QMUIRoundRelativeLayout>
+
+                            <com.qmuiteam.qmui.widget.roundwidget.QMUIRoundRelativeLayout
+                                app:qmui_radius="10dp"
+                                android:layout_width="0dp"
+                                android:layout_height="0dp"
+                                android:id="@+id/manga"
+                                android:stateListAnimator="@animator/button_press_scale"
+                                android:layout_rowWeight="1"
+                                android:layout_columnWeight="1"
+                                android:layout_marginStart="@dimen/six_dp"
+                                android:layout_marginTop="@dimen/twelve_dp"
+                                android:layout_marginEnd="@dimen/twelve_dp"
                                 android:layout_marginBottom="@dimen/six_dp">
 
                                 <ImageView
@@ -102,6 +138,8 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_alignParentEnd="true"
+                                    android:layout_alignParentBottom="true"
                                     android:layout_margin="10dp"
                                     android:shadowColor="#FF000000"
                                     android:shadowDx="2"
@@ -122,10 +160,10 @@
                                 android:id="@+id/novel"
                                 android:stateListAnimator="@animator/button_press_scale"
                                 android:layout_columnWeight="1"
-                                android:layout_marginStart="@dimen/six_dp"
-                                android:layout_marginTop="@dimen/twelve_dp"
-                                android:layout_marginEnd="@dimen/twelve_dp"
-                                android:layout_marginBottom="@dimen/six_dp">
+                                android:layout_marginStart="@dimen/twelve_dp"
+                                android:layout_marginTop="@dimen/six_dp"
+                                android:layout_marginEnd="@dimen/six_dp"
+                                android:layout_marginBottom="@dimen/twelve_dp">
 
                                 <ImageView
                                     android:layout_width="match_parent"
@@ -158,11 +196,11 @@
                                 android:layout_height="0dp"
                                 android:layout_rowWeight="1"
                                 android:layout_columnWeight="1"
-                                android:layout_marginStart="@dimen/twelve_dp"
+                                android:layout_marginStart="@dimen/six_dp"
                                 android:id="@+id/walk_through"
                                 android:stateListAnimator="@animator/button_press_scale"
                                 android:layout_marginTop="@dimen/six_dp"
-                                android:layout_marginEnd="@dimen/six_dp"
+                                android:layout_marginEnd="@dimen/twelve_dp"
                                 android:layout_marginBottom="@dimen/twelve_dp">
 
                                 <ImageView
@@ -197,9 +235,9 @@
                                 android:layout_columnWeight="1"
                                 android:id="@+id/follow_novels"
                                 android:stateListAnimator="@animator/button_press_scale"
-                                android:layout_marginStart="@dimen/six_dp"
+                                android:layout_marginStart="@dimen/twelve_dp"
                                 android:layout_marginTop="@dimen/six_dp"
-                                android:layout_marginEnd="@dimen/twelve_dp"
+                                android:layout_marginEnd="@dimen/six_dp"
                                 android:layout_marginBottom="@dimen/twelve_dp">
 
                                 <ImageView
@@ -208,7 +246,7 @@
                                     android:scaleType="centerCrop"
                                     android:src="@drawable/center_2"
                                     android:background="@drawable/shape_round_outline"
-                                    android:outlineProvider="background"/>
+                                    android:outlineProvider="background" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
@@ -222,31 +260,6 @@
                                     android:shadowRadius="2"
                                     android:text="@string/string_196"
                                     android:textColor="@color/always_white"
-                                    android:textSize="16sp"
-                                    android:textStyle="bold" />
-
-                            </com.qmuiteam.qmui.widget.roundwidget.QMUIRoundRelativeLayout>
-
-                            <com.qmuiteam.qmui.widget.roundwidget.QMUIRoundRelativeLayout
-                                app:qmui_radius="10dp"
-                                android:layout_width="0dp"
-                                android:layout_height="0dp"
-                                android:id="@+id/web_street"
-                                android:stateListAnimator="@animator/button_press_scale"
-                                android:layout_rowWeight="1"
-                                android:layout_columnWeight="1"
-                                android:layout_marginStart="@dimen/twelve_dp"
-                                android:layout_marginTop="@dimen/six_dp"
-                                android:layout_marginEnd="@dimen/six_dp"
-                                android:layout_marginBottom="@dimen/twelve_dp"
-                                android:background="@color/v3_surface_2">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_centerInParent="true"
-                                    android:text="Web 首页"
-                                    android:textColor="@color/v3_text_1"
                                     android:textSize="16sp"
                                     android:textStyle="bold" />
 
