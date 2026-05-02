@@ -8,14 +8,12 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
-import androidx.fragment.app.FragmentActivity
 import ceui.lisa.R
 import ceui.lisa.http.NullCtrl
 import ceui.lisa.http.Retro
 import ceui.lisa.repo.buildOffsetUrl
 import ceui.lisa.utils.Common
 import com.qmuiteam.qmui.widget.dialog.QMUITipDialog
-import com.google.android.material.datepicker.MaterialDatePicker
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.time.LocalDate
@@ -149,21 +147,17 @@ object UserIllustJumpHelper {
         onJump: OnJumpPicked
     ) {
         val now = Calendar.getInstance()
-        val datePicker = MaterialDatePicker.Builder.datePicker()
-            .setSelection(now.timeInMillis)
-            .build()
-        datePicker.addOnPositiveButtonClickListener { selection ->
-            val calendar = Calendar.getInstance().apply { timeInMillis = selection }
-            val target = LocalDate.of(
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH) + 1,
-                calendar.get(Calendar.DAY_OF_MONTH)
-            )
-            locateByDate(activity, userID, kind, total, target, onJump)
-        }
-        if (activity is FragmentActivity) {
-            datePicker.show(activity.supportFragmentManager, "UserIllustJumpDatePicker")
-        }
+        val datePickerDialog = android.app.DatePickerDialog(
+            activity,
+            { _, year, month, dayOfMonth ->
+                val target = java.time.LocalDate.of(year, month + 1, dayOfMonth)
+                locateByDate(activity, userID, kind, total, target, onJump)
+            },
+            now.get(Calendar.YEAR),
+            now.get(Calendar.MONTH),
+            now.get(Calendar.DAY_OF_MONTH)
+        )
+        datePickerDialog.show()
     }
 
     /**

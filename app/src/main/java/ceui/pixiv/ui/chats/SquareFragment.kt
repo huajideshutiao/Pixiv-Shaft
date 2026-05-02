@@ -9,15 +9,13 @@ import androidx.navigation.fragment.navArgs
 import ceui.lisa.R
 import ceui.lisa.annotations.ItemHolder
 import ceui.lisa.databinding.FragmentPixivListBinding
-import ceui.lisa.databinding.ItemIllustSquareBinding
 import ceui.lisa.databinding.ItemRedSectionHeaderBinding
-import ceui.lisa.utils.GlideUrlChild
 import ceui.loxia.Client
 import ceui.loxia.WebIllust
 import ceui.loxia.findActionReceiverOrNull
+import ceui.loxia.pushFragment
 import ceui.pixiv.session.SessionManager
 import ceui.pixiv.ui.common.CommonAdapter
-import ceui.pixiv.ui.common.IllustCardActionReceiver
 import ceui.pixiv.ui.common.ListItemHolder
 import ceui.pixiv.ui.common.ListItemViewHolder
 import ceui.pixiv.ui.common.ListMode
@@ -25,14 +23,13 @@ import ceui.pixiv.ui.common.PixivFragment
 import ceui.pixiv.ui.common.createResponseStore
 import ceui.pixiv.ui.common.pixivValueViewModel
 import ceui.pixiv.ui.common.setUpRefreshState
+import ceui.pixiv.ui.common.viewBinding
+import ceui.pixiv.ui.detail.ArtworksMap
 import ceui.pixiv.ui.settings.CookieNotSyncException
 import ceui.pixiv.utils.ppppx
 import ceui.pixiv.utils.setOnClick
-import ceui.pixiv.ui.common.viewBinding
-import ceui.pixiv.ui.detail.ArtworksMap
-import com.bumptech.glide.Glide
 
-class SquareFragment : PixivFragment(R.layout.fragment_pixiv_list) {
+class SquareFragment : PixivFragment(R.layout.fragment_pixiv_list), SeeMoreAction {
 
     private val binding by viewBinding(FragmentPixivListBinding::bind)
     private val safeArgs by navArgs<SquareFragmentArgs>()
@@ -62,7 +59,13 @@ class SquareFragment : PixivFragment(R.layout.fragment_pixiv_list) {
                         webIllusts.add(webIllust)
                     }
                 }
-                holders.add(RedSectionHeaderHolder("Ranking for ${ranking.date}"))
+                holders.add(
+                    RedSectionHeaderHolder(
+                        "Ranking for ${ranking.date}",
+                        type = SeeMoreType.RANKING,
+                        seeMoreString = requireContext().getString(R.string.see_more)
+                    )
+                )
                 holders.addAll(webIllusts.map {
                     ids.add(it.id)
                     IllustSquareHolder(it)
@@ -139,6 +142,12 @@ class SquareFragment : PixivFragment(R.layout.fragment_pixiv_list) {
             }
         }
     }
+
+    override fun seeMore(type: Int) {
+        if (type == SeeMoreType.RANKING) {
+            pushFragment(R.id.navigation_rank)
+        }
+    }
 }
 
 
@@ -195,4 +204,5 @@ object SeeMoreType {
     const val USER_BOOKMARKED_ILLUST = 201
     const val USER_CREATED_NOVEL = 202
     const val RELATED_ILLUST = 203
+    const val RANKING = 204
 }

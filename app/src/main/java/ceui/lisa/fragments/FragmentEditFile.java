@@ -1,5 +1,6 @@
 package ceui.lisa.fragments;
 
+import android.app.DatePickerDialog;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
@@ -11,14 +12,13 @@ import androidx.activity.result.contract.ActivityResultContracts;
 
 import com.blankj.utilcode.util.UriUtils;
 import com.bumptech.glide.Glide;
-import com.google.android.material.datepicker.MaterialDatePicker;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 
 import java.io.File;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import ceui.lisa.R;
 import ceui.lisa.databinding.FragmentEditFileBinding;
@@ -283,28 +283,39 @@ public class FragmentEditFile extends SwipeFragment<FragmentEditFileBinding> imp
                         baseBind.birthdayArea.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker()
-                                        .setTheme(com.google.android.material.R.style.ThemeOverlay_MaterialComponents_MaterialCalendar);
-
+                                Calendar initial = Calendar.getInstance();
                                 if (!TextUtils.isEmpty(birthday)) {
-                                    String[] t = birthday.split("-");
-                                    Calendar initial = Calendar.getInstance();
-                                    initial.set(Integer.parseInt(t[0]), Integer.parseInt(t[1]) - 1, Integer.parseInt(t[2]));
-                                    builder.setSelection(initial.getTimeInMillis());
+                                    try {
+                                        String[] t = birthday.split("-");
+                                        if (t.length == 3) {
+                                            initial.set(
+                                                Integer.parseInt(t[0]),
+                                                Integer.parseInt(t[1]) - 1,
+                                                Integer.parseInt(t[2])
+                                            );
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
                                 }
 
-                                MaterialDatePicker<Long> datePicker = builder.build();
-
-                                datePicker.addOnPositiveButtonClickListener(selection -> {
-                                    Calendar calendar = Calendar.getInstance();
-                                    calendar.setTimeInMillis(selection);
-                                    birthday = LocalDate.of(calendar.get(Calendar.YEAR),
-                                            calendar.get(Calendar.MONTH) + 1,
-                                            calendar.get(Calendar.DAY_OF_MONTH)).toString();
+                                DatePickerDialog datePickerDialog = new DatePickerDialog(
+                                    mContext,
+                                    (view, year, month, dayOfMonth) -> {
+                                        birthday = String.format(
+                                            Locale.getDefault(),
+                                            "%d-%02d-%02d",
+                                            year,
+                                            month + 1,
+                                            dayOfMonth
+                                        );
                                     baseBind.birthday.setText(birthday);
-                                });
-
-                                datePicker.show(getParentFragmentManager(), "DatePickerDialog");
+                                    },
+                                    initial.get(Calendar.YEAR),
+                                    initial.get(Calendar.MONTH),
+                                    initial.get(Calendar.DAY_OF_MONTH)
+                                );
+                                datePickerDialog.show();
                             }
                         });
                     }

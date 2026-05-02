@@ -1,5 +1,6 @@
 package ceui.lisa.activities;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -12,7 +13,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.blankj.utilcode.util.BarUtils;
-import com.google.android.material.datepicker.MaterialDatePicker;
 
 import java.util.Calendar;
 
@@ -155,22 +155,26 @@ public class RankActivity extends BaseActivity<ActivityMultiViewPagerBinding> {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_select_date) {
-            MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker()
-                    .setTheme(com.google.android.material.R.style.ThemeOverlay_MaterialComponents_MaterialCalendar);
-
+            Calendar initial = Calendar.getInstance();
             if (!TextUtils.isEmpty(queryDate) && queryDate.contains("-")) {
-                String[] t = queryDate.split("-");
-                Calendar initial = Calendar.getInstance();
-                initial.set(Integer.parseInt(t[0]), Integer.parseInt(t[1]) - 1, Integer.parseInt(t[2]));
-                builder.setSelection(initial.getTimeInMillis());
+                try {
+                    String[] t = queryDate.split("-");
+                    if (t.length == 3) {
+                        initial.set(
+                            Integer.parseInt(t[0]),
+                            Integer.parseInt(t[1]) - 1,
+                            Integer.parseInt(t[2])
+                        );
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
-            MaterialDatePicker<Long> datePicker = builder.build();
-
-            datePicker.addOnPositiveButtonClickListener(selection -> {
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTimeInMillis(selection);
-                String date = calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH);
+            DatePickerDialog datePickerDialog = new DatePickerDialog(
+                mContext,
+                (view, year, month, dayOfMonth) -> {
+                    String date = year + "-" + (month + 1) + "-" + dayOfMonth;
                 Common.showLog(date);
                 Intent intent = new Intent(mContext, RankActivity.class);
                 intent.putExtra("date", date);
@@ -178,9 +182,12 @@ public class RankActivity extends BaseActivity<ActivityMultiViewPagerBinding> {
                 intent.putExtra("index", baseBind.viewPager.getCurrentItem());
                 startActivity(intent);
                 finish();
-            });
-
-            datePicker.show(getSupportFragmentManager(), "DatePickerDialog");
+                },
+                initial.get(Calendar.YEAR),
+                initial.get(Calendar.MONTH),
+                initial.get(Calendar.DAY_OF_MONTH)
+            );
+            datePickerDialog.show();
             return true;
         }
         return super.onOptionsItemSelected(item);

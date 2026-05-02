@@ -1,5 +1,6 @@
 package ceui.lisa.fragments;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -11,11 +12,9 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.google.android.material.datepicker.MaterialDatePicker;
-
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Locale;
 
 import ceui.lisa.R;
 import ceui.lisa.activities.Shaft;
@@ -197,29 +196,35 @@ public class FragmentFilter extends BaseFragment<FragmentFilterBinding> {
     private void setDatePicker(MutableLiveData<String> dateData) {
         String currentDate = dateData.getValue();
 
-        MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker()
-                .setTheme(com.google.android.material.R.style.ThemeOverlay_MaterialComponents_MaterialCalendar);
-
-        if (!TextUtils.isEmpty(currentDate)) {
-            String[] t = currentDate.split("-");
-            Calendar initial = Calendar.getInstance();
-            initial.set(Integer.parseInt(t[0]), Integer.parseInt(t[1]) - 1, Integer.parseInt(t[2]));
-            builder.setSelection(initial.getTimeInMillis());
+        Calendar initial = Calendar.getInstance();
+        if (!TextUtils.isEmpty(currentDate) && currentDate.contains("-")) {
+            try {
+                String[] t = currentDate.split("-");
+                if (t.length == 3) {
+                    initial.set(
+                        Integer.parseInt(t[0]),
+                        Integer.parseInt(t[1]) - 1,
+                        Integer.parseInt(t[2])
+                    );
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
-        MaterialDatePicker<Long> datePicker = builder.build();
-
-        datePicker.addOnPositiveButtonClickListener(selection -> {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(selection);
-            String date = LocalDate.of(calendar.get(Calendar.YEAR),
-                    calendar.get(Calendar.MONTH) + 1,
-                    calendar.get(Calendar.DAY_OF_MONTH)).toString();
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+            mContext,
+            (view, year, month, dayOfMonth) -> {
+                String date =
+                    String.format(Locale.getDefault(), "%d-%02d-%d", year, month + 1, dayOfMonth);
             dateData.setValue(date);
             performSearch();
-        });
-
-        datePicker.show(getParentFragmentManager(), "DatePickerDialog");
+            },
+            initial.get(Calendar.YEAR),
+            initial.get(Calendar.MONTH),
+            initial.get(Calendar.DAY_OF_MONTH)
+        );
+        datePickerDialog.show();
     }
 
     private void performSearch(){
