@@ -530,9 +530,10 @@
   <string name="string_372">Select all labels in long-press</string>  
   <string name="string_373">Novels download path</string>  
   <string name="string_374">Custom novel download folder are not supported yet</string>  
-  <string name="string_375">100000 bookmarks</string>  
-  <string name="string_377">Download</string>  
-  <string name="string_376">UI</string>  
+  <string name="string_375">100000 bookmarks</string>
+    <string name="string_377">Download</string>
+    <string name="settings_group_browse_favorite">Browsing &amp; Bookmarks</string>
+    <string name="string_376">UI</string>
   <string name="string_378">Modify text color</string>  
   <string name="string_379">Comment spam filter</string>  
   <string name="string_380">Mute this user</string>

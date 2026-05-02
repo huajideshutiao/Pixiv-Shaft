@@ -38,8 +38,6 @@
 -keepclassmembers class ceui.lisa.database.** { *; }
 -keep class ceui.lisa.utils.Settings { *; }
 -keepclassmembers class ceui.lisa.utils.Settings { *; }
--keep class ceui.lisa.feature.FeatureEntity { *; }
--keepclassmembers class ceui.lisa.feature.FeatureEntity { *; }
 
 # @SerializedName 字段兜底：防止遗漏的模型类字段被重命名
 -keepclassmembers class * {

@@ -434,7 +434,6 @@
     <string name="string_242">设置命名方式（长按拖拽）</string>
     <string name="string_243">这里什么都没有呢</string>
     <string name="string_244">按标签筛选</string>
-    <string name="string_245">收藏到精华</string>
     <string name="string_246">插画作品</string>
     <string name="string_248">精华列</string>
     <string name="string_249">精华列表</string>
@@ -565,6 +564,7 @@
     <string name="string_375">100000人收藏</string>
     <string name="string_376">界面</string>
     <string name="string_377">下载</string>
+    <string name="settings_group_browse_favorite">浏览与收藏</string>
     <string name="string_378">修改文字颜色</string>
     <string name="string_379">过滤垃圾评论</string>
     <string name="string_380">屏蔽这个用户</string>

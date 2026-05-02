@@ -529,9 +529,10 @@
   <string name="string_372">태그 에 따라 모든 태그 선택</string>  
   <string name="string_373">소설 로 컬 보존 경로</string>  
   <string name="string_374">소설 은 사용자 정의 폴 더 를 잠시 지원 하지 않 습 니 다.</string>  
-  <string name="string_375">100000 명 소장</string>  
-  <string name="string_377">다운로드</string>  
-  <string name="string_376">상호 작용</string>  
+  <string name="string_375">100000 명 소장</string>
+    <string name="string_377">다운로드</string>
+    <string name="settings_group_browse_favorite">탐색 및 북마크</string>
+    <string name="string_376">상호 작용</string>
   <string name="string_378">텍스트 색상 수정</string>  
   <string name="string_379">스팸 댓글 필터링</string>  
   <string name="string_380">이 사용자 차단</string>

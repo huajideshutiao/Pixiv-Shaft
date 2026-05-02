@@ -9,8 +9,6 @@ import androidx.room.Query;
 
 import java.util.List;
 
-import ceui.lisa.feature.FeatureEntity;
-
 //保存下载历史记录
 @Dao
 public interface DownloadDao {
@@ -170,21 +168,4 @@ public interface DownloadDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertUploadedImage(ImageEntity imageEntity);
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertFeature(FeatureEntity holder);
-
-    @Query("SELECT * FROM feature_table ORDER BY dateTime DESC LIMIT :limit OFFSET :offset")
-    @NonNull
-    List<FeatureEntity> getFeatureList(int limit, int offset);
-
-    @Delete
-    void deleteFeature(FeatureEntity userEntity);
-
-    @Query("DELETE FROM feature_table")
-    void deleteAllFeature();
-
-    @Query("SELECT * FROM feature_table")
-    @NonNull
-    List<FeatureEntity> getAllFeatureEntities();
 }

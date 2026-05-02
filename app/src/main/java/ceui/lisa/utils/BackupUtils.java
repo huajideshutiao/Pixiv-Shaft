@@ -13,14 +13,12 @@ import ceui.lisa.database.MuteEntity;
 import ceui.lisa.database.SearchDao;
 import ceui.lisa.database.SearchEntity;
 import ceui.lisa.database.UserEntity;
-import ceui.lisa.feature.FeatureEntity;
 
 public class BackupUtils {
 
     public static class BackupEntity {
         private Settings settings;
         private List<MuteEntity> muteEntityList;
-        private List<FeatureEntity> featureEntityList;
         private List<SearchEntity> searchEntityList;
         private List<UserEntity> userEntityList;
         private List<IllustHistoryEntity> illustHistoryEntityList;
@@ -39,14 +37,6 @@ public class BackupUtils {
 
         public void setMuteEntityList(List<MuteEntity> muteEntityList) {
             this.muteEntityList = muteEntityList;
-        }
-
-        public List<FeatureEntity> getFeatureEntityList() {
-            return featureEntityList;
-        }
-
-        public void setFeatureEntityList(List<FeatureEntity> featureEntityList) {
-            this.featureEntityList = featureEntityList;
         }
 
         public List<SearchEntity> getSearchEntityList() {
@@ -79,7 +69,6 @@ public class BackupUtils {
         backupEntity.setSettings(Shaft.sSettings);
         AppDatabase appDatabase = AppDatabase.getAppDatabase(context);
         backupEntity.setMuteEntityList(appDatabase.searchDao().getAllMuteEntities());
-        backupEntity.setFeatureEntityList(appDatabase.downloadDao().getAllFeatureEntities());
         backupEntity.setSearchEntityList(appDatabase.searchDao().getAllSearchEntities());
         backupEntity.setUserEntityList(appDatabase.downloadDao().getAllUser());
         if (backupViewHistory){
@@ -101,13 +90,6 @@ public class BackupUtils {
                 SearchDao searchDao = appDatabase.searchDao();
                 for (MuteEntity muteEntity : muteEntityList) {
                     searchDao.insertMuteTag(muteEntity);
-                }
-            }
-            List<FeatureEntity> featureEntityList = backupEntity.getFeatureEntityList();
-            if (featureEntityList != null && !featureEntityList.isEmpty()) {
-                DownloadDao downloadDao = appDatabase.downloadDao();
-                for (FeatureEntity featureEntity : featureEntityList) {
-                    downloadDao.insertFeature(featureEntity);
                 }
             }
             List<SearchEntity> searchEntityList = backupEntity.getSearchEntityList();

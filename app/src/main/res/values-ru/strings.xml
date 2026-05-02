@@ -523,9 +523,10 @@
   <string name="string_372">По умолчанию для коллекции вкладок</string>  
   <string name="string_373">путь к локальному сохранению романа</string>  
   <string name="string_374">файл временно не поддерживает пользовательскую папку</string>  
-  <string name="string_375">100000 Коллекция</string>  
-  <string name="string_377">Скачать</string>  
-  <string name="string_376">Интерфейс</string>  
+  <string name="string_375">100000 Коллекция</string>
+    <string name="string_377">Скачать</string>
+    <string name="settings_group_browse_favorite">Просмотр и закладки</string>
+    <string name="string_376">Интерфейс</string>
   <string name="string_378">Изменить цвет текста</string>  
   <string name="string_379">Отфильтровать спам-комментарий</string>  
   <string name="string_380">экранировать этого пользователя</string>

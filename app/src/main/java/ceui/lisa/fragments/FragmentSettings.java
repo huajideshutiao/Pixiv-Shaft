@@ -7,23 +7,20 @@ import static ceui.lisa.helper.ThemeHelper.ThemeType.DEFAULT_MODE;
 import static ceui.lisa.helper.ThemeHelper.ThemeType.LIGHT_MODE;
 
 import android.Manifest;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.CompoundButton;
 
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.activity.result.contract.ActivityResultContracts;
 
 import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.UriUtils;
 import com.qmuiteam.qmui.skin.QMUISkinManager;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
-import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
 import com.scwang.smart.refresh.header.FalsifyFooter;
 import com.scwang.smart.refresh.header.FalsifyHeader;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
@@ -44,7 +41,6 @@ import ceui.lisa.helper.NavigationLocationHelper;
 import ceui.lisa.helper.PageTransformerHelper;
 import ceui.lisa.helper.ThemeHelper;
 import ceui.lisa.http.Retro;
-import ceui.lisa.interfaces.Callback;
 import ceui.lisa.utils.BackupUtils;
 import ceui.lisa.utils.Common;
 import ceui.lisa.utils.DownloadLimitTypeUtil;
@@ -71,7 +67,7 @@ public class FragmentSettings extends SwipeFragment<FragmentSettingsBinding> {
         baseBind.toolbar.setNavigationOnClickListener(view -> mActivity.finish());
         Common.animate(baseBind.parentLinear);
 
-        // 账号
+        // 1. 账号
         {
             baseBind.userManage.setOnClickListener(v -> {
                 Intent intent = new Intent(mContext, TemplateActivity.class);
@@ -128,7 +124,7 @@ public class FragmentSettings extends SwipeFragment<FragmentSettingsBinding> {
             });
         }
 
-        // 网络
+        // 2. 网络
         {
             baseBind.autoDns.setChecked(Shaft.sSettings.isDirectConnect());
             baseBind.autoDns.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -169,7 +165,7 @@ public class FragmentSettings extends SwipeFragment<FragmentSettingsBinding> {
             baseBind.showOriginalPreviewImageRela.setOnClickListener(v -> baseBind.showOriginalPreviewImage.performClick());
         }
 
-        // 常规
+        // 5. 浏览与收藏 (原常规 + 个性化)
         {
             baseBind.saveHistory.setChecked(Shaft.sSettings.isSaveViewHistory());
             baseBind.saveHistory.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -268,7 +264,7 @@ public class FragmentSettings extends SwipeFragment<FragmentSettingsBinding> {
             baseBind.r18FilterDefaultEnableRela.setOnClickListener(v -> baseBind.r18FilterDefaultEnable.performClick());
         }
 
-        // 界面
+        // 3. 界面
         {
             // APP主页显示R页面
             baseBind.mainViewR18.setChecked(Shaft.sSettings.isMainViewR18());
@@ -451,7 +447,7 @@ public class FragmentSettings extends SwipeFragment<FragmentSettingsBinding> {
             });
         }
 
-        // 下载
+        // 4. 下载
         {
             // 以下行已被统一的"下载路径与文件名"设置页吸收——通过模板变量 / 条件块 /
             // 按 bucket 的存储后端表达，用户应去新页面调整。这里直接隐藏旧入口，
@@ -775,7 +771,7 @@ public class FragmentSettings extends SwipeFragment<FragmentSettingsBinding> {
             baseBind.novelPathRela.setOnClickListener(v -> Common.showToast(getString(R.string.string_374), true));
         }
 
-        // 个性化
+        // 5. 浏览与收藏 - 收藏交互部分
         {
             baseBind.showLikeButton.setChecked(Shaft.sSettings.isPrivateStar());
             baseBind.showLikeButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -858,7 +854,7 @@ public class FragmentSettings extends SwipeFragment<FragmentSettingsBinding> {
             baseBind.illustDetailKeepScreenOnRela.setOnClickListener(v -> baseBind.illustDetailKeepScreenOn.performClick());
         }
 
-        // 缓存
+        // 6. 缓存
         {
             baseBind.imageCacheSize.setText(FileUtils.getSize(LegacyFile.imageCacheFolder(mContext)));
             baseBind.clearImageCache.setOnClickListener(v -> {
@@ -877,7 +873,7 @@ public class FragmentSettings extends SwipeFragment<FragmentSettingsBinding> {
             });
         }
 
-        // 备份与还原
+        // 7. 备份与还原
         {
             baseBind.backupRela.setOnClickListener(v -> {
                 QMUIDialog.CheckBoxMessageDialogBuilder builder =

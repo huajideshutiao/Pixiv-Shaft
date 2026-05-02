@@ -522,9 +522,10 @@
   <string name="string_372">Uzun basınca tüm etiketleri seç</string>  
   <string name="string_373">Roman indirme yolu</string>  
   <string name="string_374">Henüz özel bir roman klasörü seçilmedi</string>  
-  <string name="string_375">100.000 favori</string>  
-  <string name="string_377">İndir</string>  
-  <string name="string_376">Arayüz</string>  
+  <string name="string_375">100.000 favori</string>
+    <string name="string_377">İndir</string>
+    <string name="settings_group_browse_favorite">Göz Atma ve Favoriler</string>
+    <string name="string_376">Arayüz</string>
   <string name="string_378">Yazı rengini değiştir</string>  
   <string name="string_379">Yorum spam filtresi</string>  
   <string name="string_380">Bu kullanıcıyı engelle</string>

@@ -532,8 +532,9 @@
   <string name="string_373">小説を保存するフォルダー</string>
   <string name="string_374">小説はカスタムフォルダーをサポートしていません。</string>
   <string name="string_375">100000すき！</string>
-  <string name="string_377">ダウンロード</string>  
-  <string name="string_376">UI</string>  
+    <string name="string_377">ダウンロード</string>
+    <string name="settings_group_browse_favorite">閲覧とブックマーク</string>
+    <string name="string_376">UI</string>
   <string name="string_378">文字色を変更</string>
   <string name="string_379">スパムコメントを非表示</string>  
   <string name="string_380">このユーザーをミュート</string>

@@ -535,6 +535,7 @@
   <string name="string_374">小說暫時不支持自定義資料夾</string>
   <string name="string_375">100000人收藏</string>
   <string name="string_377">下載</string>
+    <string name="settings_group_browse_favorite">瀏覽與收藏</string>
   <string name="string_376">介面</string>
   <string name="string_378">修改文字顏色</string>
   <string name="string_379">過濾垃圾評論</string>

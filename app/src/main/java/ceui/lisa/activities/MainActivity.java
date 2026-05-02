@@ -255,9 +255,6 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
         } else if (id == R.id.muted_list) {
             intent = new Intent(mContext, TemplateActivity.class);
             intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "标签屏蔽记录");
-        } else if (id == R.id.nav_feature) {
-            intent = new Intent(mContext, TemplateActivity.class);
-            intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "精华列");
         } else if (id == R.id.nav_fans) {
             intent = new Intent(mContext, TemplateActivity.class);
             intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "粉丝");

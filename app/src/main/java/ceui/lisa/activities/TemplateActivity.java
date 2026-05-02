@@ -21,7 +21,6 @@ import ceui.lisa.fragments.FragmentDoing;
 import ceui.lisa.fragments.FragmentDonate;
 import ceui.lisa.fragments.FragmentEditAccount;
 import ceui.lisa.fragments.FragmentEditFile;
-import ceui.lisa.fragments.FragmentFeature;
 import ceui.lisa.fragments.FragmentFileName;
 import ceui.lisa.fragments.FragmentFollowUser;
 import ceui.lisa.fragments.FragmentHistoryTabs;
@@ -261,8 +260,6 @@ public class TemplateActivity extends BaseActivity<ActivityFragmentBinding> impl
                     return FragmentMangaSeriesDetail.newInstance(intent.getIntExtra(Params.MANGA_SERIES_ID, 0));
                 case "小说系列作品":
                     return new FragmentNovelSeries();
-                case "精华列":
-                    return new FragmentFeature();
                 case "我的作业环境":
                     return new FragmentWorkSpace();
                 case "存储访问":

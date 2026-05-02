@@ -9,7 +9,6 @@ import androidx.room.RoomDatabase;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-import ceui.lisa.feature.FeatureEntity;
 import ceui.pixiv.db.GeneralDao;
 import ceui.pixiv.db.GeneralEntity;
 import ceui.pixiv.db.RemoteKey;
@@ -26,7 +25,6 @@ import ceui.pixiv.db.queue.DownloadQueueEntity;
                 ImageEntity.class, //用不到
                 MuteEntity.class, //记录用户屏蔽的标签
                 UUIDEntity.class, //记录用户屏蔽的标签
-                FeatureEntity.class, //记录用户收藏的精华列表
                 DownloadingEntity.class, //记录用户正在下载中的列表
                 GeneralEntity.class, // 新增的 GeneralEntity
                 RemoteKey.class,
@@ -38,18 +36,12 @@ import ceui.pixiv.db.queue.DownloadQueueEntity;
                 NovelCustomFontEntity.class, // V3 阅读器自定义字体
                 DownloadQueueEntity.class, // 批量下载队列（v33）
         },
-    version = 35,
+    version = 34,
         exportSchema = false
 )
 public abstract class AppDatabase extends RoomDatabase {
 
     public static final String DATABASE_NAME = "roomDemo-database";
-    private static final Migration MIGRATION_23_24 = new Migration(23, 24) {
-        @Override
-        public void migrate(@NonNull SupportSQLiteDatabase database) {
-            database.execSQL("ALTER TABLE feature_table ADD COLUMN seriesId INTEGER NOT NULL DEFAULT 0");
-        }
-    };
     private static final Migration MIGRATION_24_25 = new Migration(24, 25) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
@@ -231,7 +223,6 @@ public abstract class AppDatabase extends RoomDatabase {
                             // Don't do this on a real app! See PersistenceBasicSample for an example.
                             //.fallbackToDestructiveMigration()
                             .allowMainThreadQueries()
-                            .addMigrations(MIGRATION_23_24)
                             .addMigrations(MIGRATION_24_25)
                             .addMigrations(MIGRATION_25_26) // 注册 25 -> 26 迁移
                             .addMigrations(MIGRATION_26_27) // 注册 26 -> 27 迁移
