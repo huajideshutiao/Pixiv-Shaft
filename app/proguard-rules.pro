@@ -1,26 +1,57 @@
-# Optimization passes for R8/ProGuard
 -optimizationpasses 5
 
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
-
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
-
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
-
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
-
 -dontwarn com.qmuiteam.qmui.widget.popup.QMUINormalPopup$AnimStyle
+
+# pixiv-login 库：Gson 反序列化 OAuth 响应，sealed class 被混淆后无法实例化
+-keep class com.github.soxia.** { *; }
+-keepclassmembers class com.github.soxia.** { *; }
+
+# 登录回调相关类：Gson 反序列化 OAuth token
+-keep class ceui.pixiv.login.** { *; }
+-keepclassmembers class ceui.pixiv.login.** { *; }
+
+# Gson 反射所需元数据
+-keepattributes Signature
+-keepattributes *Annotation*
+-keepattributes EnclosingMethod
+
+# Gson 库自身：TypeAdapterFactory 通过 ServiceLoader 注册
+-keep class com.google.gson.** { *; }
+-keep class * implements com.google.gson.TypeAdapterFactory
+-keep class * implements com.google.gson.JsonSerializer
+-keep class * implements com.google.gson.JsonDeserializer
+
+# 实体模型：Retrofit 响应、SharedPreferences、Room JSON 列、备份恢复
+-keep class ceui.lisa.models.** { *; }
+-keepclassmembers class ceui.lisa.models.** { *; }
+
+# 网络响应包装类（注意是 model 单数，非 models）
+-keep class ceui.lisa.model.** { *; }
+-keepclassmembers class ceui.lisa.model.** { *; }
+
+# Kotlin data 模型：新功能及 ObjectPool 缓存
+-keep class ceui.loxia.** { *; }
+-keepclassmembers class ceui.loxia.** { *; }
+
+# 数据库实体及 Settings：Gson 备份/恢复
+-keep class ceui.lisa.database.** { *; }
+-keepclassmembers class ceui.lisa.database.** { *; }
+-keep class ceui.lisa.utils.Settings { *; }
+-keepclassmembers class ceui.lisa.utils.Settings { *; }
+-keep class ceui.lisa.feature.FeatureEntity { *; }
+-keepclassmembers class ceui.lisa.feature.FeatureEntity { *; }
+
+# @SerializedName 字段兜底：防止遗漏的模型类字段被重命名
+-keepclassmembers class * {
+    @com.google.gson.annotations.SerializedName <fields>;
+}
+
+# Serializable：Activity/Fragment 间通过 Bundle 传递
+-keepclassmembers class * implements java.io.Serializable {
+    static final long serialVersionUID;
+    private static final java.io.ObjectStreamField[] serialPersistentFields;
+    private void writeObject(java.io.ObjectOutputStream);
+    private void readObject(java.io.ObjectInputStream);
+    java.lang.Object writeReplace();
+    java.lang.Object readResolve();
+}

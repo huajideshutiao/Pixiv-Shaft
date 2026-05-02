@@ -49,7 +49,13 @@ object OutPut {
 
     @JvmStatic
     fun outPutBackupFile(context: Context, from: File, fileName: String) {
-        writeRaw(Bucket.Backup, "ShaftBackups/$fileName", "application/zip", from, R.string.save_backup_failed)
+        writeRaw(
+            Bucket.Backup,
+            "ShaftBackups/$fileName",
+            "application/json",
+            from,
+            R.string.save_backup_failed
+        )
     }
 
     @JvmStatic

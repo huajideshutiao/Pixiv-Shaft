@@ -3,7 +3,6 @@ package ceui.lisa.helper;
 import com.ToxicBakery.viewpager.transforms.ABaseTransformer;
 import com.ToxicBakery.viewpager.transforms.AccordionTransformer;
 import com.ToxicBakery.viewpager.transforms.BackgroundToForegroundTransformer;
-import ceui.lisa.transformer.CubeInTransformer;
 import com.ToxicBakery.viewpager.transforms.CubeOutTransformer;
 import com.ToxicBakery.viewpager.transforms.DefaultTransformer;
 import com.ToxicBakery.viewpager.transforms.DepthPageTransformer;
@@ -25,28 +24,29 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import ceui.lisa.activities.Shaft;
+import ceui.lisa.transformer.CubeInTransformer;
 
 public class PageTransformerHelper {
 
     private final static IndexedLinkedHashMap<Integer, TransformerType> transformerMap = Stream.of(
-            new TransformerType(0, DefaultTransformer.class),
-            new TransformerType(1, AccordionTransformer.class),
-            new TransformerType(2, BackgroundToForegroundTransformer.class),
-            new TransformerType(3, ForegroundToBackgroundTransformer.class),
-            new TransformerType(4, CubeInTransformer.class),
-            new TransformerType(5, CubeOutTransformer.class),
-            new TransformerType(6, DepthPageTransformer.class),
-            new TransformerType(7, FlipHorizontalTransformer.class),
-            new TransformerType(8, FlipVerticalTransformer.class),
-            new TransformerType(9, RotateDownTransformer.class),
-            new TransformerType(10, RotateUpTransformer.class),
-            new TransformerType(11, ScaleInOutTransformer.class),
-            new TransformerType(12, ZoomOutSlideTransformer.class),
-            new TransformerType(13, ZoomInTransformer.class),
-            new TransformerType(14, ZoomOutTransformer.class),
-            new TransformerType(15, StackTransformer.class),
-            new TransformerType(16, TabletTransformer.class),
-            new TransformerType(17, DrawerTransformer.class)
+        new TransformerType(0, DefaultTransformer.class, "Default"),
+        new TransformerType(1, AccordionTransformer.class, "Accordion"),
+        new TransformerType(2, BackgroundToForegroundTransformer.class, "BackgroundToForeground"),
+        new TransformerType(3, ForegroundToBackgroundTransformer.class, "ForegroundToBackground"),
+        new TransformerType(4, CubeInTransformer.class, "CubeIn"),
+        new TransformerType(5, CubeOutTransformer.class, "CubeOut"),
+        new TransformerType(6, DepthPageTransformer.class, "DepthPage"),
+        new TransformerType(7, FlipHorizontalTransformer.class, "FlipHorizontal"),
+        new TransformerType(8, FlipVerticalTransformer.class, "FlipVertical"),
+        new TransformerType(9, RotateDownTransformer.class, "RotateDown"),
+        new TransformerType(10, RotateUpTransformer.class, "RotateUp"),
+        new TransformerType(11, ScaleInOutTransformer.class, "ScaleInOut"),
+        new TransformerType(12, ZoomOutSlideTransformer.class, "ZoomOutSlide"),
+        new TransformerType(13, ZoomInTransformer.class, "ZoomIn"),
+        new TransformerType(14, ZoomOutTransformer.class, "ZoomOut"),
+        new TransformerType(15, StackTransformer.class, "Stack"),
+        new TransformerType(16, TabletTransformer.class, "Tablet"),
+        new TransformerType(17, DrawerTransformer.class, "Drawer")
     ).collect(Collectors.toMap(TransformerType::getTypeId, t -> t, (v1, v2) -> v1, IndexedLinkedHashMap::new)).tidyIndexes();
 
     public static int getCurrentTransformerIndex() {
@@ -81,12 +81,17 @@ public class PageTransformerHelper {
     private static class TransformerType {
 
         private final int typeId;
-        private int nameResId;
+        private final String name;
         private final Class<? extends ABaseTransformer> pageTransformer;
 
-        public TransformerType(int typeId, Class<? extends ABaseTransformer> pageTransformer) {
+        public TransformerType(
+            int typeId,
+            Class<? extends ABaseTransformer> pageTransformer,
+            String name
+        ) {
             this.typeId = typeId;
             this.pageTransformer = pageTransformer;
+            this.name = name;
         }
 
         public int getTypeId() {
@@ -94,7 +99,7 @@ public class PageTransformerHelper {
         }
 
         public String getName() {
-            return pageTransformer.getSimpleName().replace("Transformer", "");
+            return name;
         }
     }
 }
