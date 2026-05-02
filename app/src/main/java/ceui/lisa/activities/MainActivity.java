@@ -5,7 +5,6 @@ import static ceui.lisa.R.id.nav_slideshow;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -14,22 +13,20 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 
@@ -50,8 +47,6 @@ import ceui.lisa.utils.GlideUtil;
 import ceui.lisa.utils.Params;
 import ceui.lisa.utils.ReverseImage;
 import ceui.lisa.utils.ReverseWebviewCallback;
-import ceui.lisa.view.DrawerLayoutViewPager;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import ceui.pixiv.session.SessionManager;
 import timber.log.Timber;
 
@@ -257,7 +252,7 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
         ceui.pixiv.db.discovery.UserProfile profile = ceui.pixiv.db.discovery.ProfileManager.INSTANCE.cached();
         if (profile == null) {
             baseBind.navView.getMenu().findItem(R.id.nav_discovery).setVisible(false);
-            android.util.Log.d("Discovery/Gate", "profile=null, hide discovery");
+            Timber.tag("Discovery/Gate").d("profile=null, hide discovery");
             return;
         }
         int tagCount = profile.getTagScores().size();
@@ -268,10 +263,10 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
         }
         boolean ready = profile.isReady();
         baseBind.navView.getMenu().findItem(R.id.nav_discovery).setVisible(ready);
-        android.util.Log.d("Discovery/Gate", "isReady=" + ready
-                + " | tags=" + tagCount + "/15"
-                + " seeds=" + seedCount + "/5"
-                + " strongAuthors=" + strongAuthors + "/10");
+        Timber.tag("Discovery/Gate").d("isReady=" + ready
+            + " | tags=" + tagCount + "/15"
+            + " seeds=" + seedCount + "/5"
+            + " strongAuthors=" + strongAuthors + "/10");
     }
 
     public DrawerLayout getDrawer() {
@@ -427,7 +422,7 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
 
     public void exit() {
         if ((System.currentTimeMillis() - mExitTime) > 2000) {
-            if (Manager.get().getContent().size() != 0) {
+            if (!Manager.get().getContent().isEmpty()) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                 builder.setTitle(getString(R.string.shaft_hint));
                 builder.setMessage(mContext.getString(R.string.you_have_download_plan));
@@ -488,7 +483,7 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
         if (navigationValue == null) {
             return defaultPosition;
         }
-        Class clazz = navigationValue.getInstanceClass();
+        var clazz = navigationValue.getInstanceClass();
         for (int i = 0; i < baseFragments.length; i++) {
             Fragment fragment = baseFragments[i];
             if (clazz == fragment.getClass()) {

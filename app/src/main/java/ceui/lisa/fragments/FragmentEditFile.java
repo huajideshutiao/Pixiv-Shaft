@@ -1,7 +1,5 @@
 package ceui.lisa.fragments;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
@@ -10,13 +8,11 @@ import android.widget.ArrayAdapter;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.blankj.utilcode.util.UriUtils;
 import com.bumptech.glide.Glide;
-import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.google.android.material.datepicker.MaterialDatePicker;
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -38,8 +34,8 @@ import ceui.lisa.utils.Common;
 import ceui.lisa.utils.Dev;
 import ceui.lisa.utils.GlideUtil;
 import ceui.lisa.utils.Local;
-import ceui.lisa.utils.Params;
 import ceui.lisa.utils.PixivOperate;
+import ceui.pixiv.session.SessionManager;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.MediaType;
@@ -48,9 +44,6 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static android.app.Activity.RESULT_OK;
-import ceui.pixiv.session.SessionManager;
 
 public class FragmentEditFile extends SwipeFragment<FragmentEditFileBinding> implements Display<Preset> {
 
