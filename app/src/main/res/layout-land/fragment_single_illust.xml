@@ -141,17 +141,17 @@
                                     android:layout_height="48dp" />
 
                                 <TextView
-                                    android:layout_width="match_parent"
                                     android:id="@+id/user_name"
-                                    android:layout_toStartOf="@+id/follow"
-                                    android:layout_marginEnd="@dimen/eight_dp"
-                                    android:textStyle="bold"
-                                    android:textSize="16sp"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_centerVertical="true"
                                     android:layout_marginStart="@dimen/eight_dp"
+                                    android:layout_marginEnd="@dimen/eight_dp"
+                                    android:layout_toStartOf="@+id/follow"
                                     android:layout_toEndOf="@+id/user_head"
                                     android:textColor="?attr/colorPrimary"
-                                    android:layout_centerVertical="true"
-                                    android:layout_height="wrap_content" />
+                                    android:textSize="16sp"
+                                    android:textStyle="bold" />
 
                                 <Button
                                     android:id="@+id/follow"

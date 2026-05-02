@@ -3,7 +3,7 @@ package ceui.lisa.fragments;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import com.github.panpf.sketch.loadImage;
+import com.bumptech.glide.Glide;
 
 import java.io.File;
 
@@ -35,10 +35,14 @@ public class FragmentLocalImageDetail extends BaseFragment<FragmentImageDetailLo
 
     @Override
     public void initView() {
-        if (!TextUtils.isEmpty(filePath) && filePath.contains(".zip")) {
-            baseBind.illustImage.loadImage(R.mipmap.zip);
-        } else {
-            baseBind.illustImage.loadImage(new File(filePath));
+        if (!TextUtils.isEmpty(filePath)) {
+            if (filePath.contains(".zip")) {
+                baseBind.illustImage.setImageResource(R.mipmap.zip);
+            } else {
+                Glide.with(this)
+                        .load(new File(filePath))
+                        .into(baseBind.illustImage);
+            }
         }
     }
 }

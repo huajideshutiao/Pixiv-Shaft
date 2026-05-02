@@ -4,7 +4,6 @@ import android.net.Uri
 import ceui.lisa.activities.Shaft
 import ceui.lisa.http.CronetInterceptor
 import okhttp3.OkHttpClient
-import okhttp3.Protocol
 
 /**
  * Pixiv OAuth 入口，包了库 [PixivOAuthClient]。
@@ -52,7 +51,6 @@ object PixivLogin {
 
     private fun buildClient(): PixivOAuthClient {
         val builder = OkHttpClient.Builder()
-            .protocols(listOf(Protocol.HTTP_1_1))
         if (Shaft.sSettings.isDirectConnect) {
             builder.addInterceptor(CronetInterceptor(CronetInterceptor.getEngine(Shaft.getContext())))
         }

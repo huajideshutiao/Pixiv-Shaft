@@ -155,9 +155,17 @@ public class RankActivity extends BaseActivity<ActivityMultiViewPagerBinding> {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_select_date) {
-            MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker()
-                    .setTheme(com.google.android.material.R.style.ThemeOverlay_MaterialComponents_MaterialCalendar)
-                    .build();
+            MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker()
+                    .setTheme(com.google.android.material.R.style.ThemeOverlay_MaterialComponents_MaterialCalendar);
+
+            if (!TextUtils.isEmpty(queryDate) && queryDate.contains("-")) {
+                String[] t = queryDate.split("-");
+                Calendar initial = Calendar.getInstance();
+                initial.set(Integer.parseInt(t[0]), Integer.parseInt(t[1]) - 1, Integer.parseInt(t[2]));
+                builder.setSelection(initial.getTimeInMillis());
+            }
+
+            MaterialDatePicker<Long> datePicker = builder.build();
 
             datePicker.addOnPositiveButtonClickListener(selection -> {
                 Calendar calendar = Calendar.getInstance();
@@ -171,15 +179,6 @@ public class RankActivity extends BaseActivity<ActivityMultiViewPagerBinding> {
                 startActivity(intent);
                 finish();
             });
-
-            Calendar now = Calendar.getInstance();
-            now.add(Calendar.DAY_OF_MONTH, -1);
-            if (!TextUtils.isEmpty(queryDate) && queryDate.contains("-")) {
-                String[] t = queryDate.split("-");
-                Calendar initial = Calendar.getInstance();
-                initial.set(Integer.parseInt(t[0]), Integer.parseInt(t[1]) - 1, Integer.parseInt(t[2]));
-                datePicker.setSelection(initial.getTimeInMillis());
-            }
 
             datePicker.show(getSupportFragmentManager(), "DatePickerDialog");
             return true;

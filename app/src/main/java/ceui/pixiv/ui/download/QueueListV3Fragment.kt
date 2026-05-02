@@ -56,7 +56,6 @@ class QueueListV3Fragment : Fragment() {
         val list = view.findViewById<RecyclerView>(R.id.list)
         list.layoutManager = LinearLayoutManager(requireContext())
         list.adapter = adapter
-        list.setHasFixedSize(true)
 
         val empty = view.findViewById<View>(R.id.emptyState)
         view.findViewById<TextView>(R.id.emptyTitle).text = getString(R.string.dlmgr_queue_empty_title)

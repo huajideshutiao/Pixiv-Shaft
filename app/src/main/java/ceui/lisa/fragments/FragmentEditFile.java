@@ -290,9 +290,17 @@ public class FragmentEditFile extends SwipeFragment<FragmentEditFileBinding> imp
                         baseBind.birthdayArea.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker()
-                                        .setTheme(com.google.android.material.R.style.ThemeOverlay_MaterialComponents_MaterialCalendar)
-                                        .build();
+                                MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker()
+                                        .setTheme(com.google.android.material.R.style.ThemeOverlay_MaterialComponents_MaterialCalendar);
+
+                                if (!TextUtils.isEmpty(birthday)) {
+                                    String[] t = birthday.split("-");
+                                    Calendar initial = Calendar.getInstance();
+                                    initial.set(Integer.parseInt(t[0]), Integer.parseInt(t[1]) - 1, Integer.parseInt(t[2]));
+                                    builder.setSelection(initial.getTimeInMillis());
+                                }
+
+                                MaterialDatePicker<Long> datePicker = builder.build();
 
                                 datePicker.addOnPositiveButtonClickListener(selection -> {
                                     Calendar calendar = Calendar.getInstance();
@@ -302,14 +310,6 @@ public class FragmentEditFile extends SwipeFragment<FragmentEditFileBinding> imp
                                             calendar.get(Calendar.DAY_OF_MONTH)).toString();
                                     baseBind.birthday.setText(birthday);
                                 });
-
-                                Calendar now = Calendar.getInstance();
-                                if (!TextUtils.isEmpty(birthday)) {
-                                    String[] t = birthday.split("-");
-                                    Calendar initial = Calendar.getInstance();
-                                    initial.set(Integer.parseInt(t[0]), Integer.parseInt(t[1]) - 1, Integer.parseInt(t[2]));
-                                    datePicker.setSelection(initial.getTimeInMillis());
-                                }
 
                                 datePicker.show(getParentFragmentManager(), "DatePickerDialog");
                             }

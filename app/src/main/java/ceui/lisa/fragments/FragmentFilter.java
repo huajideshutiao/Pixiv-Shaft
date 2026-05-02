@@ -194,9 +194,17 @@ public class FragmentFilter extends BaseFragment<FragmentFilterBinding> {
     private void setDatePicker(MutableLiveData<String> dateData) {
         String currentDate = dateData.getValue();
 
-        MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker()
-                .setTheme(com.google.android.material.R.style.ThemeOverlay_MaterialComponents_MaterialCalendar)
-                .build();
+        MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker()
+                .setTheme(com.google.android.material.R.style.ThemeOverlay_MaterialComponents_MaterialCalendar);
+
+        if (!TextUtils.isEmpty(currentDate)) {
+            String[] t = currentDate.split("-");
+            Calendar initial = Calendar.getInstance();
+            initial.set(Integer.parseInt(t[0]), Integer.parseInt(t[1]) - 1, Integer.parseInt(t[2]));
+            builder.setSelection(initial.getTimeInMillis());
+        }
+
+        MaterialDatePicker<Long> datePicker = builder.build();
 
         datePicker.addOnPositiveButtonClickListener(selection -> {
             Calendar calendar = Calendar.getInstance();
@@ -207,14 +215,6 @@ public class FragmentFilter extends BaseFragment<FragmentFilterBinding> {
             dateData.setValue(date);
             performSearch();
         });
-
-        Calendar now = Calendar.getInstance();
-        if (!TextUtils.isEmpty(currentDate)) {
-            String[] t = currentDate.split("-");
-            Calendar initial = Calendar.getInstance();
-            initial.set(Integer.parseInt(t[0]), Integer.parseInt(t[1]) - 1, Integer.parseInt(t[2]));
-            datePicker.setSelection(initial.getTimeInMillis());
-        }
 
         datePicker.show(getParentFragmentManager(), "DatePickerDialog");
     }
