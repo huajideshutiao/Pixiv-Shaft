@@ -966,19 +966,6 @@
                                 android:layout_marginBottom="@dimen/six_dp"
                                 android:text="@string/string_414" />
 
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@+id/r18_filter_default_enable_text"
-                                android:layout_marginStart="@dimen/sixteen_dp"
-                                android:layout_marginBottom="@dimen/twelve_dp"
-                                android:layout_toStartOf="@+id/r18_filter_default_enable"
-                                android:ellipsize="start"
-                                android:singleLine="true"
-                                android:text="@string/string_415"
-                                android:textColor="?attr/colorPrimary"
-                                android:textSize="12sp" />
-
                             <androidx.appcompat.widget.SwitchCompat
                                 android:id="@+id/r18_filter_default_enable"
                                 style="@style/setting_right_switch" />

@@ -237,7 +237,7 @@
     <style name="ripple_rela">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:minHeight">70dp</item>
+        <item name="android:minHeight">60dp</item>
         <item name="android:clickable">true</item>
         <item name="android:background">?android:attr/selectableItemBackground</item>
     </style>
