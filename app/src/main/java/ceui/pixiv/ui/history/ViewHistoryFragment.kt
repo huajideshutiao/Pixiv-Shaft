@@ -2,17 +2,20 @@ package ceui.pixiv.ui.history
 
 import android.os.Bundle
 import android.view.View
-import ceui.pixiv.ui.common.PixivFragment
+import androidx.core.view.isVisible
 import ceui.lisa.R
 import ceui.lisa.database.AppDatabase
 import ceui.lisa.databinding.FragmentPixivListBinding
+import ceui.loxia.launchSuspend
 import ceui.loxia.threadSafeArgs
 import ceui.pixiv.db.RecordType
 import ceui.pixiv.ui.common.ListMode
+import ceui.pixiv.ui.common.PixivFragment
 import ceui.pixiv.ui.common.constructVM
 import ceui.pixiv.ui.common.setUpRefreshState
 import ceui.pixiv.ui.common.viewBinding
-import kotlin.getValue
+import ceui.pixiv.utils.setOnClick
+import ceui.pixiv.widgets.alertYesOrCancel
 
 class ViewHistoryFragment : PixivFragment(R.layout.fragment_pixiv_list) {
 
@@ -34,5 +37,15 @@ class ViewHistoryFragment : PixivFragment(R.layout.fragment_pixiv_list) {
                 ListMode.VERTICAL
             }
         )
+
+        binding.listSetting.isVisible = true
+        binding.listSetting.setImageResource(R.drawable.ic_delete_black_24dp)
+        binding.listSetting.setOnClick {
+            launchSuspend {
+                if (alertYesOrCancel(getString(R.string.string_231))) {
+                    viewModel.clearHistory()
+                }
+            }
+        }
     }
 }

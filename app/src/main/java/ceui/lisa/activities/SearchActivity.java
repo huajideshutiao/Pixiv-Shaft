@@ -1,6 +1,7 @@
 package ceui.lisa.activities;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -45,6 +46,7 @@ import ceui.lisa.interfaces.Callback;
 import ceui.lisa.utils.Common;
 import ceui.lisa.utils.Params;
 import ceui.lisa.utils.PixivOperate;
+import ceui.lisa.utils.PixivSearchParamUtil;
 import ceui.lisa.utils.SearchTypeUtil;
 import ceui.lisa.viewmodel.SearchModel;
 import ceui.pixiv.session.SessionManager;
@@ -62,25 +64,34 @@ public class SearchActivity extends BaseActivity<FragmentNewSearchBinding> {
     private final java.util.List<String> committedTags = new java.util.ArrayList<>();
     private SearchHintViewModel hintViewModel;
     private FragmentSearch landingFragment;
+    private int mSearchType = SearchTypeUtil.defaultSearchType;
 
     @Override
     protected void initBundle(Bundle bundle) {
         keyWord = bundle.getString(Params.KEY_WORD);
+        if (keyWord == null) {
+            keyWord = "";
+        }
         index = bundle.getInt(Params.INDEX);
+        initViewModels();
+    }
+
+    private void initViewModels() {
+        if (searchModel != null) {
+            return;
+        }
         searchModel = new ViewModelProvider(this).get(SearchModel.class);
         hintViewModel = new ViewModelProvider(this).get(SearchHintViewModel.class);
         searchModel.getKeyword().setValue(keyWord);
         searchModel.getIsNovel().setValue(index == 1);
+        searchModel.getSearchType()
+            .setValue(index == 1 ? PixivSearchParamUtil.TAG_MATCH_VALUE_NOVEL[0] : PixivSearchParamUtil.TAG_MATCH_VALUE[0]);
+        searchModel.getSortType().setValue(Shaft.sSettings.getSearchDefaultSortType());
+        searchModel.getStarSize().setValue(Shaft.sSettings.getSearchFilter());
+        searchModel.getR18Restriction().setValue(0);
 
         isPremium = SessionManager.INSTANCE.isPremium();
         searchModel.getIsPremium().setValue(isPremium);
-
-//        searchModel.getNowGo().observe(this, new Observer<String>() {
-//            @Override
-//            public void onChanged(String s) {
-//                baseBind.drawerlayout.closeMenu(true);
-//            }
-//        });
     }
 
     @Override
@@ -90,9 +101,16 @@ public class SearchActivity extends BaseActivity<FragmentNewSearchBinding> {
 
     @Override
     protected void initView() {
+        initViewModels();
         ViewGroup.LayoutParams headParams = baseBind.head.getLayoutParams();
         headParams.height = Shaft.statusHeight;
         baseBind.head.setLayoutParams(headParams);
+
+        baseBind.searchTagsFlow.setShowRemoveIcon(true);
+        if (baseBind.searchTagsFlow.getEditor() != null) {
+            baseBind.searchTagsFlow.getEditor()
+                .setHint(SearchTypeUtil.SEARCH_TYPE_NAME[mSearchType]);
+        }
 
         final String[] TITLES =
             new String[]{getString(R.string.string_136), getString(R.string.string_138), getString(R.string.string_432)};
@@ -103,7 +121,6 @@ public class SearchActivity extends BaseActivity<FragmentNewSearchBinding> {
                 if (!TextUtils.isEmpty(part)) committedTags.add(part);
             }
         }
-        baseBind.searchTagsFlow.setShowRemoveIcon(true);
         refreshChipsUI();
         baseBind.searchTagsFlow.setOnTagClick(name -> {
             committedTags.remove(name);
@@ -190,15 +207,22 @@ public class SearchActivity extends BaseActivity<FragmentNewSearchBinding> {
             baseBind.viewPager.setCurrentItem(index);
         }
 
-        landingFragment = FragmentSearch.newInstance(true);
-        getSupportFragmentManager().beginTransaction()
-            .add(R.id.landing_container, landingFragment)
-            .commitNowAllowingStateLoss();
-
-        if (TextUtils.isEmpty(keyWord)) {
-            showLanding();
-        } else {
-            showResult();
+        landingFragment =
+            (FragmentSearch) getSupportFragmentManager().findFragmentById(R.id.landing_container);
+        if (landingFragment == null) {
+            landingFragment = FragmentSearch.newInstance(true);
+            // If we already have a keyword, we don't want the landing fragment to trigger clipboard detection
+            if (!TextUtils.isEmpty(keyWord)) {
+                Bundle args = landingFragment.getArguments();
+                if (args == null) {
+                    args = new Bundle();
+                }
+                args.putBoolean("disable_clipboard", true);
+                landingFragment.setArguments(args);
+            }
+            getSupportFragmentManager().beginTransaction()
+                .add(R.id.landing_container, landingFragment)
+                .commitNowAllowingStateLoss();
         }
 
         if (Shaft.getDefaultPrefs().getBoolean(Params.MMKV_KEY_ISSHOWTIPS_SEARCHSORT, true)) {
@@ -216,6 +240,12 @@ public class SearchActivity extends BaseActivity<FragmentNewSearchBinding> {
             }
         });
         baseBind.toolbar.inflateMenu(R.menu.illust_filter);
+
+        if (TextUtils.isEmpty(keyWord)) {
+            showLanding();
+        } else {
+            showResult();
+        }
         baseBind.toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -232,9 +262,31 @@ public class SearchActivity extends BaseActivity<FragmentNewSearchBinding> {
                     }
                     return true;
                 } else if (item.getItemId() == R.id.action_type) {
-                    if (landingFragment != null) {
-                        landingFragment.popUpSearchTypeSwitcher();
-                    }
+                    final String[] SEARCH_TYPE = SearchTypeUtil.SEARCH_TYPE_NAME;
+                    new QMUIDialog.CheckableDialogBuilder(mContext)
+                        .setTitle(R.string.string_424)
+                        .setCheckedIndex(mSearchType)
+                        .setSkinManager(QMUISkinManager.defaultInstance(mContext))
+                        .addItems(
+                            SEARCH_TYPE, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    if (mSearchType != which) {
+                                        mSearchType = which;
+                                        if (baseBind.searchTagsFlow.getEditor() != null) {
+                                            baseBind.searchTagsFlow.getEditor()
+                                                .setHint(SEARCH_TYPE[which]);
+                                        }
+                                        if (landingFragment != null) {
+                                            landingFragment.setSearchType(which);
+                                        }
+                                    }
+                                    dialog.dismiss();
+                                }
+                            }
+                        )
+                        .create()
+                        .show();
                     return true;
                 }
                 return false;
@@ -489,7 +541,9 @@ public class SearchActivity extends BaseActivity<FragmentNewSearchBinding> {
             if (!TextUtils.isEmpty(part)) committedTags.add(part);
         }
         refreshChipsUI();
-        baseBind.searchTagsFlow.getEditor().setText("");
+        if (baseBind.searchTagsFlow.getEditor() != null) {
+            baseBind.searchTagsFlow.getEditor().setText("");
+        }
 
         if (index >= 0 && index < 3) {
             baseBind.viewPager.setCurrentItem(index);
@@ -502,16 +556,32 @@ public class SearchActivity extends BaseActivity<FragmentNewSearchBinding> {
     private void showLanding() {
         committedTags.clear();
         refreshChipsUI();
-        baseBind.searchTagsFlow.getEditor().setText("");
+        if (baseBind.searchTagsFlow.getEditor() != null) {
+            baseBind.searchTagsFlow.getEditor().setText("");
+        }
         baseBind.landingContainer.setVisibility(View.VISIBLE);
         baseBind.tabLayout.setVisibility(View.GONE);
         baseBind.viewPager.setVisibility(View.GONE);
+
+        if (baseBind.toolbar.getMenu().findItem(R.id.action_filter) != null) {
+            baseBind.toolbar.getMenu().findItem(R.id.action_filter).setVisible(false);
+        }
+        if (baseBind.toolbar.getMenu().findItem(R.id.action_type) != null) {
+            baseBind.toolbar.getMenu().findItem(R.id.action_type).setVisible(true);
+        }
     }
 
     private void showResult() {
         baseBind.landingContainer.setVisibility(View.GONE);
         baseBind.tabLayout.setVisibility(View.VISIBLE);
         baseBind.viewPager.setVisibility(View.VISIBLE);
+
+        if (baseBind.toolbar.getMenu().findItem(R.id.action_filter) != null) {
+            baseBind.toolbar.getMenu().findItem(R.id.action_filter).setVisible(true);
+        }
+        if (baseBind.toolbar.getMenu().findItem(R.id.action_type) != null) {
+            baseBind.toolbar.getMenu().findItem(R.id.action_type).setVisible(false);
+        }
     }
 
     private void animateHintList(boolean show) {

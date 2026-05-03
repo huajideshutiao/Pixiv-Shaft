@@ -85,7 +85,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
                                 android:background="@android:color/transparent"
-                                android:hint="@string/add_keyword"
+                                android:hint="@string/search"
                                 android:imeOptions="actionDone"
                                 android:inputType="text"
                                 android:singleLine="true"

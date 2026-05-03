@@ -26,6 +26,10 @@ interface GeneralDao {
     @Query("SELECT * FROM general_table WHERE recordType = :recordType AND id = :id LIMIT 1")
     fun getByRecordTypeAndId(recordType: Int, id: Long): GeneralEntity?
 
+    // ✅ 根据 recordType 删除记录
+    @Query("DELETE FROM general_table WHERE recordType = :recordType")
+    fun deleteByRecordType(recordType: Int)
+
     // ✅ 根据 recordType 和 id 删除记录
     @Query("DELETE FROM general_table WHERE recordType = :recordType AND id = :id")
     fun deleteByRecordTypeAndId(recordType: Int, id: Long)

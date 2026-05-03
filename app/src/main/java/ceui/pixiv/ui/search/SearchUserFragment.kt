@@ -2,6 +2,7 @@ package ceui.pixiv.ui.search
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import ceui.lisa.R
 import ceui.lisa.databinding.FragmentPixivListBinding
@@ -14,9 +15,9 @@ import ceui.pixiv.ui.common.DataSource
 import ceui.pixiv.ui.common.ListMode
 import ceui.pixiv.ui.common.PixivFragment
 import ceui.pixiv.ui.common.setUpRefreshState
+import ceui.pixiv.ui.common.viewBinding
 import ceui.pixiv.ui.list.pixivListViewModel
 import ceui.pixiv.ui.user.UserPreviewHolder
-import ceui.pixiv.ui.common.viewBinding
 
 class SearchUserSource(
     private val keywordProvider: () -> String
@@ -47,6 +48,12 @@ class SearchUserFragment : PixivFragment(R.layout.fragment_pixiv_list) {
         setUpRefreshState(binding, viewModel, ListMode.VERTICAL)
         searchViewModel.searchUserEvent.observeEvent(viewLifecycleOwner) {
             viewModel.refresh(RefreshHint.InitialLoad)
+        }
+
+        searchViewModel.tagList.observe(viewLifecycleOwner) { tags ->
+            val hasSearch = tags?.isNotEmpty() == true
+            binding.listSetting.isVisible = !hasSearch
+            binding.listSetting.setImageResource(R.drawable.ic_baseline_grid_view_24)
         }
     }
 }

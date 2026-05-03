@@ -41,9 +41,9 @@ public abstract class BaseActivity<Layout extends ViewDataBinding> extends AppCo
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        updateTheme();
         super.onCreate(savedInstanceState);
         try {
-            updateTheme();
 
             mLayoutID = initLayout();
 

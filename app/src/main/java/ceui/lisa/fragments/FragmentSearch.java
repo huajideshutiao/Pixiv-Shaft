@@ -60,6 +60,13 @@ public class FragmentSearch extends BaseFragment<FragmentSearchBinding> {
     private boolean hasSwitchSearchType = false;
     private boolean hideTop = false;
 
+    public void setSearchType(int searchType) {
+        this.searchType = searchType;
+        if (baseBind != null && baseBind.inputBox != null) {
+            baseBind.inputBox.setHint(SearchTypeUtil.SEARCH_TYPE_NAME[searchType]);
+        }
+    }
+
     public static FragmentSearch newInstance(boolean hideTop) {
         Bundle args = new Bundle();
         args.putBoolean(Params.HIDE_TOP, hideTop);
@@ -101,6 +108,7 @@ public class FragmentSearch extends BaseFragment<FragmentSearchBinding> {
         baseBind.head.setLayoutParams(headParams);
         hintViewModel = new ViewModelProvider(this).get(SearchHintViewModel.class);
         setupHintObservers();
+        baseBind.inputBox.setHint(SEARCH_TYPE[searchType]);
         baseBind.inputBox.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -494,6 +502,9 @@ public class FragmentSearch extends BaseFragment<FragmentSearchBinding> {
     }
 
     private void predictSearchType(){
+        if (getArguments() != null && getArguments().getBoolean("disable_clipboard", false)) {
+            return;
+        }
         // 当前搜索过程，手动切换后 或 输入框里有值时，不再根据剪贴板内容预测
         if(hasSwitchSearchType){
             return;

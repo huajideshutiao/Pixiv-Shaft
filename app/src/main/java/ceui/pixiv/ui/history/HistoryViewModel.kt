@@ -1,5 +1,6 @@
 package ceui.pixiv.ui.history
 
+import androidx.lifecycle.viewModelScope
 import ceui.lisa.core.ArtworksMap
 import ceui.lisa.database.AppDatabase
 import ceui.loxia.Illust
@@ -15,12 +16,22 @@ import ceui.pixiv.ui.common.ListItemHolder
 import ceui.pixiv.ui.common.NovelCardHolder
 import ceui.pixiv.ui.detail.UserInfoHolder
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class HistoryViewModel(
     private val database: AppDatabase,
     private val recordType: Int
 ) : HoldersViewModel() {
+
+    fun clearHistory() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                database.generalDao().deleteByRecordType(recordType)
+            }
+            refresh(RefreshHint.InitialLoad)
+        }
+    }
 
     private var _offset = 0
 

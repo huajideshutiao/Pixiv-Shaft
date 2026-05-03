@@ -9,13 +9,16 @@ import ceui.lisa.R
 import ceui.lisa.databinding.FragmentPixivListBinding
 import ceui.loxia.ObjectType
 import ceui.loxia.RefreshHint
+import ceui.loxia.combineLatest
 import ceui.loxia.observeEvent
+import ceui.pixiv.ui.bottom.UsersYoriDialogFragment
 import ceui.pixiv.ui.common.ListMode
 import ceui.pixiv.ui.common.PixivFragment
 import ceui.pixiv.ui.common.setUpRefreshState
-import ceui.pixiv.ui.list.pixivListViewModel
-import ceui.pixiv.widgets.DialogViewModel
 import ceui.pixiv.ui.common.viewBinding
+import ceui.pixiv.ui.list.pixivListViewModel
+import ceui.pixiv.utils.setOnClick
+import ceui.pixiv.widgets.DialogViewModel
 
 class SearchNovelFragment : PixivFragment(R.layout.fragment_pixiv_list) {
     private val searchViewModel by viewModels<SearchViewModel>(ownerProducer = { requireParentFragment() })
@@ -45,9 +48,26 @@ class SearchNovelFragment : PixivFragment(R.layout.fragment_pixiv_list) {
         searchViewModel.searchNovelEvent.observeEvent(viewLifecycleOwner) {
             viewModel.refresh(RefreshHint.InitialLoad)
         }
-        searchViewModel.novelSelectedRadioTabIndex.observe(viewLifecycleOwner) { index ->
-            binding.radioTab.selectTab(index)
-            binding.usersYori.isVisible = (index == 1) || (index == 2)
+
+        combineLatest(searchViewModel.tagList, searchViewModel.novelSelectedRadioTabIndex).observe(
+            viewLifecycleOwner
+        ) { (tags, index) ->
+            val hasSearch = tags?.isNotEmpty() == true
+            val showUsersYori = hasSearch && (index == 1 || index == 2)
+            binding.usersYori.isVisible = showUsersYori
+            binding.listSetting.isVisible = !showUsersYori
+        }
+
+        binding.listSetting.setImageResource(R.drawable.ic_baseline_grid_view_24)
+
+        dialogViewModel.chosenUsersYoriCount.observe(viewLifecycleOwner) { count ->
+            binding.usersYori.text = "${count}users入り"
+        }
+        dialogViewModel.triggerUsersYoriEvent.observeEvent(this) { time ->
+            searchViewModel.triggerSearchNovelEvent(time)
+        }
+        binding.usersYori.setOnClick {
+            UsersYoriDialogFragment().show(childFragmentManager, "UsersYoriDialogFragmentTag")
         }
     }
 }

@@ -1,5 +1,6 @@
 package ceui.pixiv.ui.search
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -7,6 +8,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
 import ceui.lisa.R
 import ceui.lisa.databinding.FragmentSearchViewpagerBinding
+import ceui.lisa.utils.SearchTypeUtil
 import ceui.loxia.Tag
 import ceui.loxia.combineLatest
 import ceui.loxia.hideKeyboard
@@ -18,6 +20,7 @@ import ceui.pixiv.ui.common.viewBinding
 import ceui.pixiv.utils.setOnClick
 import ceui.pixiv.widgets.DialogViewModel
 import ceui.pixiv.widgets.setUpWith
+import com.qmuiteam.qmui.widget.dialog.QMUIDialog
 
 class SearchViewPagerFragment : TitledViewPagerFragment(R.layout.fragment_search_viewpager) {
 
@@ -47,10 +50,38 @@ class SearchViewPagerFragment : TitledViewPagerFragment(R.layout.fragment_search
         combineLatest(searchViewModel.tagList, searchViewModel.inputDraft).observe(viewLifecycleOwner) {
             val tags = it?.first ?: listOf()
             val inputing = it?.second ?: ""
-            binding.search.isEnabled = tags.isNotEmpty() == true || inputing.isNotEmpty() == true
+            val hasContent = tags.isNotEmpty() || inputing.isNotEmpty()
+            binding.search.isEnabled = true
+            binding.search.text =
+                if (hasContent) getString(R.string.search) else getString(R.string.string_86)
         }
+
+        searchViewModel.searchType.observe(viewLifecycleOwner) { index ->
+            binding.tagEditer.hint = SearchTypeUtil.SEARCH_TYPE_NAME[index]
+        }
+
         binding.search.setOnClick {
-            commitEditingTag()
+            if (binding.search.text == getString(R.string.string_86)) {
+                val searchTypes = SearchTypeUtil.SEARCH_TYPE_NAME
+                QMUIDialog.CheckableDialogBuilder(requireContext())
+                    .setTitle(R.string.string_424)
+                    .setCheckedIndex(searchViewModel.searchType.value ?: 5)
+                    .addItems(searchTypes) { dialog: DialogInterface, which: Int ->
+                        searchViewModel.searchType.value = which
+                        if (which == 1) {
+                            binding.searchViewPager.currentItem = 0
+                        } else if (which == 2) {
+                            binding.searchViewPager.currentItem = 2
+                        } else if (which == 3) {
+                            binding.searchViewPager.currentItem = 1
+                        }
+                        dialog.dismiss()
+                    }
+                    .create()
+                    .show()
+            } else {
+                commitEditingTag()
+            }
         }
         binding.tagEditer.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {

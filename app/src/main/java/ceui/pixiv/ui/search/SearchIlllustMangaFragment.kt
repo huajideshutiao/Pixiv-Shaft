@@ -6,17 +6,21 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import ceui.lisa.R
+import ceui.lisa.activities.Shaft
 import ceui.lisa.databinding.FragmentPixivListBinding
 import ceui.loxia.ObjectType
 import ceui.loxia.RefreshHint
+import ceui.loxia.combineLatest
 import ceui.loxia.observeEvent
 import ceui.pixiv.ui.bottom.UsersYoriDialogFragment
+import ceui.pixiv.ui.common.ListMode
 import ceui.pixiv.ui.common.PixivFragment
+import ceui.pixiv.ui.common.setUpLayoutManager
 import ceui.pixiv.ui.common.setUpRefreshState
-import ceui.pixiv.ui.list.pixivListViewModel
-import ceui.pixiv.widgets.DialogViewModel
-import ceui.pixiv.utils.setOnClick
 import ceui.pixiv.ui.common.viewBinding
+import ceui.pixiv.ui.list.pixivListViewModel
+import ceui.pixiv.utils.setOnClick
+import ceui.pixiv.widgets.DialogViewModel
 
 
 class SearchIlllustMangaFragment : PixivFragment(R.layout.fragment_pixiv_list) {
@@ -33,7 +37,9 @@ class SearchIlllustMangaFragment : PixivFragment(R.layout.fragment_pixiv_list) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setUpRefreshState(binding, viewModel)
+        val initialListMode =
+            if (Shaft.sSettings.isUseStaggeredLayout) ListMode.STAGGERED_GRID else ListMode.VERTICAL
+        setUpRefreshState(binding, viewModel, initialListMode)
         binding.radioTab.setTabs(listOf(
             "热度预览",
             "从新到旧",
@@ -48,10 +54,24 @@ class SearchIlllustMangaFragment : PixivFragment(R.layout.fragment_pixiv_list) {
         searchViewModel.searchIllustMangaEvent.observeEvent(viewLifecycleOwner) {
             viewModel.refresh(RefreshHint.InitialLoad)
         }
-        searchViewModel.illustSelectedRadioTabIndex.observe(viewLifecycleOwner) { index ->
-            binding.radioTab.selectTab(index)
-            binding.usersYori.isVisible = (index == 1) || (index == 2)
+
+        combineLatest(searchViewModel.tagList, searchViewModel.illustSelectedRadioTabIndex).observe(
+            viewLifecycleOwner
+        ) { (tags, index) ->
+            val hasSearch = tags?.isNotEmpty() == true
+            val showUsersYori = hasSearch && (index == 1 || index == 2)
+            binding.usersYori.isVisible = showUsersYori
+            binding.listSetting.isVisible = !showUsersYori
         }
+
+        binding.listSetting.setImageResource(R.drawable.ic_baseline_grid_view_24)
+        binding.listSetting.setOnClick {
+            Shaft.sSettings.isUseStaggeredLayout = !Shaft.sSettings.isUseStaggeredLayout
+            val newListMode =
+                if (Shaft.sSettings.isUseStaggeredLayout) ListMode.STAGGERED_GRID else ListMode.VERTICAL
+            setUpLayoutManager(binding.listView, newListMode)
+        }
+
         dialogViewModel.chosenUsersYoriCount.observe(viewLifecycleOwner) { count ->
             binding.usersYori.text = "${count}users入り"
         }
