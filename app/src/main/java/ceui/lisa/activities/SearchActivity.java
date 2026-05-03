@@ -397,6 +397,20 @@ public class SearchActivity extends BaseActivity<FragmentNewSearchBinding> {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        if (baseBind.drawerlayout.isDrawerOpen(GravityCompat.END)) {
+            baseBind.drawerlayout.closeDrawer(GravityCompat.END);
+            return;
+        }
+        if (hintViewModel != null && Boolean.TRUE.equals(hintViewModel.getHintsVisible()
+            .getValue())) {
+            hintViewModel.hideHints();
+            return;
+        }
+        super.onBackPressed();
+    }
+
     /**
      * Commit the typed text as a new chip (dedupe, clear input, sync keyword).
      * Space-triggered commits do NOT auto-search — Enter is still the "go" key.
