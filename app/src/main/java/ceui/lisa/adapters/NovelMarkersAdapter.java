@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.Locale;
 
 import ceui.lisa.R;
+import ceui.lisa.activities.ContainerActivity;
 import ceui.lisa.activities.SearchActivity;
-import ceui.lisa.activities.TemplateActivity;
 import ceui.lisa.activities.UActivity;
 import ceui.lisa.databinding.RecyNovelMarkersBinding;
 import ceui.lisa.models.MarkedNovelItem;
@@ -43,9 +43,9 @@ public class NovelMarkersAdapter extends BaseAdapter<MarkedNovelItem, RecyNovelM
             bindView.baseBind.series.setText(String.format(mContext.getString(R.string.string_184),
                     target.getNovel().getSeries().getTitle()));
             bindView.baseBind.series.setOnClickListener(v -> {
-                    Intent intent = new Intent(mContext, TemplateActivity.class);
+                Intent intent = new Intent(mContext, ContainerActivity.class);
                     intent.putExtra(Params.ID, target.getNovel().getSeries().getId());
-                    intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "小说系列详情");
+                intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说系列详情");
                     mContext.startActivity(intent);
             });
         } else {
@@ -80,9 +80,9 @@ public class NovelMarkersAdapter extends BaseAdapter<MarkedNovelItem, RecyNovelM
         Glide.with(mContext).load(GlideUtil.getHead(target.getNovel().getUser())).into(bindView.baseBind.userHead);
 
         bindView.baseBind.cover.setOnClickListener(v -> {
-            Intent intent = new Intent(mContext, TemplateActivity.class);
+            Intent intent = new Intent(mContext, ContainerActivity.class);
             intent.putExtra(Params.URL, GlideUtil.getUrl(target.getNovel().getImage_urls().getMaxImage()).toStringUrl());
-            intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "图片详情");
+            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "图片详情");
             mContext.startActivity(intent);
         });
 
@@ -99,9 +99,9 @@ public class NovelMarkersAdapter extends BaseAdapter<MarkedNovelItem, RecyNovelM
         });
 
         bindView.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(mContext, TemplateActivity.class);
+            Intent intent = new Intent(mContext, ContainerActivity.class);
             intent.putExtra(Params.CONTENT, target.getNovel());
-            intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "小说详情");
+            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说详情");
             intent.putExtra("hideStatusBar", true);
             mContext.startActivity(intent);
         });

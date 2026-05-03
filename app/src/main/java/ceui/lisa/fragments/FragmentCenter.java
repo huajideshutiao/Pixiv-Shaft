@@ -9,9 +9,9 @@ import androidx.fragment.app.FragmentTransaction;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 
 import ceui.lisa.R;
+import ceui.lisa.activities.ContainerActivity;
 import ceui.lisa.activities.MainActivity;
 import ceui.lisa.activities.Shaft;
-import ceui.lisa.activities.TemplateActivity;
 import ceui.lisa.databinding.FragmentNewCenterBinding;
 import ceui.lisa.interfaces.VolumeKeyHandler;
 import ceui.lisa.utils.Dev;
@@ -42,8 +42,7 @@ public class FragmentCenter extends SwipeFragment<FragmentNewCenterBinding> impl
         });
         baseBind.toolbar.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.action_search) {
-                Intent intent = new Intent(mContext, TemplateActivity.class);
-                intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "搜索");
+                Intent intent = new Intent(mContext, ceui.lisa.activities.SearchActivity.class);
                 startActivity(intent);
                 return true;
             }
@@ -57,31 +56,31 @@ public class FragmentCenter extends SwipeFragment<FragmentNewCenterBinding> impl
         baseBind.followNovels.setClipToOutline(true);
 
         baseBind.latestWork.setOnClickListener(v -> {
-            Intent intent = new Intent(mContext, TemplateActivity.class);
-            intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "最新作品");
+            Intent intent = new Intent(mContext, ContainerActivity.class);
+            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "最新作品");
             intent.putExtra("hideStatusBar", false);
             startActivity(intent);
         });
         baseBind.manga.setOnClickListener(v -> {
-            Intent intent = new Intent(mContext, TemplateActivity.class);
-            intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "推荐漫画");
+            Intent intent = new Intent(mContext, ContainerActivity.class);
+            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "推荐漫画");
             startActivity(intent);
         });
         baseBind.novel.setOnClickListener(v -> {
-            Intent intent = new Intent(mContext, TemplateActivity.class);
-            intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "推荐小说");
+            Intent intent = new Intent(mContext, ContainerActivity.class);
+            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "推荐小说");
             intent.putExtra("hideStatusBar", false);
             startActivity(intent);
         });
 
         baseBind.walkThrough.setOnClickListener(v -> {
-            Intent intent = new Intent(mContext, TemplateActivity.class);
-            intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "画廊");
+            Intent intent = new Intent(mContext, ContainerActivity.class);
+            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "画廊");
             startActivity(intent);
         });
         baseBind.followNovels.setOnClickListener(v -> {
-            Intent intent = new Intent(mContext, TemplateActivity.class);
-            intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "关注者的小说");
+            Intent intent = new Intent(mContext, ContainerActivity.class);
+            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "关注者的小说");
             startActivity(intent);
         });
     }

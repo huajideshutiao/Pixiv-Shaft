@@ -13,7 +13,6 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import ceui.lisa.R;
 import ceui.lisa.activities.MainActivity;
 import ceui.lisa.activities.Shaft;
-import ceui.lisa.activities.TemplateActivity;
 import ceui.lisa.databinding.FragmentLeftBinding;
 import ceui.lisa.interfaces.VolumeKeyHandler;
 import ceui.lisa.utils.Dev;
@@ -49,8 +48,7 @@ public class FragmentLeft extends BaseLazyFragment<FragmentLeftBinding> implemen
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 if (item.getItemId() == R.id.action_search) {
-                    Intent intent = new Intent(mContext, TemplateActivity.class);
-                    intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "搜索");
+                    Intent intent = new Intent(mContext, ceui.lisa.activities.SearchActivity.class);
                     startActivity(intent);
                     return true;
                 }

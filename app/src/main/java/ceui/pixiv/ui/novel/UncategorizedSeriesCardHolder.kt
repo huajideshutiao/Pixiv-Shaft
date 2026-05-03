@@ -4,7 +4,7 @@ import android.content.Intent
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import ceui.lisa.R
-import ceui.lisa.activities.TemplateActivity
+import ceui.lisa.activities.ContainerActivity
 import ceui.lisa.annotations.ItemHolder
 import ceui.lisa.databinding.CellUncategorizedNovelsCardBinding
 import ceui.lisa.utils.Params
@@ -62,8 +62,8 @@ class UncategorizedSeriesCardViewHolder(bd: CellUncategorizedNovelsCardBinding) 
         }
 
         binding.cardRoot.setOnClick {
-            val intent = Intent(context, TemplateActivity::class.java).apply {
-                putExtra(TemplateActivity.EXTRA_FRAGMENT, "未归类小说")
+            val intent = Intent(context, ContainerActivity::class.java).apply {
+                putExtra(ContainerActivity.EXTRA_FRAGMENT, "未归类小说")
                 putExtra(Params.USER_ID, holder.userId.toInt())
             }
             context.startActivity(intent)

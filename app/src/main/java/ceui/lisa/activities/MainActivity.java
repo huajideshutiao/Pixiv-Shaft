@@ -219,8 +219,8 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
                 }).launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
             }
         } else {
-            Intent intent = new Intent(mContext, TemplateActivity.class);
-            intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "登录注册");
+            Intent intent = new Intent(mContext, ContainerActivity.class);
+            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "登录注册");
             startActivity(intent);
             finish();
         }
@@ -238,49 +238,49 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
 
         Intent intent = null;
         if (id == nav_gallery) {
-            intent = new Intent(mContext, TemplateActivity.class);
-            intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "下载管理");
+            intent = new Intent(mContext, ContainerActivity.class);
+            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "下载管理");
             intent.putExtra("hideStatusBar", false);
         } else if (id == nav_slideshow) {
-            intent = new Intent(mContext, TemplateActivity.class);
-            intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "浏览记录");
+            intent = new Intent(mContext, ContainerActivity.class);
+            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "浏览记录");
         } else if (id == R.id.nav_manage) {
-            intent = new Intent(mContext, TemplateActivity.class);
-            intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "设置");
+            intent = new Intent(mContext, ContainerActivity.class);
+            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "设置");
         } else if (id == R.id.nav_share) {
-            intent = new Intent(mContext, TemplateActivity.class);
-            intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "关于软件");
+            intent = new Intent(mContext, ContainerActivity.class);
+            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "关于软件");
         } else if (id == R.id.nav_reverse) {
             selectPhoto();
         } else if (id == R.id.muted_list) {
-            intent = new Intent(mContext, TemplateActivity.class);
-            intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "标签屏蔽记录");
+            intent = new Intent(mContext, ContainerActivity.class);
+            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "标签屏蔽记录");
         } else if (id == R.id.nav_fans) {
-            intent = new Intent(mContext, TemplateActivity.class);
-            intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "粉丝");
+            intent = new Intent(mContext, ContainerActivity.class);
+            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "粉丝");
         } else if (id == R.id.illust_star) {
-            intent = new Intent(mContext, TemplateActivity.class);
-            intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "我的插画收藏");
+            intent = new Intent(mContext, ContainerActivity.class);
+            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "我的插画收藏");
             intent.putExtra("hideStatusBar", false);
         } else if (id == R.id.novel_star) {
-            intent = new Intent(mContext, TemplateActivity.class);
-            intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "我的小说收藏");
+            intent = new Intent(mContext, ContainerActivity.class);
+            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "我的小说收藏");
             intent.putExtra("hideStatusBar", false);
         } else if (id == R.id.watchlist) {
-            intent = new Intent(mContext, TemplateActivity.class);
-            intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "追更列表");
+            intent = new Intent(mContext, ContainerActivity.class);
+            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "追更列表");
             intent.putExtra("hideStatusBar", false);
         } else if (id == R.id.novel_markers) {
-            intent = new Intent(mContext, TemplateActivity.class);
-            intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "小说书签");
+            intent = new Intent(mContext, ContainerActivity.class);
+            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说书签");
             intent.putExtra("hideStatusBar", false);
         } else if (id == R.id.follow_user) {
-            intent = new Intent(mContext, TemplateActivity.class);
-            intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "我的关注");
+            intent = new Intent(mContext, ContainerActivity.class);
+            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "我的关注");
             intent.putExtra("hideStatusBar", false);
         } else if (id == R.id.new_work) {
-            intent = new Intent(mContext, TemplateActivity.class);
-            intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "网页链接");
+            intent = new Intent(mContext, ContainerActivity.class);
+            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "网页链接");
             intent.putExtra(Params.URL, "https://www.pixiv.net/upload.php");
             intent.putExtra(Params.TITLE, getString(R.string.string_444));
             intent.putExtra(Params.PREFER_PRESERVE, true);
@@ -393,8 +393,8 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
                 );
                 builder.setNegativeButton(mContext.getString(R.string.cancel), null);
                 builder.setNeutralButton(getString(R.string.see_download_task), (dialog, which) -> {
-                    Intent intent = new Intent(mContext, TemplateActivity.class);
-                    intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "下载管理");
+                    Intent intent = new Intent(mContext, ContainerActivity.class);
+                    intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "下载管理");
                     intent.putExtra("hideStatusBar", true);
                     startActivity(intent);
                 });

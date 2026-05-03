@@ -43,7 +43,6 @@ import ceui.lisa.fragments.FragmentRecmdUser;
 import ceui.lisa.fragments.FragmentRelatedIllust;
 import ceui.lisa.fragments.FragmentRelatedUser;
 import ceui.lisa.fragments.FragmentSB;
-import ceui.lisa.fragments.FragmentSearch;
 import ceui.lisa.fragments.FragmentSearchUser;
 import ceui.lisa.fragments.FragmentSettings;
 import ceui.lisa.fragments.FragmentUserIllust;
@@ -74,7 +73,8 @@ import ceui.pixiv.ui.novel.UncategorizedNovelsFragment;
 import ceui.pixiv.ui.novel.reader.NovelReaderV3Fragment;
 import ceui.pixiv.ui.web.WebFragment;
 
-public class TemplateActivity extends BaseActivity<ActivityFragmentBinding> implements ColorPickerDialogListener {
+public class ContainerActivity extends BaseActivity<ActivityFragmentBinding> implements
+    ColorPickerDialogListener {
 
     public static final String EXTRA_FRAGMENT = "dataType";
     public static final String EXTRA_KEYWORD = "keyword";
@@ -162,8 +162,6 @@ public class TemplateActivity extends BaseActivity<ActivityFragmentBinding> impl
                             Params.TYPE_PUBLIC, true);
                 case "好P友":
                     return new FragmentNiceFriend();
-                case "搜索":
-                    return new FragmentSearch();
                 case "详细信息":
                     return new FragmentUserInfo();
                 case "最新作品":

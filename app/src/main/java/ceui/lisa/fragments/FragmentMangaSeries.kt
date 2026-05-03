@@ -5,7 +5,7 @@ import android.os.Bundle
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.LinearLayoutManager
 import ceui.lisa.R
-import ceui.lisa.activities.TemplateActivity
+import ceui.lisa.activities.ContainerActivity
 import ceui.lisa.adapters.BaseAdapter
 import ceui.lisa.adapters.MangaSeriesAdapter
 import ceui.lisa.core.BaseRepo
@@ -42,8 +42,8 @@ class FragmentMangaSeries :
             allItems,
             mContext
         ).setOnItemClickListener { _, position, _ ->
-            val intent = Intent(mContext, TemplateActivity::class.java)
-            intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "漫画系列详情")
+            val intent = Intent(mContext, ContainerActivity::class.java)
+            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "漫画系列详情")
             intent.putExtra(Params.MANGA_SERIES_ID, allItems[position].id)
             startActivity(intent)
         }

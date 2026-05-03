@@ -25,9 +25,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import ceui.lisa.R
+import ceui.lisa.activities.ContainerActivity
 import ceui.lisa.activities.MainActivity
 import ceui.lisa.activities.Shaft
-import ceui.lisa.activities.TemplateActivity
 import ceui.lisa.database.AppDatabase
 import ceui.lisa.database.UserEntity
 import ceui.lisa.databinding.ActivityLoginBinding
@@ -128,8 +128,8 @@ class FragmentLogin : BaseFragment<ActivityLoginBinding>() {
         baseBind.toolbar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.action_settings -> {
-                    startActivity(Intent(mContext, TemplateActivity::class.java).apply {
-                        putExtra(TemplateActivity.EXTRA_FRAGMENT, "设置")
+                    startActivity(Intent(mContext, ContainerActivity::class.java).apply {
+                        putExtra(ContainerActivity.EXTRA_FRAGMENT, "设置")
                     })
                     true
                 }
@@ -309,8 +309,8 @@ class FragmentLogin : BaseFragment<ActivityLoginBinding>() {
     // ── Helpers ──
 
     private fun openWebPage(url: String, title: String) {
-        startActivity(Intent(mContext, TemplateActivity::class.java).apply {
-            putExtra(TemplateActivity.EXTRA_FRAGMENT, "网页链接")
+        startActivity(Intent(mContext, ContainerActivity::class.java).apply {
+            putExtra(ContainerActivity.EXTRA_FRAGMENT, "网页链接")
             putExtra(Params.URL, url)
             putExtra(Params.TITLE, title)
         })

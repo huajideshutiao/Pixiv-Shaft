@@ -18,8 +18,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import ceui.lisa.R
+import ceui.lisa.activities.ContainerActivity
 import ceui.lisa.activities.Shaft
-import ceui.lisa.activities.TemplateActivity
 import ceui.lisa.core.Container
 import ceui.lisa.core.PageData
 import ceui.lisa.database.NovelAnnotationEntity
@@ -770,8 +770,8 @@ class NovelReaderV3Fragment : Fragment(R.layout.fragment_novel_reader_v3),
     }
 
     override fun onSeriesNovelSelected(novel: Novel) {
-        val intent = Intent(requireContext(), ceui.lisa.activities.TemplateActivity::class.java).apply {
-            putExtra(ceui.lisa.activities.TemplateActivity.EXTRA_FRAGMENT, "小说正文")
+        val intent = Intent(requireContext(), ContainerActivity::class.java).apply {
+            putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说正文")
             putExtra(Params.NOVEL_ID, novel.id)
         }
         startActivity(intent)
@@ -842,8 +842,8 @@ class NovelReaderV3Fragment : Fragment(R.layout.fragment_novel_reader_v3),
                 ),
                 Toast.LENGTH_SHORT,
             ).show()
-            val intent = Intent(requireContext(), ceui.lisa.activities.TemplateActivity::class.java).apply {
-                putExtra(ceui.lisa.activities.TemplateActivity.EXTRA_FRAGMENT, "小说正文")
+            val intent = Intent(requireContext(), ContainerActivity::class.java).apply {
+                putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说正文")
                 putExtra(Params.NOVEL_ID, neighbor.id)
             }
             startActivity(intent)
@@ -935,9 +935,9 @@ class NovelReaderV3Fragment : Fragment(R.layout.fragment_novel_reader_v3),
                             startActivity(
                                 Intent(
                                     requireContext(),
-                                    TemplateActivity::class.java
+                                    ContainerActivity::class.java
                                 ).apply {
-                                    putExtra(TemplateActivity.EXTRA_FRAGMENT, "全屏查看")
+                                    putExtra(ContainerActivity.EXTRA_FRAGMENT, "全屏查看")
                                     putExtra(Params.POSITION, 0)
                                     putExtra(Params.PAGE_UUID, uuid)
                             })

@@ -1,5 +1,7 @@
 package ceui.lisa.fragments;
 
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -14,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ceui.lisa.R;
-import ceui.lisa.activities.TemplateActivity;
+import ceui.lisa.activities.ContainerActivity;
 import ceui.lisa.adapters.NHAdapter;
 import ceui.lisa.databinding.FragmentLikeIllustHorizontalBinding;
 import ceui.lisa.http.NullCtrl;
@@ -28,8 +30,6 @@ import ceui.lisa.view.LinearItemHorizontalDecoration;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
-
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
 public class FragmentLikeNovelHorizontal extends BaseFragment<FragmentLikeIllustHorizontalBinding> {
 
@@ -73,8 +73,11 @@ public class FragmentLikeNovelHorizontal extends BaseFragment<FragmentLikeIllust
             baseBind.howMany.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(mContext, TemplateActivity.class);
-                    intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, baseBind.title.getText().toString());
+                    Intent intent = new Intent(mContext, ContainerActivity.class);
+                    intent.putExtra(
+                        ContainerActivity.EXTRA_FRAGMENT,
+                        baseBind.title.getText().toString()
+                    );
                     intent.putExtra(Params.USER_ID, userID);
                     startActivity(intent);
                 }
@@ -85,8 +88,11 @@ public class FragmentLikeNovelHorizontal extends BaseFragment<FragmentLikeIllust
             baseBind.howMany.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(mContext, TemplateActivity.class);
-                    intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, baseBind.title.getText().toString());
+                    Intent intent = new Intent(mContext, ContainerActivity.class);
+                    intent.putExtra(
+                        ContainerActivity.EXTRA_FRAGMENT,
+                        baseBind.title.getText().toString()
+                    );
                     intent.putExtra(Params.USER_ID, userID);
                     startActivity(intent);
                 }
@@ -100,9 +106,9 @@ public class FragmentLikeNovelHorizontal extends BaseFragment<FragmentLikeIllust
         mAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View v, int position, int viewType) {
-                Intent intent = new Intent(mContext, TemplateActivity.class);
+                Intent intent = new Intent(mContext, ContainerActivity.class);
                 intent.putExtra(Params.CONTENT, allItems.get(position));
-                intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "小说详情");
+                intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说详情");
                 intent.putExtra("hideStatusBar", true);
                 startActivity(intent);
             }

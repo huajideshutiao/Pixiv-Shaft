@@ -11,8 +11,8 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import ceui.lisa.R
+import ceui.lisa.activities.ContainerActivity
 import ceui.lisa.activities.Shaft
-import ceui.lisa.activities.TemplateActivity
 import ceui.lisa.activities.UActivity
 import ceui.lisa.core.Container
 import ceui.lisa.core.PageData
@@ -191,8 +191,8 @@ class HistoryV3Adapter(
         val pageData = PageData(all)
         Container.get().addPageToMap(pageData)
         val index = all.indexOfFirst { it.id == illust.id }.coerceAtLeast(0)
-        val intent = Intent(context, TemplateActivity::class.java).apply {
-            putExtra(TemplateActivity.EXTRA_FRAGMENT, "全屏查看")
+        val intent = Intent(context, ContainerActivity::class.java).apply {
+            putExtra(ContainerActivity.EXTRA_FRAGMENT, "全屏查看")
             putExtra(Params.POSITION, index)
             putExtra(Params.PAGE_UUID, pageData.getUUID())
         }
@@ -200,9 +200,9 @@ class HistoryV3Adapter(
     }
 
     private fun openNovel(novel: NovelBean) {
-        val intent = Intent(context, TemplateActivity::class.java).apply {
+        val intent = Intent(context, ContainerActivity::class.java).apply {
             putExtra(Params.CONTENT, novel)
-            putExtra(TemplateActivity.EXTRA_FRAGMENT, "小说详情")
+            putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说详情")
             putExtra("hideStatusBar", true)
         }
         context.startActivity(intent)

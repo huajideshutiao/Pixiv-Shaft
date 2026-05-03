@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.Locale;
 
 import ceui.lisa.R;
+import ceui.lisa.activities.ContainerActivity;
 import ceui.lisa.activities.Shaft;
-import ceui.lisa.activities.TemplateActivity;
 import ceui.lisa.database.MuteEntity;
 import ceui.lisa.databinding.RecyViewHistoryBinding;
 import ceui.lisa.models.IllustsBean;
@@ -112,9 +112,9 @@ public class MuteWorksAdapter extends BaseAdapter<MuteEntity, RecyViewHistoryBin
 
             if (mOnItemClickListener != null) {
                 bindView.itemView.setOnClickListener(v -> {
-                    Intent intent = new Intent(mContext, TemplateActivity.class);
+                    Intent intent = new Intent(mContext, ContainerActivity.class);
                     intent.putExtra(Params.CONTENT, current);
-                    intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "小说详情");
+                    intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说详情");
                     intent.putExtra("hideStatusBar", true);
                     mContext.startActivity(intent);
                 });

@@ -132,18 +132,18 @@ public class OutWakeActivity extends BaseActivity<ActivityOutWakeBinding> {
                                 },null);
                                 return;
                             } else if (uriString.toLowerCase().contains(HOST_ME)) {
-                                Intent i = new Intent(mContext, TemplateActivity.class);
+                                Intent i = new Intent(mContext, ContainerActivity.class);
                                 i.putExtra(Params.URL, uriString);
                                 i.putExtra(Params.TITLE, HOST_ME);
-                                i.putExtra(TemplateActivity.EXTRA_FRAGMENT, "网页链接");
+                                i.putExtra(ContainerActivity.EXTRA_FRAGMENT, "网页链接");
                                 startActivity(i);
                                 finish();
                                 return;
                             } else if (uriString.toLowerCase().contains(HOST_PIXIVISION)) {
-                                Intent i = new Intent(mContext, TemplateActivity.class);
+                                Intent i = new Intent(mContext, ContainerActivity.class);
                                 i.putExtra(Params.URL, uriString);
                                 i.putExtra(Params.TITLE, getString(R.string.pixiv_special));
-                                i.putExtra(TemplateActivity.EXTRA_FRAGMENT, "网页链接");
+                                i.putExtra(ContainerActivity.EXTRA_FRAGMENT, "网页链接");
                                 i.putExtra(Params.PREFER_PRESERVE, true);
                                 startActivity(i);
                                 finish();
@@ -233,8 +233,14 @@ public class OutWakeActivity extends BaseActivity<ActivityOutWakeBinding> {
                                                 .addAction(R.string.string_402, new QMUIDialogAction.ActionListener() {
                                                     @Override
                                                     public void onClick(QMUIDialog dialog, int index) {
-                                                        Intent intent1 = new Intent(mContext, TemplateActivity.class);
-                                                        intent1.putExtra(TemplateActivity.EXTRA_FRAGMENT, "网页链接");
+                                                        Intent intent1 = new Intent(
+                                                            mContext,
+                                                            ContainerActivity.class
+                                                        );
+                                                        intent1.putExtra(
+                                                            ContainerActivity.EXTRA_FRAGMENT,
+                                                            "网页链接"
+                                                        );
                                                         intent1.putExtra(Params.URL, Params.URL_R18_SETTING);
                                                         startActivity(intent1);
                                                     }
@@ -281,8 +287,8 @@ public class OutWakeActivity extends BaseActivity<ActivityOutWakeBinding> {
             mActivity.startActivity(i);
             mActivity.finish();
         } else {
-            Intent i = new Intent(mContext, TemplateActivity.class);
-            i.putExtra(TemplateActivity.EXTRA_FRAGMENT, "登录注册");
+            Intent i = new Intent(mContext, ContainerActivity.class);
+            i.putExtra(ContainerActivity.EXTRA_FRAGMENT, "登录注册");
             startActivity(i);
             finish();
         }

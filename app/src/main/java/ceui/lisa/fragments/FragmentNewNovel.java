@@ -14,7 +14,6 @@ import com.blankj.utilcode.util.BarUtils;
 
 import ceui.lisa.R;
 import ceui.lisa.activities.Shaft;
-import ceui.lisa.activities.TemplateActivity;
 import ceui.lisa.databinding.ViewpagerWithTablayoutBinding;
 import ceui.lisa.utils.MyOnTabSelectedListener;
 import ceui.lisa.utils.Params;
@@ -50,8 +49,7 @@ public class FragmentNewNovel extends BaseFragment<ViewpagerWithTablayoutBinding
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 if (item.getItemId() == R.id.action_search) {
-                    Intent intent = new Intent(mContext, TemplateActivity.class);
-                    intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "搜索");
+                    Intent intent = new Intent(mContext, ceui.lisa.activities.SearchActivity.class);
                     startActivity(intent);
                     return true;
                 }

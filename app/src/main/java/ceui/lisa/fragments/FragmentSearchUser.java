@@ -9,7 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import ceui.lisa.activities.TemplateActivity;
+
+import ceui.lisa.activities.ContainerActivity;
 import ceui.lisa.adapters.BaseAdapter;
 import ceui.lisa.adapters.UAdapter;
 import ceui.lisa.core.RemoteRepo;
@@ -75,7 +76,7 @@ public class FragmentSearchUser extends NetListFragment<FragmentBaseListBinding,
     @Override
     public boolean showToolbar() {
         Activity mActivity = getActivity();
-        return mActivity instanceof TemplateActivity;
+        return mActivity instanceof ContainerActivity;
     }
 
     /*@Override

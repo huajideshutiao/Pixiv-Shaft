@@ -17,7 +17,7 @@ import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import ceui.lisa.R
-import ceui.lisa.activities.TemplateActivity
+import ceui.lisa.activities.ContainerActivity
 import ceui.lisa.core.Container
 import ceui.lisa.core.PageData
 import ceui.lisa.helper.AppLevelViewModelHelper
@@ -55,9 +55,9 @@ class RecommendAppWidgetProvider : AppWidgetProvider() {
                 )
                 val pageData = PageData(illustList)
                 Container.get().addPageToMap(pageData)
-                val illustIntent = Intent(context, TemplateActivity::class.java).apply {
+                val illustIntent = Intent(context, ContainerActivity::class.java).apply {
                     setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    putExtra(TemplateActivity.EXTRA_FRAGMENT, "全屏查看")
+                    putExtra(ContainerActivity.EXTRA_FRAGMENT, "全屏查看")
                     putExtra(Params.POSITION, 0)
                     putExtra(Params.PAGE_UUID, pageData.uuid)
                 }

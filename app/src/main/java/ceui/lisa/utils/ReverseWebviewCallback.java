@@ -5,8 +5,9 @@ import android.content.Intent;
 import android.net.Uri;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import ceui.lisa.activities.ContainerActivity;
 import ceui.lisa.activities.MainActivity;
-import ceui.lisa.activities.TemplateActivity;
 import io.reactivex.disposables.Disposable;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
@@ -32,8 +33,8 @@ public class ReverseWebviewCallback implements ReverseImage.Callback {
 
     @Override
     public void onNext(Response<ResponseBody> response) {
-        Intent intent = new Intent(mContext, TemplateActivity.class);
-        intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "以图搜图");
+        Intent intent = new Intent(mContext, ContainerActivity.class);
+        intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "以图搜图");
         intent.putExtra(Params.REVERSE_SEARCH_RESULT, new ReverseResult(response));
         intent.putExtra(Params.REVERSE_SEARCH_IMAGE_URI, this.imageUri);
         mContext.startActivity(intent);

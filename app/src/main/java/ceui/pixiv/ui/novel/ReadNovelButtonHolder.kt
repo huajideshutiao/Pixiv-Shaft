@@ -1,7 +1,7 @@
 package ceui.pixiv.ui.novel
 
 import android.content.Intent
-import ceui.lisa.activities.TemplateActivity
+import ceui.lisa.activities.ContainerActivity
 import ceui.lisa.annotations.ItemHolder
 import ceui.lisa.databinding.ItemBigReadButtonBinding
 import ceui.lisa.utils.Params
@@ -27,8 +27,8 @@ class ReadNovelButtonViewHolder(bd: ItemBigReadButtonBinding) :
         super.onBindViewHolder(holder, position)
         binding.btnRead.setOnClick {
             val ctx = it.context
-            val intent = Intent(ctx, TemplateActivity::class.java).apply {
-                putExtra(TemplateActivity.EXTRA_FRAGMENT, "小说正文")
+            val intent = Intent(ctx, ContainerActivity::class.java).apply {
+                putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说正文")
                 putExtra(Params.NOVEL_ID, holder.novelId)
             }
             ctx.startActivity(intent)

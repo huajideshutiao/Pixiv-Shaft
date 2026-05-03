@@ -5,6 +5,8 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import androidx.databinding.DataBindingUtil;
+
 import com.bumptech.glide.Glide;
 import com.scwang.smart.refresh.header.FalsifyFooter;
 import com.scwang.smart.refresh.header.FalsifyHeader;
@@ -12,10 +14,9 @@ import com.scwang.smart.refresh.header.FalsifyHeader;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.databinding.DataBindingUtil;
 import ceui.lisa.R;
+import ceui.lisa.activities.ContainerActivity;
 import ceui.lisa.activities.Shaft;
-import ceui.lisa.activities.TemplateActivity;
 import ceui.lisa.core.RxRun;
 import ceui.lisa.core.RxRunnable;
 import ceui.lisa.database.AppDatabase;
@@ -29,7 +30,6 @@ import ceui.lisa.utils.Dev;
 import ceui.lisa.utils.GlideUtil;
 import ceui.lisa.utils.Local;
 import ceui.lisa.utils.Params;
-
 import ceui.pixiv.session.SessionManager;
 
 public class FragmentLocalUsers extends BaseFragment<FragmentLocalUserBinding> {
@@ -53,8 +53,8 @@ public class FragmentLocalUsers extends BaseFragment<FragmentLocalUserBinding> {
         baseBind.addUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, TemplateActivity.class);
-                intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "登录注册");
+                Intent intent = new Intent(mContext, ContainerActivity.class);
+                intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "登录注册");
                 startActivity(intent);
             }
         });

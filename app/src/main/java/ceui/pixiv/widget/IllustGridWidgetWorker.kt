@@ -9,7 +9,7 @@ import android.widget.RemoteViews
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import ceui.lisa.R
-import ceui.lisa.activities.TemplateActivity
+import ceui.lisa.activities.ContainerActivity
 import ceui.lisa.core.Container
 import ceui.lisa.core.PageData
 import ceui.lisa.http.Retro
@@ -95,9 +95,9 @@ class IllustGridWidgetWorker(
                     val illust = illusts.getOrNull(index) ?: return@forEachIndexed
                     val pageData = PageData(listOf(illust))
                     Container.get().addPageToMap(pageData)
-                    val clickIntent = Intent(context, TemplateActivity::class.java).apply {
+                    val clickIntent = Intent(context, ContainerActivity::class.java).apply {
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                        putExtra(TemplateActivity.EXTRA_FRAGMENT, "全屏查看")
+                        putExtra(ContainerActivity.EXTRA_FRAGMENT, "全屏查看")
                         putExtra(Params.POSITION, 0)
                         putExtra(Params.PAGE_UUID, pageData.uuid)
                     }

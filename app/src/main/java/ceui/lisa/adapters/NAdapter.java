@@ -17,9 +17,9 @@ import java.util.List;
 import java.util.Locale;
 
 import ceui.lisa.R;
+import ceui.lisa.activities.ContainerActivity;
 import ceui.lisa.activities.SearchActivity;
 import ceui.lisa.activities.Shaft;
-import ceui.lisa.activities.TemplateActivity;
 import ceui.lisa.activities.UActivity;
 import ceui.lisa.databinding.RecyNovelBinding;
 import ceui.lisa.interfaces.OnItemClickListener;
@@ -28,9 +28,6 @@ import ceui.lisa.models.TagsBean;
 import ceui.lisa.utils.GlideUtil;
 import ceui.lisa.utils.Params;
 import ceui.lisa.utils.PixivOperate;
-import ceui.loxia.Tag;
-import kotlin.Unit;
-import kotlin.jvm.functions.Function2;
 
 public class NAdapter extends BaseAdapter<NovelBean, RecyNovelBinding> {
 
@@ -64,9 +61,9 @@ public class NAdapter extends BaseAdapter<NovelBean, RecyNovelBinding> {
                 bindView.baseBind.series.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent = new Intent(mContext, TemplateActivity.class);
+                        Intent intent = new Intent(mContext, ContainerActivity.class);
                         intent.putExtra(Params.ID, allItems.get(position).getSeries().getId());
-                        intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "小说系列详情");
+                        intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说系列详情");
                         mContext.startActivity(intent);
                     }
                 });
@@ -147,11 +144,11 @@ public class NAdapter extends BaseAdapter<NovelBean, RecyNovelBinding> {
             bindView.baseBind.like.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    Intent intent = new Intent(mContext, TemplateActivity.class);
+                    Intent intent = new Intent(mContext, ContainerActivity.class);
                     intent.putExtra(Params.ILLUST_ID, target.getId());
                     intent.putExtra(Params.DATA_TYPE, Params.TYPE_NOVEL);
                     intent.putExtra(Params.TAG_NAMES, target.getTagNames());
-                    intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "按标签收藏");
+                    intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "按标签收藏");
                     mContext.startActivity(intent);
                     return true;
                 }
@@ -165,18 +162,18 @@ public class NAdapter extends BaseAdapter<NovelBean, RecyNovelBinding> {
             @Override
             public void onItemClick(View v, int position, int viewType) {
                 if (viewType == 0) {
-                    Intent intent = new Intent(mContext, TemplateActivity.class);
+                    Intent intent = new Intent(mContext, ContainerActivity.class);
                     intent.putExtra(Params.CONTENT, allItems.get(position));
-                    intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "小说详情");
+                    intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说详情");
                     intent.putExtra("hideStatusBar", true);
                     mContext.startActivity(intent);
                 } else if (viewType == 1) {
                     PixivOperate.postLikeNovel(allItems.get(position),
                             Params.TYPE_PUBLIC, v);
                 } else if (viewType == 2) {
-                    Intent intent = new Intent(mContext, TemplateActivity.class);
+                    Intent intent = new Intent(mContext, ContainerActivity.class);
                     intent.putExtra(Params.URL, GlideUtil.getUrl(allItems.get(position).getImage_urls().getMaxImage()).toStringUrl());
-                    intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "图片详情");
+                    intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "图片详情");
                     mContext.startActivity(intent);
                 } else if (viewType == 3) {
                     Intent intent = new Intent(mContext, UActivity.class);

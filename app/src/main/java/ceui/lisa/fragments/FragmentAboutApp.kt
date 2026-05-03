@@ -1,14 +1,14 @@
-package ceui.lisa.fragments
+package ceui.lisa.fragments
 
-import android.util.Log
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.view.View
 import ceui.lisa.BuildConfig
 import ceui.lisa.R
-import ceui.lisa.activities.TemplateActivity
+import ceui.lisa.activities.ContainerActivity
 import ceui.lisa.databinding.FragmentAboutBinding
 import ceui.lisa.update.AppUpdateChecker
 import ceui.lisa.update.GitHubRelease
@@ -45,8 +45,8 @@ class FragmentAboutApp : SwipeFragment<FragmentAboutBinding>() {
                 performUpdateCheck(manual = true)
             }
             baseBind.versionHistory.setOnClickListener {
-                val intent = Intent(mContext, TemplateActivity::class.java)
-                intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "版本历史")
+                val intent = Intent(mContext, ContainerActivity::class.java)
+                intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "版本历史")
                 startActivity(intent)
             }
         } else {
@@ -60,8 +60,8 @@ class FragmentAboutApp : SwipeFragment<FragmentAboutBinding>() {
 
         run {
             baseBind.faq.setOnClickListener {
-                val intent = Intent(mContext, TemplateActivity::class.java)
-                intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "Markdown")
+                val intent = Intent(mContext, ContainerActivity::class.java)
+                intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "Markdown")
                 intent.putExtra(Params.URL, "FAQ.md")
                 startActivity(intent)
             }
@@ -158,15 +158,15 @@ class FragmentAboutApp : SwipeFragment<FragmentAboutBinding>() {
 
         run {
             baseBind.pixivProblem.setOnClickListener {
-                val intent = Intent(mContext, TemplateActivity::class.java)
-                intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "网页链接")
+                val intent = Intent(mContext, ContainerActivity::class.java)
+                intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "网页链接")
                 intent.putExtra(Params.URL, "https://app.pixiv.help/hc/zh-cn")
                 intent.putExtra(Params.TITLE, getString(R.string.pixiv_problem))
                 startActivity(intent)
             }
             baseBind.pixivUseDetail.setOnClickListener {
-                val intent = Intent(mContext, TemplateActivity::class.java)
-                intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "网页链接")
+                val intent = Intent(mContext, ContainerActivity::class.java)
+                intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "网页链接")
                 intent.putExtra(
                     Params.URL,
                     "https://www.pixiv.net/terms/?page=term&appname=pixiv_ios"
@@ -175,8 +175,8 @@ class FragmentAboutApp : SwipeFragment<FragmentAboutBinding>() {
                 startActivity(intent)
             }
             baseBind.pixivPrivacy.setOnClickListener {
-                val intent = Intent(mContext, TemplateActivity::class.java)
-                intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "网页链接")
+                val intent = Intent(mContext, ContainerActivity::class.java)
+                intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "网页链接")
                 intent.putExtra(
                     Params.URL,
                     "https://www.pixiv.net/terms/?page=privacy&appname=pixiv_ios"

@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Set;
 
 import ceui.lisa.R;
-import ceui.lisa.activities.TemplateActivity;
+import ceui.lisa.activities.ContainerActivity;
 import ceui.lisa.databinding.DialogMuteTagBinding;
 import ceui.lisa.helper.IllustNovelFilter;
 import ceui.lisa.models.IllustsBean;
@@ -122,8 +122,8 @@ public class MuteDialog extends BaseDialog<DialogMuteTagBinding> {
         baseBind.other.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, TemplateActivity.class);
-                intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "标签屏蔽记录");
+                Intent intent = new Intent(mContext, ContainerActivity.class);
+                intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "标签屏蔽记录");
                 mContext.startActivity(intent);
                 dismiss();
             }

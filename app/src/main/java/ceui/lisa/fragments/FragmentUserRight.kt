@@ -7,13 +7,10 @@ import android.view.View
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import ceui.lisa.R
-import ceui.lisa.activities.Shaft
-import ceui.lisa.activities.TemplateActivity
-import ceui.lisa.database.AppDatabase
+import ceui.lisa.activities.ContainerActivity
 import ceui.lisa.databinding.FragmentUserRightBinding
 import ceui.lisa.databinding.TagItemBinding
 import ceui.lisa.utils.Params
-import ceui.lisa.utils.PixivOperate
 import ceui.lisa.viewmodel.UserViewModel
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import com.zhy.view.flowlayout.FlowLayout
@@ -81,32 +78,32 @@ class FragmentUserRight : SwipeFragment<FragmentUserRightBinding>() {
 //        }
 //        baseBind.banUserRela.setOnClickListener { baseBind.banUser.performClick() }
         baseBind.tagLayout.setOnTagClickListener { _, position, _ ->
-            val intent = Intent(mContext, TemplateActivity::class.java)
+            val intent = Intent(mContext, ContainerActivity::class.java)
             intent.putExtra(Params.USER_ID, data.user.userId)
             when {
                 content[position].contains(getString(R.string.string_246)) -> {
-                    intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "插画作品")
+                    intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "插画作品")
                 }
                 content[position].contains(getString(R.string.string_233)) -> {
-                    intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "漫画作品")
+                    intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "漫画作品")
                 }
                 content[position].contains(getString(R.string.string_230)) -> {
-                    intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "漫画系列作品")
+                    intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "漫画系列作品")
                 }
                 content[position].contains(getString(R.string.string_237)) -> {
-                    intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "小说作品")
+                    intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说作品")
                 }
                 content[position].contains(getString(R.string.string_257)) -> {
-                    intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "小说系列作品")
+                    intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说系列作品")
                 }
                 content[position].contains(getString(R.string.string_164)) -> {
-                    intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "插画/漫画收藏")
+                    intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "插画/漫画收藏")
                 }
                 content[position].contains(getString(R.string.string_192)) -> {
-                    intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "小说收藏")
+                    intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说收藏")
                 }
                 content[position].contains(getString(R.string.string_436)) -> {
-                    intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "相关用户")
+                    intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "相关用户")
                 }
             }
             startActivity(intent)
@@ -120,8 +117,8 @@ class FragmentUserRight : SwipeFragment<FragmentUserRightBinding>() {
         }
 
         baseBind.showDetail.setOnClickListener {
-            val intent = Intent(mContext, TemplateActivity::class.java)
-            intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "详细信息")
+            val intent = Intent(mContext, ContainerActivity::class.java)
+            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "详细信息")
             intent.putExtra(Params.CONTENT, data)
             startActivity(intent)
         }

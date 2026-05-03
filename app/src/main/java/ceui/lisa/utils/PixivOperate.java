@@ -33,9 +33,9 @@ import java.util.List;
 import java.util.Map;
 
 import ceui.lisa.R;
+import ceui.lisa.activities.ContainerActivity;
 import ceui.lisa.activities.OutWakeActivity;
 import ceui.lisa.activities.Shaft;
-import ceui.lisa.activities.TemplateActivity;
 import ceui.lisa.cache.Cache;
 import ceui.lisa.core.Container;
 import ceui.lisa.core.PageData;
@@ -335,8 +335,8 @@ public class PixivOperate {
                                 Collections.singletonList(illustSearchResponse.getIllust()));
                         Container.get().addPageToMap(pageData);
 
-                        Intent intent = new Intent(context, TemplateActivity.class);
-                        intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "全屏查看");
+                        Intent intent = new Intent(context, ContainerActivity.class);
+                        intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "全屏查看");
                         intent.putExtra(Params.POSITION, 0);
                         intent.putExtra(Params.PAGE_UUID, pageData.getUUID());
                         context.startActivity(intent);
@@ -373,8 +373,8 @@ public class PixivOperate {
                                     Collections.singletonList(illust));
                             Container.get().addPageToMap(pageData);
 
-                            Intent intent = new Intent(context, TemplateActivity.class);
-                            intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "全屏查看");
+                            Intent intent = new Intent(context, ContainerActivity.class);
+                            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "全屏查看");
                             intent.putExtra(Params.POSITION, 0);
                             intent.putExtra(Params.PAGE_UUID, pageData.getUUID());
                             context.startActivity(intent);
@@ -407,9 +407,9 @@ public class PixivOperate {
                     @Override
                     public void success(NovelSearchResponse novelSearchResponse) {
                         if (novelSearchResponse.getNovel() != null) {
-                            Intent intent = new Intent(context, TemplateActivity.class);
+                            Intent intent = new Intent(context, ContainerActivity.class);
                             intent.putExtra(Params.CONTENT, novelSearchResponse.getNovel());
-                            intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "小说详情");
+                            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说详情");
                             intent.putExtra("hideStatusBar", true);
                             context.startActivity(intent);
 

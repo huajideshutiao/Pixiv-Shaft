@@ -7,7 +7,7 @@ import android.view.View;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import ceui.lisa.R;
-import ceui.lisa.activities.TemplateActivity;
+import ceui.lisa.activities.ContainerActivity;
 import ceui.lisa.adapters.ArticleAdapter;
 import ceui.lisa.adapters.BaseAdapter;
 import ceui.lisa.core.RemoteRepo;
@@ -59,8 +59,8 @@ public class FragmentPivision extends NetListFragment<FragmentBaseListBinding,
         return new ArticleAdapter(allItems, mContext).setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View v, int position, int viewType) {
-                Intent intent = new Intent(mContext, TemplateActivity.class);
-                intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "网页链接");
+                Intent intent = new Intent(mContext, ContainerActivity.class);
+                intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "网页链接");
                 intent.putExtra(Params.URL, allItems.get(position).getArticle_url());
                 intent.putExtra(Params.TITLE, getString(R.string.pixiv_special));
                 intent.putExtra(Params.PREFER_PRESERVE, true);

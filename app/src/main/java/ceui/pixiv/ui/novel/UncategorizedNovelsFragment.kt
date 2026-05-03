@@ -17,8 +17,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import ceui.lisa.R
+import ceui.lisa.activities.ContainerActivity
 import ceui.lisa.activities.Shaft
-import ceui.lisa.activities.TemplateActivity
 import ceui.lisa.activities.UActivity
 import ceui.lisa.core.Container
 import ceui.lisa.core.PageData
@@ -47,7 +47,7 @@ import java.util.UUID
  *  - 底部「下载全部」按钮与多选行（全选 / 下载选中 (N)）互相替换
  *  - 批量下载失败时弹窗列出失败条目
  *
- * 入口：[TemplateActivity] 路由「未归类小说」+ USER_ID。
+ * 入口：[ContainerActivity] 路由「未归类小说」+ USER_ID。
  */
 class UncategorizedNovelsFragment : PixivFragment(R.layout.fragment_pixiv_list),
     NovelMultiSelectReceiver {
@@ -307,8 +307,8 @@ class UncategorizedNovelsFragment : PixivFragment(R.layout.fragment_pixiv_list),
     }
 
     override fun onClickNovel(novelId: Long) {
-        val intent = Intent(requireContext(), TemplateActivity::class.java).apply {
-            putExtra(TemplateActivity.EXTRA_FRAGMENT, "小说详情")
+        val intent = Intent(requireContext(), ContainerActivity::class.java).apply {
+            putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说详情")
             putExtra(Params.NOVEL_ID, novelId)
         }
         startActivity(intent)
@@ -323,8 +323,8 @@ class UncategorizedNovelsFragment : PixivFragment(R.layout.fragment_pixiv_list),
             val uuid = UUID.randomUUID().toString()
             val pageData = PageData(uuid, null, listOf(bean))
             Container.get().addPageToMap(pageData)
-            val intent = Intent(requireContext(), TemplateActivity::class.java).apply {
-                putExtra(TemplateActivity.EXTRA_FRAGMENT, "全屏查看")
+            val intent = Intent(requireContext(), ContainerActivity::class.java).apply {
+                putExtra(ContainerActivity.EXTRA_FRAGMENT, "全屏查看")
                 putExtra(Params.POSITION, 0)
                 putExtra(Params.PAGE_UUID, uuid)
             }

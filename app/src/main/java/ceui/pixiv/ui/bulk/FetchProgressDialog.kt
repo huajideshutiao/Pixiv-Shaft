@@ -8,9 +8,9 @@ import android.widget.ScrollView
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
-import ceui.lisa.activities.TemplateActivity
 import androidx.lifecycle.lifecycleScope
 import ceui.lisa.R
+import ceui.lisa.activities.ContainerActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -111,8 +111,8 @@ class FetchProgressDialog : DialogFragment(R.layout.dialog_fetch_progress) {
         closeBtn.setOnClickListener { dismissAllowingStateLoss() }
         openManagerBtn.setOnClickListener {
             val ctx = requireContext()
-            val intent = Intent(ctx, TemplateActivity::class.java)
-                .putExtra(TemplateActivity.EXTRA_FRAGMENT, "下载管理") // route key, not UI text
+            val intent = Intent(ctx, ContainerActivity::class.java)
+                .putExtra(ContainerActivity.EXTRA_FRAGMENT, "下载管理") // route key, not UI text
             ctx.startActivity(intent)
             dismissAllowingStateLoss()
         }

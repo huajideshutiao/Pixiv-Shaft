@@ -12,16 +12,16 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.Log;
 
-import java.util.List;
-
 import androidx.annotation.RequiresApi;
 import androidx.core.content.pm.ShortcutInfoCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.drawable.IconCompat;
+
+import java.util.List;
+
 import ceui.lisa.R;
 import ceui.lisa.activities.Shaft;
-import ceui.lisa.activities.TemplateActivity;
 
 public class ShortcutHelper {
 
@@ -42,9 +42,8 @@ public class ShortcutHelper {
                 return;
             }
 
-            Intent intent = new Intent(context, TemplateActivity.class);
+            Intent intent = new Intent(context, ceui.lisa.activities.SearchActivity.class);
             intent.setAction(Intent.ACTION_VIEW);
-            intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "搜索");
             IconCompat iconCompat;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 try {

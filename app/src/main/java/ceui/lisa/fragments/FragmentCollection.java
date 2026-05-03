@@ -21,8 +21,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import ceui.lisa.R;
+import ceui.lisa.activities.ContainerActivity;
 import ceui.lisa.activities.Shaft;
-import ceui.lisa.activities.TemplateActivity;
 import ceui.lisa.databinding.ViewpagerWithTablayoutBinding;
 import ceui.lisa.utils.MyOnTabSelectedListener;
 import ceui.lisa.utils.Params;
@@ -119,18 +119,20 @@ public class FragmentCollection extends BaseFragment<ViewpagerWithTablayoutBindi
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 if (baseBind.viewPager.getCurrentItem() == 0) {
-                    Intent intent = new Intent(mContext, TemplateActivity.class);
-                    intent.putExtra(TemplateActivity.EXTRA_KEYWORD,
+                    Intent intent = new Intent(mContext, ContainerActivity.class);
+                    intent.putExtra(
+                        ContainerActivity.EXTRA_KEYWORD,
                             Params.TYPE_PUBLIC);
-                    intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "按标签筛选");
+                    intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "按标签筛选");
                     intent.putExtra(Params.DATA_TYPE, type);
                     startActivity(intent);
                     return true;
                 } else if (baseBind.viewPager.getCurrentItem() == 1) {
-                    Intent intent = new Intent(mContext, TemplateActivity.class);
-                    intent.putExtra(TemplateActivity.EXTRA_KEYWORD,
+                    Intent intent = new Intent(mContext, ContainerActivity.class);
+                    intent.putExtra(
+                        ContainerActivity.EXTRA_KEYWORD,
                             Params.TYPE_PRIVATE);
-                    intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "按标签筛选");
+                    intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "按标签筛选");
                     intent.putExtra(Params.DATA_TYPE, type);
                     startActivity(intent);
                     return true;

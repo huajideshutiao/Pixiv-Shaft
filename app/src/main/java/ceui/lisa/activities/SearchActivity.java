@@ -37,6 +37,7 @@ import ceui.lisa.adapters.SearchHintAdapter;
 import ceui.lisa.databinding.FragmentNewSearchBinding;
 import ceui.lisa.fragments.BaseFragment;
 import ceui.lisa.fragments.FragmentFilter;
+import ceui.lisa.fragments.FragmentSearch;
 import ceui.lisa.fragments.FragmentSearchIllust;
 import ceui.lisa.fragments.FragmentSearchNovel;
 import ceui.lisa.fragments.FragmentSearchUser;
@@ -60,6 +61,7 @@ public class SearchActivity extends BaseActivity<FragmentNewSearchBinding> {
     private boolean isPremium = false;
     private final java.util.List<String> committedTags = new java.util.ArrayList<>();
     private SearchHintViewModel hintViewModel;
+    private FragmentSearch landingFragment;
 
     @Override
     protected void initBundle(Bundle bundle) {
@@ -188,6 +190,17 @@ public class SearchActivity extends BaseActivity<FragmentNewSearchBinding> {
             baseBind.viewPager.setCurrentItem(index);
         }
 
+        landingFragment = FragmentSearch.newInstance(true);
+        getSupportFragmentManager().beginTransaction()
+            .add(R.id.landing_container, landingFragment)
+            .commitNowAllowingStateLoss();
+
+        if (TextUtils.isEmpty(keyWord)) {
+            showLanding();
+        } else {
+            showResult();
+        }
+
         if (Shaft.getDefaultPrefs().getBoolean(Params.MMKV_KEY_ISSHOWTIPS_SEARCHSORT, true)) {
             tipDialog(mContext);
             baseBind.drawerlayout.openDrawer(GravityCompat.END);
@@ -216,6 +229,11 @@ public class SearchActivity extends BaseActivity<FragmentNewSearchBinding> {
                         }
                     } else {
                         Common.showToast(getString(R.string.string_435));
+                    }
+                    return true;
+                } else if (item.getItemId() == R.id.action_type) {
+                    if (landingFragment != null) {
+                        landingFragment.popUpSearchTypeSwitcher();
                     }
                     return true;
                 }
@@ -335,8 +353,7 @@ public class SearchActivity extends BaseActivity<FragmentNewSearchBinding> {
                             refreshChipsUI();
                         }
                         baseBind.searchTagsFlow.getEditor().setText("");
-                        searchModel.getKeyword().setValue(joinedChips());
-                        searchModel.getNowGo().setValue("search_now");
+                        executeSearch(joinedChips(), baseBind.viewPager.getCurrentItem());
                         Common.hideKeyboard(mActivity);
                     }
 
@@ -408,6 +425,10 @@ public class SearchActivity extends BaseActivity<FragmentNewSearchBinding> {
             hintViewModel.hideHints();
             return;
         }
+        if (baseBind.landingContainer.getVisibility() == View.GONE) {
+            showLanding();
+            return;
+        }
         super.onBackPressed();
     }
 
@@ -448,8 +469,49 @@ public class SearchActivity extends BaseActivity<FragmentNewSearchBinding> {
 
     private void triggerSearchIfNotEmpty() {
         if (!committedTags.isEmpty()) {
+            showResult();
             searchModel.getNowGo().setValue("search_now");
         }
+    }
+
+    public void executeSearch(String keyword) {
+        executeSearch(keyword, baseBind.viewPager.getCurrentItem());
+    }
+
+    public void executeSearch(String keyword, int index) {
+        if (TextUtils.isEmpty(keyword)) {
+            return;
+        }
+
+        // Clear existing chips and add the new keyword as a single chip (or multiple if space-separated)
+        committedTags.clear();
+        for (String part : keyword.trim().split("\\s+")) {
+            if (!TextUtils.isEmpty(part)) committedTags.add(part);
+        }
+        refreshChipsUI();
+        baseBind.searchTagsFlow.getEditor().setText("");
+
+        if (index >= 0 && index < 3) {
+            baseBind.viewPager.setCurrentItem(index);
+        }
+        searchModel.getKeyword().setValue(keyword);
+        showResult();
+        searchModel.getNowGo().setValue("search_now");
+    }
+
+    private void showLanding() {
+        committedTags.clear();
+        refreshChipsUI();
+        baseBind.searchTagsFlow.getEditor().setText("");
+        baseBind.landingContainer.setVisibility(View.VISIBLE);
+        baseBind.tabLayout.setVisibility(View.GONE);
+        baseBind.viewPager.setVisibility(View.GONE);
+    }
+
+    private void showResult() {
+        baseBind.landingContainer.setVisibility(View.GONE);
+        baseBind.tabLayout.setVisibility(View.VISIBLE);
+        baseBind.viewPager.setVisibility(View.VISIBLE);
     }
 
     private void animateHintList(boolean show) {

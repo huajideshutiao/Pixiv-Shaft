@@ -3,11 +3,11 @@ package ceui.lisa.adapters
 import android.content.Context
 import android.content.Intent
 import android.view.View
+import ceui.lisa.R
+import ceui.lisa.activities.ContainerActivity
+import ceui.lisa.activities.UActivity
 import ceui.lisa.databinding.RecyWatchlistNovelBinding
 import ceui.lisa.models.WatchlistNovelItem
-import ceui.lisa.R
-import ceui.lisa.activities.TemplateActivity
-import ceui.lisa.activities.UActivity
 import ceui.lisa.utils.GlideUtil
 import ceui.lisa.utils.Params
 import ceui.lisa.utils.PixivOperate
@@ -43,9 +43,9 @@ class WatchlistNovelAdapter(
             bindView.baseBind.lastDate.text = target.last_published_content_datetime!!
             bindView.baseBind.contentCount.text = mContext.getString(R.string.episode_number, target.published_content_count)
             bindView.itemView.setOnClickListener {
-                val intent = Intent(mContext, TemplateActivity::class.java)
+                val intent = Intent(mContext, ContainerActivity::class.java)
                 intent.putExtra(Params.ID, target.id)
-                intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "小说系列详情")
+                intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说系列详情")
                 mContext.startActivity(intent)
             }
             bindView.baseBind.readLatest.setOnClickListener {

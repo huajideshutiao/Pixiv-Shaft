@@ -3,12 +3,12 @@ package ceui.lisa.fragments;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.URLUtil;
@@ -32,7 +32,6 @@ import java.util.stream.Collectors;
 
 import ceui.lisa.R;
 import ceui.lisa.activities.OutWakeActivity;
-import ceui.lisa.activities.SearchActivity;
 import ceui.lisa.activities.Shaft;
 import ceui.lisa.activities.UActivity;
 import ceui.lisa.adapters.SearchHintAdapter;
@@ -59,6 +58,31 @@ public class FragmentSearch extends BaseFragment<FragmentSearchBinding> {
     private SearchHintViewModel hintViewModel;
     private int searchType = SearchTypeUtil.defaultSearchType;
     private boolean hasSwitchSearchType = false;
+    private boolean hideTop = false;
+
+    public static FragmentSearch newInstance(boolean hideTop) {
+        Bundle args = new Bundle();
+        args.putBoolean(Params.HIDE_TOP, hideTop);
+        FragmentSearch fragment = new FragmentSearch();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void initBundle(Bundle bundle) {
+        hideTop = bundle.getBoolean(Params.HIDE_TOP, false);
+    }
+
+    private void startSearch(String keyword, int index) {
+        if (getActivity() instanceof ceui.lisa.activities.SearchActivity) {
+            ((ceui.lisa.activities.SearchActivity) getActivity()).executeSearch(keyword, index);
+        } else {
+            Intent intent = new Intent(mContext, ceui.lisa.activities.SearchActivity.class);
+            intent.putExtra(Params.KEY_WORD, keyword);
+            intent.putExtra(Params.INDEX, index);
+            startActivity(intent);
+        }
+    }
 
     @Override
     public void initLayout() {
@@ -67,6 +91,9 @@ public class FragmentSearch extends BaseFragment<FragmentSearchBinding> {
 
     @Override
     protected void initData() {
+        if (hideTop) {
+            baseBind.topRela.setVisibility(View.GONE);
+        }
         final String[] SEARCH_TYPE = SearchTypeUtil.SEARCH_TYPE_NAME;
 
         ViewGroup.LayoutParams headParams = baseBind.head.getLayoutParams();
@@ -141,10 +168,7 @@ public class FragmentSearch extends BaseFragment<FragmentSearchBinding> {
         if (searchType == 0) {
             hintViewModel.hideHints();
             //PixivOperate.insertSearchHistory(trimmedKeyword, SearchTypeUtil.SEARCH_TYPE_DB_KEYWORD);
-            Intent intent = new Intent(mContext, SearchActivity.class);
-            intent.putExtra(Params.KEY_WORD, trimmedKeyword);
-            intent.putExtra(Params.INDEX, 0);
-            startActivity(intent);
+            startSearch(trimmedKeyword, 0);
         } else if (searchType == 1) {
             if (Common.isNumeric(trimmedKeyword)) {
                 PixivOperate.insertSearchHistory(trimmedKeyword, SearchTypeUtil.SEARCH_TYPE_DB_ILLUSTSID);
@@ -221,10 +245,7 @@ public class FragmentSearch extends BaseFragment<FragmentSearchBinding> {
             else{
                 hintViewModel.hideHints();
                 //PixivOperate.insertSearchHistory(trimmedKeyword, SearchTypeUtil.SEARCH_TYPE_DB_KEYWORD);
-                Intent intent = new Intent(mContext, SearchActivity.class);
-                intent.putExtra(Params.KEY_WORD, trimmedKeyword);
-                intent.putExtra(Params.INDEX, 0);
-                startActivity(intent);
+                startSearch(trimmedKeyword, 2);
             }
         }
     }
@@ -238,10 +259,7 @@ public class FragmentSearch extends BaseFragment<FragmentSearchBinding> {
             adapter.setOnItemClickListener((v, position, viewType) -> {
                 hintViewModel.hideHints();
                 String tag = hints.get(position).getTag();
-                Intent intent = new Intent(mContext, SearchActivity.class);
-                intent.putExtra(Params.KEY_WORD, tag);
-                intent.putExtra(Params.INDEX, 0);
-                startActivity(intent);
+                startSearch(tag, 0);
             });
             adapter.setOnItemLongClickListener((v, position, viewType) -> {
                 hintViewModel.hideHints();
@@ -320,10 +338,7 @@ public class FragmentSearch extends BaseFragment<FragmentSearchBinding> {
                                 hintViewModel.hideHints();
                                 String keyword = listTrendingtag.getList().get(position).getTag();
                                 //PixivOperate.insertSearchHistory(keyword, SearchTypeUtil.SEARCH_TYPE_DB_KEYWORD);
-                                Intent intent = new Intent(mContext, SearchActivity.class);
-                                intent.putExtra(Params.KEY_WORD, keyword);
-                                intent.putExtra(Params.INDEX, 0);
-                                startActivity(intent);
+                                startSearch(keyword, 0);
                                 return false;
                             }
                         });
@@ -414,20 +429,14 @@ public class FragmentSearch extends BaseFragment<FragmentSearchBinding> {
             public boolean onTagClick(View view, int position, FlowLayout parent) {
                 if (history.get(position).getSearchType() == SearchTypeUtil.SEARCH_TYPE_DB_KEYWORD) {
                     hintViewModel.hideHints();
-                    Intent intent = new Intent(mContext, SearchActivity.class);
-                    intent.putExtra(Params.KEY_WORD, history.get(position).getKeyword());
-                    intent.putExtra(Params.INDEX, 0);
-                    startActivity(intent);
+                    startSearch(history.get(position).getKeyword(), 0);
                 } else if (history.get(position).getSearchType() == SearchTypeUtil.SEARCH_TYPE_DB_ILLUSTSID) {
                     history.get(position).setSearchTime(System.currentTimeMillis());
                     AppDatabase.getAppDatabase(mContext).searchDao().insert(history.get(position));
                     PixivOperate.getIllustByID(tryParseId(history.get(position).getKeyword()), mContext);
                 } else if (history.get(position).getSearchType() == SearchTypeUtil.SEARCH_TYPE_DB_USERKEYWORD) {
                     hintViewModel.hideHints();
-                    Intent intent = new Intent(mContext, SearchActivity.class);
-                    intent.putExtra(Params.KEY_WORD, history.get(position).getKeyword());
-                    intent.putExtra(Params.INDEX, 0);
-                    startActivity(intent);
+                    startSearch(history.get(position).getKeyword(), 0);
                 } else if (history.get(position).getSearchType() == SearchTypeUtil.SEARCH_TYPE_DB_USERID) {
                     history.get(position).setSearchTime(System.currentTimeMillis());
                     AppDatabase.getAppDatabase(mContext).searchDao().insert(history.get(position));
@@ -512,7 +521,7 @@ public class FragmentSearch extends BaseFragment<FragmentSearchBinding> {
         });
     }
 
-    private void popUpSearchTypeSwitcher(){
+    public void popUpSearchTypeSwitcher() {
         popUpSearchTypeSwitcher(false, null);
     }
 

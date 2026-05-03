@@ -26,7 +26,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import ceui.lisa.R
-import ceui.lisa.activities.TemplateActivity
+import ceui.lisa.activities.ContainerActivity
 import ceui.lisa.activities.UActivity
 import ceui.lisa.core.ArtworksMap
 import ceui.lisa.databinding.FragmentPixivListBinding
@@ -247,8 +247,8 @@ open class PixivFragment(layoutId: Int) : Fragment(layoutId),
     }
 
     override fun onClickIllust(illustId: Long) {
-        val intent = Intent(requireContext(), TemplateActivity::class.java)
-        intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "全屏查看")
+        val intent = Intent(requireContext(), ContainerActivity::class.java)
+        intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "全屏查看")
         intent.putExtra(Params.SEED, fragmentViewModel.fragmentUniqueId)
         intent.putExtra(Params.ILLUST_ID, illustId)
         startActivity(intent)
@@ -262,9 +262,9 @@ open class PixivFragment(layoutId: Int) : Fragment(layoutId),
     override fun onClickNovelSeries(sender: View, series: Series) {
         val intent = android.content.Intent(
             requireContext(),
-            ceui.lisa.activities.TemplateActivity::class.java
+            ContainerActivity::class.java
         ).apply {
-            putExtra(ceui.lisa.activities.TemplateActivity.EXTRA_FRAGMENT, "小说系列")
+            putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说系列")
             putExtra(ceui.pixiv.ui.novel.NovelSeriesFragment.ARG_SERIES_ID, series.id)
         }
         startActivity(intent)

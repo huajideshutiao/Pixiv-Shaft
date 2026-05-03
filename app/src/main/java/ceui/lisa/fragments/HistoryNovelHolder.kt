@@ -2,7 +2,7 @@ package ceui.lisa.fragments
 
 import android.content.Intent
 import ceui.lisa.R
-import ceui.lisa.activities.TemplateActivity
+import ceui.lisa.activities.ContainerActivity
 import ceui.lisa.activities.UActivity
 import ceui.lisa.annotations.ItemHolder
 import ceui.lisa.database.IllustHistoryEntity
@@ -49,9 +49,9 @@ class HistoryNovelViewHolder(bd: CellHistoryNovelV3Binding) :
         binding.time.text = timeFormat.format(entity.time)
 
         binding.root.setOnClickListener {
-            context.startActivity(Intent(context, TemplateActivity::class.java).apply {
+            context.startActivity(Intent(context, ContainerActivity::class.java).apply {
                 putExtra(Params.CONTENT, novel)
-                putExtra(TemplateActivity.EXTRA_FRAGMENT, "小说详情")
+                putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说详情")
                 putExtra("hideStatusBar", true)
             })
         }

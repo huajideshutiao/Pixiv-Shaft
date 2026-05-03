@@ -94,7 +94,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.TemplateActivity"
+            android:name=".activities.ContainerActivity"
             android:theme="@style/SplashTheme"
             android:windowSoftInputMode="adjustPan" />
         <activity

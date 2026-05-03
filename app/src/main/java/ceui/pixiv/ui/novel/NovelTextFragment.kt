@@ -9,8 +9,8 @@ import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import ceui.lisa.R
+import ceui.lisa.activities.ContainerActivity
 import ceui.lisa.activities.Shaft
-import ceui.lisa.activities.TemplateActivity
 import ceui.lisa.activities.UActivity
 import ceui.lisa.core.Container
 import ceui.lisa.core.PageData
@@ -73,8 +73,8 @@ class NovelTextFragment : PixivFragment(R.layout.fragment_pixiv_list), FitsSyste
         bottomView.btnRead.background = palette.pillPrimary(28f * resources.displayMetrics.density)
         bottomView.btnRead.setOnClick {
             val ctx = requireContext()
-            val intent = Intent(ctx, TemplateActivity::class.java).apply {
-                putExtra(TemplateActivity.EXTRA_FRAGMENT, "小说正文")
+            val intent = Intent(ctx, ContainerActivity::class.java).apply {
+                putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说正文")
                 putExtra(Params.NOVEL_ID, novelId)
             }
             ctx.startActivity(intent)
@@ -126,8 +126,8 @@ class NovelTextFragment : PixivFragment(R.layout.fragment_pixiv_list), FitsSyste
     }
 
     override fun onClickNovelComments(sender: View, novelId: Long) {
-        val intent = Intent(requireContext(), TemplateActivity::class.java).apply {
-            putExtra(TemplateActivity.EXTRA_FRAGMENT, "相关评论")
+        val intent = Intent(requireContext(), ContainerActivity::class.java).apply {
+            putExtra(ContainerActivity.EXTRA_FRAGMENT, "相关评论")
             putExtra(Params.NOVEL_ID, novelId.toInt())
         }
         startActivity(intent)
@@ -219,8 +219,8 @@ class NovelTextFragment : PixivFragment(R.layout.fragment_pixiv_list), FitsSyste
     }
 
     override fun onClickNovel(novelId: Long) {
-        val intent = Intent(requireContext(), TemplateActivity::class.java).apply {
-            putExtra(TemplateActivity.EXTRA_FRAGMENT, "小说详情")
+        val intent = Intent(requireContext(), ContainerActivity::class.java).apply {
+            putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说详情")
             putExtra(Params.NOVEL_ID, novelId)
         }
         startActivity(intent)
@@ -235,8 +235,8 @@ class NovelTextFragment : PixivFragment(R.layout.fragment_pixiv_list), FitsSyste
             val uuid = UUID.randomUUID().toString()
             val pageData = PageData(uuid, null, listOf(bean))
             Container.get().addPageToMap(pageData)
-            val intent = Intent(requireContext(), TemplateActivity::class.java).apply {
-                putExtra(TemplateActivity.EXTRA_FRAGMENT, "全屏查看")
+            val intent = Intent(requireContext(), ContainerActivity::class.java).apply {
+                putExtra(ContainerActivity.EXTRA_FRAGMENT, "全屏查看")
                 putExtra(Params.POSITION, 0)
                 putExtra(Params.PAGE_UUID, uuid)
             }

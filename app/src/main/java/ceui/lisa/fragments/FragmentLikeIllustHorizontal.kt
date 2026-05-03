@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import ceui.lisa.R
-import ceui.lisa.activities.TemplateActivity
+import ceui.lisa.activities.ContainerActivity
 import ceui.lisa.adapters.LAdapter
 import ceui.lisa.core.Container
 import ceui.lisa.core.PageData
@@ -68,8 +68,8 @@ class FragmentLikeIllustHorizontal : BaseFragment<FragmentLikeIllustHorizontalBi
             val pageData = PageData(allItems)
             Container.get().addPageToMap(pageData)
 
-            val intent = Intent(mContext, TemplateActivity::class.java).apply {
-                putExtra(TemplateActivity.EXTRA_FRAGMENT, "全屏查看")
+            val intent = Intent(mContext, ContainerActivity::class.java).apply {
+                putExtra(ContainerActivity.EXTRA_FRAGMENT, "全屏查看")
                 putExtra(Params.POSITION, position)
                 putExtra(Params.PAGE_UUID, pageData.uuid)
             }
@@ -110,8 +110,8 @@ class FragmentLikeIllustHorizontal : BaseFragment<FragmentLikeIllustHorizontalBi
         }
 
         baseBind.howMany.setOnClickListener {
-            val intent = Intent(mContext, TemplateActivity::class.java).apply {
-                putExtra(TemplateActivity.EXTRA_FRAGMENT, baseBind.title.text.toString())
+            val intent = Intent(mContext, ContainerActivity::class.java).apply {
+                putExtra(ContainerActivity.EXTRA_FRAGMENT, baseBind.title.text.toString())
                 putExtra(Params.USER_ID, mUserDetailResponse?.user?.id ?: 0)
             }
             startActivity(intent)
@@ -126,8 +126,8 @@ class FragmentLikeIllustHorizontal : BaseFragment<FragmentLikeIllustHorizontalBi
                 val fragmentTag = if (type == 3) "漫画作品" else "插画作品"
                 UserIllustJumpHelper.showJumpDialog(mActivity, userID, kind) { offset, pickedDate ->
                     if (!isAdded) return@showJumpDialog
-                    val intent = Intent(mContext, TemplateActivity::class.java).apply {
-                        putExtra(TemplateActivity.EXTRA_FRAGMENT, fragmentTag)
+                    val intent = Intent(mContext, ContainerActivity::class.java).apply {
+                        putExtra(ContainerActivity.EXTRA_FRAGMENT, fragmentTag)
                         putExtra(Params.USER_ID, userID)
                         putExtra(Params.INITIAL_OFFSET, offset)
                         pickedDate?.let { putExtra(Params.TARGET_DATE, it) }

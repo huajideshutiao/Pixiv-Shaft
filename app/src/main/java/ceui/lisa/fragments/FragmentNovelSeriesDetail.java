@@ -12,23 +12,19 @@ import androidx.databinding.ViewDataBinding;
 
 import com.bumptech.glide.Glide;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import ceui.lisa.R;
 import ceui.lisa.activities.BaseActivity;
-import ceui.lisa.activities.Shaft;
-import ceui.lisa.activities.TemplateActivity;
+import ceui.lisa.activities.ContainerActivity;
 import ceui.lisa.adapters.BaseAdapter;
 import ceui.lisa.adapters.NAdapter;
 import ceui.lisa.cache.Cache;
 import ceui.lisa.core.BaseRepo;
 import ceui.lisa.databinding.FragmentNovelSeriesBinding;
 import ceui.lisa.download.IllustDownload;
-import ceui.lisa.helper.NovelParseHelper;
-import ceui.lisa.http.NullCtrl;
 import ceui.lisa.http.Retro;
 import ceui.lisa.interfaces.Callback;
 import ceui.lisa.model.ListNovelOfSeries;
@@ -42,8 +38,6 @@ import ceui.lisa.utils.GlideUtil;
 import ceui.lisa.utils.Params;
 import ceui.lisa.utils.PixivOperate;
 import ceui.loxia.WebNovel;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -271,9 +265,9 @@ public class FragmentNovelSeriesDetail extends NetListFragment<FragmentNovelSeri
     private void initReadLatestButton(int latest, NovelBean novel) {
         baseBind.readLatest.setText(mContext.getString(R.string.read_latest_episode_with_num, latest));
         baseBind.readLatest.setOnClickListener(v -> {
-            Intent intent = new Intent(mContext, TemplateActivity.class);
+            Intent intent = new Intent(mContext, ContainerActivity.class);
             intent.putExtra(Params.CONTENT, novel);
-            intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "小说详情");
+            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说详情");
             intent.putExtra("hideStatusBar", true);
             mContext.startActivity(intent);
         });

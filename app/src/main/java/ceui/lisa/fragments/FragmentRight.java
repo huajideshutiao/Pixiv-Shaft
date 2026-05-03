@@ -19,9 +19,9 @@ import java.util.List;
 import java.util.UUID;
 
 import ceui.lisa.R;
+import ceui.lisa.activities.ContainerActivity;
 import ceui.lisa.activities.MainActivity;
 import ceui.lisa.activities.Shaft;
-import ceui.lisa.activities.TemplateActivity;
 import ceui.lisa.adapters.BaseAdapter;
 import ceui.lisa.adapters.IAdapter;
 import ceui.lisa.adapters.TimelineAdapter;
@@ -90,8 +90,7 @@ public class FragmentRight extends NetListFragment<FragmentNewRightBinding, List
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 if (item.getItemId() == R.id.action_search) {
-                    Intent intent = new Intent(mContext, TemplateActivity.class);
-                    intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "搜索");
+                    Intent intent = new Intent(mContext, ceui.lisa.activities.SearchActivity.class);
                     startActivity(intent);
                     return true;
                 }
@@ -99,8 +98,8 @@ public class FragmentRight extends NetListFragment<FragmentNewRightBinding, List
             }
         });
         baseBind.seeMore.setOnClickListener(v -> {
-            Intent intent = new Intent(mContext, TemplateActivity.class);
-            intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "推荐用户");
+            Intent intent = new Intent(mContext, ContainerActivity.class);
+            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "推荐用户");
             String handoffKey = null;
             if (headerFragment != null && headerFragment.allItems != null && !headerFragment.allItems.isEmpty()) {
                 // Hand off via in-memory map rather than Intent extras: the

@@ -260,17 +260,17 @@ class UActivity : BaseActivity<ActivityNewUserBinding>(), Display<UserDetailResp
         baseBind.followCount.text = data.profile.total_follow_users.toString()
         baseBind.pFriend.text = data.profile.total_mypixiv_users.toString()
         val pFriend = View.OnClickListener {
-            val intent = Intent(mContext, TemplateActivity::class.java)
+            val intent = Intent(mContext, ContainerActivity::class.java)
             intent.putExtra(Params.USER_ID, data.user.id)
-            intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "好P友")
+            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "好P友")
             startActivity(intent)
         }
         baseBind.pFriend.setOnClickListener(pFriend)
         baseBind.pFriendS.setOnClickListener(pFriend)
         val follow = View.OnClickListener {
-            val intent = Intent(mContext, TemplateActivity::class.java)
+            val intent = Intent(mContext, ContainerActivity::class.java)
             intent.putExtra(Params.USER_ID, data.user.id)
-            intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "正在关注")
+            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "正在关注")
             startActivity(intent)
         }
         baseBind.followCount.setOnClickListener(follow)
@@ -278,8 +278,8 @@ class UActivity : BaseActivity<ActivityNewUserBinding>(), Display<UserDetailResp
     }
 
     private fun openImageDetail(imageUrl: String, saveName: String) {
-        startActivity(Intent(mContext, TemplateActivity::class.java).apply {
-            putExtra(TemplateActivity.EXTRA_FRAGMENT, "图片详情")
+        startActivity(Intent(mContext, ContainerActivity::class.java).apply {
+            putExtra(ContainerActivity.EXTRA_FRAGMENT, "图片详情")
             putExtra(Params.URL, imageUrl)
             putExtra(Params.TITLE, saveName)
         })
@@ -288,8 +288,8 @@ class UActivity : BaseActivity<ActivityNewUserBinding>(), Display<UserDetailResp
     private fun jumpTo(userID: Int, kind: UserIllustJumpHelper.Kind, fragmentTag: String) {
         UserIllustJumpHelper.showJumpDialog(this, userID, kind) { offset, pickedDate ->
             if (isFinishing || isDestroyed) return@showJumpDialog
-            val intent = Intent(this, TemplateActivity::class.java)
-            intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, fragmentTag)
+            val intent = Intent(this, ContainerActivity::class.java)
+            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, fragmentTag)
             intent.putExtra(Params.USER_ID, userID)
             intent.putExtra(Params.INITIAL_OFFSET, offset)
             if (pickedDate != null) intent.putExtra(Params.TARGET_DATE, pickedDate)
