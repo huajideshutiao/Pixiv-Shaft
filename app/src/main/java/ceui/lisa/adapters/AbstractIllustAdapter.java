@@ -1,11 +1,14 @@
 package ceui.lisa.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import ceui.lisa.R;
 import ceui.lisa.activities.ImageDetailActivity;
 import ceui.lisa.models.IllustsBean;
 
@@ -16,6 +19,7 @@ public abstract class AbstractIllustAdapter<VH extends RecyclerView.ViewHolder>
     protected Context mContext;
     protected int imageSize;
     protected boolean isForceOriginal;
+    private long lastClickTime = 0;
 
     @Override
     public int getItemCount() {
@@ -25,11 +29,25 @@ public abstract class AbstractIllustAdapter<VH extends RecyclerView.ViewHolder>
     @Override
     public void onBindViewHolder(@NonNull VH holder, int position) {
         holder.itemView.setOnClickListener(v -> {
+            if (android.os.SystemClock.elapsedRealtime() - lastClickTime < 1000) {
+                return;
+            }
+            lastClickTime = android.os.SystemClock.elapsedRealtime();
+
             Intent intent = new Intent(mContext, ImageDetailActivity.class);
             intent.putExtra("illust", allIllust);
             intent.putExtra("dataType", "二级详情");
             intent.putExtra("index", position);
-            mContext.startActivity(intent);
+            if (mContext instanceof Activity) {
+                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                    (Activity) mContext,
+                    holder.itemView.findViewById(R.id.illust_image),
+                    "image_" + position
+                );
+                mContext.startActivity(intent, options.toBundle());
+            } else {
+                mContext.startActivity(intent);
+            }
         });
     }
 }

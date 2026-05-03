@@ -1,6 +1,7 @@
 package ceui.lisa.utils;
 
 import android.app.Activity;
+import android.content.ClipData;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -505,7 +506,11 @@ public class Common {
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
             fileOutputStream.close();
-            return FileProvider.getUriForFile(Utils.getApp(), "ceui.lisa.pixiv.provider", file);
+            return FileProvider.getUriForFile(
+                Utils.getApp(),
+                Utils.getApp().getPackageName() + ".provider",
+                file
+            );
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -537,8 +542,9 @@ public class Common {
                 context.getApplicationContext().getPackageName() + ".provider", sharedFile
             );
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
-            shareIntent.setType("image/jpeg");
+            shareIntent.setType("image/*");
             shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+            shareIntent.setClipData(ClipData.newRawUri(null, uri));
             if (shareText != null) {
                 shareIntent.putExtra(Intent.EXTRA_TEXT, shareText);
             }

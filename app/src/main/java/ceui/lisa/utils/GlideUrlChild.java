@@ -12,12 +12,32 @@ public class GlideUrlChild extends GlideUrl {
 
     private static final String PXIMG_HOST = "https://i.pximg.net";
 
+    private static final Headers stableHeaders = formatHeader();
+
     public GlideUrlChild(String url) {
-        this(applyProxy(url), formatHeader());
+        this(applyProxy(url), stableHeaders);
     }
 
     public GlideUrlChild(String url, Headers headers) {
         super(url, headers);
+    }
+
+    @Override
+    public String getCacheKey() {
+        return toStringUrl();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof GlideUrlChild) {
+            return toStringUrl().equals(((GlideUrlChild) o).toStringUrl());
+        }
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return toStringUrl().hashCode();
     }
 
     private static String applyProxy(String url) {

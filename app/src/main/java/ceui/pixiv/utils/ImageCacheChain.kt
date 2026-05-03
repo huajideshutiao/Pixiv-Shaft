@@ -25,7 +25,7 @@ object ImageCacheChain {
             return null
         }
 
-        // 1. 原图 TaskPool 缓存
+        // 1. 原图 TaskPool 缓存 (本地文件，最快)
         val originalFile = TaskPool.peekCachedFile(originalUrl)
         if (originalFile != null && originalFile.exists()) {
             return originalFile
@@ -44,11 +44,11 @@ object ImageCacheChain {
             }
         }
 
-        // 3. 大图 Glide 缓存
+        // 3. 尝试从 Glide 内存缓存中直接获取 (同步且安全)
+        // 注意：这里由于我们修复了 GlideUrlChild 的 cacheKey，命中率会大幅提升
         if (!largeUrl.isNullOrEmpty()) {
-            val resources = context.resources
-            val imageSize = resources.displayMetrics.widthPixels -
-                2 * resources.getDimensionPixelSize(R.dimen.twelve_dp)
+            val imageSize = context.resources.displayMetrics.widthPixels -
+                2 * context.resources.getDimensionPixelSize(R.dimen.twelve_dp)
             val overrideHeight = if (index == 0) {
                 imageSize * illust.height / illust.width
             } else {
@@ -56,10 +56,9 @@ object ImageCacheChain {
             }
 
             try {
-                // Glide 的 onlyRetrieveFromCache(true) 会尝试从磁盘或内存缓存读取。
-                // 如果是在主线程调用，submit().get() 可能会阻塞 IO。
-                // 但由于 FragmentImageDetail 原本就在主线程这样做，这里保持逻辑一致。
-                val bitmap = Glide.with(context)
+                // 仅同步获取。如果命中内存缓存会很快。
+                // 如果需要从磁盘读取，submit().get() 会阻塞，但在 transition 期间我们希望尽量快。
+                return Glide.with(context.applicationContext)
                     .asBitmap()
                     .load(GlideUrlChild(largeUrl))
                     .override(imageSize, overrideHeight)
@@ -67,11 +66,8 @@ object ImageCacheChain {
                     .onlyRetrieveFromCache(true)
                     .submit()
                     .get()
-                if (bitmap != null) {
-                    return bitmap
-                }
             } catch (e: Exception) {
-                // Cache miss
+                // ignore
             }
         }
 

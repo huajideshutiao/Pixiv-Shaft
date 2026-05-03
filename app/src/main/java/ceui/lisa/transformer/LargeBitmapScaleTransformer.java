@@ -2,14 +2,14 @@ package ceui.lisa.transformer;
 
 import android.graphics.Bitmap;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.blankj.utilcode.util.ImageUtils;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 
 import java.security.MessageDigest;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 public class LargeBitmapScaleTransformer extends BitmapTransformation {
 
@@ -40,7 +40,7 @@ public class LargeBitmapScaleTransformer extends BitmapTransformation {
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return ID.hashCode();
     }
 
     @Override

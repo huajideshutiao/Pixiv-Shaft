@@ -75,6 +75,7 @@ public class IllustDetailAdapter extends AbstractIllustAdapter<RecyclerView.View
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
         final TagHolder currentOne = (TagHolder) holder;
+        currentOne.illust.setTransitionName("image_" + position);
         Common.showLog("IllustDetailAdapter onBindViewHolder 000");
 
         Object cached = ImageCacheChain.peek(mContext, allIllust, position);
@@ -101,7 +102,6 @@ public class IllustDetailAdapter extends AbstractIllustAdapter<RecyclerView.View
                     .load(imageUrl)
                     .override(imageSize, params.height)
                     .transform(new LargeBitmapScaleTransformer())
-                    .transition(withCrossFade())
                 .into(new CustomTarget<Bitmap>() {
                         @Override
                         public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {

@@ -286,14 +286,16 @@ public class FragmentSingleIllust extends BaseFragment<FragmentSingleIllustBindi
                             );
                             if (uri != null) {
                                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                                shareIntent.setType("image/jpeg");
+                                shareIntent.setType("image/*");
                                 shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
                                 shareIntent.setClipData(ClipData.newRawUri(null, uri));
                                 shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                                mContext.startActivity(Intent.createChooser(
+                                Intent chooser = Intent.createChooser(
                                     shareIntent,
-                                    mContext.getString(R.string.share)
-                                ));
+                                    getString(R.string.share)
+                                );
+                                chooser.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                startActivity(chooser);
                             } else {
                                 Common.showToast(R.string.msg_load_fail);
                             }

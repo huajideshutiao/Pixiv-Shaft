@@ -1,5 +1,7 @@
 package ceui.lisa.activities
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
@@ -43,11 +45,33 @@ class ImageDetailActivity : BaseActivity<ActivityImageDetailBinding?>() {
     private var currentPage: TextView? = null
     private var downloadSingle: TextView? = null
     private var currentSize: TextView? = null
-    private var index = 0
+    var initialIndex = 0
     private val viewModel by viewModels<ToggleToolnarViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        postponeEnterTransition()
+
+        // 彻底消除退出闪烁：确保窗口背景始终为黑
+        window.setBackgroundDrawable(ColorDrawable(Color.BLACK))
+
+        // 核心配置：使用 ChangeBounds + ChangeImageTransform
+        // 两者同步运行，确保在 View 容器位移的同时，图片像素内容按比例缩放，绝对不产生扭曲变形。
+        val naturalInterpolator = androidx.interpolator.view.animation.FastOutSlowInInterpolator()
+        window.sharedElementsUseOverlay = true
+        window.sharedElementEnterTransition = android.transition.TransitionSet().apply {
+            addTransition(android.transition.ChangeBounds())
+            addTransition(android.transition.ChangeImageTransform())
+            interpolator = naturalInterpolator
+            duration = 300
+        }
+        window.sharedElementReturnTransition = android.transition.TransitionSet().apply {
+            addTransition(android.transition.ChangeBounds())
+            addTransition(android.transition.ChangeImageTransform())
+            interpolator = naturalInterpolator
+            duration = 300
+        }
+
         (this as? ComponentActivity)?.enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.dark(android.graphics.Color.TRANSPARENT),
             navigationBarStyle = SystemBarStyle.dark(android.graphics.Color.TRANSPARENT)
@@ -90,7 +114,7 @@ class ImageDetailActivity : BaseActivity<ActivityImageDetailBinding?>() {
             currentPage = findViewById(R.id.current_page)
             downloadSingle = findViewById(R.id.download_this_one)
             mIllustsBean = intent.getSerializableExtra("illust") as IllustsBean?
-            index = intent.getIntExtra("index", 0)
+            initialIndex = intent.getIntExtra("index", 0)
             if (mIllustsBean == null) {
                 return
             }
@@ -106,8 +130,8 @@ class ImageDetailActivity : BaseActivity<ActivityImageDetailBinding?>() {
                     return mIllustsBean!!.page_count
                 }
             }
-            baseBind!!.viewPager.currentItem = index
-            checkDownload(index)
+            baseBind!!.viewPager.currentItem = initialIndex
+            checkDownload(initialIndex)
             downloadSingle?.setOnClickListener(View.OnClickListener {
                 IllustDownload.downloadIllustCertainPage(
                     mIllustsBean,
@@ -144,7 +168,7 @@ class ImageDetailActivity : BaseActivity<ActivityImageDetailBinding?>() {
                     String.format(
                         Locale.getDefault(),
                         "第 %d/%d P",
-                        index + 1,
+                        initialIndex + 1,
                         mIllustsBean!!.page_count
                     )
                 )
@@ -172,7 +196,7 @@ class ImageDetailActivity : BaseActivity<ActivityImageDetailBinding?>() {
             currentPage = findViewById(R.id.current_page)
             downloadSingle = findViewById(R.id.download_this_one)
             localIllust = intent.getSerializableExtra("illust") as List<String>?
-            index = intent.getIntExtra("index", 0)
+            initialIndex = intent.getIntExtra("index", 0)
 
             baseBind!!.viewPager.adapter = object : FragmentPagerAdapter(
                 supportFragmentManager
@@ -186,7 +210,7 @@ class ImageDetailActivity : BaseActivity<ActivityImageDetailBinding?>() {
                 }
             }
             currentPage?.setVisibility(View.INVISIBLE)
-            baseBind!!.viewPager.currentItem = index
+            baseBind!!.viewPager.currentItem = initialIndex
             baseBind!!.viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
                 override fun onPageScrolled(i: Int, v: Float, i1: Int) {
                 }
@@ -211,7 +235,7 @@ class ImageDetailActivity : BaseActivity<ActivityImageDetailBinding?>() {
                 downloadSingle?.setText(
                     String.format(
                         "%s%s", getString(R.string.file_path),
-                        URLDecoder.decode(localIllust!![index], "utf-8")
+                        URLDecoder.decode(localIllust!![initialIndex], "utf-8")
                     )
                 )
             } catch (e: UnsupportedEncodingException) {
@@ -231,14 +255,26 @@ class ImageDetailActivity : BaseActivity<ActivityImageDetailBinding?>() {
     }
 
     override fun initData() {
-        postponeEnterTransition()
     }
 
     override fun onBackPressed() {
-        if (index == baseBind!!.viewPager.currentItem) {
-            super.onBackPressed()
+        if (initialIndex == baseBind!!.viewPager.currentItem) {
+            val currentFragment =
+                supportFragmentManager.findFragmentByTag("android:switcher:${baseBind!!.viewPager.id}:${baseBind!!.viewPager.currentItem}")
+
+            val detailFrag = currentFragment as? FragmentImageDetail ?: run {
+                super.onBackPressed()
+                return
+            }
+
+            // 1. 调用原子级物理锁定。
+            detailFrag.prepareForExit()
+
+            // 2. 核心修复：直接通过 supportFinishAfterTransition 触发捕捉。
+            // 此时物理状态已通过 layout() 同步锁定，系统读取到的就是最终态，不会产生阶梯跳变。
+            supportFinishAfterTransition()
         } else {
-            mActivity.finish()
+            super.onBackPressed()
         }
     }
 
