@@ -192,13 +192,20 @@ class FragmentImageDetailPager : BaseFragment<ActivityImageDetailBinding>(), Fra
         val viewPager = baseBind.viewPager
         val adapter = viewPager.adapter ?: return false
         val currentItem = viewPager.currentItem
-        val nextItem = if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
-            currentItem + 1
-        } else {
-            currentItem - 1
-        }
-        if (nextItem in 0 until adapter.itemCount) {
-            viewPager.setCurrentItem(nextItem, true)
+        val count = adapter.itemCount
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+            if (currentItem < count - 1) {
+                viewPager.setCurrentItem(currentItem + 1, true)
+            } else {
+                Common.showToast("已到达最后一页")
+            }
+            return true
+        } else if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+            if (currentItem > 0) {
+                viewPager.setCurrentItem(currentItem - 1, true)
+            } else {
+                Common.showToast("已到达第一页")
+            }
             return true
         }
         return false
