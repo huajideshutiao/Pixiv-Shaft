@@ -21,7 +21,9 @@
 12. 在手机的弹窗上允许USB侦错，取消勾选永远允许
 13. 在`powershell`中输入：`.\adb devices` 确认连接成功。在`list of devices attached`下应该看到一行
 14. 输入以下指令以完全卸载Shaft：`.\adb uninstall "ceui.lisa.pixiv"`
-15. 在手机浏览[这个repo的latest release](https://github.com/CeuiLiSA/Pixiv-Shaft/releases/latest "Latest Release")或者你想安装的版本
+15.
+在手机浏览[这个repo的latest release](https://github.com/huajideshutiao/Pixiv-Shaft/releases/latest "Latest Release")
+或者你想安装的版本
 16. 点开`Assets`部分，点击`app-release.apk`下载
 17. 下载完成后安装
 18. 确认安装成功后，在电脑端关闭`powershell`/`cmd`，并断开USB数据线

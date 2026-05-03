@@ -10,7 +10,7 @@ body:
       options:
         - label: I have updated to the latest version of the app / 已经更新到最新版
           required: true
-        - label: I have tried the FAQ / 试过FAQ了. [FAQ](https://github.com/CeuiLiSA/Pixiv-Shaft/blob/master/FAQ.md)
+        - label: I have tried the FAQ / 试过FAQ了. [FAQ](https://github.com/huajideshutiao/Pixiv-Shaft/blob/master/FAQ.md)
           required: true
         - label: I have searched the existing issues and this is new ticket **NOT** a duplicate or related to another issue / 搜索过其他issue，确实不是重复问题
           required: true

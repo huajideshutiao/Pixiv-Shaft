@@ -4,25 +4,25 @@
 
 ### A Modern Third-Party Pixiv Client for Android
 
-[![GitHub Stars](https://img.shields.io/github/stars/CeuiLiSA/Pixiv-Shaft?style=for-the-badge&logo=github&color=f5c842)](https://github.com/CeuiLiSA/Pixiv-Shaft/stargazers)
-[![GitHub Forks](https://img.shields.io/github/forks/CeuiLiSA/Pixiv-Shaft?style=for-the-badge&logo=github&color=8ac6d1)](https://github.com/CeuiLiSA/Pixiv-Shaft/network/members)
-[![GitHub Release](https://img.shields.io/github/v/release/CeuiLiSA/Pixiv-Shaft?style=for-the-badge&logo=android&color=3ddc84)](https://github.com/CeuiLiSA/Pixiv-Shaft/releases/latest)
-[![License](https://img.shields.io/github/license/CeuiLiSA/Pixiv-Shaft?style=for-the-badge&color=blue)](./LICENSE)
+[![GitHub Stars](https://img.shields.io/github/stars/huajideshutiao/Pixiv-Shaft?style=for-the-badge&logo=github&color=f5c842)](https://github.com/huajideshutiao/Pixiv-Shaft/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/huajideshutiao/Pixiv-Shaft?style=for-the-badge&logo=github&color=8ac6d1)](https://github.com/huajideshutiao/Pixiv-Shaft/network/members)
+[![GitHub Release](https://img.shields.io/github/v/release/huajideshutiao/Pixiv-Shaft?style=for-the-badge&logo=android&color=3ddc84)](https://github.com/huajideshutiao/Pixiv-Shaft/releases/latest)
+[![License](https://img.shields.io/github/license/huajideshutiao/Pixiv-Shaft?style=for-the-badge&color=blue)](./LICENSE)
 
-[![Build Status](https://img.shields.io/github/actions/workflow/status/CeuiLiSA/Pixiv-Shaft/gradle.yml?branch=master&style=flat-square&label=build)](https://github.com/CeuiLiSA/Pixiv-Shaft/actions)
-[![Issues](https://img.shields.io/github/issues/CeuiLiSA/Pixiv-Shaft?style=flat-square&color=brightgreen)](https://github.com/CeuiLiSA/Pixiv-Shaft/issues)
-[![Issues Closed](https://img.shields.io/github/issues-closed/CeuiLiSA/Pixiv-Shaft?style=flat-square&color=9466ff)](https://github.com/CeuiLiSA/Pixiv-Shaft/issues?q=is%3Aissue+is%3Aclosed)
-[![Last Commit](https://img.shields.io/github/last-commit/CeuiLiSA/Pixiv-Shaft?style=flat-square)](https://github.com/CeuiLiSA/Pixiv-Shaft/commits)
-[![Code Size](https://img.shields.io/github/languages/code-size/CeuiLiSA/Pixiv-Shaft?style=flat-square)](https://github.com/CeuiLiSA/Pixiv-Shaft)
-[![Top Language](https://img.shields.io/github/languages/top/CeuiLiSA/Pixiv-Shaft?style=flat-square&color=7f52ff)](https://github.com/CeuiLiSA/Pixiv-Shaft)
-[![Contributors](https://img.shields.io/github/contributors/CeuiLiSA/Pixiv-Shaft?style=flat-square&color=orange)](https://github.com/CeuiLiSA/Pixiv-Shaft/graphs/contributors)
-[![Downloads](https://img.shields.io/github/downloads/CeuiLiSA/Pixiv-Shaft/total?style=flat-square&color=e74c3c)](https://github.com/CeuiLiSA/Pixiv-Shaft/releases)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/huajideshutiao/Pixiv-Shaft/gradle.yml?branch=master&style=flat-square&label=build)](https://github.com/huajideshutiao/Pixiv-Shaft/actions)
+[![Issues](https://img.shields.io/github/issues/huajideshutiao/Pixiv-Shaft?style=flat-square&color=brightgreen)](https://github.com/huajideshutiao/Pixiv-Shaft/issues)
+[![Issues Closed](https://img.shields.io/github/issues-closed/huajideshutiao/Pixiv-Shaft?style=flat-square&color=9466ff)](https://github.com/huajideshutiao/Pixiv-Shaft/issues?q=is%3Aissue+is%3Aclosed)
+[![Last Commit](https://img.shields.io/github/last-commit/huajideshutiao/Pixiv-Shaft?style=flat-square)](https://github.com/huajideshutiao/Pixiv-Shaft/commits)
+[![Code Size](https://img.shields.io/github/languages/code-size/huajideshutiao/Pixiv-Shaft?style=flat-square)](https://github.com/huajideshutiao/Pixiv-Shaft)
+[![Top Language](https://img.shields.io/github/languages/top/huajideshutiao/Pixiv-Shaft?style=flat-square&color=7f52ff)](https://github.com/huajideshutiao/Pixiv-Shaft)
+[![Contributors](https://img.shields.io/github/contributors/huajideshutiao/Pixiv-Shaft?style=flat-square&color=orange)](https://github.com/huajideshutiao/Pixiv-Shaft/graphs/contributors)
+[![Downloads](https://img.shields.io/github/downloads/huajideshutiao/Pixiv-Shaft/total?style=flat-square&color=e74c3c)](https://github.com/huajideshutiao/Pixiv-Shaft/releases)
 
 **Shaft** is a beautifully crafted, open-source Pixiv client that brings the full Pixiv experience to Android — illustrations, manga, novels, rankings, and more — with a clean Material Design interface and smooth animations.
 
 [<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" width="200">](https://play.google.com/store/apps/details?id=ceui.pixiv.pshaft)
 &nbsp;&nbsp;
-[<img src="https://img.shields.io/badge/GitHub-Releases-181717?style=for-the-badge&logo=github" alt="GitHub Releases">](https://github.com/CeuiLiSA/Pixiv-Shaft/releases/latest)
+[<img src="https://img.shields.io/badge/GitHub-Releases-181717?style=for-the-badge&logo=github" alt="GitHub Releases">](https://github.com/huajideshutiao/Pixiv-Shaft/releases/latest)
 
 ---
 
@@ -139,7 +139,7 @@ Analytics       Firebase Analytics  ·  Firebase Crashlytics
 
 ```bash
 # Clone the repository
-git clone https://github.com/CeuiLiSA/Pixiv-Shaft.git
+git clone https://github.com/huajideshutiao/Pixiv-Shaft.git
 cd Pixiv-Shaft
 
 # Build debug APK
@@ -174,17 +174,19 @@ Contributions are welcome! Feel free to open issues or submit pull requests.
   </tr>
 </table>
 
-<sub>Commits from the GitHub contributors API; lines added / removed from <code>git log --numstat</code>. Snapshot taken 2026-04-21 — see the [live list](https://github.com/CeuiLiSA/Pixiv-Shaft/graphs/contributors).</sub>
+<sub>Commits from the GitHub contributors API; lines added / removed from <code>git log
+--numstat</code>. Snapshot taken 2026-04-21 — see
+the [live list](https://github.com/huajideshutiao/Pixiv-Shaft/graphs/contributors).</sub>
 
 ### All contributors
 
-<a href="https://github.com/CeuiLiSA/Pixiv-Shaft/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=CeuiLiSA/Pixiv-Shaft" alt="Contributors" />
+<a href="https://github.com/huajideshutiao/Pixiv-Shaft/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=huajideshutiao/Pixiv-Shaft" alt="Contributors" />
 </a>
 
 <br>
 
-[![Star History Chart](https://api.star-history.com/svg?repos=CeuiLiSA/Pixiv-Shaft&type=Date)](https://star-history.com/#CeuiLiSA/Pixiv-Shaft&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=huajideshutiao/Pixiv-Shaft&type=Date)](https://star-history.com/#huajideshutiao/Pixiv-Shaft&Date)
 
 ## FAQ
 
@@ -225,7 +227,7 @@ SOFTWARE.
 
 **If you find Shaft useful, consider giving it a star!**
 
-[![Star this repo](https://img.shields.io/badge/-Star%20this%20repo-f5c842?style=for-the-badge&logo=github&logoColor=black)](https://github.com/CeuiLiSA/Pixiv-Shaft)
+[![Star this repo](https://img.shields.io/badge/-Star%20this%20repo-f5c842?style=for-the-badge&logo=github&logoColor=black)](https://github.com/huajideshutiao/Pixiv-Shaft)
 
 Made with love for the Pixiv community
 

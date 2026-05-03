@@ -42,7 +42,7 @@ class ViewHistoryFragment : PixivFragment(R.layout.fragment_pixiv_list) {
         binding.listSetting.setImageResource(R.drawable.ic_delete_black_24dp)
         binding.listSetting.setOnClick {
             launchSuspend {
-                if (alertYesOrCancel(getString(R.string.string_231))) {
+                if (alertYesOrCancel(getString(R.string.string_253))) {
                     viewModel.clearHistory()
                 }
             }

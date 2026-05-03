@@ -23,7 +23,7 @@ on:
   workflow_dispatch:
 
 env:
-  ORIGINAL_PROJECT: "CeuiLiSA/Pixiv-Shaft"
+  ORIGINAL_PROJECT: "huajideshutiao/Pixiv-Shaft"
   GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g"
 
 concurrency:

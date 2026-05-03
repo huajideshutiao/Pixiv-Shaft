@@ -1,10 +1,11 @@
 # Shaft (サードパーティPixivクライアント)
-[![release](https://img.shields.io/github/v/release/CeuiLiSA/Pixiv-Shaft)](https://github.com/CeuiLiSA/Pixiv-Shaft/releases/latest)
-[![build status](https://img.shields.io/github/workflow/status/CeuiLiSA/Pixiv-Shaft/CI)](https://github.com/CeuiLiSA/Pixiv-Shaft/actions)
-[![open issues](https://img.shields.io/github/issues/CeuiLiSA/Pixiv-Shaft?color=brightgreen)](https://github.com/CeuiLiSA/Pixiv-Shaft/issues?q=is%3Aopen+is%3Aissue)
-[![license](https://img.shields.io/github/license/CeuiLiSA/Pixiv-Shaft)](https://github.com/CeuiLiSA/Pixiv-Shaft/blob/master/LICENSE)
 
-[中文(中国語)](https://github.com/CeuiLiSA/Pixiv-Shaft/blob/master/README.md)
+[![release](https://img.shields.io/github/v/release/huajideshutiao/Pixiv-Shaft)](https://github.com/huajideshutiao/Pixiv-Shaft/releases/latest)
+[![build status](https://img.shields.io/github/workflow/status/huajideshutiao/Pixiv-Shaft/CI)](https://github.com/huajideshutiao/Pixiv-Shaft/actions)
+[![open issues](https://img.shields.io/github/issues/huajideshutiao/Pixiv-Shaft?color=brightgreen)](https://github.com/huajideshutiao/Pixiv-Shaft/issues?q=is%3Aopen+is%3Aissue)
+[![license](https://img.shields.io/github/license/huajideshutiao/Pixiv-Shaft)](https://github.com/huajideshutiao/Pixiv-Shaft/blob/master/LICENSE)
+
+[中文(中国語)](https://github.com/huajideshutiao/Pixiv-Shaft/blob/master/README.md)
 
 * このアプリは日本のイラスト特化型SNS「Pixiv」の非公式Androidクライアントです。
 * このプロジェクトはオープンソースであり、当アプリを商業目的で使用することにより発生する責任に関し、一切の責任を負いません。
@@ -41,14 +42,14 @@
 ## 3.スクリーンショット
 
 
-|イラスト表示ページ|おすすめの小説|コメント欄|
-|:---:|:---:|:---:|
-|![](https://github.com/CeuiLiSA/Pixiv-Shaft/blob/master/snap/ja/illust.jpg)|![](https://github.com/CeuiLiSA/Pixiv-Shaft/blob/master/snap/QQ20200106-1.jpg)|![](https://github.com/CeuiLiSA/Pixiv-Shaft/blob/master/snap/ja/comment.jpg)
+|                                     イラスト表示ページ                                     |                                       おすすめの小説                                        |                                       コメント欄                                        |
+|:---------------------------------------------------------------------------------:|:------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------:|
+| ![](https://github.com/huajideshutiao/Pixiv-Shaft/blob/master/snap/ja/illust.jpg) | ![](https://github.com/huajideshutiao/Pixiv-Shaft/blob/master/snap/QQ20200106-1.jpg) | ![](https://github.com/huajideshutiao/Pixiv-Shaft/blob/master/snap/ja/comment.jpg) 
 
 
-|新着作品のタブ|イラスト表示ページ|人気のタグ|
-|:---:|:---:|:---:|
-|![](https://github.com/CeuiLiSA/Pixiv-Shaft/blob/master/snap/QQ20200106-3.jpg)|![](https://github.com/CeuiLiSA/Pixiv-Shaft/blob/master/snap/QQ20200106-4.jpg)|![](https://github.com/CeuiLiSA/Pixiv-Shaft/blob/master/snap/ja/hotTag.jpg)
+|                                       新着作品のタブ                                        |                                      イラスト表示ページ                                       |                                       人気のタグ                                       |
+|:------------------------------------------------------------------------------------:|:------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------:|
+| ![](https://github.com/huajideshutiao/Pixiv-Shaft/blob/master/snap/QQ20200106-3.jpg) | ![](https://github.com/huajideshutiao/Pixiv-Shaft/blob/master/snap/QQ20200106-4.jpg) | ![](https://github.com/huajideshutiao/Pixiv-Shaft/blob/master/snap/ja/hotTag.jpg) 
 
 ## 4. Google Playからダウンロード
 
@@ -63,7 +64,7 @@
 
 ## 5. Githubからダウンロード
 
-[Releases](https://github.com/CeuiLiSA/Pixiv-Shaft/releases/latest)
+[Releases](https://github.com/huajideshutiao/Pixiv-Shaft/releases/latest)
 
 ## 6. よくある問題とFAQ
 

@@ -1,0 +1,64 @@
+name: Weekly Release
+
+on:
+  schedule:
+    - cron: '0 10 * * 5' # 每周五 10:00 UTC, 即北京时间 18:00
+  workflow_dispatch: # 允许在 GitHub 界面上手动触发
+
+env:
+  GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g"
+
+jobs:
+  build:
+    name: Build Weekly Release
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: 'true'
+          fetch-depth: 0
+
+      - name: Set up current date
+        id: date
+        run: echo "today=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4.2.2
+        with:
+          java-version: '21'
+          distribution: 'adopt'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build release apk
+        run: ./gradlew assembleGithubRelease --stacktrace
+
+      - name: Rename APK
+        run: |
+          # 从 build.gradle 中提取版本号
+          VERSION_NAME=$(grep "versionName" app/build.gradle | head -n 1 | awk -F'"' '{print $2}')
+          APK_NAME="PixShaft_weekly_${VERSION_NAME}_${{ steps.date.outputs.today }}.apk"
+          cp app/build/outputs/apk/github/release/app-github-release.apk "$APK_NAME"
+          echo "APK_NAME=$APK_NAME" >> $GITHUB_ENV
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: weekly-${{ steps.date.outputs.today }}
+          name: Weekly Release ${{ steps.date.outputs.today }}
+          body: |
+            每周自动编译版本 (Weekly Automated Build)
+            构建日期: ${{ steps.date.outputs.today }}
+            
+            这是由 GitHub Actions 自动生成的每周构建版本。
+          files: ${{ env.APK_NAME }}
+          draft: false
+          prerelease: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

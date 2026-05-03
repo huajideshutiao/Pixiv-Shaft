@@ -1,4 +1,4 @@
-## FAQ [![release](https://img.shields.io/github/v/release/CeuiLiSA/Pixiv-Shaft)](https://github.com/CeuiLiSA/Pixiv-Shaft/releases/latest)
+## FAQ [![release](https://img.shields.io/github/v/release/huajideshutiao/Pixiv-Shaft)](https://github.com/huajideshutiao/Pixiv-Shaft/releases/latest)
 
 + #### iOS版
 本应用无iOS版，推荐使用其他开发者的 [PixEz Flutter](https://github.com/Notsfsssf/pixez-flutter)
