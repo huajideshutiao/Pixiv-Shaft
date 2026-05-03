@@ -21,18 +21,25 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import ceui.lisa.databinding.FragmentPixivListBinding
 import ceui.lisa.databinding.LayoutToolbarBinding
 import ceui.lisa.utils.Common
+import ceui.lisa.utils.GlideUrlChild
+import ceui.loxia.Illust
+import ceui.loxia.ObjectPool
 import ceui.loxia.getHumanReadableMessage
 import ceui.pixiv.ui.task.NamedUrl
 import ceui.pixiv.ui.task.TaskPool
 import ceui.pixiv.ui.task.TaskStatus
 import ceui.pixiv.ui.works.ToggleToolnarViewModel
+import ceui.pixiv.utils.FastBlurTransformation
 import ceui.pixiv.utils.animateFadeInQuickly
 import ceui.pixiv.utils.animateFadeOutQuickly
 import ceui.pixiv.utils.setOnClick
 import ceui.pixiv.widgets.alertYesOrCancel
 import com.blankj.utilcode.util.UriUtils
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions.bitmapTransform
 import com.github.panpf.sketch.loadImage
 import com.github.panpf.zoomimage.SketchZoomImageView
 import com.github.panpf.zoomimage.view.zoom.OnViewTapListener
@@ -246,5 +253,15 @@ fun CircularProgressIndicator.setUpWithTaskStatus(
         if (status is TaskStatus.Error) {
             errorTitle.text = status.exception.getHumanReadableMessage(context)
         }
+    }
+}
+
+fun Fragment.blurBackground(binding: FragmentPixivListBinding, illustId: Long) {
+    val liveIllust = ObjectPool.get<Illust>(illustId)
+    liveIllust.observe(viewLifecycleOwner) { illust ->
+        Glide.with(this)
+            .load(GlideUrlChild(illust.image_urls?.large))
+            .apply(bitmapTransform(FastBlurTransformation(15)))
+            .into(binding.pageBackground)
     }
 }

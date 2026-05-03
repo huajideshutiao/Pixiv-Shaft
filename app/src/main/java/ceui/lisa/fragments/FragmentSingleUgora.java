@@ -122,7 +122,7 @@ public class FragmentSingleUgora extends BaseFragment<FragmentUgoraBinding> {
         illust = (IllustsBean) bundle.getSerializable(Params.CONTENT);
         illustId = bundle.getLong(Params.ILLUST_ID, 0);
         if (illust == null && illustId != 0) {
-            Illust poolIllust = ObjectPool.INSTANCE.get(Illust.class, illustId).getValue();
+            Illust poolIllust = ObjectPool.INSTANCE.getKIllust(illustId).getValue();
             if (poolIllust != null) {
                 illust = IllustConverterKt.toIllustsBean(poolIllust);
             }

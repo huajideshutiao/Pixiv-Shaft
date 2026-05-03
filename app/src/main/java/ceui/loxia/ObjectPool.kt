@@ -9,7 +9,6 @@ import ceui.lisa.models.NovelBean
 import ceui.lisa.models.ObjectSpec
 import ceui.lisa.models.UserBean
 import java.io.Serializable
-import kotlin.collections.set
 import kotlin.reflect.KClass
 
 
@@ -47,6 +46,10 @@ object ObjectPool {
      * @return
      * */
     fun getIllust(illustId: Long): LiveData<IllustsBean> {
+        return get(illustId)
+    }
+
+    fun getKIllust(illustId: Long): LiveData<Illust> {
         return get(illustId)
     }
 

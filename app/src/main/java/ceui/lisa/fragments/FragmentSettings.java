@@ -909,16 +909,12 @@ public class FragmentSettings extends SwipeFragment<FragmentSettingsBinding> {
 
     private void updateImageProxyUrlUI() {
         String url = Shaft.sSettings.getImageProxyUrl();
-        baseBind.imageProxyUrl.setText(url);
         baseBind.imageProxyUrlValue.setText(url);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-    }
-
-    private void updateModelStatus() {
     }
 
     @Override

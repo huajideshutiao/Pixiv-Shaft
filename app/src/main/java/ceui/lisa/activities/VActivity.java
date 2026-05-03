@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -172,21 +173,27 @@ public class VActivity extends BaseActivity<ActivityViewPagerBinding> {
                                 Retro.getAppApi().getNextIllust(nextUrl)
                                     .subscribeOn(io.reactivex.schedulers.Schedulers.newThread())
                                         .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribe(new NullCtrl<ListIllust>() {
+                                    .subscribe(new NullCtrl<>() {
                                             @Override
                                             public void success(ListIllust listIllust) {
-                                                Mapper mapper = new Mapper<ListIllust>();
-                                                listIllust = (ListIllust) mapper.apply(listIllust);
+                                                Mapper<ListIllust> mapper = new Mapper<>();
+                                                listIllust = mapper.apply(listIllust);
                                                 Common.showLog("Container 下一页请求成功 ");
-                                                Intent intent = new Intent(Params.FRAGMENT_ADD_DATA);
+                                                Intent intent =
+                                                    new Intent(Params.FRAGMENT_ADD_DATA);
                                                 intent.putExtra(Params.PAGE_UUID, pageUUID);
                                                 intent.putExtra(Params.CONTENT, listIllust);
-                                                LocalBroadcastManager.getInstance(Shaft.getContext()).sendBroadcast(intent);
+                                                LocalBroadcastManager.getInstance(Shaft.getContext())
+                                                    .sendBroadcast(intent);
 
-                                                DeduplicateArrayList.addAllWithNoRepeat(pageData.getList(), listIllust.getList());
+                                                DeduplicateArrayList.addAllWithNoRepeat(
+                                                    pageData.getList(),
+                                                    listIllust.getList()
+                                                );
                                                 pageData.setNextUrl(listIllust.getNextUrl());
                                                 if (baseBind.viewPager.getAdapter() != null) {
-                                                    baseBind.viewPager.getAdapter().notifyDataSetChanged();
+                                                    baseBind.viewPager.getAdapter()
+                                                        .notifyDataSetChanged();
                                                 }
                                             }
 
@@ -262,7 +269,7 @@ public class VActivity extends BaseActivity<ActivityViewPagerBinding> {
         if (event.getAction() == KeyEvent.ACTION_DOWN &&
             (event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_UP || event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_DOWN)) {
             androidx.viewpager.widget.ViewPager viewPager = baseBind.viewPager;
-            if (viewPager != null && viewPager.getAdapter() != null) {
+            if (viewPager.getAdapter() != null) {
                 int currentItem = viewPager.getCurrentItem();
                 int nextItem =
                     event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_DOWN ? currentItem + 1 : currentItem - 1;

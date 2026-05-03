@@ -21,12 +21,12 @@ import ceui.loxia.hideKeyboard
 import ceui.loxia.launchSuspend
 import ceui.pixiv.ui.common.ListMode
 import ceui.pixiv.ui.common.PixivFragment
+import ceui.pixiv.ui.common.blurBackground
 import ceui.pixiv.ui.common.setUpRefreshState
+import ceui.pixiv.ui.common.viewBinding
 import ceui.pixiv.ui.list.pixivListViewModel
 import ceui.pixiv.ui.user.UserActionReceiver
 import ceui.pixiv.utils.setOnClick
-import ceui.pixiv.ui.common.viewBinding
-import ceui.pixiv.ui.works.blurBackground
 
 class CommentsFragment : PixivFragment(R.layout.fragment_pixiv_list), CommentActionReceiver {
 
