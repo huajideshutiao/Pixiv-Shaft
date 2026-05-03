@@ -17,6 +17,7 @@ import ceui.lisa.databinding.ActivityViewPagerBinding
 import ceui.lisa.helper.DeduplicateArrayList
 import ceui.lisa.http.NullCtrl
 import ceui.lisa.http.Retro
+import ceui.lisa.interfaces.VolumeKeyHandler
 import ceui.lisa.model.ListIllust
 import ceui.lisa.utils.Common
 import ceui.lisa.utils.Params
@@ -24,7 +25,7 @@ import ceui.lisa.utils.PixivOperate
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
-class VFragment : BaseFragment<ActivityViewPagerBinding>() {
+class VFragment : BaseFragment<ActivityViewPagerBinding>(), VolumeKeyHandler {
 
     private var pageUUID: String? = ""
     private var index = 0
@@ -188,7 +189,7 @@ class VFragment : BaseFragment<ActivityViewPagerBinding>() {
         super.onDestroy()
     }
 
-    fun handleVolumeKey(keyCode: Int): Boolean {
+    override fun handleVolumeKey(keyCode: Int): Boolean {
         val viewPager = baseBind.viewPager
         val adapter = viewPager.adapter ?: return false
         val currentItem = viewPager.currentItem

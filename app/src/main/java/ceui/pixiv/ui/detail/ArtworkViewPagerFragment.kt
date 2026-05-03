@@ -50,7 +50,7 @@ class ArtworkViewPagerFragment : PixivFragment(R.layout.fragment_artwork_viewpag
         }
     }
 
-    fun handleVolumeKey(keyCode: Int): Boolean {
+    override fun handleVolumeKey(keyCode: Int): Boolean {
         val viewPager = view?.findViewById<ViewPager2>(R.id.artwork_viewpager) ?: return false
         val adapter = viewPager.adapter ?: return false
         val currentItem = viewPager.currentItem
@@ -60,9 +60,5 @@ class ArtworkViewPagerFragment : PixivFragment(R.layout.fragment_artwork_viewpag
             viewPager.setCurrentItem(nextItem, true)
         }
         return true
-    }
-
-    companion object {
-        private const val TAG = "ArtworkViewPagerFragment"
     }
 }

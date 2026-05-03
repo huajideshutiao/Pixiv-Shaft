@@ -25,6 +25,7 @@ import ceui.lisa.core.PageData
 import ceui.lisa.database.NovelAnnotationEntity
 import ceui.lisa.database.NovelBookmarkEntity
 import ceui.lisa.databinding.FragmentNovelReaderV3Binding
+import ceui.lisa.interfaces.VolumeKeyHandler
 import ceui.lisa.models.IllustsBean
 import ceui.lisa.models.NovelBean
 import ceui.lisa.utils.Params
@@ -78,7 +79,7 @@ import java.util.UUID
 
 class NovelReaderV3Fragment : Fragment(R.layout.fragment_novel_reader_v3),
     SeriesNavCallback, ExportFormatCallback, BookmarkSheetCallback, AnnotationSheetCallback,
-    ChapterSheetCallback, SearchHitSheetCallback, NoteEditorCallback {
+    ChapterSheetCallback, SearchHitSheetCallback, NoteEditorCallback, VolumeKeyHandler {
 
     private val binding by viewBinding(FragmentNovelReaderV3Binding::bind)
     private val viewModel: NovelReaderV3ViewModel by viewModels {
@@ -948,7 +949,7 @@ class NovelReaderV3Fragment : Fragment(R.layout.fragment_novel_reader_v3),
 
     // ---- Volume key flip ----------------------------------------------------
 
-    fun handleVolumeKey(keyCode: Int): Boolean {
+    override fun handleVolumeKey(keyCode: Int): Boolean {
         if (!ReaderSettings.volumeKeyFlip) return false
         val forward = keyCode == KeyEvent.KEYCODE_VOLUME_DOWN
         if (scrollReaderView?.visibility == View.VISIBLE) {

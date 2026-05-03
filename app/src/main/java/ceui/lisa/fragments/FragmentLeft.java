@@ -15,11 +15,13 @@ import ceui.lisa.activities.MainActivity;
 import ceui.lisa.activities.Shaft;
 import ceui.lisa.activities.TemplateActivity;
 import ceui.lisa.databinding.FragmentLeftBinding;
+import ceui.lisa.interfaces.VolumeKeyHandler;
 import ceui.lisa.utils.Dev;
 import ceui.lisa.utils.MyOnTabSelectedListener;
 import ceui.lisa.utils.Params;
 
-public class FragmentLeft extends BaseLazyFragment<FragmentLeftBinding> {
+public class FragmentLeft extends BaseLazyFragment<FragmentLeftBinding> implements
+    VolumeKeyHandler {
 
     private NetListFragment[] mFragments = null;
 
@@ -91,6 +93,20 @@ public class FragmentLeft extends BaseLazyFragment<FragmentLeftBinding> {
         baseBind.tabLayout.setupWithViewPager(baseBind.viewPager);
         MyOnTabSelectedListener listener = new MyOnTabSelectedListener(mFragments);
         baseBind.tabLayout.addOnTabSelectedListener(listener);
+    }
+
+    @Override
+    public boolean handleVolumeKey(int keyCode) {
+        if (mFragments != null && baseBind != null) {
+            int currentItem = baseBind.viewPager.getCurrentItem();
+            if (currentItem >= 0 && currentItem < mFragments.length) {
+                NetListFragment currentFragment = mFragments[currentItem];
+                if (currentFragment != null) {
+                    return currentFragment.handleVolumeKey(keyCode);
+                }
+            }
+        }
+        return false;
     }
 
     public void forceRefresh() {

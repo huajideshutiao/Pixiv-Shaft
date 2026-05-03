@@ -38,17 +38,33 @@ import ceui.lisa.database.MuteEntity;
 import ceui.lisa.databinding.ViewpagerWithTablayoutBinding;
 import ceui.lisa.download.IllustDownload;
 import ceui.lisa.interfaces.Callback;
+import ceui.lisa.interfaces.VolumeKeyHandler;
 import ceui.lisa.utils.Common;
 import ceui.lisa.utils.MyOnTabSelectedListener;
 import ceui.lisa.utils.Params;
 
-public class FragmentViewPager extends BaseFragment<ViewpagerWithTablayoutBinding> {
+public class FragmentViewPager extends BaseFragment<ViewpagerWithTablayoutBinding> implements
+    VolumeKeyHandler {
 
     private static final int REQUEST_CODE_IMPORT_MUTE = 20082;
     private static final String MUTE_RECORDS_FILE_NAME = "Shaft-MuteRecords.json";
 
     private String title;
     private ListFragment[] mFragments = null;
+
+    @Override
+    public boolean handleVolumeKey(int keyCode) {
+        if (mFragments != null && baseBind != null) {
+            int currentItem = baseBind.viewPager.getCurrentItem();
+            if (currentItem >= 0 && currentItem < mFragments.length) {
+                ListFragment currentFragment = mFragments[currentItem];
+                if (currentFragment != null) {
+                    return currentFragment.handleVolumeKey(keyCode);
+                }
+            }
+        }
+        return false;
+    }
 
     public static FragmentViewPager newInstance(String title) {
         Bundle args = new Bundle();

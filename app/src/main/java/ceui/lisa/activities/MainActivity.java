@@ -40,6 +40,7 @@ import ceui.lisa.fragments.FragmentRight;
 import ceui.lisa.fragments.FragmentViewPager;
 import ceui.lisa.helper.DrawerLayoutHelper;
 import ceui.lisa.helper.NavigationLocationHelper;
+import ceui.lisa.interfaces.VolumeKeyHandler;
 import ceui.lisa.utils.Common;
 import ceui.lisa.utils.Dev;
 import ceui.lisa.utils.GlideUtil;
@@ -357,6 +358,20 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
             baseBind.drawerLayout.closeDrawer(GravityCompat.START);
             return true;
         } else {
+            if (keyCode == KeyEvent.KEYCODE_VOLUME_UP || keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+                if (baseFragments != null) {
+                    int currentItem = baseBind.viewPager.getCurrentItem();
+                    if (currentItem >= 0 && currentItem < baseFragments.length) {
+                        Fragment currentFragment = baseFragments[currentItem];
+                        if (currentFragment instanceof VolumeKeyHandler) {
+                            if (((VolumeKeyHandler) currentFragment).handleVolumeKey(keyCode)) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+
             if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
                 exit();
                 return true;

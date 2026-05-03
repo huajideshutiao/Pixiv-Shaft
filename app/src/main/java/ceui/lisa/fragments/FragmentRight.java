@@ -244,6 +244,14 @@ public class FragmentRight extends NetListFragment<FragmentNewRightBinding, List
     }
 
     @Override
+    public boolean handleVolumeKey(int keyCode) {
+        if (!isIllustMode && novelFragment != null) {
+            return novelFragment.handleVolumeKey(keyCode);
+        }
+        return super.handleVolumeKey(keyCode);
+    }
+
+    @Override
     public BaseRepo repository() {
         return new RightRepo(restrict);
     }

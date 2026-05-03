@@ -13,9 +13,11 @@ import ceui.lisa.activities.MainActivity;
 import ceui.lisa.activities.Shaft;
 import ceui.lisa.activities.TemplateActivity;
 import ceui.lisa.databinding.FragmentNewCenterBinding;
+import ceui.lisa.interfaces.VolumeKeyHandler;
 import ceui.lisa.utils.Dev;
 
-public class FragmentCenter extends SwipeFragment<FragmentNewCenterBinding> {
+public class FragmentCenter extends SwipeFragment<FragmentNewCenterBinding> implements
+    VolumeKeyHandler {
 
     private FragmentPivisionHorizontal pivisionFragment = null;
     
@@ -91,6 +93,20 @@ public class FragmentCenter extends SwipeFragment<FragmentNewCenterBinding> {
         pivisionFragment = new FragmentPivisionHorizontal();
         transaction.add(R.id.fragment_pivision, pivisionFragment, "FragmentPivisionHorizontal");
         transaction.commitNowAllowingStateLoss();
+    }
+
+    @Override
+    public boolean handleVolumeKey(int keyCode) {
+        if (baseBind != null) {
+            int scrollDistance = baseBind.refreshLayout.getHeight() / 2;
+            if (keyCode == android.view.KeyEvent.KEYCODE_VOLUME_DOWN) {
+                baseBind.refreshLayout.getLayout().scrollBy(0, scrollDistance);
+            } else if (keyCode == android.view.KeyEvent.KEYCODE_VOLUME_UP) {
+                baseBind.refreshLayout.getLayout().scrollBy(0, -scrollDistance);
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override

@@ -4,6 +4,7 @@ package ceui.pixiv.ui.common
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -31,6 +32,7 @@ import ceui.lisa.core.ArtworksMap
 import ceui.lisa.databinding.FragmentPixivListBinding
 import ceui.lisa.databinding.LayoutToolbarBinding
 import ceui.lisa.helper.StaggeredManager
+import ceui.lisa.interfaces.VolumeKeyHandler
 import ceui.lisa.utils.Common
 import ceui.lisa.utils.Params
 import ceui.lisa.utils.ShareIllust
@@ -76,7 +78,8 @@ open class PixivFragment(layoutId: Int) : Fragment(layoutId),
     NovelActionReceiver,
     IllustIdActionReceiver,
     NovelSeriesActionReceiver,
-    IllustSeriesActionReceiver {
+    IllustSeriesActionReceiver,
+    VolumeKeyHandler {
 
     protected val fragmentViewModel: NavFragmentViewModel by viewModels()
 
@@ -271,6 +274,23 @@ open class PixivFragment(layoutId: Int) : Fragment(layoutId),
         pushFragment(
             R.id.navigation_illust_series, IllustSeriesFragmentArgs(series.id).toBundle()
         )
+    }
+
+    override fun handleVolumeKey(keyCode: Int): Boolean {
+        val recyclerView = view?.findViewById<RecyclerView>(R.id.list_view)
+            ?: view?.findViewById<RecyclerView>(R.id.recyclerView)
+            ?: view?.findViewById<RecyclerView>(R.id.list)
+
+        if (recyclerView != null) {
+            val scrollDistance = recyclerView.height / 2
+            if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+                recyclerView.smoothScrollBy(0, scrollDistance)
+            } else if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+                recyclerView.smoothScrollBy(0, -scrollDistance)
+            }
+            return true
+        }
+        return false
     }
 }
 

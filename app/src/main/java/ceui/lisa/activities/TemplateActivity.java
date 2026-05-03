@@ -58,6 +58,7 @@ import ceui.lisa.fragments.RecmdUserMap;
 import ceui.lisa.fragments.RecmdUserSnapshot;
 import ceui.lisa.fragments.VFragment;
 import ceui.lisa.helper.BackHandlerHelper;
+import ceui.lisa.interfaces.VolumeKeyHandler;
 import ceui.lisa.models.IllustsBean;
 import ceui.lisa.models.NovelBean;
 import ceui.lisa.models.UserBean;
@@ -330,16 +331,8 @@ public class TemplateActivity extends BaseActivity<ActivityFragmentBinding> impl
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_VOLUME_UP || keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
-            if (childFragment instanceof NovelReaderV3Fragment) {
-                if (((NovelReaderV3Fragment) childFragment).handleVolumeKey(keyCode)) {
-                    return true;
-                }
-            } else if (childFragment instanceof VFragment) {
-                if (((VFragment) childFragment).handleVolumeKey(keyCode)) {
-                    return true;
-                }
-            } else if (childFragment instanceof FragmentImageDetailPager) {
-                if (((FragmentImageDetailPager) childFragment).handleVolumeKey(keyCode)) {
+            if (childFragment instanceof VolumeKeyHandler) {
+                if (((VolumeKeyHandler) childFragment).handleVolumeKey(keyCode)) {
                     return true;
                 }
             }

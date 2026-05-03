@@ -29,6 +29,7 @@ import ceui.lisa.adapters.BaseAdapter;
 import ceui.lisa.core.BaseRepo;
 import ceui.lisa.helper.StaggeredManager;
 import ceui.lisa.interfaces.FeedBack;
+import ceui.lisa.interfaces.VolumeKeyHandler;
 import ceui.lisa.model.ListTrendingtag;
 import ceui.lisa.models.IllustsBean;
 import ceui.lisa.utils.Common;
@@ -42,7 +43,7 @@ import jp.wasabeef.recyclerview.animators.BaseItemAnimator;
 import jp.wasabeef.recyclerview.animators.LandingAnimator;
 
 public abstract class ListFragment<Layout extends ViewDataBinding, Item>
-        extends BaseLazyFragment<Layout> {
+    extends BaseLazyFragment<Layout> implements VolumeKeyHandler {
 
     private static final String TAG = "ListFragment";
 
@@ -200,6 +201,20 @@ public abstract class ListFragment<Layout extends ViewDataBinding, Item>
 
     public void scrollToTop() {
         scrollToTop(null);
+    }
+
+    @Override
+    public boolean handleVolumeKey(int keyCode) {
+        if (mRecyclerView != null) {
+            int scrollDistance = mRecyclerView.getHeight() / 2;
+            if (keyCode == android.view.KeyEvent.KEYCODE_VOLUME_DOWN) {
+                mRecyclerView.smoothScrollBy(0, scrollDistance);
+            } else if (keyCode == android.view.KeyEvent.KEYCODE_VOLUME_UP) {
+                mRecyclerView.smoothScrollBy(0, -scrollDistance);
+            }
+            return true;
+        }
+        return false;
     }
 
     public abstract void fresh();

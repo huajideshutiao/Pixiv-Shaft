@@ -10,6 +10,7 @@ import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.URLUtil;
 import android.widget.TextView;
 
@@ -87,6 +88,10 @@ public class SearchActivity extends BaseActivity<FragmentNewSearchBinding> {
 
     @Override
     protected void initView() {
+        ViewGroup.LayoutParams headParams = baseBind.head.getLayoutParams();
+        headParams.height = Shaft.statusHeight;
+        baseBind.head.setLayoutParams(headParams);
+
         final String[] TITLES =
             new String[]{getString(R.string.string_136), getString(R.string.string_138), getString(R.string.string_432)};
         // Seed committed chips from the incoming keyword (space-separated), clear

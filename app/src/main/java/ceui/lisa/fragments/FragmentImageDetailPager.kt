@@ -17,6 +17,7 @@ import ceui.lisa.databinding.ActivityImageDetailBinding
 import ceui.lisa.download.IllustDownload
 import ceui.lisa.helper.PageTransformerHelper
 import ceui.lisa.interfaces.FragmentBackHandler
+import ceui.lisa.interfaces.VolumeKeyHandler
 import ceui.lisa.models.IllustsBean
 import ceui.lisa.utils.Common
 import ceui.lisa.utils.Params
@@ -31,7 +32,8 @@ import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
 import java.util.Locale
 
-class FragmentImageDetailPager : BaseFragment<ActivityImageDetailBinding>(), FragmentBackHandler {
+class FragmentImageDetailPager : BaseFragment<ActivityImageDetailBinding>(), FragmentBackHandler,
+    VolumeKeyHandler {
 
     var mIllustsBean: IllustsBean? = null
         private set
@@ -186,7 +188,7 @@ class FragmentImageDetailPager : BaseFragment<ActivityImageDetailBinding>(), Fra
         }
     }
 
-    fun handleVolumeKey(keyCode: Int): Boolean {
+    override fun handleVolumeKey(keyCode: Int): Boolean {
         val viewPager = baseBind.viewPager
         val adapter = viewPager.adapter ?: return false
         val currentItem = viewPager.currentItem
