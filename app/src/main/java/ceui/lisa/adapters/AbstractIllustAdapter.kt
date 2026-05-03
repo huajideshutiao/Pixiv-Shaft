@@ -7,7 +7,7 @@ import android.os.SystemClock
 import androidx.core.app.ActivityOptionsCompat
 import androidx.recyclerview.widget.RecyclerView
 import ceui.lisa.R
-import ceui.lisa.activities.ImageDetailActivity
+import ceui.lisa.activities.TemplateActivity
 import ceui.lisa.models.IllustsBean
 
 abstract class AbstractIllustAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Adapter<VH>() {
@@ -37,9 +37,9 @@ abstract class AbstractIllustAdapter<VH : RecyclerView.ViewHolder> : RecyclerVie
             }
             lastClickTime = SystemClock.elapsedRealtime()
 
-            val intent = Intent(mContext, ImageDetailActivity::class.java).apply {
+            val intent = Intent(mContext, TemplateActivity::class.java).apply {
                 putExtra("illust", allIllust)
-                putExtra("dataType", "二级详情")
+                putExtra(TemplateActivity.EXTRA_FRAGMENT, "图片详情")
                 putExtra("index", position)
             }
 

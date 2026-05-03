@@ -21,7 +21,7 @@ import ceui.lisa.fragments.FragmentEditAccount;
 import ceui.lisa.fragments.FragmentEditFile;
 import ceui.lisa.fragments.FragmentFollowUser;
 import ceui.lisa.fragments.FragmentHistoryTabs;
-import ceui.lisa.fragments.FragmentImageDetail;
+import ceui.lisa.fragments.FragmentImageDetailPager;
 import ceui.lisa.fragments.FragmentLikeIllust;
 import ceui.lisa.fragments.FragmentLikeNovel;
 import ceui.lisa.fragments.FragmentListSimpleUser;
@@ -214,7 +214,20 @@ public class TemplateActivity extends BaseActivity<ActivityFragmentBinding> impl
                     return UncategorizedNovelsFragment.Companion.newInstance((long) uid);
                 }
                 case "图片详情":
-                    return FragmentImageDetail.newInstance(intent.getStringExtra(Params.URL), intent.getStringExtra(Params.TITLE));
+                    return FragmentImageDetailPager.newInstance(
+                        (IllustsBean) intent.getSerializableExtra("illust"),
+                        intent.getIntExtra("index", 0)
+                    );
+                case "URL图片":
+                    return FragmentImageDetailPager.newInstance(
+                        intent.getStringExtra(Params.URL),
+                        intent.getStringExtra(Params.TITLE)
+                    );
+                case "下载图片":
+                    return FragmentImageDetailPager.newInstance(
+                        (java.util.List<String>) intent.getSerializableExtra("illust"),
+                        intent.getIntExtra("index", 0)
+                    );
                 case "全屏查看": {
                     String pageUUID = intent.getStringExtra(Params.PAGE_UUID);
                     int index = intent.getIntExtra(Params.POSITION, 0);
@@ -322,6 +335,10 @@ public class TemplateActivity extends BaseActivity<ActivityFragmentBinding> impl
                 if (((VFragment) childFragment).handleVolumeKey(keyCode)) {
                     return true;
                 }
+            } else if (childFragment instanceof FragmentImageDetailPager) {
+                if (((FragmentImageDetailPager) childFragment).handleVolumeKey(keyCode)) {
+                    return true;
+                }
             }
         }
         return super.onKeyDown(keyCode, event);
@@ -387,6 +404,4 @@ public class TemplateActivity extends BaseActivity<ActivityFragmentBinding> impl
         }
     }
 
-    public void onFontSizeSelected(int size) {
-    }
 }

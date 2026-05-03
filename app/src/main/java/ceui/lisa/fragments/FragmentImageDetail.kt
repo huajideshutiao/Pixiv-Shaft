@@ -13,7 +13,6 @@ import android.widget.ImageView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import ceui.lisa.R
-import ceui.lisa.activities.ImageDetailActivity
 import ceui.lisa.activities.Shaft
 import ceui.lisa.databinding.FragmentImageDetailBinding
 import ceui.lisa.download.IllustDownload
@@ -49,7 +48,7 @@ class FragmentImageDetail : BaseFragment<FragmentImageDetailBinding?>() {
     private val viewModel by viewModels<ToggleToolnarViewModel>(ownerProducer = { requireActivity() })
 
     private val mIllustsBean: IllustsBean?
-        get() = (activity as? ImageDetailActivity)?.mIllustsBean
+        get() = (parentFragment as? FragmentImageDetailPager)?.mIllustsBean
 
     public override fun initBundle(bundle: Bundle) {
         url = bundle.getString(Params.URL)
@@ -91,7 +90,7 @@ class FragmentImageDetail : BaseFragment<FragmentImageDetailBinding?>() {
     }
 
     private fun startTransition() {
-        val initialIndex = (activity as? ImageDetailActivity)?.initialIndex ?: 0
+        val initialIndex = (parentFragment as? FragmentImageDetailPager)?.initialIndex ?: 0
         if (index == initialIndex) {
             activity?.startPostponedEnterTransition()
         }

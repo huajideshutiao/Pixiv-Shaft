@@ -58,7 +58,6 @@ import com.scwang.smart.refresh.header.FalsifyHeader
 import com.zhy.view.flowlayout.FlowLayout
 import com.zhy.view.flowlayout.TagAdapter
 import java.io.File
-import java.util.Arrays
 
 class FragmentSingleUgora : BaseFragment<FragmentUgoraBinding>() {
 
@@ -162,14 +161,15 @@ class FragmentSingleUgora : BaseFragment<FragmentUgoraBinding>() {
                 val bundle = intent.extras
                 if (bundle != null) {
                     val id = bundle.getInt(Params.ID)
-                    if (illust?.id == id) {
+                    val currentIllust = illust
+                    if (currentIllust?.id == id) {
                         if (pendingSave) {
                             pendingSave = false
-                            val gifFile = LegacyFile.gifResultFile(mContext, illust)
+                            val gifFile = LegacyFile.gifResultFile(mContext, currentIllust)
                             if (gifFile.exists() && gifFile.length() > 1024) {
-                                OutPut.outPutGif(mContext, gifFile, illust)
-                                if (Shaft.sSettings.isAutoPostLikeWhenDownload && !illust!!.isIs_bookmarked) {
-                                    PixivOperate.postLikeDefaultStarType(illust)
+                                OutPut.outPutGif(mContext, gifFile, currentIllust)
+                                if (Shaft.sSettings.isAutoPostLikeWhenDownload && !currentIllust.isIs_bookmarked) {
+                                    PixivOperate.postLikeDefaultStarType(currentIllust)
                                 }
                             }
                         }
@@ -204,11 +204,10 @@ class FragmentSingleUgora : BaseFragment<FragmentUgoraBinding>() {
     }
 
     fun nowPlayGif() {
+        val illust = this.illust ?: return
         val gifFile = LegacyFile.gifResultFile(mContext, illust)
-        illust?.let {
-            PixivOperate.setBack(it.id) { progress ->
-                baseBind.progressLayout.donutProgress.progress = (progress * 100).toInt()
-            }
+        PixivOperate.setBack(illust.id) { progress ->
+            baseBind.progressLayout.donutProgress.progress = (progress * 100).toInt()
         }
         Common.showLog("nowPlayGif " + gifFile.path)
         if (gifFile.exists() && gifFile.length() > 1024) {
@@ -234,25 +233,25 @@ class FragmentSingleUgora : BaseFragment<FragmentUgoraBinding>() {
 
             stopFrameAnimation()
             val hasDownload =
-                Shaft.getDefaultPrefs().getBoolean(Params.ILLUST_ID + "_" + illust?.id, false)
+                Shaft.getDefaultPrefs().getBoolean(Params.ILLUST_ID + "_" + illust.id, false)
             val zipFile = LegacyFile.gifZipFile(mContext, illust)
             if (hasDownload && zipFile.exists() && zipFile.length() > 1024) {
                 baseBind.playGif.visibility = View.INVISIBLE
                 baseBind.progressLayout.donutProgress.visibility = View.VISIBLE
                 PixivOperate.unzipAndPlay(mContext, illust)
             } else {
-                baseBind.gifStatusText.text = "获取GIF信息..."
+                baseBind.gifStatusText.text = getString(R.string.gif_info)
                 baseBind.gifStatusText.visibility = View.VISIBLE
                 baseBind.progress.visibility = View.VISIBLE
                 PixivOperate.getGifInfo(illust, object : ErrorCtrl<GifResponse>() {
                     override fun next(gifResponse: GifResponse) {
                         baseBind.progress.visibility = View.INVISIBLE
-                        Cache.get().saveModel(Params.ILLUST_ID + "_" + illust?.id, gifResponse)
-                        baseBind.gifStatusText.text = "下载GIF文件..."
+                        Cache.get().saveModel(Params.ILLUST_ID + "_" + illust.id, gifResponse)
+                        baseBind.gifStatusText.text = getString(R.string.gif_download)
                         val downloadItem = IllustDownload.downloadGif(gifResponse, illust)
                         Manager.get().setCallback(downloadItem.uuid) { t ->
                             try {
-                                if (illust?.id == Manager.get().currentIllustID) {
+                                if (illust.id == Manager.get().currentIllustID) {
                                     baseBind.playGif.visibility = View.INVISIBLE
                                     baseBind.progressLayout.donutProgress.visibility = View.VISIBLE
                                     baseBind.progressLayout.donutProgress.progress = t.progress
@@ -273,20 +272,21 @@ class FragmentSingleUgora : BaseFragment<FragmentUgoraBinding>() {
         val files = unzipFolder.listFiles()
         if (files == null || files.isEmpty()) return
 
-        val sortedFrames = ArrayList(Arrays.asList(*files))
+        val sortedFrames = ArrayList(listOf(*files))
         sortedFrames.sortWith { o1, o2 ->
             try {
                 val n1 = o1.name.substring(0, o1.name.length - 4).toInt()
                 val n2 = o2.name.substring(0, o2.name.length - 4).toInt()
                 n1.compareTo(n2)
-            } catch (e: NumberFormatException) {
+            } catch (_: NumberFormatException) {
                 o1.name.compareTo(o2.name)
             }
         }
 
         val delays = ArrayList<Int>()
+        val illust = illust ?: return
         val gifResponse =
-            Cache.get().getModel(Params.ILLUST_ID + "_" + illust?.id, GifResponse::class.java)
+            Cache.get().getModel(Params.ILLUST_ID + "_" + illust.id, GifResponse::class.java)
         if (gifResponse?.ugoira_metadata != null) {
             for (frame in gifResponse.ugoira_metadata.frames) {
                 delays.add(frame.delay)
@@ -441,7 +441,7 @@ class FragmentSingleUgora : BaseFragment<FragmentUgoraBinding>() {
                     pendingSave = true
                     baseBind.progressLayout.donutProgress.visibility = View.VISIBLE
                     baseBind.progressLayout.donutProgress.progress = 0
-                    baseBind.gifStatusText.text = "正在生成GIF，完成后自动保存..."
+                    baseBind.gifStatusText.text = getString(R.string.gif_save)
                     baseBind.gifStatusText.visibility = View.VISIBLE
                     PixivOperate.setBack(illust.id) { progress ->
                         baseBind.progressLayout.donutProgress.progress = (progress * 100).toInt()

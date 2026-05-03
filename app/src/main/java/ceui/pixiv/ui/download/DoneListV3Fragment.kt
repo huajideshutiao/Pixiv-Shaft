@@ -19,8 +19,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ceui.lisa.R
-import ceui.lisa.activities.ImageDetailActivity
 import ceui.lisa.activities.Shaft
+import ceui.lisa.activities.TemplateActivity
 import ceui.lisa.database.AppDatabase
 import ceui.lisa.database.DownloadDao
 import ceui.lisa.database.DownloadEntity
@@ -30,7 +30,6 @@ import ceui.lisa.utils.Params
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.Serializable
@@ -146,9 +145,9 @@ class DoneListV3Fragment : Fragment() {
     private fun openDetail(group: DownloadGroup) {
         // 取该 illust 全部 page 的 filePath（按 fileName 自然顺序）
         val paths: ArrayList<String> = ArrayList(group.allFilePaths)
-        val intent = Intent(requireContext(), ImageDetailActivity::class.java)
+        val intent = Intent(requireContext(), TemplateActivity::class.java)
         intent.putExtra("illust", paths as Serializable)
-        intent.putExtra("dataType", "下载详情")
+        intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "下载图片")
         intent.putExtra("index", 0)
         startActivity(intent)
     }

@@ -2,7 +2,7 @@ package ceui.pixiv.ui.common
 
 import android.content.Context
 import android.content.Intent
-import ceui.lisa.activities.ImageDetailActivity
+import ceui.lisa.activities.TemplateActivity
 import ceui.lisa.utils.Params
 
 object ImageUrlViewer {
@@ -11,8 +11,8 @@ object ImageUrlViewer {
 
     fun open(ctx: Context, url: String, saveName: String? = null) {
         if (url.isBlank()) return
-        val intent = Intent(ctx, ImageDetailActivity::class.java).apply {
-            putExtra("dataType", DATA_TYPE_URL_SINGLE)
+        val intent = Intent(ctx, TemplateActivity::class.java).apply {
+            putExtra(TemplateActivity.EXTRA_FRAGMENT, "URL图片")
             putExtra(Params.URL, url)
             val cleaned = saveName?.let { sanitizeFileName(it) }
             if (!cleaned.isNullOrBlank()) putExtra(Params.TITLE, cleaned)

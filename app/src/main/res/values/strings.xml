@@ -1404,4 +1404,7 @@
     <string name="dlmgr_done_empty_hint">下载完成的作品会出现在这里</string>
     <string name="dlmgr_done_action_refresh">刷新</string>
     <string name="dlmgr_done_action_clear_history">清空记录</string>
+    <string name="gif_info">获取GIF信息...</string>
+    <string name="gif_download">下载GIF文件...</string>
+    <string name="gif_save">正在生成GIF，完成后自动保存...</string>
 </resources>
