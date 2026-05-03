@@ -1,8 +1,10 @@
 package ceui.lisa.activities
 
+
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.view.animation.AlphaAnimation
@@ -35,8 +37,8 @@ import ceui.loxia.ObjectPool
 import ceui.loxia.ProgressIndicator
 import ceui.loxia.ProgressTextButton
 import ceui.pixiv.session.SessionManager
-import ceui.pixiv.widgets.RateAppManager
 import ceui.pixiv.utils.setOnClick
+import ceui.pixiv.widgets.RateAppManager
 import com.bumptech.glide.Glide
 import com.github.ybq.android.spinkit.style.Wave
 import com.qmuiteam.qmui.skin.QMUISkinManager
@@ -45,7 +47,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import timber.log.Timber
+import kotlin.math.abs
 
 class UActivity : BaseActivity<ActivityNewUserBinding>(), Display<UserDetailResponse> {
     private var userId = 0
@@ -58,17 +60,17 @@ class UActivity : BaseActivity<ActivityNewUserBinding>(), Display<UserDetailResp
         val wave = Wave()
         baseBind.progress.indeterminateDrawable = wave
         baseBind.toolbar.setPadding(0, Shaft.statusHeight, 0, 0)
-        baseBind.toolbar.setNavigationOnClickListener { v: View? -> finish() }
+        baseBind.toolbar.setNavigationOnClickListener { _: View? -> finish() }
         baseBind.toolbarLayout.viewTreeObserver.addOnGlobalLayoutListener(object :
             OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 val offset =
                     baseBind.toolbarLayout.height - Shaft.statusHeight - Shaft.toolbarHeight
-                baseBind.appBar.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
-                    if (Math.abs(verticalOffset) < 15) {
+                baseBind.appBar.addOnOffsetChangedListener { _, verticalOffset ->
+                    if (abs(verticalOffset) < 15) {
                         baseBind.centerHeader.alpha = 1.0f
                         baseBind.toolbarTitle.alpha = 0.0f
-                    } else if (offset - Math.abs(verticalOffset) < 15) {
+                    } else if (offset - abs(verticalOffset) < 15) {
                         baseBind.centerHeader.alpha = 0.0f
                         baseBind.toolbarTitle.alpha = 1.0f
                     } else {
@@ -352,10 +354,13 @@ fun FragmentActivity.unfollowUser(sender: ProgressIndicator, userId: Int) {
             ObjectPool.unFollowUser(userId.toLong())
             Common.showToast(getString(R.string.cancel_like))
         } catch (ex: Exception) {
-            Timber.e(ex)
+            Log.e(TAG, "unfollowUser failed", ex)
             Common.showToast(ex.message)
         } finally {
             sender.hideProgress()
         }
     }
+
 }
+
+private const val TAG = "UActivity"

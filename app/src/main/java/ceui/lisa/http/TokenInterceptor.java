@@ -15,13 +15,16 @@ import ceui.pixiv.session.SessionManager;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
-import timber.log.Timber;
+
+import android.util.Log;
 
 /**
  * 检测到 400 OAuth 过期时自动用 refresh_token 换新 access_token，并重放原请求。
  * Token 交换走 {@link PixivLogin}（内部使用共享的 OkHttp + Worker relay 配置）。
  */
 public class TokenInterceptor implements Interceptor {
+
+    private static final String TAG = "TokenInterceptor";
 
     private static final String TOKEN_ERROR_1 = "Error occurred at the OAuth process";
     private static final String TOKEN_ERROR_2 = "Invalid refresh token";
@@ -33,7 +36,7 @@ public class TokenInterceptor implements Interceptor {
         Response response = chain.proceed(request);
 
         if (isTokenExpired(response)) {
-            Timber.i("TokenInterceptor: access_token 过期，正在刷新");
+            Log.i(TAG, "TokenInterceptor: access_token 过期，正在刷新");
             response.close();
             String newBearer = getNewToken(request.header("Authorization"));
             Request newRequest = chain.request()

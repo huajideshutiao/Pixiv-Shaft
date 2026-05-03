@@ -1,16 +1,18 @@
 package ceui.pixiv.ui.common
 
+
 import android.content.ContentUris
 import android.content.Context
 import android.os.Build
 import android.provider.MediaStore
+import android.util.Log
 import ceui.lisa.R
 import com.hjq.toast.Toaster
-import timber.log.Timber
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
 
+private const val TAG = "MediaStoreUtils"
 
 private fun mimeFromName(name: String): String {
     val ext = name.substringAfterLast('.', missingDelimiterValue = "").lowercase()
@@ -46,9 +48,13 @@ fun saveImageToGallery(context: Context, imageFile: File, displayName: String) {
         Toaster.show(context.getString(R.string.string_181))
     }.onFailure { ex ->
         when (ex) {
-            is IOException -> Timber.e("SaveImage IOException while saving image: ${ex.message}")
-            is SecurityException -> Timber.e("SaveImage SecurityException: Permission issue: ${ex.message}")
-            else -> Timber.e("SaveImage Unexpected error: ${ex.message}")
+            is IOException -> Log.e(TAG, "SaveImage IOException while saving image: ${ex.message}")
+            is SecurityException -> Log.e(
+                TAG,
+                "SaveImage SecurityException: Permission issue: ${ex.message}"
+            )
+
+            else -> Log.e(TAG, "SaveImage Unexpected error: ${ex.message}")
         }
         Toaster.show(context.getString(R.string.save_image_failed, ex.message ?: ex.javaClass.simpleName))
     }
@@ -80,8 +86,8 @@ fun getImageIdInGallery(context: Context, displayName: String): Long? {
         }
     }.onFailure { ex ->
         // 打印日志以便调试
-        Timber.e(ex)
-    }.getOrNull() // 如果发生异常，返回 null
+        Log.e(TAG, "getImageIdInGallery error", ex)
+    }.getOrNull()
 }
 
 
@@ -104,8 +110,8 @@ fun deleteImageById(context: Context, imageId: Long): Boolean {
         }
     }.onFailure { ex ->
         // 打印异常日志，便于调试
-        Timber.e(ex)
-    }.getOrDefault(false) // 如果发生异常，返回 false
+        Log.e(TAG, "deleteImageById error", ex)
+    }.getOrDefault(false)
 }
 
 
@@ -124,7 +130,7 @@ fun saveToDownloadsScopedStorage(fileName: String, content: String): Boolean {
         // Low-level helper — never crashes, just reports failure to caller via
         // `false`. Caller decides whether/how to surface the error (e.g. single
         // download path toasts; batch path collects into a failures dialog).
-        Timber.e(e, "saveToDownloadsScopedStorage failed for $fileName")
+        Log.e(TAG, "saveToDownloadsScopedStorage failed for $fileName", e)
         false
     }
 }
@@ -157,6 +163,6 @@ fun getTxtFileIdInDownloads(context: Context, displayName: String): Long? {
         }
     }.onFailure { ex ->
         // 打印异常日志，便于调试
-        Timber.e(ex)
+        Log.e(TAG, ex.message ?: "", ex)
     }.getOrNull() // 如果发生异常，返回 null
 }

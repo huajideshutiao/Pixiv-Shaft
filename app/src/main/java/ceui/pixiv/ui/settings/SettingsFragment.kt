@@ -1,4 +1,6 @@
-package ceui.pixiv.ui.settings
+package ceui.pixiv.ui.settings
+
+import android.util.Log
 
 import android.os.Bundle
 import android.view.View
@@ -26,8 +28,6 @@ import ceui.pixiv.widgets.alertYesOrCancel
 import ceui.pixiv.ui.common.viewBinding
 import ceui.lisa.utils.Local
 import android.content.SharedPreferences
-import timber.log.Timber
-
 class SettingsFragment : PixivFragment(R.layout.fragment_pixiv_list), LogOutActionReceiver {
 
     private val binding by viewBinding(FragmentPixivListBinding::bind)
@@ -41,7 +41,7 @@ class SettingsFragment : PixivFragment(R.layout.fragment_pixiv_list), LogOutActi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.result.observe(viewLifecycleOwner) {
-            Timber.d("getSelfProfile ${it}")
+            Log.d(TAG, "getSelfProfile ${it}")
         }
         val adapter = setUpCustomAdapter(binding, ListMode.VERTICAL_TABCELL)
         binding.toolbarLayout.naviTitle.text = getString(R.string.app_settings)
@@ -131,5 +131,10 @@ class SettingsFragment : PixivFragment(R.layout.fragment_pixiv_list), LogOutActi
                 )
             }
         }
+    }
+
+
+    companion object {
+        private const val TAG = "SettingsFragment"
     }
 }

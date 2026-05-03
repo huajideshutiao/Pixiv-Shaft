@@ -1,15 +1,17 @@
 package ceui.lisa.activities
 
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.View
 import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
-import androidx.fragment.app.Fragment
 import androidx.activity.viewModels
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager.widget.ViewPager
 import ceui.lisa.R
 import ceui.lisa.databinding.ActivityImageDetailBinding
@@ -23,9 +25,6 @@ import ceui.lisa.utils.PixivOperate
 import ceui.pixiv.ui.works.ToggleToolnarViewModel
 import ceui.pixiv.utils.animateFadeInQuickly
 import ceui.pixiv.utils.animateFadeOutQuickly
-import android.widget.ImageView
-import androidx.core.view.ViewCompat
-import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -237,6 +236,23 @@ class ImageDetailActivity : BaseActivity<ActivityImageDetailBinding?>() {
         } else {
             mActivity.finish()
         }
+    }
+
+    override fun dispatchKeyEvent(event: KeyEvent): Boolean {
+        if (event.action == KeyEvent.ACTION_DOWN &&
+            (event.keyCode == KeyEvent.KEYCODE_VOLUME_UP || event.keyCode == KeyEvent.KEYCODE_VOLUME_DOWN)
+        ) {
+            val viewPager = baseBind?.viewPager ?: return super.dispatchKeyEvent(event)
+            val adapter = viewPager.adapter ?: return super.dispatchKeyEvent(event)
+            val currentItem = viewPager.currentItem
+            val nextItem =
+                if (event.keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) currentItem + 1 else currentItem - 1
+            if (nextItem in 0 until adapter.count) {
+                viewPager.setCurrentItem(nextItem, true)
+            }
+            return true
+        }
+        return super.dispatchKeyEvent(event)
     }
 
     override fun hideStatusBar(): Boolean {

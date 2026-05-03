@@ -516,6 +516,10 @@
     <string name="string_333">加速加载图片，如果觉得加载变慢了，可以关闭</string>
     <string name="string_334">原图画质好，如果觉得原图加载太慢了，可以关闭</string>
     <string name="about_network">网络</string>
+    <string name="use_image_proxy">使用自定义图片代理</string>
+    <string name="image_proxy_url_setting">图片代理地址</string>
+    <string name="image_proxy_url_dialog_title">设置图片代理地址</string>
+    <string name="image_proxy_url_dialog_hint" translatable="false">https://i.pixiv.cat</string>
     <string name="string_335">添加收藏默认私人收藏</string>
     <string name="string_336">图片纵向展示列数</string>
     <string name="layout_mode">关注动态布局模式</string>

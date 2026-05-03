@@ -1,5 +1,6 @@
 package ceui.pixiv.ui.task
 
+import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import ceui.lisa.R
@@ -17,7 +18,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 
 /**
  * Per-novel failure info reported to the caller. `reason` is a short human
@@ -80,7 +80,11 @@ class BatchDownloadNovelsTask(
                         downloadOne(novel, seriesIndex = if (orderIsSeriesPosition) done else null)
                     }
                 } catch (ex: Exception) {
-                    Timber.e(ex, "BatchDownloadNovelsTask: failed on ${novel.id} (${novel.title})")
+                    Log.e(
+                        "BatchDownloadNovelsTask",
+                        "BatchDownloadNovelsTask: failed on ${novel.id} (${novel.title})",
+                        ex
+                    )
                     failures += FailedNovel(novel, ex.message ?: ex::class.java.simpleName)
                 }
                 onProgress(done, total)
@@ -107,7 +111,7 @@ class BatchDownloadNovelsTask(
         // Skip already-downloaded files. DownloadNovelTask uses the same
         // pre-check before it hits the network.
         if (getTxtFileIdInDownloads(ctx, fileName) != null) {
-            Timber.d("$fileName already exists, skipping")
+            Log.d("BatchDownloadNovelsTask", "$fileName already exists, skipping")
             return
         }
 

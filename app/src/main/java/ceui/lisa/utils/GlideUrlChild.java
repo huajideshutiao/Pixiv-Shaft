@@ -5,16 +5,36 @@ import com.bumptech.glide.load.model.Headers;
 
 import java.util.HashMap;
 
+import ceui.lisa.activities.Shaft;
 import ceui.lisa.http.PixivHeaders;
 
 public class GlideUrlChild extends GlideUrl {
 
+    private static final String PXIMG_HOST = "https://i.pximg.net";
+
     public GlideUrlChild(String url) {
-        this(url, formatHeader());
+        this(applyProxy(url), formatHeader());
     }
 
     public GlideUrlChild(String url, Headers headers) {
         super(url, headers);
+    }
+
+    private static String applyProxy(String url) {
+        if (url == null || !url.startsWith(PXIMG_HOST)) {
+            return url;
+        }
+        if (!Shaft.sSettings.isUsePixivCat()) {
+            return url;
+        }
+        String proxyUrl = Shaft.sSettings.getImageProxyUrl();
+        if (proxyUrl == null || proxyUrl.isEmpty()) {
+            return url;
+        }
+        if (proxyUrl.endsWith("/")) {
+            proxyUrl = proxyUrl.substring(0, proxyUrl.length() - 1);
+        }
+        return proxyUrl + url.substring(PXIMG_HOST.length());
     }
 
     private static Headers formatHeader() {

@@ -10,7 +10,7 @@ import ceui.lisa.models.UserPreviewsBean
  * UserPreviewsBean graph through Intent extras (which easily exceeds
  * the ~1MB binder transaction limit and crashes on Android 15, #820).
  *
- * Matches the [ceui.pixiv.ui.detail.ArtworksMap] pattern: producer
+ * Matches the [ceui.lisa.core.ArtworksMap] pattern: producer
  * drops a snapshot under a unique key and passes the key via Intent,
  * consumer removes it once on the other side.
  */

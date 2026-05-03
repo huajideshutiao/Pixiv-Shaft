@@ -1,16 +1,20 @@
 package ceui.lisa.utils;
 
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import ceui.lisa.activities.Shaft;
 import ceui.lisa.models.UserModel;
 import ceui.pixiv.session.SessionManager;
-import timber.log.Timber;
 
 /**
- * A class deal with the {@link UserModel} and APP {@link Settings}
+ * A class deal with the {
+
+ private static final String TAG = "Local";@link UserModel} and APP {@link Settings}
  * */
 public class Local {
+
+    private static final String TAG = "Local";
 
     public static final String LOCAL_DATA = "local_data";
     public static final String USER = "user";
@@ -22,7 +26,7 @@ public class Local {
             String userString = Shaft.sGson.toJson(userModel, UserModel.class);
             SharedPreferences.Editor editor = Shaft.sPreferences.edit();
             editor.putString(USER, userString);
-            editor.commit();
+            editor.apply();
             // Update SessionManager as the single source of truth
             SessionManager.INSTANCE.postUpdateSession(userModel);
         }
@@ -31,7 +35,7 @@ public class Local {
     public static UserModel getUser() {
         String json = Shaft.sPreferences
                 .getString(USER, "");
-        Timber.d("getUserJson%s", json);
+        Log.d(TAG, "getUserJson%s");
         return Shaft.sGson.fromJson(json, UserModel.class);
     }
 

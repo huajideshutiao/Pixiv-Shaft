@@ -1,6 +1,8 @@
 package ceui.loxia
 
+
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.findFragment
@@ -13,7 +15,6 @@ import ceui.pixiv.widgets.alertYesOrCancel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 inline fun <reified InterfaceT> Fragment.sendAction(action: (receiver: InterfaceT) -> Boolean) {
     var received = false
@@ -50,7 +51,7 @@ fun Fragment.launchSuspend(block: suspend CoroutineScope.() -> Unit) {
             context?.let {
                 alertYesOrCancel(ex.getHumanReadableMessage(it))
             }
-            Timber.e(ex)
+            Log.e(TAG, "launchSuspend error", ex)
         }
     }
 }
@@ -63,19 +64,19 @@ fun Fragment.launchSpinner(block: suspend CoroutineScope.() -> Unit) {
             try {
                 dialog.dismissAllowingStateLoss()
             } catch (e: Exception) {
-                Timber.e(e)
+                Log.e(TAG, "dismiss dialog error", e)
             }
         } catch (ex: Exception) {
             try {
                 dialog.dismissAllowingStateLoss()
             } catch (e: Exception) {
-                Timber.e(e)
+                Log.e(TAG, "dismiss dialog error", e)
             }
             if (ex is CancellationException) throw ex
             context?.let {
                 alertYesOrCancel(ex.getHumanReadableMessage(it))
             }
-            Timber.e(ex)
+            Log.e(TAG, "launchSpinner error", ex)
         }
     }
 }
@@ -91,7 +92,7 @@ fun Fragment.launchSuspend(sender: ProgressIndicator, block: suspend CoroutineSc
             context?.let {
                 alertYesOrCancel(ex.getHumanReadableMessage(it))
             }
-            Timber.e(ex)
+            Log.e(TAG, "launchSuspend with sender error", ex)
         } finally {
             sender.hideProgress()
         }
@@ -187,3 +188,6 @@ inline fun <reified T : Fragment> Fragment.findAncestorOrSelf(): T? {
         return findAncestor()
     }
 }
+
+private const val TAG = "UIAction"
+

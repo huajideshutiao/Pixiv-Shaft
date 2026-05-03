@@ -9,6 +9,7 @@ import android.graphics.Region;
 import android.graphics.drawable.Drawable;
 
 import androidx.annotation.NonNull;
+
 import com.scwang.smart.drawable.PaintDrawable;
 
 import java.util.ArrayList;
@@ -84,7 +85,7 @@ public class PathsDrawable extends PaintDrawable {
             int ox = mStartX, oy = mStartY;
             float ratioWidth = 1f * width / mOriginWidth;
             float ratioHeight = 1f * height / mOriginHeight;
-            mPaths = PathParser.transformScale(ratioWidth, ratioHeight, mltOriginPath, mltOriginSvg);
+            mPaths = PathParser.transformScale(ratioWidth, ratioHeight, mltOriginPath);
             if (!onMeasure()) {
                 mWidth = width;
                 mHeight = height;

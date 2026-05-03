@@ -1,7 +1,11 @@
 package ceui.lisa.fragments
 
+
+import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -11,7 +15,10 @@ import ceui.lisa.activities.Shaft
 import ceui.lisa.databinding.FragmentImageDetailBinding
 import ceui.lisa.download.IllustDownload
 import ceui.lisa.models.IllustsBean
+import ceui.lisa.utils.Common
+import ceui.lisa.utils.GlideUrlChild
 import ceui.lisa.utils.Params
+import ceui.lisa.utils.ShareIllust
 import ceui.pixiv.ui.common.deleteImageById
 import ceui.pixiv.ui.common.getImageIdInGallery
 import ceui.pixiv.ui.common.saveImageToGallery
@@ -20,19 +27,22 @@ import ceui.pixiv.ui.task.NamedUrl
 import ceui.pixiv.ui.task.TaskPool
 import ceui.pixiv.ui.works.ToggleToolnarViewModel
 import ceui.pixiv.utils.setOnClick
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.github.panpf.sketch.loadImage
 import com.github.panpf.zoomimage.view.zoom.OnViewTapListener
 import com.github.panpf.zoomimage.zoom.ReadMode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
-import android.net.Uri
+import java.io.File
 
 class FragmentImageDetail : BaseFragment<FragmentImageDetailBinding?>() {
     private var index = 0
     private var url: String? = null
     private var saveName: String? = null
+    private var currentImageFile: File? = null
     private val viewModel by viewModels<ToggleToolnarViewModel>(ownerProducer = { requireActivity() })
 
     // 不再放进 arguments / savedInstanceState，避免每个 Fragment 重复持久化 80KB IllustsBean
@@ -59,6 +69,27 @@ class FragmentImageDetail : BaseFragment<FragmentImageDetailBinding?>() {
         baseBind.image.onViewTapListener = OnViewTapListener { _, _ ->
             viewModel.toggleFullscreen()
         }
+        baseBind.image.setOnLongClickListener {
+            val file = currentImageFile
+            if (file != null && file.exists()) {
+                val illust = mIllustsBean
+                val shareText = illust?.let {
+                    getString(
+                        R.string.share_illust,
+                        it.title,
+                        it.user?.name,
+                        ShareIllust.URL_Head + it.id
+                    )
+                }
+                Common.shareImageFile(
+                    requireContext(),
+                    file,
+                    "${illust?.id ?: "image"}_p$index.jpg",
+                    shareText
+                )
+            }
+            true
+        }
         // 长图阅读模式：自动填满宽度、��顶部开始，无需手动双击放大再滑动
         baseBind.image.zoomable.setReadMode(ReadMode.Default)
     }
@@ -78,7 +109,7 @@ class FragmentImageDetail : BaseFragment<FragmentImageDetailBinding?>() {
         }
 
         val shortUrl = imageUrl?.substringAfterLast('/') ?: "null"
-        Timber.d("[ImageDetail] loadImage index=$index, isUrlMode=$isUrlMode, url=$shortUrl")
+        Log.d(TAG, "[ImageDetail] loadImage index=$index, isUrlMode=$isUrlMode, url=$shortUrl")
 
         if (imageUrl?.isNotEmpty() == true) {
             // content:// URI（来自下载完成页的 SAF 路径）直接用 Sketch 加载，
@@ -89,9 +120,12 @@ class FragmentImageDetail : BaseFragment<FragmentImageDetailBinding?>() {
             }
 
             val task = TaskPool.getLoadTask(NamedUrl("", imageUrl))
-            Timber.d("[ImageDetail] task acquired. taskId=${task.taskId}, status=${task.status.value}, hasResult=${task.result.value != null}, url=$shortUrl")
+            Log.d(
+                TAG,
+                "[ImageDetail] task acquired. taskId=${task.taskId}, status=${task.status.value}, hasResult=${task.result.value != null}, url=$shortUrl"
+            )
 
-            // 原图尚未加载完时，若一级详情页的大图已在 Glide 缓存，先用大图占位
+            // 原图尚未加载完时，若一级详情页的大图已在缓存，先用大图占位
             if (mIllustsBean != null && task.result.value == null) {
                 val largeUrl = IllustDownload.getUrl(
                     mIllustsBean, index, Params.IMAGE_RESOLUTION_LARGE
@@ -99,17 +133,31 @@ class FragmentImageDetail : BaseFragment<FragmentImageDetailBinding?>() {
                 if (!largeUrl.isNullOrEmpty() && largeUrl != imageUrl) {
                     val largeFile = TaskPool.peekCachedFile(largeUrl)
                     if (largeFile != null) {
-                        Timber.d("[ImageDetail] placeholder HIT path=${largeFile.absolutePath} size=${largeFile.length()}")
+                        Log.d(
+                            TAG,
+                            "[ImageDetail] placeholder HIT (TaskPool) path=${largeFile.absolutePath} size=${largeFile.length()}"
+                        )
                         baseBind.image.loadImage(largeFile)
+                        currentImageFile = largeFile
                     } else {
-                        Timber.d("[ImageDetail] placeholder MISS largeUrl=${largeUrl.substringAfterLast('/')}")
+                        Log.d(
+                            TAG,
+                            "[ImageDetail] placeholder MISS (TaskPool), trying Glide cache largeUrl=${
+                                largeUrl.substringAfterLast('/')
+                            }"
+                        )
+                        tryLoadFromGlideCache(largeUrl)
                     }
                 }
             }
 
             task.result.observe(viewLifecycleOwner) { file ->
-                Timber.d("[ImageDetail] result callback. file=${file?.absolutePath}, exists=${file?.exists()}, size=${file?.length() ?: -1}, url=$shortUrl")
+                Log.d(
+                    TAG,
+                    "[ImageDetail] result callback. file=${file?.absolutePath}, exists=${file?.exists()}, size=${file?.length() ?: -1}, url=$shortUrl"
+                )
                 baseBind.image.loadImage(file)
+                currentImageFile = file
                 if (isUrlMode) {
                     baseBind.downloadButton.visibility = View.VISIBLE
                     baseBind.downloadButton.setOnClick {
@@ -136,7 +184,35 @@ class FragmentImageDetail : BaseFragment<FragmentImageDetailBinding?>() {
         }
     }
 
+    private fun tryLoadFromGlideCache(url: String) {
+        Glide.with(this)
+            .asFile()
+            .load(GlideUrlChild(url))
+            .onlyRetrieveFromCache(true)
+            .into(object : CustomTarget<File>() {
+                override fun onResourceReady(resource: File, transition: Transition<in File>?) {
+                    if (currentImageFile == null) {
+                        Log.d(
+                            TAG,
+                            "[ImageDetail] placeholder HIT (Glide) path=${resource.absolutePath} size=${resource.length()}"
+                        )
+                        baseBind.image.loadImage(resource)
+                        currentImageFile = resource
+                    }
+                }
+
+                override fun onLoadCleared(placeholder: Drawable?) {}
+                override fun onLoadFailed(errorDrawable: Drawable?) {
+                    Log.d(
+                        TAG,
+                        "[ImageDetail] placeholder MISS (Glide) url=${url.substringAfterLast('/')}"
+                    )
+                }
+            })
+    }
+
     companion object {
+        private const val TAG = "FragmentImageDetail"
         // IllustsBean 由 ImageDetailActivity 持有，Fragment 运行时读取，避免放进 Bundle
         @JvmStatic
         fun newInstance(index: Int): FragmentImageDetail {

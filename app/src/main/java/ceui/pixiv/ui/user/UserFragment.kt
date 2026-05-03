@@ -1,4 +1,6 @@
-package ceui.pixiv.ui.user
+package ceui.pixiv.ui.user
+
+import android.util.Log
 
 import android.os.Bundle
 import android.view.View
@@ -39,15 +41,13 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
 import com.bumptech.glide.request.RequestOptions.bitmapTransform
 import com.scwang.smart.refresh.header.MaterialHeader
-import timber.log.Timber
-
 class UserFragment : PixivFragment(R.layout.fragment_user), ViewPagerFragment, SeeMoreAction,
     FitsSystemWindowFragment {
 
     private val safeArgs by navArgs<UserFragmentArgs>()
     private val binding by viewBinding(FragmentUserBinding::bind)
     private val viewModel by constructVM({ safeArgs.userId }) { userId ->
-        Timber.d("userId-${userId}")
+        Log.d(TAG, "userId-${userId}")
         UserViewModel(userId)
     }
 
@@ -185,5 +185,10 @@ class UserFragment : PixivFragment(R.layout.fragment_user), ViewPagerFragment, S
                 ).toBundle()
             )
         }
+    }
+
+
+    companion object {
+        private const val TAG = "UserFragment"
     }
 }

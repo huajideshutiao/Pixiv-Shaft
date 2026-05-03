@@ -20,9 +20,10 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
-import com.blankj.utilcode.util.AppUtils;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+
 import com.blankj.utilcode.util.FileIOUtils;
-import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.Utils;
 import com.hjq.toast.Toaster;
 import com.qmuiteam.qmui.skin.QMUISkinManager;
@@ -30,6 +31,7 @@ import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -45,14 +47,10 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
 
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
-
 import ceui.lisa.R;
 import ceui.lisa.activities.MainActivity;
 import ceui.lisa.activities.Shaft;
 import ceui.lisa.activities.TemplateActivity;
-import ceui.pixiv.session.SessionManager;
 import ceui.lisa.activities.UActivity;
 import ceui.lisa.database.AppDatabase;
 import ceui.lisa.database.UserEntity;
@@ -61,12 +59,12 @@ import ceui.lisa.file.LegacyFile;
 import ceui.lisa.file.SAFile;
 import ceui.lisa.models.IllustsBean;
 import ceui.lisa.models.UserContainer;
+import ceui.pixiv.session.SessionManager;
 import okhttp3.MediaType;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import okio.Buffer;
 import okio.BufferedSource;
-import timber.log.Timber;
 
 public class Common {
 
@@ -121,7 +119,7 @@ public class Common {
     }
 
     public static <T> void showLog(T t) {
-        Timber.tag("==SHAFT==>").d(String.valueOf(t));
+        Log.d("==SHAFT==>", String.valueOf(t));
     }
 
     public static <T> void showToast(T t) {
@@ -514,5 +512,47 @@ public class Common {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static void shareImageFile(
+        Context context,
+        File imageFile,
+        String fileName,
+        String shareText
+    ) {
+        try {
+            File cachePath = new File(Utils.getApp().getExternalCacheDir(), "images");
+            cachePath.mkdirs();
+            File sharedFile = new File(cachePath, fileName);
+            try (FileInputStream in = new FileInputStream(imageFile);
+                 FileOutputStream out = new FileOutputStream(sharedFile)) {
+                byte[] buffer = new byte[8192];
+                int len;
+                while ((len = in.read(buffer)) > 0) {
+                    out.write(buffer, 0, len);
+                }
+            }
+            Uri uri = FileProvider.getUriForFile(
+                context,
+                context.getApplicationContext().getPackageName() + ".provider", sharedFile
+            );
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setType("image/*");
+            shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+            if (shareText != null) {
+                shareIntent.putExtra(Intent.EXTRA_TEXT, shareText);
+            }
+            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            context.startActivity(Intent.createChooser(
+                shareIntent,
+                context.getString(R.string.share)
+            ));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void shareImageFile(Context context, File imageFile, String fileName) {
+        shareImageFile(context, imageFile, fileName, null);
     }
 }

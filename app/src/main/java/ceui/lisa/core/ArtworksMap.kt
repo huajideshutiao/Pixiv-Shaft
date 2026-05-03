@@ -1,4 +1,4 @@
-package ceui.pixiv.ui.detail
+package ceui.lisa.core
 
 object ArtworksMap {
 

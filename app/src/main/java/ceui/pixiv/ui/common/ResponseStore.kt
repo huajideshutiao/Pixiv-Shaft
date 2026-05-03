@@ -1,12 +1,9 @@
 package ceui.pixiv.ui.common
 
+
 import android.content.SharedPreferences
-import ceui.loxia.Client
-import ceui.loxia.RefreshHint
+import android.util.Log
 import com.google.gson.Gson
-import kotlinx.coroutines.delay
-import timber.log.Timber
-import java.lang.reflect.Method
 
 class ResponseStore<T> private constructor(
     private val keyProvider: () -> String,
@@ -49,12 +46,13 @@ class ResponseStore<T> private constructor(
                 null
             }
         } catch (ex: Exception) {
-            Timber.e(ex)
+            Log.e(TAG, "loadFromCache error", ex)
             null
         }
     }
 
     companion object {
+        private const val TAG = "ResponseStore"
         fun <T> create(
             keyProvider: () -> String,
             expirationTimeMillis: Long,

@@ -1,5 +1,8 @@
 package ceui.pixiv.ui.comments
 
+
+import android.util.Log
+
 import androidx.lifecycle.MutableLiveData
 import ceui.lisa.activities.Shaft
 import ceui.lisa.helper.CommentFilter
@@ -8,8 +11,6 @@ import ceui.loxia.Comment
 import ceui.loxia.CommentResponse
 import ceui.loxia.ObjectType
 import ceui.pixiv.ui.common.DataSource
-import timber.log.Timber
-
 class CommentsDataSource(
     private val args: CommentsFragmentArgs,
     private val childCommentsMap: HashMap<Long, List<Comment>> = hashMapOf()
@@ -67,7 +68,7 @@ class CommentsDataSource(
                     }
                     itemHolders.value = updatedHolders
                 } catch (ex: Exception) {
-                    Timber.e(ex)
+                    Log.e(TAG, "updateItem error", ex)
                 }
             }
         }
@@ -146,3 +147,5 @@ private fun filterSpamComments(comments: List<Comment>): List<Comment> {
     if (!Shaft.sSettings.isFilterComment()) return comments
     return comments.filterNot { CommentFilter.judgeText(it.comment) }
 }
+
+private const val TAG = "CommentsDataSource"

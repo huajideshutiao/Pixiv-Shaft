@@ -15,8 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
-
+import android.util.Log
 fun <T> Fragment.pixivValueViewModel(
     dataFetcher: suspend () -> T,
     responseStore: ResponseStore<T>? = null,

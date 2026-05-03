@@ -1,11 +1,13 @@
 package ceui.pixiv.widgets
 
+
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.animation.OvershootInterpolator
 import androidx.fragment.app.FragmentManager
@@ -15,7 +17,6 @@ import ceui.lisa.utils.Common
 import ceui.pixiv.ui.common.viewBinding
 import ceui.pixiv.utils.setOnClick
 import com.google.android.play.core.review.ReviewManagerFactory
-import timber.log.Timber
 
 class RateAppDialog : PixivDialog(R.layout.dialog_rate_app) {
 
@@ -23,20 +24,20 @@ class RateAppDialog : PixivDialog(R.layout.dialog_rate_app) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Timber.d("RateAppDialog onCreate")
+        Log.d(TAG, "RateAppDialog onCreate")
     }
 
     override fun onViewFirstCreated(view: View) {
         super.onViewFirstCreated(view)
-        Timber.d("RateAppDialog onViewFirstCreated")
+        Log.d(TAG, "RateAppDialog onViewFirstCreated")
 
         binding.btnRateNow.setOnClick {
-            Timber.d("RateAppDialog btnRateNow clicked")
+            Log.d(TAG, "RateAppDialog btnRateNow clicked")
             launchInAppReview()
         }
 
         binding.btnMaybeLater.setOnClick {
-            Timber.d("RateAppDialog btnMaybeLater clicked")
+            Log.d(TAG, "RateAppDialog btnMaybeLater clicked")
             dismissAllowingStateLoss()
         }
 
@@ -45,35 +46,35 @@ class RateAppDialog : PixivDialog(R.layout.dialog_rate_app) {
 
     private fun launchInAppReview() {
         val activity = activity ?: run {
-            Timber.w("RateAppDialog activity is null, falling back to Play Store")
+            Log.w(TAG, "RateAppDialog activity is null, falling back to Play Store")
             openPlayStoreFallback()
             return
         }
-        Timber.d("RateAppDialog launching In-App Review flow")
+        Log.d(TAG, "RateAppDialog launching In-App Review flow")
         val manager = ReviewManagerFactory.create(activity)
         val request = manager.requestReviewFlow()
         request.addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                Timber.d("RateAppDialog requestReviewFlow succeeded, launching review")
+                Log.d(TAG, "RateAppDialog requestReviewFlow succeeded, launching review")
                 val flow = manager.launchReviewFlow(activity, task.result)
                 flow.addOnCompleteListener {
-                    Timber.d("RateAppDialog launchReviewFlow completed")
+                    Log.d(TAG, "RateAppDialog launchReviewFlow completed")
 
                     dismissAllowingStateLoss()
                 }
             } else {
-                Timber.w(task.exception, "RateAppDialog requestReviewFlow failed, falling back")
+                Log.w(TAG, "RateAppDialog requestReviewFlow failed, falling back", task.exception)
                 openPlayStoreFallback()
             }
         }
     }
 
     private fun openPlayStoreFallback() {
-        Timber.d("RateAppDialog openPlayStoreFallback")
+        Log.d(TAG, "RateAppDialog openPlayStoreFallback")
         try {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=ceui.pixiv.pshaft")))
         } catch (e: ActivityNotFoundException) {
-            Timber.w(e, "RateAppDialog market:// intent failed")
+            Log.w(TAG, "RateAppDialog market:// intent failed", e)
             try {
                 startActivity(
                     Intent(
@@ -82,7 +83,7 @@ class RateAppDialog : PixivDialog(R.layout.dialog_rate_app) {
                     )
                 )
             } catch (e2: Exception) {
-                Timber.e(e2, "RateAppDialog Play Store web fallback also failed")
+                Log.e(TAG, "RateAppDialog Play Store web fallback also failed", e2)
                 Common.showToast("Unable to open Play Store")
             }
         }

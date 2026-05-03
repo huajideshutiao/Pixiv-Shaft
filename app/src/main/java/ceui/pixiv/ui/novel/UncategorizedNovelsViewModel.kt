@@ -2,6 +2,7 @@ package ceui.pixiv.ui.novel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import ceui.lisa.core.ArtworksMap
 import ceui.loxia.Client
 import ceui.loxia.Novel
 import ceui.loxia.NovelResponse
@@ -13,7 +14,6 @@ import ceui.pixiv.ui.common.ListItemHolder
 import ceui.pixiv.ui.common.LoadingHolder
 import ceui.pixiv.ui.common.NovelCardHolder
 import ceui.pixiv.ui.common.createResponseStore
-import ceui.pixiv.ui.detail.ArtworksMap
 
 /**
  * Backs [UncategorizedNovelsFragment]. Pages through the author's created

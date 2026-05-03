@@ -1,6 +1,8 @@
 package ceui.lisa.file
 
+
 import android.content.Context
+import android.util.Log
 import ceui.lisa.R
 import ceui.lisa.activities.Shaft
 import ceui.lisa.models.IllustsBean
@@ -9,7 +11,6 @@ import ceui.pixiv.download.DownloadsRegistry
 import ceui.pixiv.download.config.DownloadItems
 import ceui.pixiv.download.model.Bucket
 import ceui.pixiv.download.model.RelativePath
-import timber.log.Timber
 import java.io.BufferedInputStream
 import java.io.BufferedOutputStream
 import java.io.File
@@ -37,7 +38,7 @@ object OutPut {
             handle.onFinish()
             Common.showToast(string(R.string.save_gif_success))
         } catch (t: Throwable) {
-            Timber.e(t, "outPutGif failed")
+            Log.e(TAG, "outPutGif failed", t)
             Common.showToast(string(R.string.save_gif_failed, errMsg(t)))
         }
     }
@@ -79,7 +80,7 @@ object OutPut {
             }
             handle.onFinish()
         } catch (t: Throwable) {
-            Timber.e(t, "OutPut.writeRaw failed (bucket=$bucket path=$rawPath)")
+            Log.e(TAG, "OutPut.writeRaw failed (bucket=$bucket path=$rawPath)", t)
             Common.showToast(string(failedMsgId, errMsg(t)))
         }
     }
@@ -88,4 +89,6 @@ object OutPut {
         Shaft.getContext().getString(id, *args)
 
     private fun errMsg(t: Throwable): String = t.message ?: t.javaClass.simpleName
+
+    private const val TAG = "OutPut"
 }

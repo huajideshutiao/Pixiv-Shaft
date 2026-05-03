@@ -77,10 +77,16 @@ import ceui.lisa.notification.BaseReceiver;
 import ceui.lisa.notification.CallBackReceiver;
 import ceui.lisa.utils.Common;
 import ceui.lisa.utils.GlideUtil;
+import ceui.lisa.utils.IllustConverterKt;
 import ceui.lisa.utils.Params;
 import ceui.lisa.utils.PixivOperate;
 import ceui.lisa.utils.ShareIllust;
 import ceui.lisa.viewmodel.AppLevelViewModel;
+import ceui.loxia.Illust;
+import ceui.loxia.ObjectPool;
+import ceui.pixiv.ui.task.LoadTask;
+import ceui.pixiv.ui.task.NamedUrl;
+import ceui.pixiv.ui.task.TaskPool;
 import ceui.pixiv.utils.FastBlurTransformation;
 
 /**
@@ -93,6 +99,7 @@ public class FragmentSingleUgora extends BaseFragment<FragmentUgoraBinding> {
     private Handler frameHandler;
     private Runnable frameRunnable;
     private boolean pendingSave = false;
+    private long illustId = 0;
 
     public static FragmentSingleUgora newInstance(IllustsBean illust) {
         Bundle args = new Bundle();
@@ -102,9 +109,24 @@ public class FragmentSingleUgora extends BaseFragment<FragmentUgoraBinding> {
         return fragment;
     }
 
+    public static FragmentSingleUgora newInstance(long id) {
+        Bundle args = new Bundle();
+        args.putLong(Params.ILLUST_ID, id);
+        FragmentSingleUgora fragment = new FragmentSingleUgora();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void initBundle(Bundle bundle) {
         illust = (IllustsBean) bundle.getSerializable(Params.CONTENT);
+        illustId = bundle.getLong(Params.ILLUST_ID, 0);
+        if (illust == null && illustId != 0) {
+            Illust poolIllust = ObjectPool.INSTANCE.get(Illust.class, illustId).getValue();
+            if (poolIllust != null) {
+                illust = IllustConverterKt.toIllustsBean(poolIllust);
+            }
+        }
     }
 
     @Override
@@ -443,6 +465,34 @@ public class FragmentSingleUgora extends BaseFragment<FragmentUgoraBinding> {
                     return true;
                 } else if (menuItem.getItemId() == R.id.action_mute_illust) {
                     PixivOperate.muteIllust(illust);
+                    return true;
+                } else if (menuItem.getItemId() == R.id.action_share_image) {
+                    String imageUrl =
+                        IllustDownload.getUrl(illust, 0, Params.IMAGE_RESOLUTION_LARGE);
+                    if (imageUrl != null && !imageUrl.isEmpty()) {
+                        File cachedFile = TaskPool.peekCachedFile(imageUrl);
+                        if (cachedFile != null && cachedFile.exists()) {
+                            Common.shareImageFile(
+                                mActivity,
+                                cachedFile,
+                                illust.getId() + "_p0.jpg"
+                            );
+                        } else {
+                            NamedUrl namedUrl = new NamedUrl("", imageUrl);
+                            LoadTask task = TaskPool.INSTANCE.getLoadTask(namedUrl, true);
+                            task.getResult().observe(
+                                getViewLifecycleOwner(), file -> {
+                                    if (file != null && file.exists()) {
+                                        Common.shareImageFile(
+                                            mActivity,
+                                            file,
+                                            illust.getId() + "_p0.jpg"
+                                        );
+                                    }
+                                }
+                            );
+                        }
+                    }
                     return true;
                 }
                 return false;

@@ -1,4 +1,6 @@
-package ceui.pixiv.ui.task
+package ceui.pixiv.ui.task
+
+import android.util.Log
 
 import android.content.Context
 import androidx.fragment.app.FragmentActivity
@@ -11,7 +13,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import java.io.File
 import kotlin.invoke
 
@@ -21,7 +22,7 @@ class DownloadTask(
 ) : LoadTask(content, coroutineScope, autoStart = false) {
 
     init {
-        Timber.d("fsaasdw2 创建了一个 DownloadTask: ${content}")
+        Log.d(TAG, "fsaasdw2 创建了一个 DownloadTask: ${content}")
         coroutineScope.launch {
             val imageId = withContext(Dispatchers.IO) {
                 getImageIdInGallery(context, content.name)
@@ -43,12 +44,12 @@ class DownloadTask(
                 getImageIdInGallery(context, content.name)
             }
             if (imageId != null) {
-                Timber.d("${content.name} 图片已存在")
+                Log.d(TAG, "${content.name} 图片已存在")
                 delay(100L)
                 _status.value = TaskStatus.Finished
                 onNext.invoke()
             } else {
-                Timber.d("${content.name} 图片不已存在，准备下载")
+                Log.d(TAG, "${content.name} 图片不已存在，准备下载")
                 delay(400L)
                 execute()
             }
@@ -64,5 +65,10 @@ class DownloadTask(
             }
             super.onEnd(resultT)
         }
+    }
+
+
+    companion object {
+        private const val TAG = "DownloadTask"
     }
 }

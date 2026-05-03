@@ -1,6 +1,8 @@
 package ceui.pixiv.ui.bulk
 
+
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import ceui.lisa.R
 import ceui.lisa.activities.Shaft
@@ -14,7 +16,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 
 /**
  * **唯一调用方**：[ceui.pixiv.ui.bulk.BulkSelectV3Fragment] 确认按钮。
@@ -47,7 +48,7 @@ object LegacyBatchEnqueue {
             return
         }
         if (incomingSize > HARD_CAP) {
-            Timber.tag(TAG).w("incoming list size $incomingSize > HARD_CAP $HARD_CAP, truncating")
+            Log.w(TAG, "incoming list size $incomingSize > HARD_CAP $HARD_CAP, truncating")
             Toast.makeText(appCtx, appCtx.getString(R.string.bulk_enqueue_truncated, HARD_CAP), Toast.LENGTH_SHORT).show()
         }
         // Toast 是同步、瞬时的，OK 在主线程；后面的 filter/插入全部 IO。
@@ -95,7 +96,7 @@ object LegacyBatchEnqueue {
                     Toast.makeText(appCtx, appCtx.getString(R.string.bulk_enqueue_done, list.size), Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
-                Timber.tag(TAG).e(e, "enqueueAndToast failed")
+                Log.e(TAG, "enqueueAndToast failed", e)
                 withContext(Dispatchers.Main) {
                     Toast.makeText(appCtx, appCtx.getString(R.string.bulk_enqueue_failed, e.message ?: ""), Toast.LENGTH_SHORT).show()
                 }

@@ -1,8 +1,7 @@
 package ceui.pixiv.ui.bulk
 
 import ceui.lisa.models.IllustsBean
-import timber.log.Timber
-
+import android.util.Log
 /**
  * 跨 Activity 临时传递 illust 列表的轻量 holder（避免序列化整个 list 走 Intent extras）。
  * 原来的 DataChannel 已删除，这是替代品。
@@ -25,8 +24,10 @@ object BulkSelectStorage {
 
     fun put(items: List<IllustsBean>) {
         if (items.size > HARD_CAP) {
-            Timber.tag("BulkSelectStorage")
-                .w("incoming size ${items.size} > HARD_CAP $HARD_CAP, truncating")
+            Log.w(
+                "BulkSelectStorage",
+                "incoming size ${items.size} > HARD_CAP $HARD_CAP, truncating"
+            )
             pendingItems = items.take(HARD_CAP) // take 是 lazy 包装，但下方 toList 实化
                 .toList()
             truncatedFromOriginalSize = items.size

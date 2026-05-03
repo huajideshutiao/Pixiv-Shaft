@@ -1,14 +1,15 @@
 package ceui.pixiv.ui.novel.reader.settings
 
 import android.content.SharedPreferences
+import androidx.core.content.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import ceui.pixiv.ui.novel.reader.model.FlipMode
-import ceui.pixiv.ui.novel.reader.model.ReadingDirection
 import ceui.pixiv.ui.novel.reader.model.ImagePlacement
 import ceui.pixiv.ui.novel.reader.model.ImageScaleMode
+import ceui.pixiv.ui.novel.reader.model.ReadingDirection
 import ceui.pixiv.ui.novel.reader.model.ScreenOrientation
-import androidx.core.content.edit
+import ceui.pixiv.ui.novel.reader.settings.ReaderSettings.changes
 
 /**
  * Persistent reader settings. Backed by its own SharedPreferences instance so it stays
@@ -33,7 +34,6 @@ object ReaderSettings {
         object Theme : ChangeEvent()
         object Brightness : ChangeEvent()
         object Flip : ChangeEvent()
-        object Tts : ChangeEvent()
         object Interaction : ChangeEvent()
         object Image : ChangeEvent()
         object Reminder : ChangeEvent()
@@ -224,20 +224,6 @@ object ReaderSettings {
             emit(ChangeEvent.Interaction)
         }
 
-    var showTopProgress: Boolean
-        get() = store.getBoolean(K_SHOW_TOP_PROGRESS, true)
-        set(value) {
-            store.edit { putBoolean(K_SHOW_TOP_PROGRESS, value) }
-            emit(ChangeEvent.Layout)
-        }
-
-    var showBottomProgress: Boolean
-        get() = store.getBoolean(K_SHOW_BOTTOM_PROGRESS, true)
-        set(value) {
-            store.edit { putBoolean(K_SHOW_BOTTOM_PROGRESS, value) }
-            emit(ChangeEvent.Layout)
-        }
-
     // ---------- Image ----------
     var imagePlacement: ImagePlacement
         get() = runCatching {
@@ -264,42 +250,6 @@ object ReaderSettings {
             emit(ChangeEvent.Image)
         }
 
-    // ---------- TTS ----------
-    var ttsSpeed: Float
-        get() = store.getFloat(K_TTS_SPEED, 1f).coerceIn(0.5f, 2.0f)
-        set(value) {
-            store.edit { putFloat(K_TTS_SPEED, value.coerceIn(0.5f, 2.0f)) }
-            emit(ChangeEvent.Tts)
-        }
-
-    var ttsPitch: Float
-        get() = store.getFloat(K_TTS_PITCH, 1f).coerceIn(0.5f, 2.0f)
-        set(value) {
-            store.edit { putFloat(K_TTS_PITCH, value.coerceIn(0.5f, 2.0f)) }
-            emit(ChangeEvent.Tts)
-        }
-
-    var ttsEngine: String?
-        get() = store.getString(K_TTS_ENGINE, null)
-        set(value) {
-            if (value == null) store.edit { remove(K_TTS_ENGINE) } else store.edit { putString(K_TTS_ENGINE, value) }
-            emit(ChangeEvent.Tts)
-        }
-
-    var ttsVoice: String?
-        get() = store.getString(K_TTS_VOICE, null)
-        set(value) {
-            if (value == null) store.edit { remove(K_TTS_VOICE) } else store.edit { putString(K_TTS_VOICE, value) }
-            emit(ChangeEvent.Tts)
-        }
-
-    var ttsSleepTimerMinutes: Int
-        get() = store.getInt(K_TTS_SLEEP, 0)
-        set(value) {
-            store.edit { putInt(K_TTS_SLEEP, value) }
-            emit(ChangeEvent.Tts)
-        }
-
     // ---------- Misc ----------
     var eyeBreakReminderMinutes: Int
         get() = store.getInt(K_EYE_REMIND, 30)
@@ -313,19 +263,6 @@ object ReaderSettings {
         set(value) {
             store.edit { putBoolean(K_TOUCH_LOCKED, value) }
             emit(ChangeEvent.Interaction)
-        }
-
-    var showDebugOverlay: Boolean
-        get() = store.getBoolean(K_DEBUG_OVERLAY, false)
-        set(value) {
-            store.edit { putBoolean(K_DEBUG_OVERLAY, value) }
-            emit(ChangeEvent.Layout)
-        }
-
-    var readingSpeedCharPerMin: Int
-        get() = store.getInt(K_READING_SPEED, 400).coerceIn(50, 1500)
-        set(value) {
-            store.edit { putInt(K_READING_SPEED, value.coerceIn(50, 1500)) }
         }
 
     /** Emit a synthetic change event so observers can force a refresh. */
@@ -399,18 +336,9 @@ object ReaderSettings {
     private const val K_ORIENTATION = "r_orientation"
     private const val K_IMMERSIVE = "r_immersive"
     private const val K_KEEP_SCREEN_ON = "r_keep_screen_on"
-    private const val K_SHOW_TOP_PROGRESS = "r_show_top_progress"
-    private const val K_SHOW_BOTTOM_PROGRESS = "r_show_bottom_progress"
     private const val K_IMG_PLACEMENT = "r_img_placement"
     private const val K_IMG_SCALE = "r_img_scale"
     private const val K_PRELOAD_AHEAD = "r_preload_ahead"
-    private const val K_TTS_SPEED = "r_tts_speed"
-    private const val K_TTS_PITCH = "r_tts_pitch"
-    private const val K_TTS_ENGINE = "r_tts_engine"
-    private const val K_TTS_VOICE = "r_tts_voice"
-    private const val K_TTS_SLEEP = "r_tts_sleep"
     private const val K_EYE_REMIND = "r_eye_remind"
     private const val K_TOUCH_LOCKED = "r_touch_locked"
-    private const val K_DEBUG_OVERLAY = "r_debug_overlay"
-    private const val K_READING_SPEED = "r_reading_speed"
 }

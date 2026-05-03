@@ -1,4 +1,6 @@
-package ceui.pixiv.ui.task
+package ceui.pixiv.ui.task
+
+import android.util.Log
 
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
@@ -14,8 +16,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
-
 /**
  * 跨系列批量下载：由 FragmentNovelSeries（某作者的小说系列总览）的顶部
  * 下载按钮驱动，支持三种模式——
@@ -76,7 +76,7 @@ object CrossSeriesDownloadTask {
                         ctx.getString(R.string.cross_series_download_series_ok, title)
                     )
                 } catch (ex: Exception) {
-                    Timber.e(ex, "CrossSeriesDownloadTask: series ${seriesItem.id} failed")
+                    Log.e(TAG, "CrossSeriesDownloadTask: series ${seriesItem.id} failed", ex)
                     failures += SeriesFailure(
                         seriesTitle = title,
                         reason = ex.message ?: ex::class.java.simpleName,
@@ -141,7 +141,7 @@ object CrossSeriesDownloadTask {
                             fetchAllNovels(seriesItem.id.toLong())
                         }
                     } catch (ex: Exception) {
-                        Timber.e(ex, "fetchAllNovels failed for series ${seriesItem.id}")
+                        Log.e(TAG, "fetchAllNovels failed for series ${seriesItem.id}", ex)
                         emptyList()
                     }
 
@@ -168,7 +168,7 @@ object CrossSeriesDownloadTask {
                             }
                             out.append(body).append(lineSep)
                         } catch (ex: Exception) {
-                            Timber.e(ex, "chapter ${novel.id} failed (series ${seriesItem.id})")
+                            Log.e(TAG, "chapter ${novel.id} failed (series ${seriesItem.id})", ex)
                             skippedChapters++
                         }
                         // Pixiv rate-limit friendly, same as existing tasks
@@ -191,7 +191,7 @@ object CrossSeriesDownloadTask {
                 }
                 onFinished(ok, skippedChapters)
             } catch (ex: Exception) {
-                Timber.e(ex, "CrossSeriesDownloadTask.runAllMergedOne failed")
+                Log.e(TAG, "CrossSeriesDownloadTask.runAllMergedOne failed", ex)
                 Toaster.show(ex.message ?: ex::class.java.simpleName)
                 onFinished(false, -1)
             }
@@ -239,7 +239,7 @@ object CrossSeriesDownloadTask {
             try {
                 body.append(fetchChapterBody(novel, cPos)).append(lineSep)
             } catch (ex: Exception) {
-                Timber.e(ex, "chapter ${novel.id} failed in PerSeries mode")
+                Log.e(TAG, "chapter ${novel.id} failed in PerSeries mode", ex)
                 // swallow — the file still saves, just with fewer chapters
             }
             if (cPos < allNovels.size) delay(1500L)
@@ -272,7 +272,7 @@ object CrossSeriesDownloadTask {
             val resp = try {
                 Client.appApi.getNovelSeries(seriesId, lastOrder)
             } catch (ex: Exception) {
-                Timber.e(ex, "getNovelSeries pagination failed at lastOrder=$lastOrder")
+                Log.e(TAG, "getNovelSeries pagination failed at lastOrder=$lastOrder", ex)
                 break
             }
             val page = resp.novels.orEmpty()
@@ -319,4 +319,6 @@ object CrossSeriesDownloadTask {
         val base = if (sanitized.isEmpty()) "user_$authorId" else sanitized
         return "${base}_全系列合集_U${authorId}.txt"
     }
+
+    private const val TAG = "CrossSeriesDownloadTask"
 }

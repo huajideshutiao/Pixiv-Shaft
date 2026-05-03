@@ -37,6 +37,7 @@ public class Params {
     public static final String USER_KEY      = "pixiv_shaft_local_user";
     public static final String PAGE_UUID     = "page_uuid";
     public static final String POSITION      = "position";
+    public static final String SEED = "artworks_map_seed";
     public static final String IS_LIKED      = "is liked";
     public static final String IS_POPULAR    = "is popular";
     public static final String LAST_CLASS    = "last class";

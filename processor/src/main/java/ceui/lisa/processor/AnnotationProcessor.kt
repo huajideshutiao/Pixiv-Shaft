@@ -3,7 +3,6 @@ package ceui.lisa.processor
 import ceui.lisa.annotations.ItemHolder
 import com.google.auto.service.AutoService
 import java.io.File
-import java.lang.Exception
 import javax.annotation.processing.AbstractProcessor
 import javax.annotation.processing.Processor
 import javax.annotation.processing.RoundEnvironment
@@ -119,7 +118,6 @@ class FileGenerator : AbstractProcessor() {
         content.append("object ViewHolderFactory {\n")
         holderEntries.forEach {
             content.append("\n")
-            logger.n("${it}")
             content.append("    private fun ${it.viewHolder}Builder(parent: ViewGroup): ListItemViewHolder<out ViewBinding, out ListItemHolder> {")
             content.append("\n")
             content.append("        val binding = ${it.binding}.inflate(\n" +

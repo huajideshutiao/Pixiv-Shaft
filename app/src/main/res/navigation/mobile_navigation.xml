@@ -171,16 +171,6 @@
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_artwork"
-        android:name="ceui.pixiv.ui.detail.ArtworkFragment"
-        tools:layout="@layout/fragment_pixiv_list">
-
-        <argument
-            android:name="illust_id"
-            app:argType="long" />
-    </fragment>
-
-    <fragment
         android:id="@+id/navigation_novel_text"
         android:name="ceui.pixiv.ui.novel.NovelTextFragment"
         tools:layout="@layout/fragment_novel_text">
@@ -421,19 +411,6 @@
         <argument
             android:name="display_name"
             app:argType="string" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/navigation_paged_img_urls"
-        android:name="ceui.pixiv.ui.works.PagedImgUrlFragment">
-
-        <argument
-            android:name="illust_id"
-            app:argType="long" />
-
-        <argument
-            android:name="index"
-            app:argType="integer" />
     </fragment>
 
 

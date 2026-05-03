@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.text.TextUtils;
-import android.view.View;
 
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
@@ -25,8 +24,6 @@ import com.scwang.smart.refresh.header.FalsifyFooter;
 import com.scwang.smart.refresh.header.FalsifyHeader;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.Locale;
 
@@ -48,7 +45,6 @@ import ceui.lisa.utils.Local;
 import ceui.lisa.utils.Params;
 import ceui.lisa.utils.PixivSearchParamUtil;
 import ceui.lisa.utils.Settings;
-import ceui.lisa.utils.UserFolderNameUtil;
 import ceui.loxia.Client;
 import ceui.pixiv.download.DownloadsRegistry;
 import ceui.pixiv.download.config.OverwritePolicy;
@@ -145,6 +141,42 @@ public class FragmentSettings extends SwipeFragment<FragmentSettingsBinding> {
                 startActivity(intent);
             });
             baseBind.directConnectRela.setOnClickListener(v -> baseBind.autoDns.performClick());
+
+            //自定义图片代理
+            baseBind.usePixivCat.setChecked(Shaft.sSettings.isUsePixivCat());
+            baseBind.usePixivCat.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                Shaft.sSettings.setUsePixivCat(isChecked);
+                Common.showToast(getString(R.string.string_428), 2);
+                Local.setSettings(Shaft.sSettings);
+                updateImageProxyUrlUI();
+            });
+            baseBind.usePixivCatRela.setOnClickListener(v -> baseBind.usePixivCat.performClick());
+
+            updateImageProxyUrlUI();
+            baseBind.imageProxyUrlRela.setOnClickListener(v -> {
+                final QMUIDialog.EditTextDialogBuilder builder =
+                    new QMUIDialog.EditTextDialogBuilder(mActivity);
+                builder.setTitle(getString(R.string.image_proxy_url_dialog_title))
+                    .setPlaceholder(getString(R.string.image_proxy_url_dialog_hint))
+                    .setSkinManager(QMUISkinManager.defaultInstance(mContext))
+                    .addAction(getString(R.string.string_187), (dialog, index) -> dialog.dismiss())
+                    .addAction(
+                        R.string.sure, (dialog, index) -> {
+                            CharSequence input = builder.getEditText().getText();
+                            String url = input != null ? input.toString().trim() : "";
+                            Shaft.sSettings.setImageProxyUrl(url);
+                            Local.setSettings(Shaft.sSettings);
+                            updateImageProxyUrlUI();
+                            Common.showToast(getString(R.string.string_428), 2);
+                            dialog.dismiss();
+                        }
+                    )
+                    .create().show();
+                String currentUrl = Shaft.sSettings.getImageProxyUrl();
+                if (!currentUrl.isEmpty()) {
+                    builder.getEditText().setText(currentUrl);
+                }
+            });
 
             //缩略图是否显示大图
             baseBind.showLargeThumbnailImage.setChecked(Shaft.sSettings.isShowLargeThumbnailImage());
@@ -449,16 +481,6 @@ public class FragmentSettings extends SwipeFragment<FragmentSettingsBinding> {
 
         // 4. 下载
         {
-            // 以下行已被统一的"下载路径与文件名"设置页吸收——通过模板变量 / 条件块 /
-            // 按 bucket 的存储后端表达，用户应去新页面调整。这里直接隐藏旧入口，
-            // 避免两套并存互相覆盖。剩余保留的：长按下载开关、下载限制（WiFi）、
-            // 自动点赞——这些与路径 / 文件名无关，是 UX / 网络行为开关。
-            baseBind.r18DivideSaveRela.setVisibility(View.GONE);
-            baseBind.saveForSeparateAuthorRela.setVisibility(View.GONE);
-            baseBind.downloadWayRela.setVisibility(View.GONE);
-            baseBind.singleIllustPath.setVisibility(View.GONE);
-            baseBind.novelPathRela.setVisibility(View.GONE);
-
             baseBind.r18DivideSave.setChecked(Shaft.sSettings.isR18DivideSave());
             baseBind.r18DivideSave.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 Shaft.sSettings.setR18DivideSave(isChecked);
@@ -682,24 +704,6 @@ public class FragmentSettings extends SwipeFragment<FragmentSettingsBinding> {
                     ).show();
             });
 
-            //按作者保存到单独文件夹
-            baseBind.saveForSeparateAuthor.setText(UserFolderNameUtil.getCurrentStatusName());
-            baseBind.saveForSeparateAuthor.setOnClickListener(v -> new QMUIDialog.CheckableDialogBuilder(mActivity).setCheckedIndex(Shaft.sSettings.getSaveForSeparateAuthorStatus())
-                .setSkinManager(QMUISkinManager.defaultInstance(mContext)).addItems(
-                    UserFolderNameUtil.USER_FOLDER_NAME_NAMES,
-                    (dialog, which) -> {
-                        if (which == Shaft.sSettings.getSaveForSeparateAuthorStatus()) {
-                            Common.showLog("什么也不做");
-                        } else {
-                            Shaft.sSettings.setSaveForSeparateAuthorStatus(which);
-                            baseBind.saveForSeparateAuthor.setText(UserFolderNameUtil.getCurrentStatusName());
-                            Local.setSettings(Shaft.sSettings);
-                        }
-                        dialog.dismiss();
-                    }
-                ).show());
-            baseBind.saveForSeparateAuthorRela.setOnClickListener(v -> baseBind.saveForSeparateAuthor.performClick());
-
             //插画详情长按下载
             baseBind.illustLongPressDownload.setChecked(Shaft.sSettings.isIllustLongPressDownload());
             baseBind.illustLongPressDownload.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -730,45 +734,6 @@ public class FragmentSettings extends SwipeFragment<FragmentSettingsBinding> {
                     }
                 ).show());
             baseBind.downloadLimitTypeRela.setOnClickListener(v -> baseBind.downloadLimitType.performClick());
-
-            // 下载模式
-            String[] downloadWays =
-                new String[]{getString(R.string.string_363), getString(R.string.string_364)};
-            baseBind.downloadWay.setText(downloadWays[Shaft.sSettings.getDownloadWay()]);
-            baseBind.downloadWayRela.setOnClickListener(v -> new QMUIDialog.CheckableDialogBuilder(mActivity).setCheckedIndex(Shaft.sSettings.getDownloadWay())
-                .setSkinManager(QMUISkinManager.defaultInstance(mContext)).addItems(
-                    downloadWays, (dialog, which) -> {
-                        if (which == Shaft.sSettings.getDownloadWay()) {
-                            Common.showLog("什么也不做");
-                        } else {
-                            Shaft.sSettings.setDownloadWay(which);
-                            baseBind.downloadWay.setText(downloadWays[which]);
-                            Local.setSettings(Shaft.sSettings);
-                            updateIllustPathUI();
-                        }
-                        dialog.dismiss();
-                    }
-                ).show());
-
-            updateIllustPathUI();
-            if (mActivity instanceof BaseActivity) {
-                ((BaseActivity) mActivity).setFeedBack(this::updateIllustPathUI);
-            }
-            baseBind.singleIllustPath.setOnClickListener(v -> {
-                if (Shaft.sSettings.getDownloadWay() == 0 && Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                    Common.showToast(getString(R.string.string_329), true);
-                } else {
-                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-                    if (!TextUtils.isEmpty(Shaft.sSettings.getRootPathUri()) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        Uri start = Uri.parse(Shaft.sSettings.getRootPathUri());
-                        intent.putExtra(EXTRA_INITIAL_URI, start);
-                    }
-                    mActivity.startActivityForResult(intent, BaseActivity.ASK_URI);
-                }
-            });
-
-            baseBind.novelPath.setText(Settings.FILE_PATH_NOVEL);
-            baseBind.novelPathRela.setOnClickListener(v -> Common.showToast(getString(R.string.string_374), true));
         }
 
         // 5. 浏览与收藏 - 收藏交互部分
@@ -942,19 +907,10 @@ public class FragmentSettings extends SwipeFragment<FragmentSettingsBinding> {
         baseBind.colorSelect.setText(getString(FragmentColors.COLOR_NAME_CODES[index]));
     }
 
-    private void updateIllustPathUI() {
-        if (Shaft.sSettings.getDownloadWay() == 1) {
-            try {
-                baseBind.illustPath.setText(URLDecoder.decode(
-                    Shaft.sSettings.getRootPathUri(),
-                    "utf-8"
-                ));
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-        } else {
-            baseBind.illustPath.setText(Shaft.sSettings.getIllustPath());
-        }
+    private void updateImageProxyUrlUI() {
+        String url = Shaft.sSettings.getImageProxyUrl();
+        baseBind.imageProxyUrl.setText(url);
+        baseBind.imageProxyUrlValue.setText(url);
     }
 
     @Override

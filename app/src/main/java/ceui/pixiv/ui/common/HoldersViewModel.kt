@@ -1,5 +1,8 @@
 package ceui.pixiv.ui.common
 
+
+import android.util.Log
+
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -7,8 +10,6 @@ import androidx.lifecycle.viewModelScope
 import ceui.loxia.RefreshHint
 import ceui.loxia.RefreshState
 import kotlinx.coroutines.launch
-import timber.log.Timber
-
 open class HoldersViewModel : ViewModel(), HoldersContainer, RefreshOwner, LoadMoreOwner {
 
     protected val _itemHolders = MutableLiveData<List<ListItemHolder>>()
@@ -29,7 +30,7 @@ open class HoldersViewModel : ViewModel(), HoldersContainer, RefreshOwner, LoadM
                 refreshImpl(hint)
             } catch (ex: Exception) {
                 _refreshState.value = RefreshState.ERROR(ex)
-                Timber.e(ex)
+                Log.e(TAG, "refresh error", ex)
             }
         }
     }
@@ -41,7 +42,7 @@ open class HoldersViewModel : ViewModel(), HoldersContainer, RefreshOwner, LoadM
                 loadMoreImpl()
             } catch (ex: Exception) {
                 _refreshState.value = RefreshState.ERROR(ex)
-                Timber.e(ex)
+                Log.e(TAG, "loadMore error", ex)
             }
         }
     }
@@ -54,4 +55,9 @@ open class HoldersViewModel : ViewModel(), HoldersContainer, RefreshOwner, LoadM
 
     override val holders: LiveData<List<ListItemHolder>>
         get() = _itemHolders
+
+
+    companion object {
+        private const val TAG = "HoldersViewModel"
+    }
 }

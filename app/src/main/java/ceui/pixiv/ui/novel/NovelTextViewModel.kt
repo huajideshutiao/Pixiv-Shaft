@@ -1,13 +1,12 @@
 package ceui.pixiv.ui.novel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import ceui.lisa.activities.Shaft
 import ceui.lisa.fragments.WebNovelParser
 import ceui.loxia.Client
-import ceui.loxia.Novel
 import ceui.loxia.ObjectPool
 import ceui.loxia.RefreshHint
 import ceui.loxia.RefreshState
@@ -21,7 +20,6 @@ import ceui.pixiv.ui.novel.reader.paginate.ContentParser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class NovelTextViewModel(
     private val novelId: Long,
@@ -74,7 +72,7 @@ class NovelTextViewModel(
                 NovelTextCache.put(novelId, NovelTextCache.Entry(web, tokens))
                 _webNovel.postValue(web)
             }.onFailure {
-                Timber.tag("NovelTextViewModel").w(it, "prewarm failed novelId=$novelId")
+                Log.w("NovelTextViewModel", "prewarm failed novelId=$novelId", it)
             }
         }
     }

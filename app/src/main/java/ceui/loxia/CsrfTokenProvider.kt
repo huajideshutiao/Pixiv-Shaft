@@ -1,12 +1,13 @@
 package ceui.loxia
 
-import ceui.pixiv.session.SessionManager
+
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.core.content.edit
 import ceui.lisa.activities.Shaft
+import ceui.pixiv.session.SessionManager
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import timber.log.Timber
 
 /**
  * Fetches and caches the x-csrf-token required by Pixiv web POST APIs.
@@ -38,9 +39,9 @@ object CsrfTokenProvider {
     fun fetch(): String? {
         return try {
             val cookies = store.getString(SessionManager.COOKIE_KEY, "") ?: ""
-            Timber.d("CsrfToken: cookie length=${cookies.length}, empty=${cookies.isEmpty()}")
+            Log.d(TAG, "CsrfToken: cookie length=${cookies.length}, empty=${cookies.isEmpty()}")
             if (cookies.isEmpty()) {
-                Timber.w("CsrfToken: no web cookie stored, cannot fetch token")
+                Log.w(TAG, "CsrfToken: no web cookie stored, cannot fetch token")
                 return null
             }
             val request = Request.Builder()
@@ -49,26 +50,29 @@ object CsrfTokenProvider {
                 .addHeader("User-Agent", ClientManager.WEB_USER_AGENT)
                 .build()
             val response = client.newCall(request).execute()
-            Timber.d("CsrfToken: HTTP ${response.code}, url=${response.request.url}")
+            Log.d(TAG, "CsrfToken: HTTP ${response.code}, url=${response.request.url}")
             val body = response.use { it.body?.string() }
             if (body == null) {
-                Timber.w("CsrfToken: response body is null")
+                Log.w(TAG, "CsrfToken: response body is null")
                 return null
             }
-            Timber.d("CsrfToken: body length=${body.length}, has meta-global-data=${body.contains("meta-global-data")}")
+            Log.d(
+                TAG,
+                "CsrfToken: body length=${body.length}, has meta-global-data=${body.contains("meta-global-data")}"
+            )
             val token = parseToken(body)
             if (token != null) {
-                Timber.d("CsrfToken: parsed token=${token.take(8)}...")
+                Log.d(TAG, "CsrfToken: parsed token=${token.take(8)}...")
                 cached = token
                 store.edit { putString(KEY_CSRF, token) }
             } else {
                 // 打印 HTML 片段帮助调试
                 val snippet = body.take(2000)
-                Timber.w("CsrfToken: failed to parse token from HTML, snippet:\n$snippet")
+                Log.w(TAG, "CsrfToken: failed to parse token from HTML, snippet:\n$snippet")
             }
             token
         } catch (e: Exception) {
-            Timber.e(e, "CsrfToken: fetch exception")
+            Log.e(TAG, "CsrfToken: fetch exception", e)
             null
         }
     }
@@ -92,7 +96,7 @@ object CsrfTokenProvider {
         // Pattern 3: 兜底，全文搜索 "token":"32位hex"
         tokenRegex.find(html)?.let { return it.groupValues[1] }
 
-        Timber.w("CsrfToken: no token found in HTML (length=${html.length})")
+        Log.w(TAG, "CsrfToken: no token found in HTML (length=${html.length})")
         return null
     }
 
@@ -100,4 +104,6 @@ object CsrfTokenProvider {
         cached = null
         store.edit { remove(KEY_CSRF) }
     }
+
+    private const val TAG = "CsrfTokenProvider"
 }

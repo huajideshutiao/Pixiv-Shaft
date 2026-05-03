@@ -1,4 +1,6 @@
-package ceui.pixiv.ui.task
+package ceui.pixiv.ui.task
+
+import android.util.Log
 
 import ceui.lisa.R
 import ceui.lisa.fragments.WebNovelParser
@@ -16,8 +18,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
-
 class DownloadNovelTask(
     private val coroutineScope: CoroutineScope,
     private val novel: Novel,
@@ -34,12 +34,12 @@ class DownloadNovelTask(
                 getTxtFileIdInDownloads(context, fileName)
             }
             if (imageId != null) {
-                Timber.d("${fileName} 文件已存在")
+                Log.d(TAG, "${fileName} 文件已存在")
                 delay(100L)
                 _status.value = TaskStatus.Finished
                 onNext.invoke()
             } else {
-                Timber.d("${fileName} 文件不已存在，准备下载")
+                Log.d(TAG, "${fileName} 文件不已存在，准备下载")
                 execute()
             }
         }
@@ -111,6 +111,7 @@ class DownloadNovelTask(
 
     // 定义替换方法，将 <br> 替换为换行符
     companion object {
+        private const val TAG = "DownloadNovelTask"
         fun replaceBrWithNewLine(input: String?): String {
             return input
                 ?.replace(Regex("<br\\s*/?>"), "\n") // 替换 <br> 和 <br/> 为换行符

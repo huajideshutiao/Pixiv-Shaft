@@ -1,4 +1,6 @@
-package ceui.lisa.fragments
+package ceui.lisa.fragments
+
+import android.util.Log
 
 import android.content.Intent
 import android.graphics.Color
@@ -39,7 +41,6 @@ import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import java.util.UUID
 
 private const val EXTRACT_TOKEN_JS = """
@@ -124,7 +125,7 @@ class StreetMainFragment : SwipeFragment<FragmentBaseListBinding>() {
      * 让 WebView 自行处理 Cloudflare JS Challenge，然后通过 evaluateJavascript 提取 token。
      */
     private fun fetchCsrfViaWebView() {
-        Timber.d("StreetMain: have cookie but no CSRF, fetching via WebView")
+        Log.d(TAG, "StreetMain: have cookie but no CSRF, fetching via WebView")
         baseBind.toolbarTitle.text = getString(R.string.street_title)
 
         val webView = WebView(mContext).apply {
@@ -150,7 +151,7 @@ class StreetMainFragment : SwipeFragment<FragmentBaseListBinding>() {
                 if (url?.contains("www.pixiv.net") != true) return
                 view?.evaluateJavascript(EXTRACT_TOKEN_JS) { result ->
                     val token = result?.trim('"')?.takeIf { it.matches(Regex("[a-f0-9]{32}")) }
-                    Timber.d("StreetMain: evaluateJavascript token=${token?.take(8)}")
+                    Log.d(TAG, "StreetMain: evaluateJavascript token=${token?.take(8)}")
                     if (token != null) {
                         prefs.edit { putString("web-api-csrf-token", token) }
                     }
@@ -214,14 +215,14 @@ class StreetMainFragment : SwipeFragment<FragmentBaseListBinding>() {
         webView.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
-                Timber.d("StreetMain: WebView onPageFinished url=$url")
+                Log.d(TAG, "StreetMain: WebView onPageFinished url=$url")
                 if (!cookieSaved) {
                     checkAndSaveCookie()
                 } else if (url?.contains("www.pixiv.net") == true) {
                     // 登录完成后 WebView 加载了首页，用 JS 提取 CSRF token
                     view?.evaluateJavascript(EXTRACT_TOKEN_JS) { result ->
                         val token = result?.trim('"')?.takeIf { it.matches(Regex("[a-f0-9]{32}")) }
-                        Timber.d("StreetMain: login evaluateJavascript token=${token?.take(8)}")
+                        Log.d(TAG, "StreetMain: login evaluateJavascript token=${token?.take(8)}")
                         if (token != null) {
                             prefs.edit { putString("web-api-csrf-token", token) }
                         }
@@ -251,7 +252,7 @@ class StreetMainFragment : SwipeFragment<FragmentBaseListBinding>() {
         if (!cookie.contains("PHPSESSID")) return
 
         cookieSaved = true
-        Timber.d("StreetMain: PHPSESSID found, saving cookie")
+        Log.d(TAG, "StreetMain: PHPSESSID found, saving cookie")
         prefs.edit { putString(SessionManager.COOKIE_KEY, cookie) }
         CsrfTokenProvider.clear()
 
@@ -366,5 +367,10 @@ class StreetMainFragment : SwipeFragment<FragmentBaseListBinding>() {
                 })
             }
         }
+    }
+
+
+    companion object {
+        private const val TAG = "StreetMainFragment"
     }
 }

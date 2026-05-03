@@ -1,6 +1,7 @@
 package ceui.lisa.adapters;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,8 +22,6 @@ import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
-import timber.log.Timber;
-
 import ceui.lisa.R;
 import ceui.lisa.activities.BaseActivity;
 import ceui.lisa.activities.Shaft;
@@ -40,6 +39,8 @@ import ceui.pixiv.ui.task.TaskPool;
 import ceui.pixiv.ui.task.TaskStatus;
 
 public class IllustAdapter extends AbstractIllustAdapter<ViewHolder<RecyIllustDetailBinding>> {
+
+    private static final String TAG = "IllustAdapter";
 
     private final int maxHeight;
     private final FragmentActivity mActivity;
@@ -120,12 +121,12 @@ public class IllustAdapter extends AbstractIllustAdapter<ViewHolder<RecyIllustDe
             }
 
             int pageCount = allIllust.getPage_count();
-            Timber.tag("V3MultiP").d(
-                "[IllustAdapter.bind pos=0] illustId=%d, page_count=%d, iw=%d, ih=%d, " +
-                    "imageSize(=screenW)=%d, maxHeight=%d, branch=%s, targetHeight=%d, " +
-                    "scaleType=%s, changeSize=%b, adapterClass=%s, getItemCount=%d",
-                allIllust.getId(), pageCount, iw, ih, imageSize, maxHeight, branchTag,
-                targetHeight, scaleType, changeSize, this.getClass().getSimpleName(), getItemCount()
+            Log.d(
+                "V3MultiP",
+                "[IllustAdapter.bind pos=0] illustId=" + allIllust.getId() + ", page_count=" + pageCount + ", iw=" + iw + ", ih=" + ih + ", " +
+                    "imageSize(=screenW)=" + imageSize + ", maxHeight=" + maxHeight + ", branch=" + branchTag + ", targetHeight=" + targetHeight + ", " +
+                    "scaleType=" + scaleType + ", changeSize=" + changeSize + ", adapterClass=" + this.getClass()
+                    .getSimpleName() + ", getItemCount=" + getItemCount()
             );
 
             holder.baseBind.illust.setScaleType(scaleType);
@@ -135,9 +136,9 @@ public class IllustAdapter extends AbstractIllustAdapter<ViewHolder<RecyIllustDe
             holder.baseBind.illust.setLayoutParams(params);
             loadIllust(holder, position, changeSize);
         } else {
-            Timber.tag("V3MultiP").d(
-                "[IllustAdapter.bind pos=%d] non-first page, illustId=%d",
-                position, allIllust.getId()
+            Log.d(
+                "V3MultiP",
+                "[IllustAdapter.bind pos=" + position + "] non-first page, illustId=" + allIllust.getId()
             );
             holder.baseBind.illust.setScaleType(ImageView.ScaleType.CENTER_CROP);
             loadIllust(holder, position, true);
@@ -176,16 +177,25 @@ public class IllustAdapter extends AbstractIllustAdapter<ViewHolder<RecyIllustDe
         LifecycleOwner lifecycleOwner = mFragment.getViewLifecycleOwner();
         String shortUrl = imageUrl.substring(imageUrl.lastIndexOf('/') + 1);
         LoadTask task = TaskPool.INSTANCE.getLoadTask(new NamedUrl("", imageUrl), true);
-        Timber.d("[IllustAdapter] loadIllust pos=%d, isOriginal=%b, taskId=%d, taskStatus=%s, url=%s",
-                position, isLoadOriginalImage, task.getTaskId(), task.getStatus().getValue(), shortUrl);
+        Log.d(
+            TAG,
+            "[IllustAdapter] loadIllust pos=" + position + ", isOriginal=" + isLoadOriginalImage + ", taskId=" + task.getTaskId() + ", taskStatus=" + task.getStatus()
+                .getValue() + ", url=" + shortUrl
+        );
 
         task.getStatus().observe(lifecycleOwner, status -> {
             boolean tagMatch = imageUrl.equals(holder.baseBind.illust.getTag(R.id.tag_image_url));
             if (!tagMatch) {
-                Timber.d("[IllustAdapter] status STALE callback ignored. pos=%d, status=%s, url=%s", position, status, shortUrl);
+                Log.d(
+                    TAG,
+                    "[IllustAdapter] status STALE callback ignored. pos=" + position + ", status=" + status + ", url=" + shortUrl
+                );
                 return;
             }
-            Timber.d("[IllustAdapter] status -> %s, pos=%d, url=%s", status, position, shortUrl);
+            Log.d(
+                TAG,
+                "[IllustAdapter] status -> " + status + ", pos=" + position + ", url=" + shortUrl
+            );
             if (status instanceof TaskStatus.Executing) {
                 holder.baseBind.progressLayout.donutProgress.setVisibility(View.VISIBLE);
                 holder.baseBind.progressLayout.donutProgress.setProgress(
@@ -196,22 +206,33 @@ public class IllustAdapter extends AbstractIllustAdapter<ViewHolder<RecyIllustDe
             } else if (status instanceof TaskStatus.Error) {
                 holder.baseBind.progressLayout.donutProgress.setVisibility(View.GONE);
                 holder.baseBind.reload.setVisibility(View.VISIBLE);
-                Timber.w("[IllustAdapter] showing reload button. pos=%d, url=%s", position, shortUrl);
+                Log.w(
+                    TAG,
+                    "[IllustAdapter] showing reload button. pos=" + position + ", url=" + shortUrl
+                );
             }
         });
 
         task.getResult().observe(lifecycleOwner, file -> {
             if (file == null) {
-                Timber.d("[IllustAdapter] result NULL callback. pos=%d, url=%s", position, shortUrl);
+                Log.d(
+                    TAG,
+                    "[IllustAdapter] result NULL callback. pos=" + position + ", url=" + shortUrl
+                );
                 return;
             }
             boolean tagMatch = imageUrl.equals(holder.baseBind.illust.getTag(R.id.tag_image_url));
             if (!tagMatch) {
-                Timber.d("[IllustAdapter] result STALE callback ignored. pos=%d, url=%s", position, shortUrl);
+                Log.d(
+                    TAG,
+                    "[IllustAdapter] result STALE callback ignored. pos=" + position + ", url=" + shortUrl
+                );
                 return;
             }
-            Timber.d("[IllustAdapter] result -> file=%s, exists=%b, size=%d, pos=%d, url=%s",
-                    file.getAbsolutePath(), file.exists(), file.length(), position, shortUrl);
+            Log.d(
+                TAG,
+                "[IllustAdapter] result -> file=" + file.getAbsolutePath() + ", exists=" + file.exists() + ", size=" + file.length() + ", pos=" + position + ", url=" + shortUrl
+            );
             holder.baseBind.reload.setVisibility(View.GONE);
             holder.baseBind.progressLayout.donutProgress.setVisibility(View.GONE);
 
@@ -225,7 +246,11 @@ public class IllustAdapter extends AbstractIllustAdapter<ViewHolder<RecyIllustDe
                         @Override
                         public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
                             if (!imageUrl.equals(holder.baseBind.illust.getTag(R.id.tag_image_url))) return false;
-                            Timber.w(e, "[IllustAdapter] Glide bitmap FAIL. pos=%d, model=%s, url=%s", position, model, shortUrl);
+                            Log.w(
+                                TAG,
+                                "[IllustAdapter] Glide bitmap FAIL. pos=" + position + ", model=" + model + ", url=" + shortUrl,
+                                e
+                            );
                             holder.baseBind.reload.setVisibility(View.VISIBLE);
                             holder.baseBind.progressLayout.donutProgress.setVisibility(View.GONE);
                             return false;
@@ -234,8 +259,10 @@ public class IllustAdapter extends AbstractIllustAdapter<ViewHolder<RecyIllustDe
                         @Override
                         public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
                             if (!imageUrl.equals(holder.baseBind.illust.getTag(R.id.tag_image_url))) return false;
-                            Timber.d("[IllustAdapter] Glide bitmap OK. pos=%d, %dx%d, dataSource=%s, url=%s",
-                                    position, resource.getWidth(), resource.getHeight(), dataSource.name(), shortUrl);
+                            Log.d(
+                                TAG,
+                                "[IllustAdapter] Glide bitmap OK. pos=" + position + ", " + resource.getWidth() + "x" + resource.getHeight() + ", dataSource=" + dataSource.name() + ", url=" + shortUrl
+                            );
                             holder.baseBind.reload.setVisibility(View.GONE);
                             holder.baseBind.progressLayout.donutProgress.setVisibility(View.GONE);
                             if (isLoadOriginalImage) {

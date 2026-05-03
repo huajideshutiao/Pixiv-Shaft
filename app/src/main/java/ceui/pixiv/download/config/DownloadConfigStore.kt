@@ -1,12 +1,12 @@
-package ceui.pixiv.download.config
+package ceui.pixiv.download.config
+
+import android.util.Log
 
 import ceui.lisa.R
 import ceui.lisa.activities.Shaft
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import com.hjq.toast.Toaster
-import timber.log.Timber
-
 /**
  * SharedPreferences-backed persistence for [DownloadConfig].
  *
@@ -42,7 +42,7 @@ class DownloadConfigStore(
         val raw = try {
             store.getString(KEY, null)
         } catch (t: Throwable) {
-            Timber.e(t, "DownloadConfigStore.load: SharedPreferences getString failed")
+            Log.e(TAG, "DownloadConfigStore.load: SharedPreferences getString failed", t)
             return LoadResult.Corrupt(fallback(), t)
         } ?: return LoadResult.FirstRun(fallback())
         return try {
@@ -59,7 +59,7 @@ class DownloadConfigStore(
         try {
             store.edit { putString(KEY, DownloadConfigJson.toJson(config)) }
         } catch (t: Throwable) {
-            Timber.e(t, "DownloadConfigStore.save failed")
+            Log.e(TAG, "DownloadConfigStore.save failed", t)
             Toaster.show(
                 Shaft.getContext().getString(
                     R.string.download_settings_save_failed,
@@ -80,6 +80,7 @@ class DownloadConfigStore(
     }
 
     companion object {
+        private const val TAG = "DownloadConfigStore"
         const val DEFAULT_PREFS_NAME = "download_config_v1"
         private const val KEY = "config"
     }

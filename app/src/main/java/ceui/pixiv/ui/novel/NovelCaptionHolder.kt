@@ -1,4 +1,6 @@
-package ceui.pixiv.ui.novel
+package ceui.pixiv.ui.novel
+
+import android.util.Log
 
 import androidx.core.text.HtmlCompat
 import androidx.core.view.isVisible
@@ -14,9 +16,6 @@ import ceui.pixiv.ui.common.ListItemViewHolder
 import ceui.pixiv.ui.common.NovelActionReceiver
 import ceui.pixiv.utils.extractPixivId
 import ceui.pixiv.utils.setOnClick
-import timber.log.Timber
-
-
 class NovelCaptionHolder(val novelId: Long) : ListItemHolder() {
     override fun getItemId(): Long {
         return novelId
@@ -50,7 +49,7 @@ class NovelCaptionViewHolder(bd: CellNovelCaptionBinding) : ListItemViewHolder<C
                             binding.caption.findActionReceiverOrNull<IllustCardActionReceiver>()?.visitIllustById(id)
                         }
                     }
-                    Timber.d("sdasdwq2 ${info}")
+                    Log.d(TAG, "sdasdwq2 ${info}")
                 }
                 binding.caption.text = HtmlCompat.fromHtml(normalizedCaption, HtmlCompat.FROM_HTML_MODE_COMPACT)
                 // 任务 #5：移除独立"复制简介"提示，点击简介正文直接复制纯文本。
@@ -63,5 +62,10 @@ class NovelCaptionViewHolder(bd: CellNovelCaptionBinding) : ListItemViewHolder<C
                 binding.caption.isVisible = false
             }
         }
+    }
+
+
+    companion object {
+        private const val TAG = "NovelCaptionHolder"
     }
 }

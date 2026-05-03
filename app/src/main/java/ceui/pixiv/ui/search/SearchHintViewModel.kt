@@ -1,4 +1,6 @@
-package ceui.pixiv.ui.search
+package ceui.pixiv.ui.search
+
+import android.util.Log
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -9,8 +11,6 @@ import ceui.loxia.Client
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import timber.log.Timber
-
 class SearchHintViewModel : ViewModel() {
 
     private val _hints = MutableLiveData<List<ListTrendingtag.TrendTagsBean>>(emptyList())
@@ -39,7 +39,7 @@ class SearchHintViewModel : ViewModel() {
                 _currentKeyword.value = lastWord
                 _hintsVisible.value = list.isNotEmpty()
             } catch (e: Exception) {
-                Timber.e(e, "searchAutocomplete failed for word=$lastWord")
+                Log.e(TAG, "searchAutocomplete failed for word=$lastWord", e)
                 _hintsVisible.value = false
             }
         }
@@ -63,6 +63,7 @@ class SearchHintViewModel : ViewModel() {
     }
 
     companion object {
+        private const val TAG = "SearchHintViewModel"
         private const val DEBOUNCE_MS = 400L
     }
 }

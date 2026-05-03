@@ -1,4 +1,6 @@
-package ceui.pixiv.ui.common
+package ceui.pixiv.ui.common
+
+import android.util.Log
 
 import android.view.View
 import androidx.core.view.isVisible
@@ -16,7 +18,6 @@ import ceui.pixiv.utils.ppppx
 import ceui.pixiv.utils.screenWidth
 import ceui.pixiv.utils.setOnClick
 import com.bumptech.glide.Glide
-import timber.log.Timber
 import kotlin.math.roundToInt
 
 class IllustCardHolder(val illust: Illust, val isBlocked: Boolean = false) : ListItemHolder() {
@@ -61,7 +62,7 @@ class IllustCardViewHolder(bd: CellIllustCardBinding) :
         binding.illust = ObjectPool.get<Illust>(holder.illust.id)
 
         val itemWidth = ((screenWidth - 12.ppppx) / 2F).roundToInt()
-        Timber.d("dsaadssw22 ${holder.illust.height}, ${holder.illust.width}")
+        Log.d(TAG, "dsaadssw22 ${holder.illust.height}, ${holder.illust.width}")
         val itemHeight =
             (itemWidth * holder.illust.height / holder.illust.width.toFloat()).roundToInt()
         binding.image.updateLayoutParams {
@@ -88,5 +89,10 @@ class IllustCardViewHolder(bd: CellIllustCardBinding) :
             it.findActionReceiverOrNull<IllustCardActionReceiver>()
                 ?.onClickBookmarkIllust(it, holder.illust.id)
         }
+    }
+
+
+    companion object {
+        private const val TAG = "IllustCardHolder"
     }
 }

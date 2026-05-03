@@ -1,10 +1,11 @@
 package ceui.pixiv.ui.common
 
+
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -20,43 +21,31 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import ceui.lisa.activities.Shaft
-import ceui.lisa.database.AppDatabase
-import ceui.lisa.database.DownloadEntity
 import ceui.lisa.databinding.LayoutToolbarBinding
 import ceui.lisa.utils.Common
-import ceui.loxia.Illust
-import ceui.loxia.ObjectPool
-import ceui.loxia.findActionReceiverOrNull
 import ceui.loxia.getHumanReadableMessage
-import ceui.loxia.observeEvent
 import ceui.pixiv.ui.task.NamedUrl
 import ceui.pixiv.ui.task.TaskPool
 import ceui.pixiv.ui.task.TaskStatus
-import ceui.pixiv.ui.works.PagedImgActionReceiver
 import ceui.pixiv.ui.works.ToggleToolnarViewModel
-import ceui.pixiv.ui.works.ViewPagerViewModel
-import ceui.pixiv.widgets.alertYesOrCancel
 import ceui.pixiv.utils.animateFadeInQuickly
 import ceui.pixiv.utils.animateFadeOutQuickly
 import ceui.pixiv.utils.setOnClick
+import ceui.pixiv.widgets.alertYesOrCancel
 import com.blankj.utilcode.util.UriUtils
 import com.github.panpf.sketch.loadImage
 import com.github.panpf.zoomimage.SketchZoomImageView
 import com.github.panpf.zoomimage.view.zoom.OnViewTapListener
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import java.io.File
 import java.util.Locale
 
 abstract class ImgDisplayFragment(layoutId: Int) : PixivFragment(layoutId) {
 
     protected val viewModel by viewModels<ToggleToolnarViewModel>()
-    private val viewPagerViewModel by viewModels<ViewPagerViewModel>(ownerProducer = { requireParentFragment() })
 
     abstract val downloadButton: View
     abstract val progressCircular: CircularProgressIndicator
@@ -69,20 +58,16 @@ abstract class ImgDisplayFragment(layoutId: Int) : PixivFragment(layoutId) {
         super.onViewCreated(view, savedInstanceState)
         progressCircular.max = 100
         displayImg.onViewTapListener = OnViewTapListener { view, _ ->
-            if (parentFragment is ViewPagerFragment) {
-                view.findActionReceiverOrNull<PagedImgActionReceiver>()?.onClickPagedImg()
-            } else {
-                viewModel.toggleFullscreen()
-            }
+            viewModel.toggleFullscreen()
         }
         val activity = requireActivity()
         val url = contentUrl()
         if (url.isEmpty()) {
-            Timber.d("ImgDisplayFragment display img: empty")
+            Log.d(TAG, "ImgDisplayFragment display img: empty")
             return
         }
 
-        Timber.d("ImgDisplayFragment display img: ${url}")
+        Log.d(TAG, "ImgDisplayFragment display img: ${url}")
         val namedUrl = NamedUrl(displayName(), url)
         val task = TaskPool.getLoadTask(namedUrl)
         task.result.observe(viewLifecycleOwner) { file ->
@@ -93,13 +78,6 @@ abstract class ImgDisplayFragment(layoutId: Int) : PixivFragment(layoutId) {
             val resolution = getImageDimensions(file)
             Common.showLog("sadasd2 bb ${resolution}")
             Common.showLog("sadasd2 cc ${getFileSize(file)}")
-        }
-        if (parentFragment is ViewPagerFragment) {
-            viewPagerViewModel.downloadEvent.observeEvent(viewLifecycleOwner) { index ->
-                task.result.value?.let { file ->
-                    performDownload(activity, file)
-                }
-            }
         }
         progressCircular.setUpWithTaskStatus(task.status, viewLifecycleOwner)
     }
@@ -130,18 +108,8 @@ abstract class ImgDisplayFragment(layoutId: Int) : PixivFragment(layoutId) {
     // 仅当所在 ViewPager 已绑定 illust（PagedImgUrlFragment 设置了 illustId）
     // 时才记录；novel 内嵌图等没有 illust 上下文的入口直接跳过。
     private fun recordIllustDownload(file: File) {
-        if (parentFragment !is ViewPagerFragment) return
-        val illustId = viewPagerViewModel.illustId.takeIf { it != 0L } ?: return
-        val illust = ObjectPool.get<Illust>(illustId).value ?: return
-        runCatching {
-            val entity = DownloadEntity().apply {
-                fileName = displayName()
-                downloadTime = System.currentTimeMillis()
-                filePath = file.absolutePath
-                illustGson = Shaft.sGson.toJson(illust)
-            }
-            AppDatabase.getAppDatabase(Shaft.getContext()).downloadDao().insert(entity)
-        }.onFailure { Timber.e(it, "recordIllustDownload failed for ${displayName()}") }
+        // no-op: PagedImgUrlFragment removed, illust download recording
+        // is handled by the old version's download flow
     }
 
     override fun onDestroyView() {
@@ -154,6 +122,10 @@ abstract class ImgDisplayFragment(layoutId: Int) : PixivFragment(layoutId) {
             windowInsetsController.show(WindowInsetsCompat.Type.systemBars())
         }
         super.onDestroyView()
+    }
+
+    companion object {
+        private const val TAG = "ImgDisplayFragment"
     }
 }
 

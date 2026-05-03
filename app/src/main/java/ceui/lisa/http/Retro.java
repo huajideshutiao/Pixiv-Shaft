@@ -4,7 +4,7 @@ import static ceui.lisa.http.AppApi.API_BASE_URL;
 import static ceui.lisa.http.ResourceApi.JSDELIVR_BASE_URL;
 import static ceui.lisa.http.SignApi.SIGN_API;
 
-import timber.log.Timber;
+import android.util.Log;
 
 import com.blankj.utilcode.util.DeviceUtils;
 import com.google.gson.Gson;
@@ -24,6 +24,8 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Retro {
+
+    private static final String TAG = "Retro";
 
     /**
      * @return AppApi the api that the request needed
@@ -114,11 +116,11 @@ public class Retro {
             });
             builder.addInterceptor(new TokenInterceptor());
         } catch (Exception e) {
-            Timber.e(e, "buildRetrofit interceptor error");
+            Log.e(TAG, "buildRetrofit interceptor error", e);
         }
         applyDirectConnect(builder, directConnect);
         HttpLoggingInterceptor l = new HttpLoggingInterceptor(
-                message -> Timber.i(message));
+            message -> Log.i(TAG, message));
         l.setLevel(HttpLoggingInterceptor.Level.BODY);
         builder.addInterceptor(l);
         OkHttpClient client = builder.build();
@@ -177,6 +179,8 @@ public class Retro {
     }
 
     private static class Holder {
+
+        private static final String TAG = "Retro";
         private static Retrofit appRetrofit = buildRetrofit(API_BASE_URL);
     }
 }

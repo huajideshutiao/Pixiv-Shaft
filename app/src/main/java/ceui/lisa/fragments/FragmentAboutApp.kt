@@ -1,4 +1,6 @@
-package ceui.lisa.fragments
+package ceui.lisa.fragments
+
+import android.util.Log
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -66,10 +68,10 @@ class FragmentAboutApp : SwipeFragment<FragmentAboutBinding>() {
 
             baseBind.rateThisApp.setOnClickListener {
                 try {
-                    timber.log.Timber.d("RateThisApp clicked, showing RateAppDialog")
+                    Log.d(TAG, "RateThisApp clicked, showing RateAppDialog")
                     ceui.pixiv.widgets.RateAppDialog().show(parentFragmentManager, "RateAppDialog")
                 } catch (e: Exception) {
-                    timber.log.Timber.e(e, "Failed to show RateAppDialog")
+                    Log.e(TAG, "Failed to show RateAppDialog", e)
                 }
             }
             baseBind.applicationId.text = requireContext().applicationInfo.packageName
@@ -230,5 +232,10 @@ class FragmentAboutApp : SwipeFragment<FragmentAboutBinding>() {
     override fun onDestroyView() {
         super.onDestroyView()
         updateDisposable?.dispose()
+    }
+
+
+    companion object {
+        private const val TAG = "FragmentAboutApp"
     }
 }

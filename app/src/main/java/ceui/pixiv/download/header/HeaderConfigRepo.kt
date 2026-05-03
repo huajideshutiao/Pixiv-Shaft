@@ -1,13 +1,16 @@
 package ceui.pixiv.download.header
 
+
+import android.content.SharedPreferences
+import android.util.Log
+import androidx.core.content.edit
 import ceui.lisa.R
 import ceui.lisa.activities.Shaft
-import android.content.SharedPreferences
+import ceui.pixiv.download.header.HeaderConfigRepo.load
+import ceui.pixiv.download.header.HeaderConfigRepo.save
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
-import androidx.core.content.edit
 import com.hjq.toast.Toaster
-import timber.log.Timber
 
 /**
  * SharedPreferences-backed persistence for the user's novel TXT header presets.
@@ -50,17 +53,21 @@ object HeaderConfigRepo {
         val raw = try {
             prefs.getString(KEY, null)
         } catch (t: Throwable) {
-            Timber.w(t, "HeaderConfigRepo: SharedPreferences getString failed, falling back to default")
+            Log.w(
+                TAG,
+                "HeaderConfigRepo: SharedPreferences getString failed, falling back to default",
+                t
+            )
             return defaultStore()
         } ?: return defaultStore()
         return try {
             val parsed = gson.fromJson(raw, HeaderConfigStore::class.java)
             sanitize(parsed)
         } catch (t: JsonSyntaxException) {
-            Timber.w(t, "HeaderConfigRepo: corrupt store, falling back to default")
+            Log.w(TAG, "HeaderConfigRepo: corrupt store, falling back to default", t)
             defaultStore()
         } catch (t: Throwable) {
-            Timber.w(t, "HeaderConfigRepo: unexpected error, falling back to default")
+            Log.w(TAG, "HeaderConfigRepo: unexpected error, falling back to default", t)
             defaultStore()
         }
     }
@@ -69,7 +76,7 @@ object HeaderConfigRepo {
         try {
             prefs.edit { putString(KEY, gson.toJson(sanitize(store))) }
         } catch (t: Throwable) {
-            Timber.e(t, "HeaderConfigRepo.save failed")
+            Log.e(TAG, "HeaderConfigRepo.save failed", t)
             Toaster.show(
                 Shaft.getContext().getString(
                     R.string.header_preset_save_failed,
@@ -113,4 +120,6 @@ object HeaderConfigRepo {
             ?: cleanedPresets.first().name
         return HeaderConfigStore(cleanedPresets, active)
     }
+
+    private const val TAG = "HeaderConfigRepo"
 }

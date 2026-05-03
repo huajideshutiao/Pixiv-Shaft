@@ -2,11 +2,11 @@ package ceui.pixiv.ui.user
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import ceui.lisa.R
 import ceui.lisa.activities.Shaft
+import ceui.lisa.core.ArtworksMap
 import ceui.lisa.utils.Params
 import ceui.loxia.Client
 import ceui.loxia.Illust
@@ -21,14 +21,9 @@ import ceui.loxia.findActionReceiverOrNull
 import ceui.pixiv.ui.chats.RedSectionHeaderHolder
 import ceui.pixiv.ui.chats.SeeMoreAction
 import ceui.pixiv.ui.chats.SeeMoreType
-import ceui.pixiv.ui.common.HoldersContainer
 import ceui.pixiv.ui.common.HoldersViewModel
 import ceui.pixiv.ui.common.KListShowValueContent
 import ceui.pixiv.ui.common.ListItemHolder
-import ceui.pixiv.ui.common.RefreshOwner
-import ceui.pixiv.ui.detail.ArtworksMap
-import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class UserViewModel(private val userId: Long) : HoldersViewModel() {
 

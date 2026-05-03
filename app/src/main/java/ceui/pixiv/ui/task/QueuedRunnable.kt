@@ -1,11 +1,13 @@
 package ceui.pixiv.ui.task
 
+
+import android.util.Log
+
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
 import ceui.lisa.activities.Shaft
-import timber.log.Timber
 import java.util.UUID
 
 abstract class QueuedRunnable<ResultT> {
@@ -38,23 +40,41 @@ abstract class QueuedRunnable<ResultT> {
     }
 
     open fun onIgnore() {
-        Timber.d("[QueuedRunnable] onIgnore class=${this.javaClass.simpleName}, taskId=$taskId, status=${_status.value}, hasResult=${_result.value != null}")
+        Log.d(
+            TAG,
+            "[QueuedRunnable] onIgnore class=${this.javaClass.simpleName}, taskId=$taskId, status=${_status.value}, hasResult=${_result.value != null}"
+        )
     }
 
     open fun onStart() {
-        Timber.d("[QueuedRunnable] onStart class=${this.javaClass.simpleName}, taskId=$taskId, prevStatus=${_status.value}")
+        Log.d(
+            TAG,
+            "[QueuedRunnable] onStart class=${this.javaClass.simpleName}, taskId=$taskId, prevStatus=${_status.value}"
+        )
     }
 
     open fun onEnd(resultT: ResultT) {
-        Timber.d("[QueuedRunnable] onEnd class=${this.javaClass.simpleName}, taskId=$taskId, result=$resultT")
+        Log.d(
+            TAG,
+            "[QueuedRunnable] onEnd class=${this.javaClass.simpleName}, taskId=$taskId, result=$resultT"
+        )
         this._onNext?.invoke()
     }
 
     open fun onError(ex: Exception?) {
-        Timber.w(ex, "[QueuedRunnable] onError class=${this.javaClass.simpleName}, taskId=$taskId, prevStatus=${_status.value}")
+        Log.w(
+            TAG,
+            "[QueuedRunnable] onError class=${this.javaClass.simpleName}, taskId=$taskId, prevStatus=${_status.value}",
+            ex
+        )
         if (ex != null) {
             _status.postValue(TaskStatus.Error(ex))
             this._onNext?.invoke()
         }
+    }
+
+
+    companion object {
+        private const val TAG = "QueuedRunnable"
     }
 }

@@ -1,6 +1,8 @@
 package ceui.pixiv.ui.common
 
+
 import android.content.Context
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
@@ -10,8 +12,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import ceui.pixiv.ui.viewholdermap.ViewHolderFactory
-import timber.log.Timber
-import java.lang.RuntimeException
 
 val listItemHolderDiffUtil = object :
     DiffUtil.ItemCallback<ListItemHolder>() {
@@ -111,9 +111,14 @@ open class ListItemViewHolder<Binding : ViewBinding, T : ListItemHolder>(val bin
                 try {
                     listener(sender)
                 } catch (ex: Exception) {
-                    Timber.e(ex)
+                    Log.e(TAG, "onItemClick error", ex)
                 }
             }
         }
+    }
+
+
+    companion object {
+        private const val TAG = "CommonAdapter"
     }
 }

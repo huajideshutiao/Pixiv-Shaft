@@ -1,8 +1,9 @@
 package ceui.pixiv.ui.common
 
+
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import ceui.loxia.RefreshHint
 import ceui.loxia.RefreshState
 import kotlinx.coroutines.CoroutineScope
@@ -10,7 +11,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 
 open class ValueContent<ValueT>(
     private val coroutineScope: CoroutineScope,
@@ -56,7 +56,7 @@ open class ValueContent<ValueT>(
                 )
             } catch (ex: Exception) {
                 _refreshState.value = RefreshState.ERROR(ex)
-                Timber.e(ex)
+                Log.e(TAG, "refresh error", ex)
             }
         }
     }
@@ -67,5 +67,10 @@ open class ValueContent<ValueT>(
 
     open fun applyResult(valueT: ValueT) {
         _result.value = valueT
+    }
+
+
+    companion object {
+        private const val TAG = "ValueContent"
     }
 }

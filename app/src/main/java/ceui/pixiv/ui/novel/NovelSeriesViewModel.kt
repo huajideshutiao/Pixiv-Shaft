@@ -1,26 +1,26 @@
 package ceui.pixiv.ui.novel
 
+
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import ceui.lisa.R
 import ceui.lisa.activities.Shaft
+import ceui.lisa.core.ArtworksMap
 import ceui.loxia.Client
 import ceui.loxia.Novel
 import ceui.loxia.NovelSeriesResp
 import ceui.loxia.ObjectPool
 import ceui.loxia.RefreshHint
 import ceui.loxia.RefreshState
-import ceui.loxia.User
+import ceui.pixiv.ui.chats.RedSectionHeaderHolder
 import ceui.pixiv.ui.common.DataSource
 import ceui.pixiv.ui.common.HoldersViewModel
 import ceui.pixiv.ui.common.ListItemHolder
 import ceui.pixiv.ui.common.LoadingHolder
 import ceui.pixiv.ui.common.NovelV3Holder
-import ceui.pixiv.ui.chats.RedSectionHeaderHolder
 import ceui.pixiv.ui.common.createResponseStore
-import ceui.pixiv.ui.detail.ArtworksMap
 import ceui.pixiv.ui.detail.UserInfoHolder
-import timber.log.Timber
 
 class NovelSeriesViewModel(
     private val seriesId: Long,
@@ -115,7 +115,7 @@ class NovelSeriesViewModel(
             // 从现有列表中剔除 LoadingHolder
             val filteredList =
                 (_itemHolders.value ?: listOf()).filterNot { it is LoadingHolder }.toMutableList()
-            Timber.d("dfsasfs2 ${holders.size}")
+            Log.d(TAG, "dfsasfs2 ${holders.size}")
             // 添加新数据
             filteredList.addAll(holders)
 
@@ -179,5 +179,10 @@ class NovelSeriesViewModel(
             .map { it.novel.id }
 
         ArtworksMap.store[fragmentUniqueId] = filteredList
+    }
+
+
+    companion object {
+        private const val TAG = "NovelSeriesViewModel"
     }
 }

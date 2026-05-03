@@ -1,6 +1,8 @@
 package ceui.pixiv.ui.task
 
+
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import ceui.lisa.R
 import ceui.lisa.databinding.FragmentPixivListBinding
@@ -12,11 +14,10 @@ import ceui.pixiv.ui.common.ListMode
 import ceui.pixiv.ui.common.PixivFragment
 import ceui.pixiv.ui.common.findCurrentFragmentOrNull
 import ceui.pixiv.ui.common.setUpRefreshState
-import ceui.pixiv.ui.list.pixivListViewModel
 import ceui.pixiv.ui.common.viewBinding
+import ceui.pixiv.ui.list.pixivListViewModel
 import ceui.pixiv.utils.setOnClick
 import com.google.gson.Gson
-import timber.log.Timber
 
 class TaskListFragment : PixivFragment(R.layout.fragment_pixiv_list), TaskPreviewActionReceiver {
 
@@ -34,10 +35,10 @@ class TaskListFragment : PixivFragment(R.layout.fragment_pixiv_list), TaskPrevie
                             prefStore.getString(uuid, "")?.let {
                                 try {
                                     val task = gson.fromJson(it, HumanReadableTask::class.java)
-                                    Timber.d("task $task")
+                                    Log.d(TAG, "task $task")
                                     task
                                 } catch (ex: Exception) {
-                                    Timber.e(ex)
+                                    Log.e(TAG, "task parse error", ex)
                                     null
                                 }
                             }
@@ -67,5 +68,10 @@ class TaskListFragment : PixivFragment(R.layout.fragment_pixiv_list), TaskPrevie
 
     override fun onClickTaskPreview(humanReadableTask: HumanReadableTask) {
         pushFragment(R.id.navigation_cache_list, CacheFileFragmentArgs(task = humanReadableTask).toBundle())
+    }
+
+
+    companion object {
+        private const val TAG = "TaskListFragment"
     }
 }

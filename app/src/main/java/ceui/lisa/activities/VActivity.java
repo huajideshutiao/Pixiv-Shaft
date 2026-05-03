@@ -12,7 +12,10 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
 
+import java.util.List;
+
 import ceui.lisa.R;
+import ceui.lisa.core.ArtworksMap;
 import ceui.lisa.core.Container;
 import ceui.lisa.core.Mapper;
 import ceui.lisa.core.PageData;
@@ -29,18 +32,18 @@ import ceui.lisa.utils.Common;
 import ceui.lisa.utils.Params;
 import ceui.lisa.utils.PixivOperate;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 public class VActivity extends BaseActivity<ActivityViewPagerBinding> {
 
     private String pageUUID = "";
     private int index = 0;
+    private String seed = "";
 
     @Override
     protected void initBundle(Bundle bundle) {
         pageUUID = bundle.getString(Params.PAGE_UUID);
         index = bundle.getInt(Params.POSITION);
+        seed = bundle.getString(Params.SEED);
     }
 
     @Override
@@ -50,6 +53,62 @@ public class VActivity extends BaseActivity<ActivityViewPagerBinding> {
 
     @Override
     protected void initView() {
+        if (!TextUtils.isEmpty(seed)) {
+            setupFromSeed();
+        } else {
+            setupFromPageData();
+        }
+    }
+
+    private void setupFromSeed() {
+        List<Long> ids = ArtworksMap.INSTANCE.getStore().get(seed);
+        if (ids == null || ids.isEmpty()) {
+            finish();
+            return;
+        }
+
+        baseBind.viewPager.setAdapter(new FragmentStatePagerAdapter(
+            getSupportFragmentManager(),
+            0
+        ) {
+            @NonNull
+            @Override
+            public Fragment getItem(int position) {
+                long illustId = ids.get(position);
+                return FragmentSingleIllust.newInstance(illustId);
+            }
+
+            @Override
+            public int getCount() {
+                return ids.size();
+            }
+
+            @Nullable
+            @org.jetbrains.annotations.Nullable
+            @Override
+            public Parcelable saveState() {
+                Bundle bundle = (Bundle) super.saveState();
+                if (bundle != null) {
+                    bundle.putParcelableArray("states", null);
+                }
+                return bundle;
+            }
+        });
+        baseBind.viewPager.setOffscreenPageLimit(1);
+
+        int pos = -1;
+        for (int i = 0; i < ids.size(); i++) {
+            if (ids.get(i) == index) {
+                pos = i;
+                break;
+            }
+        }
+        if (pos > 0) {
+            baseBind.viewPager.setCurrentItem(pos);
+        }
+    }
+
+    private void setupFromPageData() {
         PageData pageData = Container.get().getPage(pageUUID);
         if (pageData != null) {
             baseBind.viewPager.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager(), 0) {
@@ -82,9 +141,6 @@ public class VActivity extends BaseActivity<ActivityViewPagerBinding> {
                     return bundle;
                 }
             });
-            // offscreenPageLimit=1 keeps 3 fragments attached (prev/current/next) instead of
-            // 5. Each ArtworkV3Fragment init fires /v1/illust/detail on ObjectPool miss —
-            // 5 parallel fetches reliably trip Pixiv's per-IP 429 rate limit.
             baseBind.viewPager.setOffscreenPageLimit(1);
 
             ViewPager.OnPageChangeListener listener = new ViewPager.OnPageChangeListener() {
@@ -114,7 +170,7 @@ public class VActivity extends BaseActivity<ActivityViewPagerBinding> {
                             if (!Container.get().isNetworking()) {
                                 Common.showLog("Container 去请求下一页 " + nextUrl);
                                 Retro.getAppApi().getNextIllust(nextUrl)
-                                        .subscribeOn(Schedulers.newThread())
+                                    .subscribeOn(io.reactivex.schedulers.Schedulers.newThread())
                                         .observeOn(AndroidSchedulers.mainThread())
                                         .subscribe(new NullCtrl<ListIllust>() {
                                             @Override
@@ -127,7 +183,6 @@ public class VActivity extends BaseActivity<ActivityViewPagerBinding> {
                                                 intent.putExtra(Params.CONTENT, listIllust);
                                                 LocalBroadcastManager.getInstance(Shaft.getContext()).sendBroadcast(intent);
 
-                                                // pageData.getList().addAll(listIllust.getList());
                                                 DeduplicateArrayList.addAllWithNoRepeat(pageData.getList(), listIllust.getList());
                                                 pageData.setNextUrl(listIllust.getNextUrl());
                                                 if (baseBind.viewPager.getAdapter() != null) {
@@ -142,7 +197,7 @@ public class VActivity extends BaseActivity<ActivityViewPagerBinding> {
                                             }
 
                                             @Override
-                                            public void subscribe(Disposable d) {
+                                            public void subscribe(io.reactivex.disposables.Disposable d) {
                                                 super.subscribe(d);
                                                 Container.get().setNetworking(true);
                                             }
@@ -188,16 +243,35 @@ public class VActivity extends BaseActivity<ActivityViewPagerBinding> {
 
     @Override
     protected void onPause() {
-        //通知外界列表，滚动到正确的位置
-        Intent intent = new Intent(Params.FRAGMENT_SCROLL_TO_POSITION);
-        intent.putExtra(Params.INDEX, baseBind.viewPager.getCurrentItem());
-        intent.putExtra(Params.PAGE_UUID, pageUUID);
-        LocalBroadcastManager.getInstance(Shaft.getContext()).sendBroadcast(intent);
+        if (TextUtils.isEmpty(seed)) {
+            Intent intent = new Intent(Params.FRAGMENT_SCROLL_TO_POSITION);
+            intent.putExtra(Params.INDEX, baseBind.viewPager.getCurrentItem());
+            intent.putExtra(Params.PAGE_UUID, pageUUID);
+            LocalBroadcastManager.getInstance(Shaft.getContext()).sendBroadcast(intent);
+        }
         super.onPause();
     }
 
     @Override
     public boolean hideStatusBar() {
         return true;
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (event.getAction() == KeyEvent.ACTION_DOWN &&
+            (event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_UP || event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_DOWN)) {
+            androidx.viewpager.widget.ViewPager viewPager = baseBind.viewPager;
+            if (viewPager != null && viewPager.getAdapter() != null) {
+                int currentItem = viewPager.getCurrentItem();
+                int nextItem =
+                    event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_DOWN ? currentItem + 1 : currentItem - 1;
+                if (nextItem >= 0 && nextItem < viewPager.getAdapter().getCount()) {
+                    viewPager.setCurrentItem(nextItem, true);
+                }
+                return true;
+            }
+        }
+        return super.dispatchKeyEvent(event);
     }
 }

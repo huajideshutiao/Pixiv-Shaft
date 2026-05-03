@@ -1,5 +1,6 @@
 package ceui.pixiv.ui.bulk
 
+import android.util.Log
 import ceui.lisa.activities.Shaft
 import ceui.lisa.database.AppDatabase
 import ceui.lisa.http.Retro
@@ -18,8 +19,6 @@ import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlinx.coroutines.withContext
-import timber.log.Timber
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
@@ -45,7 +44,10 @@ import kotlin.coroutines.resumeWithException
 sealed class FetchEvent {
     data class Started(val taskName: String, val userId: Long) : FetchEvent()
     data class Networking(val pageIndex: Int, val endpoint: String) : FetchEvent()
-    data class PageReceived(val pageIndex: Int, val pageSize: Int, val latencyMs: Long, val totalSoFar: Int) : FetchEvent()
+    data class PageReceived(
+        val pageIndex: Int, val pageSize: Int, val latencyMs: Long, val totalSoFar: Int
+    ) : FetchEvent()
+
     data class DbBatchStart(val size: Int) : FetchEvent()
     data class DbBatchDone(val size: Int, val latencyMs: Long) : FetchEvent()
     data class Enqueued(val totalSoFar: Int) : FetchEvent()
@@ -79,9 +81,8 @@ class AuthorWorksFetcher(
             pageIndex = 1
             emit(FetchEvent.Networking(pageIndex, "/v1/user/illusts?type=$type"))
             val t0 = System.currentTimeMillis()
-            var resp: ListIllust? = Retro.getAppApi()
-                .getUserSubmitIllust(userId.toInt(), type)
-                .awaitFirstSafe()
+            var resp: ListIllust? =
+                Retro.getAppApi().getUserSubmitIllust(userId.toInt(), type).awaitFirstSafe()
             val firstLatency = System.currentTimeMillis() - t0
             val firstList = (resp?.list ?: emptyList()).filter { !it.isGif }
             emit(FetchEvent.PageReceived(pageIndex, firstList.size, firstLatency, totalSoFar + firstList.size))
@@ -122,7 +123,7 @@ class AuthorWorksFetcher(
             // 用户取消：保留已入队的，但不主动唤醒下载（用户既然取消了，让他自己决定）
             throw cancellation
         } catch (e: Exception) {
-            Timber.tag(TAG).e(e, "fetch failed userId=$userId type=$type page=$pageIndex")
+            Log.e(TAG, "fetch failed userId=$userId type=$type page=$pageIndex", e)
             // 失败：把已入队的部分启动下载（不浪费已经做的工作）
             if (totalSoFar > 0) QueueDownloadManager.resume()
             emit(FetchEvent.Errored(e.message ?: e::class.java.simpleName, pageIndex))
@@ -177,12 +178,12 @@ class AuthorWorksFetcher(
 }
 
 /** RxJava2 -> suspend 单值（Fetcher 内部专用）。 */
-private suspend fun <T : Any> Observable<T>.awaitFirstSafe(): T = suspendCancellableCoroutine { cont ->
-    val disposable = subscribeOn(Schedulers.io())
-        .firstOrError()
+private suspend fun <T : Any> Observable<T>.awaitFirstSafe(): T =
+    suspendCancellableCoroutine { cont ->
+        val disposable = subscribeOn(Schedulers.io()).firstOrError()
         .subscribe(
             { cont.resume(it) },
             { cont.resumeWithException(it) }
         )
-    cont.invokeOnCancellation { disposable.dispose() }
-}
+        cont.invokeOnCancellation { disposable.dispose() }
+    }

@@ -1,4 +1,6 @@
-package ceui.pixiv.db
+package ceui.pixiv.db
+
+import android.util.Log
 
 import android.content.Context
 import ceui.lisa.activities.Shaft
@@ -10,9 +12,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
-
-
 class EntityWrapper(
     private val context: Context
 ) {
@@ -44,9 +43,9 @@ class EntityWrapper(
             } else if (entity.recordType == RecordType.BLOCK_NOVEL) {
                 _blockingNovelIds.add(entity.id)
             }
-            Timber.d("EntityWrapper insertEntity done ${entity.id}")
+            Log.d(TAG, "EntityWrapper insertEntity done ${entity.id}")
         } catch (ex: Exception) {
-            Timber.e(ex, "Error inserting entity: ${entity.id}")
+            Log.e(TAG, "Error inserting entity: ${entity.id}", ex)
         }
     }
 
@@ -61,9 +60,9 @@ class EntityWrapper(
             } else if (recordType == RecordType.BLOCK_NOVEL) {
                 _blockingNovelIds.remove(id)
             }
-            Timber.d("EntityWrapper deleteEntity done $id")
+            Log.d(TAG, "EntityWrapper deleteEntity done $id")
         } catch (ex: Exception) {
-            Timber.e(ex, "Error deleting entity: $id")
+            Log.e(TAG, "Error deleting entity: $id", ex)
         }
     }
 
@@ -136,5 +135,10 @@ class EntityWrapper(
 
     fun isWorkBlocked(illustId: Long): Boolean {
         return _blockingIllustIds.contains(illustId)
+    }
+
+
+    companion object {
+        private const val TAG = "EntityWrapper"
     }
 }

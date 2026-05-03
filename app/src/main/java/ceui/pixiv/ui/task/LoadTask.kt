@@ -1,5 +1,8 @@
 package ceui.pixiv.ui.task
 
+
+import android.util.Log
+
 import android.net.Uri
 import ceui.lisa.activities.Shaft
 import ceui.lisa.utils.Common
@@ -16,7 +19,6 @@ import kotlinx.coroutines.withContext
 import me.jessyan.progressmanager.ProgressListener
 import me.jessyan.progressmanager.ProgressManager
 import me.jessyan.progressmanager.body.ProgressInfo
-import timber.log.Timber
 import java.io.File
 
 open class LoadTask(
@@ -43,13 +45,22 @@ open class LoadTask(
             if (_result.value != null) {
                 val cachedFile = _result.value
                 val fileInfo = cachedFile?.let { "path=${it.absolutePath}, exists=${it.exists()}, size=${it.length()}" } ?: "null"
-                Timber.d("[LoadTask] SKIP duplicate taskId=$taskId, status=${_status.value}, file=[$fileInfo], url=$shortUrl")
+                Log.d(
+                    TAG,
+                    "[LoadTask] SKIP duplicate taskId=$taskId, status=${_status.value}, file=[$fileInfo], url=$shortUrl"
+                )
                 onIgnore()
                 return
             }
-            Timber.w("[LoadTask] status=${_status.value} but result is NULL, will re-execute. taskId=$taskId, url=$shortUrl")
+            Log.w(
+                TAG,
+                "[LoadTask] status=${_status.value} but result is NULL, will re-execute. taskId=$taskId, url=$shortUrl"
+            )
         }
-        Timber.d("[LoadTask] START taskId=$taskId, thread=${Thread.currentThread().name}, url=$shortUrl")
+        Log.d(
+            TAG,
+            "[LoadTask] START taskId=$taskId, thread=${Thread.currentThread().name}, url=$shortUrl"
+        )
 
         try {
             onStart()
@@ -60,16 +71,26 @@ open class LoadTask(
             val file = downloadFile()
             val elapsedMs = System.currentTimeMillis() - startMs
             if (file != null) {
-                Timber.d("[LoadTask] SUCCESS taskId=$taskId, elapsed=${elapsedMs}ms, path=${file.absolutePath}, size=${file.length()}, url=$shortUrl")
+                Log.d(
+                    TAG,
+                    "[LoadTask] SUCCESS taskId=$taskId, elapsed=${elapsedMs}ms, path=${file.absolutePath}, size=${file.length()}, url=$shortUrl"
+                )
                 _result.value = file
                 _status.value = TaskStatus.Finished
                 onEnd(file)
             } else {
-                Timber.e("[LoadTask] FAIL downloadFile returned null. taskId=$taskId, elapsed=${elapsedMs}ms, url=$shortUrl")
+                Log.e(
+                    TAG,
+                    "[LoadTask] FAIL downloadFile returned null. taskId=$taskId, elapsed=${elapsedMs}ms, url=$shortUrl"
+                )
                 throw IllegalStateException("Unexpected null file")
             }
         } catch (ex: Exception) {
-            Timber.e(ex, "[LoadTask] ERROR taskId=$taskId, status=${_status.value}, url=$shortUrl")
+            Log.e(
+                TAG,
+                "[LoadTask] ERROR taskId=$taskId, status=${_status.value}, url=$shortUrl",
+                ex
+            )
             onError(ex)
         }
     }
@@ -80,7 +101,7 @@ open class LoadTask(
             override fun onProgress(progressInfo: ProgressInfo) {
                 val percent = progressInfo.percent
                 if (progressInfo.isFinish || percent == 100) {
-                    Timber.d("[LoadTask] PROGRESS 100%% finished. taskId=$taskId, url=$shortUrl")
+                    Log.d(TAG, "[LoadTask] PROGRESS 100%% finished. taskId=$taskId, url=$shortUrl")
                     _status.value = TaskStatus.Finished
                 } else {
                     if (_status.value != TaskStatus.Finished) {
@@ -90,7 +111,7 @@ open class LoadTask(
             }
 
             override fun onError(id: Long, ex: Exception) {
-                Timber.e(ex, "[LoadTask] PROGRESS error. taskId=$taskId, url=$shortUrl")
+                Log.e(TAG, "[LoadTask] PROGRESS error. taskId=$taskId, url=$shortUrl", ex)
                 onError(ex)
             }
         })
@@ -98,12 +119,15 @@ open class LoadTask(
 
     private suspend fun downloadFile(): File? {
         val shortUrl = content.url.substringAfterLast('/')
-        Timber.d("[LoadTask] downloadFile enter IO. taskId=$taskId, url=$shortUrl")
+        Log.d(TAG, "[LoadTask] downloadFile enter IO. taskId=$taskId, url=$shortUrl")
         return withContext(Dispatchers.IO) {
             val loadSource = content.url.takeIf { it.startsWith("http") }
                 ?.let { GlideUrlChild(it) }
                 ?: Uri.parse(content.url)
-            Timber.d("[LoadTask] Glide submit. taskId=$taskId, sourceType=${loadSource.javaClass.simpleName}, thread=${Thread.currentThread().name}")
+            Log.d(
+                TAG,
+                "[LoadTask] Glide submit. taskId=$taskId, sourceType=${loadSource.javaClass.simpleName}, thread=${Thread.currentThread().name}"
+            )
             Glide.with(Shaft.getContext())
                 .asFile()
                 .load(loadSource)
@@ -122,7 +146,11 @@ open class LoadTask(
                 target: Target<File>,
                 isFirstResource: Boolean
             ): Boolean {
-                Timber.e(ex, "[LoadTask] Glide onLoadFailed. taskId=$taskId, model=$model, url=$shortUrl")
+                Log.e(
+                    TAG,
+                    "[LoadTask] Glide onLoadFailed. taskId=$taskId, model=$model, url=$shortUrl",
+                    ex
+                )
                 onError(ex)
                 return false
             }
@@ -134,9 +162,17 @@ open class LoadTask(
                 dataSource: DataSource,
                 isFirstResource: Boolean
             ): Boolean {
-                Timber.d("[LoadTask] Glide onResourceReady. taskId=$taskId, dataSource=${dataSource.name}, path=${resource.path}, size=${resource.length()}, url=$shortUrl")
+                Log.d(
+                    TAG,
+                    "[LoadTask] Glide onResourceReady. taskId=$taskId, dataSource=${dataSource.name}, path=${resource.path}, size=${resource.length()}, url=$shortUrl"
+                )
                 return false
             }
         }
+    }
+
+
+    companion object {
+        private const val TAG = "LoadTask"
     }
 }

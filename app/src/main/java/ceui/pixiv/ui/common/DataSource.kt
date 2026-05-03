@@ -1,18 +1,19 @@
 package ceui.pixiv.ui.common
 
+
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import ceui.lisa.core.ArtworksMap
 import ceui.lisa.models.ModelObject
 import ceui.loxia.Client
 import ceui.loxia.KListShow
 import ceui.loxia.RefreshHint
 import ceui.loxia.RefreshState
-import ceui.pixiv.ui.detail.ArtworksMap
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 
 open class DataSource<Item, T: KListShow<Item>>(
     private val dataFetcher: suspend () -> T,
@@ -75,7 +76,7 @@ open class DataSource<Item, T: KListShow<Item>>(
             }
         } catch (ex: Exception) {
             _refreshState.value = RefreshState.ERROR(ex)
-            Timber.e(ex)
+            Log.e(TAG, "refreshImpl error", ex)
         }
     }
 
@@ -109,7 +110,7 @@ open class DataSource<Item, T: KListShow<Item>>(
             applyResponse(response, true)
         } catch (ex: Exception) {
             _refreshState.value = RefreshState.ERROR(ex)
-            Timber.e(ex)
+            Log.e(TAG, "loadMoreImpl error", ex)
         }
     }
 
@@ -160,5 +161,10 @@ open class DataSource<Item, T: KListShow<Item>>(
 
     open fun initialLoad(): Boolean {
         return true
+    }
+
+
+    companion object {
+        private const val TAG = "DataSource"
     }
 }

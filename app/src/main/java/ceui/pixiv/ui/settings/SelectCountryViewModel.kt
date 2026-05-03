@@ -13,8 +13,7 @@ import org.xmlpull.v1.XmlPullParserFactory
 import java.io.InputStream
 import java.util.Locale
 import ceui.lisa.R
-import timber.log.Timber
-
+import android.util.Log
 class SelectCountryViewModel : ViewModel() {
 
 

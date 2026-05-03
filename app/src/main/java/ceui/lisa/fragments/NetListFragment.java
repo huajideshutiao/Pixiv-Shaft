@@ -38,7 +38,8 @@ import ceui.lisa.notification.CallBackReceiver;
 import ceui.lisa.notification.CommonReceiver;
 import ceui.lisa.utils.Common;
 import ceui.lisa.utils.Params;
-import timber.log.Timber;
+
+import android.util.Log;
 
 /**
  * 联网获取xx列表，
@@ -49,6 +50,8 @@ import timber.log.Timber;
  */
 public abstract class NetListFragment<Layout extends ViewDataBinding,
         Response extends ListShow<Item>, Item> extends ListFragment<Layout, Item> {
+
+    private static final String TAG = "NetListFragment";
 
     protected RemoteRepo<Response> mRemoteRepo;
     protected Response mResponse;//ListIllust
@@ -216,7 +219,7 @@ public abstract class NetListFragment<Layout extends ViewDataBinding,
         try {
             onResponse(response);
         } catch (Exception e) {
-            Timber.e(e, "onResponse failed");
+            Log.e(TAG, "onResponse failed", e);
         }
     }
 
@@ -396,7 +399,7 @@ public abstract class NetListFragment<Layout extends ViewDataBinding,
                                 }
                             }, 200L);
                         } catch (Exception e) {
-                            Timber.e(e, "scrollToPosition failed");
+                            Log.e(TAG, "scrollToPosition failed", e);
                         }
                     }
                 }

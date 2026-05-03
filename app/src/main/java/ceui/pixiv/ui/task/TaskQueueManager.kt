@@ -1,9 +1,9 @@
-package ceui.pixiv.ui.task
+package ceui.pixiv.ui.task
+
+import android.util.Log
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import timber.log.Timber
-
 object TaskQueueManager {
 
     enum class TaskState {
@@ -22,10 +22,10 @@ object TaskQueueManager {
         synchronized(lock) {
             if (!isTaskInQueue(task)) {
                 taskQueue.add(task)
-                Timber.d("Task added: ${task.taskId}")
+                Log.d(TAG, "Task added: ${task.taskId}")
                 updateTaskState()
             } else {
-                Timber.d("Task already in queue: ${task.taskId}")
+                Log.d(TAG, "Task already in queue: ${task.taskId}")
             }
         }
     }
@@ -35,7 +35,7 @@ object TaskQueueManager {
             val newTasks = tasks.filterNot { isTaskInQueue(it) }
             if (newTasks.isNotEmpty()) {
                 taskQueue.addAll(newTasks)
-                Timber.d("Tasks added: ${newTasks.map { it.taskId }}")
+                Log.d(TAG, "Tasks added: ${newTasks.map { it.taskId }}")
                 updateTaskState()
             }
         }
@@ -48,10 +48,10 @@ object TaskQueueManager {
     fun startProcessing() {
         synchronized(lock) {
             if (_taskState.value != TaskState.RUNNING) {
-                Timber.d("Starting task processing")
+                Log.d(TAG, "Starting task processing")
                 _taskState.value = TaskState.RUNNING
             } else {
-                Timber.d("Task processing already running")
+                Log.d(TAG, "Task processing already running")
                 return
             }
         }
@@ -61,10 +61,10 @@ object TaskQueueManager {
     fun pauseProcessing() {
         synchronized(lock) {
             if (_taskState.value == TaskState.RUNNING) {
-                Timber.d("Pausing task processing")
+                Log.d(TAG, "Pausing task processing")
                 _taskState.value = TaskState.PAUSED
             } else {
-                Timber.d("Cannot pause, current state: ${_taskState.value}")
+                Log.d(TAG, "Cannot pause, current state: ${_taskState.value}")
             }
         }
     }
@@ -73,14 +73,14 @@ object TaskQueueManager {
         val currentTask: QueuedRunnable<*>?
         synchronized(lock) {
             if (_taskState.value != TaskState.RUNNING) {
-                Timber.d("Processing not running, current state: ${_taskState.value}")
+                Log.d(TAG, "Processing not running, current state: ${_taskState.value}")
                 return
             }
 
             currentTask = taskQueue.firstOrNull { it.status.value is TaskStatus.NotStart }
             if (currentTask == null) {
                 if (taskQueue.all { it.status.value is TaskStatus.Finished }) {
-                    Timber.d("All tasks completed")
+                    Log.d(TAG, "All tasks completed")
                     _taskState.value = TaskState.IDLE
                 } else {
                     retryFailedTasks()
@@ -97,7 +97,7 @@ object TaskQueueManager {
     private fun handleTaskCompletion() {
         synchronized(lock) {
             if (taskQueue.all { it.status.value is TaskStatus.Finished }) {
-                Timber.d("All tasks completed")
+                Log.d(TAG, "All tasks completed")
                 _taskState.value = TaskState.IDLE
             }
         }
@@ -112,14 +112,14 @@ object TaskQueueManager {
         synchronized(lock) {
             val failedTasks = taskQueue.filter { it.status.value is TaskStatus.Error }
             if (failedTasks.isNotEmpty()) {
-                Timber.d("Retrying failed tasks: ${failedTasks.size}")
+                Log.d(TAG, "Retrying failed tasks: ${failedTasks.size}")
                 failedTasks.forEach { task ->
                     task.reset()
                 }
                 shouldProcess = true
             } else {
                 shouldProcess = false
-                Timber.d("No failed tasks to retry")
+                Log.d(TAG, "No failed tasks to retry")
             }
         }
         if (shouldProcess) {
@@ -131,7 +131,7 @@ object TaskQueueManager {
         synchronized(lock) {
             taskQueue.clear()
             _taskState.value = TaskState.IDLE
-            Timber.d("All tasks cleared")
+            Log.d(TAG, "All tasks cleared")
         }
     }
 
@@ -144,4 +144,6 @@ object TaskQueueManager {
             }
         }
     }
+
+    private const val TAG = "TaskQueueManager"
 }

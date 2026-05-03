@@ -1,8 +1,10 @@
 package ceui.pixiv.ui.novel.reader.ui
 
+
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,7 +26,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 
 /**
  * 回调接口 — 父 Fragment 实现此接口以接收系列列表中的选中事件。
@@ -69,7 +70,7 @@ class SeriesListViewModel(
                     _state.value = State.Loaded(novels)
                 },
                 onFailure = { ex ->
-                    Timber.e(ex, "SeriesListViewModel load failed series=$seriesId")
+                    Log.e(TAG, "SeriesListViewModel load failed series=$seriesId", ex)
                     _state.value = State.Error(ex.message ?: ex.javaClass.simpleName)
                 },
             )
@@ -77,6 +78,7 @@ class SeriesListViewModel(
     }
 
     companion object {
+        const val TAG = "SeriesListSheet"
         private const val MAX_PAGES = 5
 
         fun factory(seriesId: Long): ViewModelProvider.Factory = object : ViewModelProvider.Factory {

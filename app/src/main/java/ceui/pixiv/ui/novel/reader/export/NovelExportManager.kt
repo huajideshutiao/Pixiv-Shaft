@@ -1,6 +1,8 @@
 package ceui.pixiv.ui.novel.reader.export
 
+
 import android.content.Context
+import android.util.Log
 import ceui.lisa.activities.Shaft
 import ceui.lisa.database.AppDatabase
 import ceui.lisa.database.DownloadEntity
@@ -10,7 +12,6 @@ import ceui.loxia.WebNovel
 import ceui.pixiv.ui.novel.reader.model.ContentToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 
 /**
  * Entry point for export actions. Picks an exporter by [ExportFormat], wraps
@@ -60,6 +61,8 @@ object NovelExportManager {
                 illustGson = Shaft.sGson.toJson(novel)
             }
             AppDatabase.getAppDatabase(Shaft.getContext()).downloadDao().insert(entity)
-        }.onFailure { Timber.e(it, "recordDownload failed for novel $id") }
+        }.onFailure { Log.e(TAG, "recordDownload failed for novel $id", it) }
     }
+
+    private const val TAG = "NovelExportManager"
 }

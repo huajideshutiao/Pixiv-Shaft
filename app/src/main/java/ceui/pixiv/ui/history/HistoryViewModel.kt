@@ -1,10 +1,9 @@
 package ceui.pixiv.ui.history
 
-import ceui.lisa.activities.Shaft
+import ceui.lisa.core.ArtworksMap
 import ceui.lisa.database.AppDatabase
 import ceui.loxia.Illust
 import ceui.loxia.Novel
-import ceui.loxia.ObjectPool
 import ceui.loxia.RefreshHint
 import ceui.loxia.RefreshState
 import ceui.loxia.User
@@ -14,9 +13,7 @@ import ceui.pixiv.ui.common.HoldersViewModel
 import ceui.pixiv.ui.common.IllustCardHolder
 import ceui.pixiv.ui.common.ListItemHolder
 import ceui.pixiv.ui.common.NovelCardHolder
-import ceui.pixiv.ui.detail.ArtworksMap
 import ceui.pixiv.ui.detail.UserInfoHolder
-import ceui.pixiv.ui.user.UserPostHolder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

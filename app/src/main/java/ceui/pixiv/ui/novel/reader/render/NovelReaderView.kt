@@ -1,17 +1,18 @@
 package ceui.pixiv.ui.novel.reader.render
 
+
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import android.view.VelocityTracker
 import android.view.ViewConfiguration
 import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
-import timber.log.Timber
 import ceui.pixiv.ui.novel.reader.model.FlipMode
 import ceui.pixiv.ui.novel.reader.model.Page
 import ceui.pixiv.ui.novel.reader.model.PageElement
@@ -163,7 +164,10 @@ class NovelReaderView @JvmOverloads constructor(
     }
 
     fun bind(pages: List<Page>, initialIndex: Int = 0) {
-        Timber.tag(TAG).d("bind() size=${pages.size} initialIndex=$initialIndex (prev currentIndex=$currentIndex, isDragging=$isDragging, settling=${settleAnimator?.isRunning == true})")
+        Log.d(
+            TAG,
+            "bind() size=${pages.size} initialIndex=$initialIndex (prev currentIndex=$currentIndex, isDragging=$isDragging, settling=${settleAnimator?.isRunning == true})"
+        )
         this.pages = pages
         this.currentIndex = initialIndex.coerceIn(0, (pages.size - 1).coerceAtLeast(0))
         refreshPages()
@@ -198,7 +202,12 @@ class NovelReaderView @JvmOverloads constructor(
     private fun refreshPages() {
         val style = this.style ?: return
         val geom = this.geometry ?: return
-        Timber.tag(TAG).d("refreshPages() currentIndex=$currentIndex / ${pages.size} (prev=${pages.getOrNull(currentIndex - 1) != null} next=${pages.getOrNull(currentIndex + 1) != null})")
+        Log.d(
+            TAG,
+            "refreshPages() currentIndex=$currentIndex / ${pages.size} (prev=${
+                pages.getOrNull(currentIndex - 1) != null
+            } next=${pages.getOrNull(currentIndex + 1) != null})"
+        )
         prevView.bind(pages.getOrNull(currentIndex - 1), style, geom, bitmapSource, PageOverlays.EMPTY, backgroundBitmap)
         currentView.bind(pages.getOrNull(currentIndex), style, geom, bitmapSource, overlays, backgroundBitmap)
         nextView.bind(pages.getOrNull(currentIndex + 1), style, geom, bitmapSource, PageOverlays.EMPTY, backgroundBitmap)
@@ -210,7 +219,12 @@ class NovelReaderView @JvmOverloads constructor(
         if (direction == FlipDirection.Forward) nextView else prevView
 
     private fun programmaticFlip(direction: FlipDirection, animate: Boolean = true) {
-        Timber.tag(TAG).d("programmaticFlip direction=$direction animate=$animate currentIndex=$currentIndex canFlip=${canFlip(direction)}")
+        Log.d(
+            TAG,
+            "programmaticFlip direction=$direction animate=$animate currentIndex=$currentIndex canFlip=${
+                canFlip(direction)
+            }"
+        )
         if (!canFlip(direction)) {
             onEdgeHit?.invoke(direction)
             return
@@ -236,14 +250,14 @@ class NovelReaderView @JvmOverloads constructor(
     private fun commitFlip(direction: FlipDirection) {
         val oldIndex = currentIndex
         currentIndex = (currentIndex + direction.sign.toInt()).coerceIn(0, (pages.size - 1).coerceAtLeast(0))
-        Timber.tag(TAG).d("commitFlip direction=$direction  $oldIndex -> $currentIndex")
+        Log.d(TAG, "commitFlip direction=$direction  $oldIndex -> $currentIndex")
         animator.onReset(prevView, currentView, nextView)
         refreshPages()
         onPageChanged?.invoke(currentIndex)
     }
 
     private fun cancelFlip() {
-        Timber.tag(TAG).d("cancelFlip dir=$dragDirection progress=$dragProgress")
+        Log.d(TAG, "cancelFlip dir=$dragDirection progress=$dragProgress")
         animator.onReset(prevView, currentView, nextView)
     }
 
@@ -253,7 +267,7 @@ class NovelReaderView @JvmOverloads constructor(
         if (touchLocked) return false
         when (ev.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
-                Timber.tag(TAG).v("intercept DOWN at (${ev.x}, ${ev.y})")
+                Log.v(TAG, "intercept DOWN at (${ev.x}, ${ev.y})")
                 dragStartX = ev.x
                 dragStartY = ev.y
                 dragDownTime = System.currentTimeMillis()
@@ -266,7 +280,10 @@ class NovelReaderView @JvmOverloads constructor(
                 val dy = ev.y - dragStartY
                 if (!isDragging && abs(dx) > slop && abs(dx) > abs(dy)) {
                     val dir = if (dx < 0) FlipDirection.Forward else FlipDirection.Backward
-                    Timber.tag(TAG).d("intercept drag start dx=$dx dy=$dy dir=$dir canFlip=${canFlip(dir)}")
+                    Log.d(
+                        TAG,
+                        "intercept drag start dx=$dx dy=$dy dir=$dir canFlip=${canFlip(dir)}"
+                    )
                     isDragging = true
                     dragDirection = dir
                     if (!canFlip(dragDirection)) {
@@ -297,7 +314,7 @@ class NovelReaderView @JvmOverloads constructor(
         velocityTracker?.addMovement(event)
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
-                Timber.tag(TAG).v("touch DOWN at (${event.x}, ${event.y})")
+                Log.v(TAG, "touch DOWN at (${event.x}, ${event.y})")
                 if (velocityTracker == null) {
                     velocityTracker = VelocityTracker.obtain()
                 }
@@ -323,7 +340,10 @@ class NovelReaderView @JvmOverloads constructor(
                     val dy = event.y - dragStartY
                     if (abs(dx) > slop && abs(dx) > abs(dy)) {
                         val dir = if (dx < 0) FlipDirection.Forward else FlipDirection.Backward
-                        Timber.tag(TAG).d("touch drag start dx=$dx dy=$dy dir=$dir canFlip=${canFlip(dir)}")
+                        Log.d(
+                            TAG,
+                            "touch drag start dx=$dx dy=$dy dir=$dir canFlip=${canFlip(dir)}"
+                        )
                         isDragging = true
                         dragDirection = dir
                         if (canFlip(dragDirection)) {
@@ -342,7 +362,10 @@ class NovelReaderView @JvmOverloads constructor(
                 val dx = event.x - dragStartX
                 val dy = event.y - dragStartY
                 val travel = kotlin.math.hypot(dx, dy)
-                Timber.tag(TAG).d("touch UP isDragging=$isDragging elapsed=$elapsed dx=$dx travel=$travel progress=$dragProgress")
+                Log.d(
+                    TAG,
+                    "touch UP isDragging=$isDragging elapsed=$elapsed dx=$dx travel=$travel progress=$dragProgress"
+                )
                 if (!isDragging && elapsed < tapMaxDurationMs && travel < tapMaxDistancePx) {
                     handleTap(event.x, event.y)
                 } else if (isDragging) {
@@ -350,7 +373,7 @@ class NovelReaderView @JvmOverloads constructor(
                     val vx = velocityTracker?.xVelocity ?: 0f
                     endDrag(dx, vx)
                 } else {
-                    Timber.tag(TAG).w("touch UP ignored: not a tap and not dragging (swiped < slop)")
+                    Log.w(TAG, "touch UP ignored: not a tap and not dragging (swiped < slop)")
                 }
                 releaseVelocityTracker()
                 return true
@@ -407,7 +430,10 @@ class NovelReaderView @JvmOverloads constructor(
         val commitByVelocity = signedVel >= animator.commitVelocityPxPerSec
         val cancelByVelocity = velocityX * dragDirection.sign >= animator.commitVelocityPxPerSec * 0.6f
         val commit = (commitByProgress || commitByVelocity) && !cancelByVelocity
-        Timber.tag(TAG).d("endDrag dx=$dx vx=$velocityX progress=$dragProgress commitByProgress=$commitByProgress commitByVelocity=$commitByVelocity cancelByVelocity=$cancelByVelocity commit=$commit")
+        Log.d(
+            TAG,
+            "endDrag dx=$dx vx=$velocityX progress=$dragProgress commitByProgress=$commitByProgress commitByVelocity=$commitByVelocity cancelByVelocity=$cancelByVelocity commit=$commit"
+        )
         if (commit && !canFlip(dragDirection)) {
             onEdgeHit?.invoke(dragDirection)
             animateSettle(from = dragProgress, to = 0f, commit = false)
@@ -419,7 +445,10 @@ class NovelReaderView @JvmOverloads constructor(
     private fun animateSettle(from: Float, to: Float, commit: Boolean) {
         cancelSettle()
         val duration = (animator.durationMs * abs(to - from)).toLong().coerceAtLeast(0L)
-        Timber.tag(TAG).d("animateSettle from=$from to=$to commit=$commit duration=${duration}ms animator=${animator::class.simpleName}")
+        Log.d(
+            TAG,
+            "animateSettle from=$from to=$to commit=$commit duration=${duration}ms animator=${animator::class.simpleName}"
+        )
         if (duration == 0L) {
             dragProgress = to
             if (commit) commitFlip(dragDirection) else cancelFlip()
@@ -486,7 +515,7 @@ class NovelReaderView @JvmOverloads constructor(
         cancelAllGestures()
     }
 
-    private companion object {
-        const val TAG = "NovelReaderView"
+    companion object {
+        private const val TAG = "NovelReaderView"
     }
 }

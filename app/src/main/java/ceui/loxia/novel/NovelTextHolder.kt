@@ -17,8 +17,7 @@ import ceui.pixiv.ui.common.ListItemViewHolder
 import ceui.pixiv.ui.common.PixivFragment
 import ceui.pixiv.utils.setOnClick
 import com.bumptech.glide.Glide
-import timber.log.Timber
-
+import android.util.Log
 class NovelChapterHolder(val text: String, val textColor: Int) : ListItemHolder() {
     override fun getItemId(): Long {
         return (text.hashCode() + textColor).toLong()

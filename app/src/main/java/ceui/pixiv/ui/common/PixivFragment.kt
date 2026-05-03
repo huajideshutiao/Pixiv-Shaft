@@ -1,7 +1,9 @@
 package ceui.pixiv.ui.common
 
+
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -24,6 +26,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import ceui.lisa.R
 import ceui.lisa.activities.UActivity
+import ceui.lisa.activities.VActivity
+import ceui.lisa.core.ArtworksMap
 import ceui.lisa.databinding.FragmentPixivListBinding
 import ceui.lisa.databinding.LayoutToolbarBinding
 import ceui.lisa.helper.StaggeredManager
@@ -50,7 +54,6 @@ import ceui.loxia.pushFragment
 import ceui.pixiv.ui.chats.RedSectionHeaderHolder
 import ceui.pixiv.ui.circles.CircleFragmentArgs
 import ceui.pixiv.ui.detail.ArtworkViewPagerFragmentArgs
-import ceui.pixiv.ui.detail.ArtworksMap
 import ceui.pixiv.ui.detail.IllustSeriesFragmentArgs
 import ceui.pixiv.ui.novel.NovelSeriesActionReceiver
 import ceui.pixiv.ui.user.UserActionReceiver
@@ -64,8 +67,6 @@ import com.scwang.smart.refresh.footer.ClassicsFooter
 import com.scwang.smart.refresh.header.FalsifyFooter
 import com.scwang.smart.refresh.header.FalsifyHeader
 import com.scwang.smart.refresh.header.MaterialHeader
-import timber.log.Timber
-
 
 open class PixivFragment(layoutId: Int) : Fragment(layoutId),
     IllustCardActionReceiver,
@@ -176,7 +177,7 @@ open class PixivFragment(layoutId: Int) : Fragment(layoutId),
         try {
             pushFragment(R.id.navigation_user, UserFragmentArgs(id).toBundle())
         } catch (ex: Exception) {
-            Timber.e(ex)
+            Log.e(TAG, "onClickUser error", ex)
             val userIntent = Intent(
                 requireContext(),
                 UActivity::class.java
@@ -243,14 +244,10 @@ open class PixivFragment(layoutId: Int) : Fragment(layoutId),
     }
 
     override fun onClickIllust(illustId: Long) {
-        pushFragment(
-            R.id.navigation_viewpager_artwork,
-            ArtworkViewPagerFragmentArgs(
-                fragmentViewModel.fragmentUniqueId,
-                illustId,
-                ObjectType.ILLUST
-            ).toBundle()
-        )
+        val intent = Intent(requireContext(), VActivity::class.java)
+        intent.putExtra(Params.SEED, fragmentViewModel.fragmentUniqueId)
+        intent.putExtra(Params.ILLUST_ID, illustId)
+        startActivity(intent)
     }
 
     override fun onDestroy() {
@@ -459,12 +456,12 @@ fun FragmentActivity.findCurrentFragmentOrNull(): Fragment? {
             navigationFragment?.childFragmentManager?.fragments?.firstOrNull { it.isVisible }
 
         currentFragment?.let {
-            Timber.d("Current Fragment Instance: ${it.javaClass.simpleName}")
+            Log.d("PixivFragment", "Current Fragment Instance: ${it.javaClass.simpleName}")
         }
 
         currentFragment
     } catch (ex: Exception) {
-        Timber.e(ex)
+        Log.e("PixivFragment", "findCurrentFragmentOrNull error", ex)
         null
     }
 }
@@ -510,3 +507,5 @@ fun Fragment.shareNovel(novel: Novel) {
         }
     }
 }
+
+private const val TAG = "PixivFragment"

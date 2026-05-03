@@ -1,6 +1,8 @@
 package ceui.loxia
 
+
 import android.content.Context
+import android.util.Log
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
@@ -9,15 +11,15 @@ import ceui.lisa.activities.Shaft
 import ceui.lisa.databinding.ItemLoadingBinding
 import ceui.pixiv.utils.setOnClick
 import retrofit2.HttpException
-import timber.log.Timber
 import java.io.Serializable
-import java.lang.Exception
 import java.net.SocketTimeoutException
 import java.util.concurrent.TimeoutException
 import javax.net.ssl.SSLHandshakeException
 
-sealed class RefreshState: Serializable {
-    data class LOADING(val title: String = "", val refreshHint: RefreshHint? = null) : RefreshState()
+sealed class RefreshState : Serializable {
+    data class LOADING(val title: String = "", val refreshHint: RefreshHint? = null) :
+        RefreshState()
+
     data class FETCHING_LATEST(val hasContent: Boolean = true) : RefreshState()
     data class LOADED(val hasContent: Boolean = true, val hasNext: Boolean = true) : RefreshState()
     data class ERROR(val exception: Exception, val isInitialLoad: Boolean = false) : RefreshState()
@@ -81,8 +83,8 @@ fun Throwable.getHumanReadableMessage(context: Context): String {
                 try {
                     val obj = Shaft.sGson.fromJson(errorBody, ErrorResp::class.java)
                     obj.error?.user_message ?: errorBody ?: ""
-                } catch (ex: kotlin.Exception) {
-                    Timber.e(ex)
+                } catch (ex: Exception) {
+                    Log.e(TAG, "getHumanReadableMessage failed", ex)
                     errorBody ?: ""
                 }
             } else {
@@ -90,4 +92,8 @@ fun Throwable.getHumanReadableMessage(context: Context): String {
             }
         }
     }
+
+
 }
+
+private const val TAG = "RefreshState"

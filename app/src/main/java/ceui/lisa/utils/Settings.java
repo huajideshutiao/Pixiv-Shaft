@@ -69,25 +69,6 @@ public class Settings {
     //主页显示R18
     private boolean mainViewR18 = false;
 
-    private long currentProgress = 0L;
-
-    public long getCurrentProgress() {
-        return currentProgress;
-    }
-
-    public void setCurrentProgress(long currentProgress) {
-        this.currentProgress = currentProgress;
-    }
-
-    private boolean trendsForPrivate = false;
-
-    //浏览历史List点击动画
-    private boolean viewHistoryAnimate = true;
-
-    //设置页面进场动画
-    private boolean settingsAnimate = true;
-
-    //屏蔽，不显示已收藏的作品，默认不屏蔽
     private boolean deleteStarIllust = false;
 
     //排行榜过滤已收藏的作品，默认过滤
@@ -102,8 +83,11 @@ public class Settings {
 
     private boolean relatedIllustNoLimit = true;
 
-    //使用pixiv cat 代理 展示图片
+    //使用自定义图片代理
     private boolean usePixivCat = false;
+
+    //自定义图片代理地址，默认 https://i.pixiv.cat
+    private String imageProxyUrl = "https://i.pixiv.cat";
 
     //缩略图图片显示大图
     private boolean showLargeThumbnailImage = false;
@@ -112,20 +96,11 @@ public class Settings {
     private boolean showOriginalPreviewImage = false;
 
 
-    //是否显示开屏 dialog
-    private boolean showPixivDialog = true;
-
     //默认私人收藏
     private boolean privateStar = false;
 
-    //列表页面是否显示收藏按钮
-    private boolean showLikeButton = true;
-
     //小说卡片是否显示标签
     private boolean showNovelCardTags = true;
-
-    //直接下载单个作品所有P
-    private boolean directDownloadAllImage = true;
 
     private boolean saveViewHistory = true;
 
@@ -163,8 +138,6 @@ public class Settings {
     private int novelHolderTextSize = 16;
 
     private int bottomBarOrder = 0;
-
-    private boolean reverseDialogNeverShowAgain = false;
 
     private String appLanguage = "";
 
@@ -343,6 +316,14 @@ public class Settings {
         this.usePixivCat = usePixivCat;
     }
 
+    public String getImageProxyUrl() {
+        return TextUtils.isEmpty(imageProxyUrl) ? "https://i.pixiv.cat" : imageProxyUrl;
+    }
+
+    public void setImageProxyUrl(String imageProxyUrl) {
+        this.imageProxyUrl = imageProxyUrl;
+    }
+
     public void setSearchFilter(String searchFilter) {
         this.searchFilter = searchFilter;
     }
@@ -369,30 +350,6 @@ public class Settings {
 
     public void setMainViewR18(boolean mainViewR18) {
         this.mainViewR18 = mainViewR18;
-    }
-
-    public boolean isViewHistoryAnimate() {
-        return viewHistoryAnimate;
-    }
-
-    public void setViewHistoryAnimate(boolean viewHistoryAnimate) {
-        this.viewHistoryAnimate = viewHistoryAnimate;
-    }
-
-    public boolean isSettingsAnimate() {
-        return settingsAnimate;
-    }
-
-    public void setSettingsAnimate(boolean settingsAnimate) {
-        this.settingsAnimate = settingsAnimate;
-    }
-
-    public boolean isDirectDownloadAllImage() {
-        return directDownloadAllImage;
-    }
-
-    public void setDirectDownloadAllImage(boolean directDownloadAllImage) {
-        this.directDownloadAllImage = directDownloadAllImage;
     }
 
     public String getIllustPath() {
@@ -433,38 +390,6 @@ public class Settings {
 
     public void setWebDownloadPath(String webDownloadPath) {
         this.webDownloadPath = webDownloadPath;
-    }
-
-    public boolean isTrendsForPrivate() {
-        return trendsForPrivate;
-    }
-
-    public void setTrendsForPrivate(boolean trendsForPrivate) {
-        this.trendsForPrivate = trendsForPrivate;
-    }
-
-    public boolean isShowPixivDialog() {
-        return showPixivDialog;
-    }
-
-    public void setShowPixivDialog(boolean showPixivDialog) {
-        this.showPixivDialog = showPixivDialog;
-    }
-
-    public boolean isReverseDialogNeverShowAgain() {
-        return reverseDialogNeverShowAgain;
-    }
-
-    public void setReverseDialogNeverShowAgain(boolean reverseDialogNeverShowAgain) {
-        this.reverseDialogNeverShowAgain = reverseDialogNeverShowAgain;
-    }
-
-    public boolean isShowLikeButton() {
-        return showLikeButton;
-    }
-
-    public void setShowLikeButton(boolean pShowLikeButton) {
-        showLikeButton = pShowLikeButton;
     }
 
     public String getFileNameJson() {
@@ -669,17 +594,6 @@ public class Settings {
 
     public void setFilterInvalidBookmarks(boolean filterInvalidBookmarks) {
         this.filterInvalidBookmarks = filterInvalidBookmarks;
-    }
-
-    // 插画V3详情页：下载按钮是否在左（true=左下载右收藏，false=左收藏右下载）
-    private boolean artworkV3FabDownloadOnLeft = true;
-
-    public boolean isArtworkV3FabDownloadOnLeft() {
-        return artworkV3FabDownloadOnLeft;
-    }
-
-    public void setArtworkV3FabDownloadOnLeft(boolean artworkV3FabDownloadOnLeft) {
-        this.artworkV3FabDownloadOnLeft = artworkV3FabDownloadOnLeft;
     }
 
     // "" = 每次询问（弹出格式选择），否则存 ExportFormat 枚举名（Txt / Markdown / Epub / Pdf）

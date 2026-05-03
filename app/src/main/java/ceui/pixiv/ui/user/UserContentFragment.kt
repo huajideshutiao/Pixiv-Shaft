@@ -14,8 +14,7 @@ import ceui.pixiv.ui.common.constructVM
 import ceui.pixiv.ui.common.setUpCustomAdapter
 import ceui.pixiv.ui.common.setUpRefreshState
 import ceui.pixiv.ui.common.viewBinding
-import timber.log.Timber
-
+import android.util.Log
 class UserContentFragment : PixivFragment(R.layout.fragment_pixiv_list) {
 
     private val binding by viewBinding(FragmentPixivListBinding::bind)

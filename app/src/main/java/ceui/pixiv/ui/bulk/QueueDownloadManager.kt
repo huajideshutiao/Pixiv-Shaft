@@ -1,9 +1,11 @@
 package ceui.pixiv.ui.bulk
 
+
 import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import ceui.lisa.R
 import ceui.lisa.core.DownloadItem
 import ceui.lisa.core.Manager
@@ -16,6 +18,11 @@ import ceui.loxia.ObjectPool
 import ceui.pixiv.db.queue.DownloadQueueDao
 import ceui.pixiv.db.queue.DownloadQueueEntity
 import ceui.pixiv.db.queue.QueueStatus
+import ceui.pixiv.ui.bulk.QueueDownloadManager.INVARIANT_CHECK_DOWNLOADING
+import ceui.pixiv.ui.bulk.QueueDownloadManager.WAIT_APPEAR_TIMEOUT_MS
+import ceui.pixiv.ui.bulk.QueueDownloadManager.awaitIllustSettled
+import ceui.pixiv.ui.bulk.QueueDownloadManager.init
+import ceui.pixiv.ui.bulk.QueueDownloadManager.loopJob
 import com.qmuiteam.qmui.skin.QMUISkinManager
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog
 import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction
@@ -30,7 +37,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
@@ -83,7 +89,13 @@ object QueueDownloadManager {
         // 注意：这里不要触碰 dao；首次 dao 访问发生在下面的 launch 协程（IO 线程）里。
         loopJob = scope.launch {
             // 冷启动：上次崩溃残留的 DOWNLOADING/没结束的全部归位为 PENDING
-            runCatching { dao.resurrectInProgress() }.onFailure { Timber.tag(TAG).e(it, "resurrectInProgress failed") }
+            runCatching { dao.resurrectInProgress() }.onFailure {
+                Log.e(
+                    TAG,
+                    "resurrectInProgress failed",
+                    it
+                )
+            }
 
             // 检查是否有需要恢复的批量下载 —— 不无脑继续，让用户决定
             val pending = runCatching { dao.countByStatus(QueueStatus.PENDING) }.getOrDefault(0)
@@ -92,7 +104,7 @@ object QueueDownloadManager {
                 (appContext as? Application)?.let { app ->
                     promptResumeOnFirstActivity(app, pending)
                 }
-                Timber.tag(TAG).i("cold start: $pending pending items, awaiting user decision")
+                Log.i(TAG, "cold start: $pending pending items, awaiting user decision")
             } else {
                 paused = false
                 tickle.trySend(Unit)
@@ -103,7 +115,7 @@ object QueueDownloadManager {
                 consumeUntilEmpty()
             }
         }
-        Timber.tag(TAG).d("QueueDownloadManager initialized")
+        Log.d(TAG, "QueueDownloadManager initialized")
     }
 
     /**
@@ -144,17 +156,17 @@ object QueueDownloadManager {
                     .setSkinManager(QMUISkinManager.defaultInstance(activity))
                     .addAction(0, activity.getString(R.string.bulk_resume_prompt_decline), QMUIDialogAction.ACTION_PROP_NEUTRAL) { d, _ ->
                         // 保持 paused —— 用户可去 下载管理 → 批量队列 手动点 "继续"
-                        Timber.tag(TAG).i("user declined cold-start resume; staying paused")
+                        Log.i(TAG, "user declined cold-start resume; staying paused")
                         d.dismiss()
                     }
                     .addAction(0, activity.getString(R.string.bulk_resume_prompt_continue)) { d, _ ->
-                        Timber.tag(TAG).i("user confirmed cold-start resume; pending=$pendingCount")
+                        Log.i(TAG, "user confirmed cold-start resume; pending=$pendingCount")
                         resume()
                         d.dismiss()
                     }
                     .show()
             } catch (e: Exception) {
-                Timber.tag(TAG).w(e, "failed to show resume prompt; auto-resuming as fallback")
+                Log.w(TAG, "failed to show resume prompt; auto-resuming as fallback", e)
                 // 极端情况（窗口已坏）下 fallback 到自动恢复，免得任务永远卡在 paused
                 resume()
             }
@@ -170,7 +182,7 @@ object QueueDownloadManager {
         while (!paused) {
             // 网关：用户配置不允许下载（如 wifi-only 但当前是蜂窝），睡一会再看
             if (!DownloadLimitTypeUtil.canDownloadNow()) {
-                Timber.tag(TAG).i("canDownloadNow=false, holding consumer")
+                Log.i(TAG, "canDownloadNow=false, holding consumer")
                 delay(NETWORK_GATE_SLEEP_MS)
                 continue
             }
@@ -180,7 +192,7 @@ object QueueDownloadManager {
             // 不变量：mark DOWNLOADING 之前必须没有任何 DOWNLOADING；防御性，正常 0
             val activeCount = runCatching { dao.countByStatus(QueueStatus.DOWNLOADING) }.getOrDefault(0)
             if (activeCount > 0) {
-                Timber.tag(TAG).w("invariant: $activeCount items already DOWNLOADING; recovering by reset")
+                Log.w(TAG, "invariant: $activeCount items already DOWNLOADING; recovering by reset")
                 runCatching { dao.resurrectInProgress() }
                 delay(1_000L)
                 continue
@@ -194,7 +206,7 @@ object QueueDownloadManager {
                 runCatching { dao.updateStatus(item.id, QueueStatus.PENDING) }
                 throw cancellation
             } catch (e: Exception) {
-                Timber.tag(TAG).w(e, "process failed illustId=${item.illustId} retry=${item.retryCount}")
+                Log.w(TAG, "process failed illustId=${item.illustId} retry=${item.retryCount}", e)
                 if (item.retryCount + 1 < MAX_RETRY) {
                     dao.bumpRetry(item.id)
                     dao.updateStatus(item.id, QueueStatus.PENDING, err = e.message)
@@ -210,7 +222,7 @@ object QueueDownloadManager {
         val bean = resolveIllustsBean(item.illustId)
         // 防御性：GIF 不走本队列（fetcher 已滤掉，仍可能因外部入队进来）
         if (bean.isGif) {
-            Timber.tag(TAG).i("skip gif illustId=${item.illustId} (gif goes through ugoira pipeline)")
+            Log.i(TAG, "skip gif illustId=${item.illustId} (gif goes through ugoira pipeline)")
             return
         }
         val pageCount = if (bean.page_count <= 0) 1 else bean.page_count
@@ -237,10 +249,10 @@ object QueueDownloadManager {
                 Manager.get().startAll()
                 return
             } catch (e: ConcurrentModificationException) {
-                Timber.tag(TAG).w("startAll CME (attempt=$attempt), retry…")
+                Log.w(TAG, "startAll CME (attempt=$attempt), retry…")
                 delay(80L)
             } catch (e: Exception) {
-                Timber.tag(TAG).w(e, "startAll failed (attempt=$attempt)")
+                Log.w(TAG, "startAll failed (attempt=$attempt)", e)
                 if (attempt == 3) return // 不抛 —— stage B 的停滞超时会兜底
                 delay(80L)
             }
@@ -255,7 +267,7 @@ object QueueDownloadManager {
             } catch (e: Exception) {
                 // ConcurrentModificationException / NoSuchElementException / IndexOutOfBounds 等
                 if (attempt == 5) {
-                    Timber.tag(TAG).w(e, "snapshotManagerContent failed after retries")
+                    Log.w(TAG, "snapshotManagerContent failed after retries", e)
                     return emptyList()
                 }
             }

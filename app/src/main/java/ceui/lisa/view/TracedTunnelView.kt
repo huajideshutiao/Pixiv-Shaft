@@ -1,5 +1,6 @@
 package ceui.lisa.view
 
+
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.graphics.BitmapShader
@@ -11,10 +12,10 @@ import android.graphics.RuntimeShader
 import android.graphics.Shader
 import android.os.Build
 import android.util.AttributeSet
+import android.util.Log
 import android.view.Choreographer
 import android.view.View
 import androidx.annotation.RequiresApi
-import timber.log.Timber
 import java.util.concurrent.Executors
 
 /**
@@ -213,7 +214,7 @@ private class TunnelImpl(private val view: View, private val onReady: () -> Unit
             val assetManager = context.assets
             val files = assetManager.list("prime_square")?.toList()?.shuffled()
             if (files.isNullOrEmpty()) {
-                Timber.w("TracedTunnelView: no images found in assets/prime_square/")
+                Log.w(TAG, "TracedTunnelView: no images found in assets/prime_square/")
                 return null
             }
 
@@ -253,7 +254,7 @@ private class TunnelImpl(private val view: View, private val onReady: () -> Unit
             )
             AtlasData(bitmapShader, atlasBitmap, atlasW.toFloat(), atlasH.toFloat())
         } catch (e: Exception) {
-            Timber.e(e, "TracedTunnelView: failed to load atlas")
+            Log.e(TAG, "TracedTunnelView: failed to load atlas", e)
             null
         }
     }
@@ -264,6 +265,10 @@ private class TunnelImpl(private val view: View, private val onReady: () -> Unit
         val width: Float,
         val height: Float
     )
+
+    companion object {
+        private const val TAG = "TracedTunnelView"
+    }
 }
 
 // ── AGSL shader source — identical to JCStaff SHADER_TRACED_TUNNEL_IMAGE ────

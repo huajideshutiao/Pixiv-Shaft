@@ -1,4 +1,6 @@
-package ceui.pixiv.ui.task
+package ceui.pixiv.ui.task
+
+import android.util.Log
 
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
@@ -14,8 +16,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
-
 /**
  * 合并下载：把一个系列的全部章节抓下来合并成一个 TXT 文件。
  *
@@ -81,7 +81,7 @@ class MergeDownloadNovelSeriesTask(
                         val body = withContext(Dispatchers.IO) { fetchChapterBody(novel, done) }
                         chapterBodies.append(body).append(lineSep)
                     } catch (ex: Exception) {
-                        Timber.e(ex, "MergeDownloadNovelSeriesTask: chapter ${novel.id} failed")
+                        Log.e(TAG, "MergeDownloadNovelSeriesTask: chapter ${novel.id} failed", ex)
                         failedCount++
                     }
                     if (done < total) delay(1500L)
@@ -106,7 +106,7 @@ class MergeDownloadNovelSeriesTask(
                 }
                 onFinished(true, failedCount)
             } catch (ex: Exception) {
-                Timber.e(ex, "MergeDownloadNovelSeriesTask failed")
+                Log.e(TAG, "MergeDownloadNovelSeriesTask failed", ex)
                 Toaster.show(ex.message ?: ex::class.java.simpleName)
                 onFinished(false, -1)
             }
@@ -124,7 +124,7 @@ class MergeDownloadNovelSeriesTask(
             val resp = try {
                 Client.appApi.getNovelSeries(seriesId, lastOrder)
             } catch (ex: Exception) {
-                Timber.e(ex, "getNovelSeries pagination failed at lastOrder=$lastOrder")
+                Log.e(TAG, "getNovelSeries pagination failed at lastOrder=$lastOrder", ex)
                 break
             }
             val page = resp.novels.orEmpty()
@@ -164,5 +164,10 @@ class MergeDownloadNovelSeriesTask(
         val sanitized = raw.replace(Regex("[\\\\/:*?\"<>|]"), "").trim().take(40)
         val base = if (sanitized.isEmpty()) "novel_series_${detail.id}" else sanitized
         return "${base}_合集_ID${detail.id}.txt"
+    }
+
+
+    companion object {
+        private const val TAG = "MergeDownloadNovelSeriesTask"
     }
 }

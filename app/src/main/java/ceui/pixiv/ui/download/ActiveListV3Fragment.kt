@@ -1,5 +1,8 @@
 package ceui.pixiv.ui.download
 
+
+import android.util.Log
+
 import android.content.IntentFilter
 import android.graphics.Color
 import android.os.Bundle
@@ -29,8 +32,6 @@ import ceui.pixiv.ui.bulk.QueueDownloadManager
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import timber.log.Timber
-
 /**
  * V3 风格 "正在下载" — 监听 Manager.content。
  *
@@ -110,7 +111,8 @@ class ActiveListV3Fragment : Fragment() {
 
                     // 运行时不变量：DOWNLOADING 应当永远 <= 1（Manager.loop 串行）
                     if (downloadingCount > 1) {
-                        Timber.tag(TAG).w(
+                        Log.w(
+                            TAG,
                             "INVARIANT: ${downloadingCount} items in DOWNLOADING state simultaneously! " +
                                 snapshot.filter { it.state == DownloadItem.DownloadState.DOWNLOADING }
                                     .joinToString { "${it.uuid}/${it.illust?.id}" }

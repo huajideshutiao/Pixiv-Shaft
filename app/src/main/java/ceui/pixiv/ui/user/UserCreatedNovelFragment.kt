@@ -1,4 +1,6 @@
-package ceui.pixiv.ui.user
+package ceui.pixiv.ui.user
+
+import android.util.Log
 
 import android.os.Bundle
 import android.view.View
@@ -30,8 +32,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
-
 class UserCreatedNovelFragment : PixivFragment(R.layout.fragment_pixiv_list) {
 
     private val binding by viewBinding(FragmentPixivListBinding::bind)
@@ -120,7 +120,7 @@ class UserCreatedNovelFragment : PixivFragment(R.layout.fragment_pixiv_list) {
                     }
                     count
                 } catch (ex: Exception) {
-                    Timber.w(ex, "probeUncategorizedCount failed for ${args.userId}")
+                    Log.w(TAG, "probeUncategorizedCount failed for ${args.userId}", ex)
                     null
                 }
             } ?: return@launch
@@ -132,5 +132,10 @@ class UserCreatedNovelFragment : PixivFragment(R.layout.fragment_pixiv_list) {
                 viewModel.refresh(RefreshHint.PullToRefresh)
             }
         }
+    }
+
+
+    companion object {
+        private const val TAG = "UserCreatedNovelFragment"
     }
 }

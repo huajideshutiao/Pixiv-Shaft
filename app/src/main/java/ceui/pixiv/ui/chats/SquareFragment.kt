@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.navArgs
 import ceui.lisa.R
 import ceui.lisa.annotations.ItemHolder
+import ceui.lisa.core.ArtworksMap
 import ceui.lisa.databinding.FragmentPixivListBinding
 import ceui.lisa.databinding.ItemRedSectionHeaderBinding
 import ceui.loxia.Client
@@ -24,7 +25,6 @@ import ceui.pixiv.ui.common.createResponseStore
 import ceui.pixiv.ui.common.pixivValueViewModel
 import ceui.pixiv.ui.common.setUpRefreshState
 import ceui.pixiv.ui.common.viewBinding
-import ceui.pixiv.ui.detail.ArtworksMap
 import ceui.pixiv.ui.settings.CookieNotSyncException
 import ceui.pixiv.utils.ppppx
 import ceui.pixiv.utils.setOnClick

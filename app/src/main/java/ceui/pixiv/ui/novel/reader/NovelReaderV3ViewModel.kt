@@ -3,42 +3,42 @@ package ceui.pixiv.ui.novel.reader
 import android.content.Context
 import android.os.Handler
 import android.os.HandlerThread
-import ceui.lisa.R
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import ceui.lisa.R
 import ceui.lisa.activities.Shaft
 import ceui.lisa.database.AppDatabase
 import ceui.lisa.database.NovelAnnotationEntity
 import ceui.lisa.database.NovelBookmarkEntity
 import ceui.lisa.fragments.WebNovelParser
+import ceui.lisa.utils.Params
 import ceui.loxia.Client
 import ceui.loxia.Novel
 import ceui.loxia.ObjectPool
 import ceui.loxia.WebNovel
+import ceui.pixiv.ui.novel.reader.export.ExportFormat
+import ceui.pixiv.ui.novel.reader.export.ExportResult
+import ceui.pixiv.ui.novel.reader.export.NovelExportManager
+import ceui.pixiv.ui.novel.reader.feature.SearchEngine
 import ceui.pixiv.ui.novel.reader.model.ContentToken
 import ceui.pixiv.ui.novel.reader.model.Page
 import ceui.pixiv.ui.novel.reader.model.PageGeometry
+import ceui.pixiv.ui.novel.reader.model.SearchHit
+import ceui.pixiv.ui.novel.reader.paginate.ChapterOutlineEntry
 import ceui.pixiv.ui.novel.reader.paginate.ContentParser
 import ceui.pixiv.ui.novel.reader.paginate.ImageResolver
 import ceui.pixiv.ui.novel.reader.paginate.Paginator
 import ceui.pixiv.ui.novel.reader.paginate.TextMeasurer
 import ceui.pixiv.ui.novel.reader.paginate.TypeStyle
-import ceui.pixiv.ui.novel.reader.export.ExportFormat
-import ceui.pixiv.ui.novel.reader.export.ExportResult
-import ceui.pixiv.ui.novel.reader.export.NovelExportManager
-import ceui.pixiv.ui.novel.reader.feature.SearchEngine
-import ceui.pixiv.ui.novel.reader.model.SearchHit
-import ceui.pixiv.ui.novel.reader.paginate.ChapterOutlineEntry
-import ceui.lisa.utils.Params
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.android.asCoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 
 class NovelReaderV3ViewModel(
     val novelId: Long,
@@ -144,7 +144,7 @@ class NovelReaderV3ViewModel(
                 _loadState.postValue(LoadState.Loaded(novel, parsed.first, parsed.second))
                 repaginateIfReady()
             }.onFailure { throwable ->
-                Timber.tag("NovelReaderV3").e(throwable)
+                Log.e("NovelReaderV3", "load error", throwable)
                 _loadState.postValue(LoadState.Error(throwable.message ?: ctx().getString(R.string.msg_load_fail)))
             }
         }

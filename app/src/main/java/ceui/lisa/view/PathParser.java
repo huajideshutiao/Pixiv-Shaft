@@ -3,7 +3,6 @@ package ceui.lisa.view;
 
 import android.graphics.Matrix;
 import android.graphics.Path;
-import android.os.Build;
 
 import androidx.annotation.NonNull;
 
@@ -14,8 +13,6 @@ import java.util.List;
 // update on incompatible API like copyOfRange().
 @SuppressWarnings({"WeakerAccess", "SameParameterValue"})
 public class PathParser {
-
-    private static final String TAG = "PathParser";
 
     // Copy from Arrays.copyOfRange() which is only available from API level 9.
 
@@ -47,115 +44,16 @@ public class PathParser {
         return result;
     }
 
-    public static List<Path> transformScale(float ratioWidth, float ratioHeight, List<Path> originPaths, List<String> orginSvgs) {
+    public static List<Path> transformScale(float ratioWidth, float ratioHeight, List<Path> originPaths) {
         Matrix matrix = new Matrix();
         matrix.setScale(ratioWidth, ratioHeight);
         List<Path> paths = new ArrayList<>();
-        if (Build.VERSION.SDK_INT > 16) {
-            for (Path path : originPaths) {
-                Path nPath = new Path();
-                path.transform(matrix, nPath);
-                paths.add(nPath);
-            }
-        } else {
-            for (String svgPath : orginSvgs) {
-                Path path = new Path();
-                PathDataNode[] nodes = createNodesFromPathData(svgPath);
-                transformScaleNodes(ratioWidth, ratioHeight, nodes);
-                PathDataNode.nodesToPath(nodes, path);
-                paths.add(path);
-            }
-
+        for (Path path : originPaths) {
+            Path nPath = new Path();
+            path.transform(matrix, nPath);
+            paths.add(nPath);
         }
         return paths;
-    }
-
-    private static void transformScaleNodes(float ratioWidth, float ratioHeight, PathDataNode[] node) {
-        for (PathDataNode aNode : node) {
-            transformScaleCommand(ratioWidth, ratioHeight, aNode.type, aNode.params);
-        }
-    }
-
-    private static void transformScaleCommand(float ratioWidth, float ratioHeight, char cmd, float[] val) {
-        int inc = 2;
-        switch (cmd) {
-            case 'z':
-            case 'Z':
-                break;
-            case 'm':
-            case 'M':
-            case 'l':
-            case 'L':
-            case 't':
-            case 'T':
-                inc = 2;
-                break;
-            case 'h':
-            case 'H':
-            case 'v':
-            case 'V':
-                inc = 1;
-                break;
-            case 'c':
-            case 'C':
-                inc = 6;
-                break;
-            case 's':
-            case 'S':
-            case 'q':
-            case 'Q':
-                inc = 4;
-                break;
-            case 'a':
-            case 'A':
-                inc = 7;
-                break;
-        }
-        for (int k = 0; k < val.length; k += inc) {
-            switch (cmd) {
-                case 'm': // moveTo - Start a new sub-path (relative)
-                case 'M': // moveTo - Start a new sub-path
-                case 'l': // lineTo - Draw a line from the current point (relative)
-                case 'L': // lineTo - Draw a line from the current point
-                case 't': // Draws a quadratic Bezier curve(reflective control point)(relative)
-                case 'T': // Draws a quadratic Bezier curve (reflective control point)
-                    val[k] *= ratioWidth;
-                    val[k + 1] *= ratioHeight;
-                    break;
-                case 'h': // horizontal lineTo - Draws a horizontal line (relative)
-                case 'H': // horizontal lineTo - Draws a horizontal line
-                    val[k] *= ratioWidth;
-                    break;
-                case 'v': // vertical lineTo - Draws a vertical line from the current point (r)
-                case 'V': // vertical lineTo - Draws a vertical line from the current point
-                    val[k] *= ratioHeight;
-                    break;
-                case 'c': // curveTo - Draws a cubic Bezier curve (relative)
-                case 'C': // curveTo - Draws a cubic Bezier curve
-                    val[k] *= ratioWidth;
-                    val[k + 1] *= ratioHeight;
-                    val[k + 2] *= ratioWidth;
-                    val[k + 3] *= ratioHeight;
-                    val[k + 4] *= ratioWidth;
-                    val[k + 5] *= ratioHeight;
-                    break;
-                case 's': // smooth curveTo - Draws a cubic Bezier curve (reflective cp)
-                case 'S': // shorthand/smooth curveTo Draws a cubic Bezier curve(reflective cp)
-                case 'q': // Draws a quadratic Bezier (relative)
-                case 'Q': // Draws a quadratic Bezier
-                    val[k] *= ratioWidth;
-                    val[k + 1] *= ratioHeight;
-                    val[k + 2] *= ratioWidth;
-                    val[k + 3] *= ratioHeight;
-                case 'a': // Draws an elliptical arc
-                case 'A': // Draws an elliptical arc
-                    val[k] *= ratioWidth;
-                    val[k + 1] *= ratioHeight;
-                    val[k + 5] *= ratioWidth;
-                    val[k + 6] *= ratioHeight;
-                    break;
-            }
-        }
     }
 
     /**
@@ -191,7 +89,7 @@ public class PathParser {
         while (end < pathData.length()) {
             end = nextStart(pathData, end);
             String s = pathData.substring(start, end).trim();
-            if (s.length() > 0) {
+            if (!s.isEmpty()) {
                 float[] val = getFloats(s);
                 addNode(list, s.charAt(0), val);
             }
@@ -472,7 +370,6 @@ public class PathParser {
                 case 'L':
                 case 't':
                 case 'T':
-                    inc = 2;
                     break;
                 case 'h':
                 case 'H':

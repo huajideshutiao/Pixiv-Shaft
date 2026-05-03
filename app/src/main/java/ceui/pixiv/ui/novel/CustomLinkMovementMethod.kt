@@ -1,10 +1,10 @@
-package ceui.pixiv.ui.novel
+package ceui.pixiv.ui.novel
+
+import android.util.Log
 
 import android.text.method.LinkMovementMethod
 import android.view.MotionEvent
 import android.widget.TextView
-import timber.log.Timber
-
 class CustomLinkMovementMethod(private val onLinkClick: (String) -> Unit) : LinkMovementMethod() {
 
     private var isSliding = false  // 标记是否发生了滑动
@@ -42,7 +42,7 @@ class CustomLinkMovementMethod(private val onLinkClick: (String) -> Unit) : Link
                     // 如果有链接，触发回调
                     if (link != null) {
                         onLinkClick(link)  // 调用回调
-                        Timber.d("Link clicked: $link")
+                        Log.d(TAG, "Link clicked: $link")
                     }
                 }
             }
@@ -59,5 +59,10 @@ class CustomLinkMovementMethod(private val onLinkClick: (String) -> Unit) : Link
             return spans[0].url
         }
         return null
+    }
+
+
+    companion object {
+        private const val TAG = "CustomLinkMovementMethod"
     }
 }

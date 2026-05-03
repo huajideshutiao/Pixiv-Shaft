@@ -40,10 +40,13 @@ import ceui.loxia.ObjectPool;
 import ceui.loxia.RefreshStateKt;
 import jp.wasabeef.recyclerview.animators.BaseItemAnimator;
 import jp.wasabeef.recyclerview.animators.LandingAnimator;
-import timber.log.Timber;
+
+import android.util.Log;
 
 public abstract class ListFragment<Layout extends ViewDataBinding, Item>
         extends BaseLazyFragment<Layout> {
+
+    private static final String TAG = "ListFragment";
 
     public static final long animateDuration = 400L;
     public static final int PAGE_SIZE = 20;
@@ -120,7 +123,7 @@ public abstract class ListFragment<Layout extends ViewDataBinding, Item>
                     clear();
                     fresh();
                 } catch (Exception e) {
-                    Timber.e(e, "onRefresh failed");
+                    Log.e(TAG, "onRefresh failed", e);
                     mRefreshLayout.finishRefresh(false);
                     showError(e);
                 }
@@ -141,7 +144,7 @@ public abstract class ListFragment<Layout extends ViewDataBinding, Item>
                         mRefreshLayout.setRefreshFooter(new FalsifyFooter(mContext));
                     }
                 } catch (Exception e) {
-                    Timber.e(e, "onLoadMore failed");
+                    Log.e(TAG, "onLoadMore failed", e);
                     mRefreshLayout.finishLoadMore(false);
                     showError(e);
                 }
@@ -192,7 +195,7 @@ public abstract class ListFragment<Layout extends ViewDataBinding, Item>
                 }
             }, animateDuration);
         } catch (Exception e) {
-            Timber.e(e, "scrollToTop failed");
+            Log.e(TAG, "scrollToTop failed", e);
         }
     }
 

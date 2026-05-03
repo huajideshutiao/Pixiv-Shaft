@@ -8,8 +8,7 @@ import ceui.pixiv.ui.common.DataSource
 import ceui.pixiv.ui.common.IllustCardHolder
 import ceui.pixiv.ui.common.ResponseStore
 import ceui.pixiv.ui.common.createResponseStore
-import timber.log.Timber
-
+import android.util.Log
 class RecmdIllustMangaDataSource(
     private val args: RecmdIllustMangaFragmentArgs,
     private val entityWrapper: EntityWrapper

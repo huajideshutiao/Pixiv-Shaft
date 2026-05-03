@@ -1,18 +1,19 @@
 package ceui.pixiv.ui.detail
 
+
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import ceui.pixiv.ui.common.PixivFragment
+import androidx.viewpager2.widget.ViewPager2
 import ceui.lisa.R
+import ceui.lisa.core.ArtworksMap
 import ceui.lisa.databinding.FragmentArtworkViewpagerBinding
-import ceui.loxia.ObjectType
 import ceui.loxia.threadSafeArgs
+import ceui.pixiv.ui.common.PixivFragment
 import ceui.pixiv.ui.common.viewBinding
 import ceui.pixiv.ui.novel.NovelTextFragment
-import timber.log.Timber
-
 
 class ArtworkViewPagerFragment : PixivFragment(R.layout.fragment_artwork_viewpager) {
 
@@ -22,17 +23,10 @@ class ArtworkViewPagerFragment : PixivFragment(R.layout.fragment_artwork_viewpag
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val ids = ArtworksMap.store[safeArgs.seed]
-        Timber.d("ArtworkViewPagerFragment seed: ${safeArgs.seed}")
         if (ids?.isNotEmpty() == true) {
             binding.artworkViewpager.adapter = object : FragmentStateAdapter(this) {
                 override fun createFragment(position: Int): Fragment {
-                    if (safeArgs.objectType == ObjectType.NOVEL) {
-                        return NovelTextFragment.newInstance(ids[position])
-                    } else {
-                        return ArtworkFragment().apply {
-                            arguments = ArtworkFragmentArgs(ids[position]).toBundle()
-                        }
-                    }
+                    return NovelTextFragment.newInstance(ids[position])
                 }
 
                 override fun getItemCount(): Int {
@@ -46,13 +40,7 @@ class ArtworkViewPagerFragment : PixivFragment(R.layout.fragment_artwork_viewpag
         } else {
             binding.artworkViewpager.adapter = object : FragmentStateAdapter(this) {
                 override fun createFragment(position: Int): Fragment {
-                    if (safeArgs.objectType == ObjectType.NOVEL) {
-                        return NovelTextFragment.newInstance(safeArgs.objectId)
-                    } else {
-                        return ArtworkFragment().apply {
-                            arguments = ArtworkFragmentArgs(safeArgs.objectId).toBundle()
-                        }
-                    }
+                    return NovelTextFragment.newInstance(safeArgs.objectId)
                 }
 
                 override fun getItemCount(): Int {
@@ -60,5 +48,21 @@ class ArtworkViewPagerFragment : PixivFragment(R.layout.fragment_artwork_viewpag
                 }
             }
         }
+    }
+
+    fun handleVolumeKey(keyCode: Int): Boolean {
+        val viewPager = view?.findViewById<ViewPager2>(R.id.artwork_viewpager) ?: return false
+        val adapter = viewPager.adapter ?: return false
+        val currentItem = viewPager.currentItem
+        val nextItem =
+            if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) currentItem + 1 else currentItem - 1
+        if (nextItem in 0 until adapter.itemCount) {
+            viewPager.setCurrentItem(nextItem, true)
+        }
+        return true
+    }
+
+    companion object {
+        private const val TAG = "ArtworkViewPagerFragment"
     }
 }

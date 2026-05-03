@@ -2,10 +2,9 @@ package ceui.pixiv.ui.detail
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import ceui.lisa.R
 import ceui.lisa.activities.Shaft
+import ceui.lisa.core.ArtworksMap
 import ceui.loxia.Client
 import ceui.loxia.Illust
 import ceui.loxia.IllustSeriesResp
@@ -13,17 +12,12 @@ import ceui.loxia.RefreshHint
 import ceui.loxia.RefreshState
 import ceui.pixiv.ui.chats.RedSectionHeaderHolder
 import ceui.pixiv.ui.common.DataSource
-import ceui.pixiv.ui.common.HoldersContainer
 import ceui.pixiv.ui.common.HoldersViewModel
 import ceui.pixiv.ui.common.ListItemHolder
-import ceui.pixiv.ui.common.LoadMoreOwner
 import ceui.pixiv.ui.common.LoadingHolder
-import ceui.pixiv.ui.common.RefreshOwner
 import ceui.pixiv.ui.common.createResponseStore
 import ceui.pixiv.ui.novel.NovelSeriesHeroHolder
 import ceui.pixiv.ui.user.UserPostHolder
-import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class IllustSeriesViewModel(
     private val seriesId: Long,

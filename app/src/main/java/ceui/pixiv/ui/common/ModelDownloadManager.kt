@@ -1,4 +1,6 @@
-package ceui.pixiv.ui.common
+package ceui.pixiv.ui.common
+
+import android.util.Log
 
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
@@ -6,7 +8,6 @@ import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import java.util.concurrent.TimeUnit
@@ -47,7 +48,7 @@ abstract class ModelDownloadManager {
             val response = client.newCall(request).execute()
 
             if (!response.isSuccessful) {
-                Timber.e("$logTag download failed: HTTP ${response.code}")
+                Log.e(TAG, "$logTag download failed: HTTP ${response.code}")
                 return@withContext false
             }
 
@@ -89,10 +90,10 @@ abstract class ModelDownloadManager {
             tempZip.delete()
 
             val ready = model.modelFiles.all { File(dir, it).exists() }
-            Timber.d("$logTag ${model.assetDir} download complete, ready=$ready")
+            Log.d(TAG, "$logTag ${model.assetDir} download complete, ready=$ready")
             ready
         } catch (e: Exception) {
-            Timber.e(e, "$logTag download error: ${model.assetDir}")
+            Log.e(TAG, "$logTag download error: ${model.assetDir}", e)
             false
         }
     }
@@ -100,5 +101,10 @@ abstract class ModelDownloadManager {
     fun deleteModel(context: Context, model: DownloadableModel) {
         val dir = modelDir(context, model)
         if (dir.exists()) dir.deleteRecursively()
+    }
+
+
+    companion object {
+        private const val TAG = "ModelDownloadManager"
     }
 }

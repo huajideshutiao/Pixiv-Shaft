@@ -1,7 +1,10 @@
 package ceui.pixiv.ui.common
 
+
 import android.animation.Animator
 import android.os.Bundle
+import android.util.Log
+import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
 import androidx.activity.enableEdgeToEdge
@@ -10,9 +13,9 @@ import androidx.appcompat.app.AppCompatDelegate
 import ceui.lisa.databinding.ActivityHomeBinding
 import ceui.loxia.observeEvent
 import ceui.pixiv.session.SessionManager
+import ceui.pixiv.ui.detail.ArtworkViewPagerFragment
 import ceui.pixiv.utils.ppppx
 import ceui.pixiv.widgets.RateAppDialog
-import timber.log.Timber
 
 class HomeActivity : AppCompatActivity() {
 
@@ -69,7 +72,7 @@ class HomeActivity : AppCompatActivity() {
 
     private fun triggerTouchOnce(x1: Int, y1: Int) {
         val lottieView = binding.clickEvent
-        Timber.d("TouchEvent 点击位置: x=$x1, y=$y1")
+        Log.d(TAG, "TouchEvent 点击位置: x=$x1, y=$y1")
         val halfWidth = 80.ppppx
         lottieView.x = x1.toFloat() - halfWidth
         lottieView.y = y1.toFloat() - halfWidth
@@ -128,5 +131,23 @@ class HomeActivity : AppCompatActivity() {
             }
         }
         return super.dispatchTouchEvent(event)
+    }
+
+    override fun dispatchKeyEvent(event: KeyEvent): Boolean {
+        if (event.action == KeyEvent.ACTION_DOWN &&
+            (event.keyCode == KeyEvent.KEYCODE_VOLUME_UP || event.keyCode == KeyEvent.KEYCODE_VOLUME_DOWN)
+        ) {
+            val currentFragment = findCurrentFragmentOrNull()
+            if (currentFragment is ArtworkViewPagerFragment) {
+                currentFragment.handleVolumeKey(event.keyCode)
+                return true
+            }
+        }
+        return super.dispatchKeyEvent(event)
+    }
+
+
+    companion object {
+        private const val TAG = "HomeActivity"
     }
 }

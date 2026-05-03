@@ -1,9 +1,14 @@
 package ceui.pixiv.session
 
+
+import android.content.SharedPreferences
 import android.text.TextUtils
+import android.util.Log
+import androidx.core.content.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import ceui.lisa.R
+import ceui.lisa.activities.Shaft
 import ceui.lisa.models.UserModel
 import ceui.lisa.utils.Common
 import ceui.loxia.AccountResponse
@@ -13,14 +18,10 @@ import ceui.loxia.User
 import ceui.pixiv.login.InvalidRefreshTokenException
 import ceui.pixiv.login.PixivLogin
 import com.google.gson.Gson
-import android.content.SharedPreferences
-import androidx.core.content.edit
-import ceui.lisa.activities.Shaft
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 
 object SessionManager {
 
@@ -165,13 +166,13 @@ object SessionManager {
                 }
                 response.accessToken
             } catch (ex: InvalidRefreshTokenException) {
-                Timber.w(ex, "refresh_token 被吊销，登出")
+                Log.w(TAG, "refresh_token 被吊销，登出", ex)
                 postUpdateSession(null)
                 Common.showToast(R.string.string_340)
                 Common.restart()
                 null
             } catch (ex: Exception) {
-                Timber.e(ex)
+                Log.e(TAG, "refreshAccount error", ex)
                 null
             }
         }
@@ -196,4 +197,6 @@ object SessionManager {
         val account = _loggedInAccount.value ?: throw RuntimeException("account not found")
         return account.access_token ?: throw RuntimeException("access_token not exist")
     }
+
+    private const val TAG = "SessionManager"
 }

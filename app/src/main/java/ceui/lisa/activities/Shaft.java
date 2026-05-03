@@ -14,6 +14,7 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.Gravity;
 
 import androidx.annotation.NonNull;
@@ -43,12 +44,13 @@ import io.reactivex.exceptions.UndeliverableException;
 import io.reactivex.plugins.RxJavaPlugins;
 import me.jessyan.progressmanager.ProgressManager;
 import okhttp3.OkHttpClient;
-import timber.log.Timber;
 
 /**
  * Where the app code starts.
  * */
 public class Shaft extends Application implements ServicesProvider {
+
+    private static final String TAG = "Shaft";
 
     public static Settings sSettings;
     public static Gson sGson;
@@ -105,13 +107,13 @@ public class Shaft extends Application implements ServicesProvider {
                     if (t instanceof SecurityException
                             && t.getMessage() != null
                             && t.getMessage().contains("Unknown calling package name")) {
-                        Timber.w(t, "Suppressed GMS SecurityException on main thread");
+                        Log.w(TAG, "Suppressed GMS SecurityException on main thread", t);
                         continue;
                     }
                     if (t instanceof RuntimeException
                             && t.getMessage() != null
                             && t.getMessage().contains("trying to draw too large")) {
-                        Timber.w(t, "Suppressed oversized bitmap draw on main thread");
+                        Log.w(TAG, "Suppressed oversized bitmap draw on main thread", t);
                         continue;
                     }
                     Thread.UncaughtExceptionHandler h =
@@ -131,10 +133,10 @@ public class Shaft extends Application implements ServicesProvider {
                 e = e.getCause();
             }
             if (e instanceof OutOfMemoryError) {
-                Timber.e(e, "RxJava undeliverable OOM");
+                Log.e(TAG, "RxJava undeliverable OOM", e);
                 return;
             }
-            Timber.w(e, "RxJava undeliverable exception");
+            Log.w(TAG, "RxJava undeliverable exception", e);
         });
 
         //初始化context
@@ -144,8 +146,6 @@ public class Shaft extends Application implements ServicesProvider {
 
         sPreferences = getSharedPreferences(LOCAL_DATA, Context.MODE_PRIVATE);
         sDefaultPrefs = getSharedPreferences("shaft_prefs", Context.MODE_PRIVATE);
-
-        Timber.plant();
         networkStateManager = new NetworkStateManager(this);
         sSettings = Local.getSettings();
 
@@ -175,7 +175,7 @@ public class Shaft extends Application implements ServicesProvider {
                 glideBuilder.sslSocketFactory(new ceui.lisa.http.RubySSLSocketFactory(), trustManager);
                 glideBuilder.hostnameVerifier((hostname, session) -> true);
             } catch (Exception e) {
-                Timber.e(e, "Direct-connect SSL init error");
+                Log.e(TAG, "Direct-connect SSL init error", e);
             }
             glideBuilder.dns(ceui.lisa.http.HttpDns.getInstance());
             glideBuilder.protocols(java.util.Collections.singletonList(okhttp3.Protocol.HTTP_1_1));
@@ -222,7 +222,7 @@ public class Shaft extends Application implements ServicesProvider {
                         sb.append("\n    ").append(key).append(" = ").append(val);
                     }
                 }
-                Timber.tag("ActivityTracker").d(sb.toString());
+                Log.d("ActivityTracker", sb.toString());
             }
 
             @Override
@@ -230,7 +230,7 @@ public class Shaft extends Application implements ServicesProvider {
 
             @Override
             public void onActivityResumed(@NonNull Activity activity) {
-                Timber.tag("ActivityTracker").d("RESUME %s", activity.getClass().getSimpleName());
+                Log.d("ActivityTracker", "RESUME " + activity.getClass().getSimpleName());
             }
 
             @Override
@@ -244,7 +244,7 @@ public class Shaft extends Application implements ServicesProvider {
 
             @Override
             public void onActivityDestroyed(@NonNull Activity activity) {
-                Timber.tag("ActivityTracker").d("DESTROY %s", activity.getClass().getSimpleName());
+                Log.d("ActivityTracker", "DESTROY " + activity.getClass().getSimpleName());
             }
         });
     }
