@@ -25,6 +25,7 @@ public class NAdapterWithHeadView extends NAdapter {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public ViewHolder getHeader(ViewGroup parent) {
         novelHeader = new NovelHeader(
                 DataBindingUtil.inflate(

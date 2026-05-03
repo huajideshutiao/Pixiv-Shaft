@@ -10,7 +10,6 @@ import android.text.TextUtils;
 import androidx.databinding.ViewDataBinding;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-
 import com.scwang.smart.refresh.footer.ClassicsFooter;
 import com.scwang.smart.refresh.header.FalsifyFooter;
 
@@ -68,6 +67,7 @@ public abstract class ReceiverListFragment<Layout extends ViewDataBinding,
         IntentFilter intentFilter = new IntentFilter();
         dataReceiver = new CallBackReceiver(new BaseReceiver.CallBack() {
             @Override
+            @SuppressWarnings("unchecked")
             public void onReceive(Context context, Intent intent) {
                 Bundle bundle = intent.getExtras();
                 if (bundle != null) {
@@ -75,6 +75,7 @@ public abstract class ReceiverListFragment<Layout extends ViewDataBinding,
                     PageData pageData = Container.get().getPage(uuid);
                     if (pageData != null) {
                         if (TextUtils.equals(pageData.getUUID(), uuid)) {
+                            @SuppressWarnings("deprecation")
                             ListIllust listIllust = (ListIllust) bundle.getSerializable(Params.CONTENT);
                             if (listIllust != null){
                                 if (!Common.isEmpty(listIllust.getList())) {

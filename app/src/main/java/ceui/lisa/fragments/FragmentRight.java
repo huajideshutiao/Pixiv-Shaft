@@ -5,17 +5,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.databinding.ViewDataBinding;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
+import com.scwang.smart.refresh.header.FalsifyFooter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.databinding.ViewDataBinding;
-import androidx.fragment.app.FragmentTransaction;
-
-import com.scwang.smart.refresh.header.FalsifyFooter;
 
 import ceui.lisa.R;
 import ceui.lisa.activities.MainActivity;
@@ -42,7 +43,6 @@ import ceui.lisa.utils.QMUIMenuPopup;
 import ceui.lisa.view.OnCheckChangeListener;
 import ceui.lisa.viewmodel.BaseModel;
 import ceui.lisa.viewmodel.DynamicIllustModel;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 public class FragmentRight extends NetListFragment<FragmentNewRightBinding, ListIllust, IllustsBean> {
 
@@ -224,7 +224,7 @@ public class FragmentRight extends NetListFragment<FragmentNewRightBinding, List
         Shaft.sSettings.setUseStaggeredLayout(!isTimelineMode);
         Local.setSettings(Shaft.sSettings);
         int primaryColor = Common.resolveThemeAttribute(mContext, androidx.appcompat.R.attr.colorPrimary);
-        int unselectedColor = mContext.getResources().getColor(R.color.glare_unselected_text);
+        int unselectedColor = ContextCompat.getColor(mContext, R.color.glare_unselected_text);
         baseBind.timelineToggle.setColorFilter(isTimelineMode ? primaryColor : unselectedColor);
 
         mRecyclerView.setItemAnimator(null);

@@ -17,6 +17,7 @@ import java.io.ObjectOutputStream;
 public class FileOperator implements IOperate {
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> T getModel(String key, Class<T> pClass) {
         try {
             File file = new File(PathUtils.getInternalAppCachePath(), key);

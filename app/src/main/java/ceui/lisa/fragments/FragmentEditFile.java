@@ -103,7 +103,8 @@ public class FragmentEditFile extends SwipeFragment<FragmentEditFileBinding> imp
                         FileSizeUtil.getFileOrFilesSize(imageFile, FileSizeUtil.SIZETYPE_MB) + "M");
                 return;
             } else {
-                RequestBody imageBody = RequestBody.create(MediaType.parse("image/jpeg"), imageFile);
+                RequestBody imageBody =
+                    RequestBody.create(imageFile, MediaType.parse("image/jpeg"));
                 MultipartBody.Part imagePart = MultipartBody.Part.createFormData("profile_image", imageFile.getName(), imageBody);
                 parts.add(imagePart);
             }

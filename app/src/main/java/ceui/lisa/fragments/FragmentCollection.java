@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.ToxicBakery.viewpager.transforms.DrawerTransformer;
@@ -26,7 +26,6 @@ import ceui.lisa.activities.TemplateActivity;
 import ceui.lisa.databinding.ViewpagerWithTablayoutBinding;
 import ceui.lisa.utils.MyOnTabSelectedListener;
 import ceui.lisa.utils.Params;
-
 import ceui.pixiv.session.SessionManager;
 
 public class FragmentCollection extends BaseFragment<ViewpagerWithTablayoutBinding> {
@@ -140,7 +139,10 @@ public class FragmentCollection extends BaseFragment<ViewpagerWithTablayoutBindi
             }
         });
         baseBind.viewPager.setPageTransformer(true, new DrawerTransformer());
-        baseBind.viewPager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager(), 0) {
+        baseBind.viewPager.setAdapter(new FragmentStatePagerAdapter(
+            getChildFragmentManager(),
+            FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
+        ) {
             @NonNull
             @Override
             public Fragment getItem(int i) {

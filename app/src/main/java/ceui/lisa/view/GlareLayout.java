@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 
 import ceui.lisa.R;
@@ -117,13 +118,22 @@ public class GlareLayout extends RelativeLayout {
 
     private void unCheck(int index) {
         if (index == 0) {
-            baseBind.left.setTextColor(getResources().getColor(R.color.glare_unselected_text));
+            baseBind.left.setTextColor(ContextCompat.getColor(
+                mContext,
+                R.color.glare_unselected_text
+            ));
             baseBind.left.setBackground(null);
         } else if (index == 1) {
-            baseBind.center.setTextColor(getResources().getColor(R.color.glare_unselected_text));
+            baseBind.center.setTextColor(ContextCompat.getColor(
+                mContext,
+                R.color.glare_unselected_text
+            ));
             baseBind.center.setBackground(null);
         } else if (index == 2) {
-            baseBind.right.setTextColor(getResources().getColor(R.color.glare_unselected_text));
+            baseBind.right.setTextColor(ContextCompat.getColor(
+                mContext,
+                R.color.glare_unselected_text
+            ));
             baseBind.right.setBackground(null);
         }
     }

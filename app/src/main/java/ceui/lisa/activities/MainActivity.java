@@ -22,7 +22,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
@@ -176,7 +176,10 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
                 new FragmentCenter()
             };
         }
-        baseBind.viewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
+        baseBind.viewPager.setAdapter(new FragmentStatePagerAdapter(
+            getSupportFragmentManager(),
+            FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
+        ) {
             @Override
             public Fragment getItem(int i) {
                 return baseFragments[i];
@@ -295,6 +298,7 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
         outState.clear();
     }
 
+    @SuppressWarnings("deprecation")
     private void selectPhoto() {
         new QMUIDialog.CheckableDialogBuilder(mActivity)
                 .addItems(ALL_SELECT_WAY, (dialog, which) -> {
@@ -327,6 +331,7 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Params.REQUEST_CODE_CHOOSE && resultCode == RESULT_OK) {

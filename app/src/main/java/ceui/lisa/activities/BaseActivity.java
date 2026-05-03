@@ -21,6 +21,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.FragmentActivity;
+
 import ceui.lisa.R;
 import ceui.lisa.interfaces.FeedBack;
 import ceui.lisa.utils.Common;
@@ -143,6 +144,7 @@ public abstract class BaseActivity<Layout extends ViewDataBinding> extends AppCo
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ASK_URI) {

@@ -56,6 +56,7 @@ public abstract class LocalListFragment<Layout extends ViewDataBinding, Item>
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     protected void initData() {
         mLocalRepo = (LocalRepo<List<Item>>) mModel.getBaseRepo();
         super.initData();

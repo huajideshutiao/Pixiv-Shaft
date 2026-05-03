@@ -1,6 +1,7 @@
 package ceui.lisa.fragments
 
 
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
@@ -25,6 +26,7 @@ import ceui.pixiv.ui.common.setUpWithTaskStatus
 import ceui.pixiv.ui.task.NamedUrl
 import ceui.pixiv.ui.task.TaskPool
 import ceui.pixiv.ui.works.ToggleToolnarViewModel
+import ceui.pixiv.utils.ImageCacheChain
 import ceui.pixiv.utils.setOnClick
 import com.bumptech.glide.Glide
 import com.github.panpf.sketch.loadImage
@@ -144,34 +146,14 @@ class FragmentImageDetail : BaseFragment<FragmentImageDetailBinding?>() {
                 "[ImageDetail] task acquired. taskId=${task.taskId}, status=${task.status.value}, hasResult=${task.result.value != null}, url=$shortUrl"
             )
 
-            // 原图尚未加载完时，先尝试用一级详情页的大图作为过渡
-            if (mIllustsBean != null && task.result.value == null) {
-                val largeUrl = IllustDownload.getUrl(
-                    mIllustsBean, index, Params.IMAGE_RESOLUTION_LARGE
-                )
-                if (!largeUrl.isNullOrEmpty() && largeUrl != imageUrl) {
-                    var placeholderFile = TaskPool.peekCachedFile(largeUrl)
-                    if (placeholderFile == null) {
-                        try {
-                            placeholderFile = Glide.with(this)
-                                .asFile()
-                                .load(GlideUrlChild(largeUrl))
-                                .onlyRetrieveFromCache(true)
-                                .submit()
-                                .get()
-                        } catch (e: Exception) {
-                            Log.d(TAG, "[ImageDetail] placeholder Glide cache miss: ${e.message}")
-                        }
-                    }
-                    if (placeholderFile != null) {
-                        Log.d(
-                            TAG,
-                            "[ImageDetail] placeholder loaded: ${placeholderFile.absolutePath}"
-                        )
-                        baseBind.image.loadImage(placeholderFile)
-                        currentImageFile = placeholderFile
-                    }
-                }
+            val cached = ImageCacheChain.peek(requireContext(), mIllustsBean, index, url)
+            if (cached is File) {
+                Log.d(TAG, "[ImageDetail] cached file found: ${cached.absolutePath}")
+                baseBind.image.loadImage(cached)
+                currentImageFile = cached
+            } else if (cached is Bitmap) {
+                Log.d(TAG, "[ImageDetail] cached bitmap found: ${cached.width}x${cached.height}")
+                baseBind.image.setImageBitmap(cached)
             }
 
             task.result.observe(viewLifecycleOwner) { file ->

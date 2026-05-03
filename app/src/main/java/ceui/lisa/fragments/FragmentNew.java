@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import com.blankj.utilcode.util.BarUtils;
 
@@ -41,7 +41,10 @@ public class FragmentNew extends BaseFragment<ViewpagerWithTablayoutBinding> {
         };
         baseBind.toolbar.setNavigationOnClickListener(v -> mActivity.finish());
         baseBind.toolbarTitle.setText(R.string.string_204);
-        baseBind.viewPager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
+        baseBind.viewPager.setAdapter(new FragmentStatePagerAdapter(
+            getChildFragmentManager(),
+            FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
+        ) {
             @NonNull
             @Override
             public Fragment getItem(int position) {

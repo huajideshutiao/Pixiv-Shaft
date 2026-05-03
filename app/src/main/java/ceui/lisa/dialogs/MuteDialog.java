@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
+
 import com.zhy.view.flowlayout.FlowLayout;
 import com.zhy.view.flowlayout.TagAdapter;
 
@@ -91,7 +93,10 @@ public class MuteDialog extends BaseDialog<DialogMuteTagBinding> {
                 }else{
                     view.setBackgroundResource(R.drawable.tag_stroke_bg);
                 }
-                ((TextView) view).setTextColor(getResources().getColor(R.color.tag_text_unselect));
+                ((TextView) view).setTextColor(ContextCompat.getColor(
+                    mContext,
+                    R.color.tag_text_unselect
+                ));
                 selected.remove(mIllust.getTags().get(position));
             }
         };
@@ -136,6 +141,7 @@ public class MuteDialog extends BaseDialog<DialogMuteTagBinding> {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void initBundle(Bundle bundle) {
         mIllust = ((IllustsBean) bundle.getSerializable(Params.CONTENT));
     }

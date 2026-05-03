@@ -1,5 +1,8 @@
 package ceui.lisa.fragments;
 
+import static android.app.Activity.RESULT_OK;
+import static android.provider.DocumentsContract.EXTRA_INITIAL_URI;
+
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -14,7 +17,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.gson.stream.JsonReader;
@@ -36,12 +39,8 @@ import ceui.lisa.databinding.ViewpagerWithTablayoutBinding;
 import ceui.lisa.download.IllustDownload;
 import ceui.lisa.interfaces.Callback;
 import ceui.lisa.utils.Common;
-import ceui.lisa.utils.Dev;
 import ceui.lisa.utils.MyOnTabSelectedListener;
 import ceui.lisa.utils.Params;
-
-import static android.app.Activity.RESULT_OK;
-import static android.provider.DocumentsContract.EXTRA_INITIAL_URI;
 
 public class FragmentViewPager extends BaseFragment<ViewpagerWithTablayoutBinding> {
 
@@ -93,7 +92,10 @@ public class FragmentViewPager extends BaseFragment<ViewpagerWithTablayoutBindin
             baseBind.toolbar.inflateMenu(R.menu.delete_and_add);
             setMuteMenuListener(mFragments[0]);
             baseBind.toolbarTitle.setText(R.string.muted_history);
-            baseBind.viewPager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
+            baseBind.viewPager.setAdapter(new FragmentStatePagerAdapter(
+                getChildFragmentManager(),
+                FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
+            ) {
                 @NonNull
                 @Override
                 public Fragment getItem(int position) {
@@ -153,7 +155,10 @@ public class FragmentViewPager extends BaseFragment<ViewpagerWithTablayoutBindin
                     FragmentRankIllust.newInstance(12, "", false)
             };
             baseBind.toolbarTitle.setText(R.string.string_r);
-            baseBind.viewPager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
+            baseBind.viewPager.setAdapter(new FragmentStatePagerAdapter(
+                getChildFragmentManager(),
+                FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
+            ) {
                 @NonNull
                 @Override
                 public Fragment getItem(int position) {
@@ -225,6 +230,7 @@ public class FragmentViewPager extends BaseFragment<ViewpagerWithTablayoutBindin
                 }, null);
     }
 
+    @SuppressWarnings("deprecation")
     private void pickMuteRecordsFile() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -238,6 +244,7 @@ public class FragmentViewPager extends BaseFragment<ViewpagerWithTablayoutBindin
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_IMPORT_MUTE && resultCode == RESULT_OK && data != null) {

@@ -1,6 +1,7 @@
 package ceui.lisa.fragments;
 
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -21,7 +22,6 @@ import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 import ceui.lisa.R;
 import ceui.lisa.activities.Shaft;
@@ -40,8 +40,6 @@ import ceui.loxia.ObjectPool;
 import ceui.loxia.RefreshStateKt;
 import jp.wasabeef.recyclerview.animators.BaseItemAnimator;
 import jp.wasabeef.recyclerview.animators.LandingAnimator;
-
-import android.util.Log;
 
 public abstract class ListFragment<Layout extends ViewDataBinding, Item>
         extends BaseLazyFragment<Layout> {
@@ -73,6 +71,7 @@ public abstract class ListFragment<Layout extends ViewDataBinding, Item>
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void initModel() {
         mModel = (BaseModel<Item>) new ViewModelProvider(this).get(modelClass());
         allItems = mModel.getContent();

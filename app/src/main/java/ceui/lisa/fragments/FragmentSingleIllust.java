@@ -5,9 +5,12 @@ import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
 import static ceui.lisa.utils.SearchTypeUtil.SEARCH_TYPE_DB_KEYWORD;
 import static ceui.lisa.utils.ShareIllust.URL_Head;
 
+import android.content.ClipData;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -35,7 +38,6 @@ import com.scwang.smart.refresh.header.FalsifyHeader;
 import com.zhy.view.flowlayout.FlowLayout;
 import com.zhy.view.flowlayout.TagAdapter;
 
-import java.io.File;
 import java.util.Locale;
 
 import ceui.lisa.R;
@@ -94,6 +96,7 @@ public class FragmentSingleIllust extends BaseFragment<FragmentSingleIllustBindi
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void initBundle(Bundle bundle) {
         illust = (IllustsBean) bundle.getSerializable(Params.CONTENT);
         illustId = bundle.getLong(Params.ILLUST_ID, 0);
@@ -268,20 +271,41 @@ public class FragmentSingleIllust extends BaseFragment<FragmentSingleIllustBindi
                     ? GlideUtil.getOriginalImage(illust, 0)
                     : GlideUtil.getLargeImage(illust, 0);
                 Glide.with(FragmentSingleIllust.this)
-                    .asFile()
+                    .asBitmap()
                     .load(glideUrl)
                     .onlyRetrieveFromCache(true)
-                    .into(new CustomTarget<File>() {
+                    .into(new CustomTarget<Bitmap>() {
                         @Override
                         public void onResourceReady(
-                            File resource,
-                            Transition<? super File> transition
+                            Bitmap resource,
+                            Transition<? super Bitmap> transition
                         ) {
-                            Common.shareImageFile(mContext, resource, illust.getId() + "_p0.jpg");
+                            Uri uri = Common.copyBitmapToImageCacheFolder(
+                                resource,
+                                illust.getId() + "_p0.jpg"
+                            );
+                            if (uri != null) {
+                                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                                shareIntent.setType("image/jpeg");
+                                shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+                                shareIntent.setClipData(ClipData.newRawUri(null, uri));
+                                shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                mContext.startActivity(Intent.createChooser(
+                                    shareIntent,
+                                    mContext.getString(R.string.share)
+                                ));
+                            } else {
+                                Common.showToast(R.string.msg_load_fail);
+                            }
                         }
 
                         @Override
                         public void onLoadCleared(android.graphics.drawable.Drawable placeholder) {
+                        }
+
+                        @Override
+                        public void onLoadFailed(android.graphics.drawable.Drawable errorDrawable) {
+                            Common.showToast(R.string.msg_load_fail);
                         }
                     });
                 return true;

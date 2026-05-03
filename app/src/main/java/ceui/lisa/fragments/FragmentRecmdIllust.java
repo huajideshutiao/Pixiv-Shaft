@@ -38,7 +38,6 @@ import ceui.lisa.notification.CallBackReceiver;
 import ceui.lisa.repo.RecmdIllustRepo;
 import ceui.lisa.utils.Common;
 import ceui.lisa.utils.DensityUtil;
-import ceui.lisa.utils.Dev;
 import ceui.lisa.utils.Params;
 import ceui.lisa.view.SpacesItemWithHeadDecoration;
 import ceui.lisa.viewmodel.BaseModel;
@@ -90,6 +89,7 @@ public class FragmentRecmdIllust extends NetListFragment<FragmentBaseListBinding
                 Bundle bundle = intent.getExtras();
                 if (bundle != null) {
                     int index = bundle.getInt(Params.INDEX);
+                    @SuppressWarnings("deprecation")
                     ListIllust listIllust = (ListIllust) bundle.getSerializable(Params.CONTENT);
                     if (listIllust != null){
                         if (!Common.isEmpty(listIllust.getList())) {

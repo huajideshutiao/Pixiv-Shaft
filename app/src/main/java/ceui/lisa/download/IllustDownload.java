@@ -373,6 +373,7 @@ public class IllustDownload {
                                     try {
                                         new Thread(new Runnable() {
                                             @Override
+                                            @SuppressWarnings("deprecation")
                                             public void run() {
                                                 Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
                                                 if (!TextUtils.isEmpty(Shaft.sSettings.getRootPathUri()) &&
@@ -406,6 +407,7 @@ public class IllustDownload {
                                         try {
                                             new Thread(new Runnable() {
                                                 @Override
+                                                @SuppressWarnings("deprecation")
                                                 public void run() {
                                                     Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
                                                     if (!TextUtils.isEmpty(Shaft.sSettings.getRootPathUri()) &&

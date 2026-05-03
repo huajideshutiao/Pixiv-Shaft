@@ -1,32 +1,33 @@
 package ceui.lisa.adapters;
 
+import static com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions.withCrossFade;
+
 import android.content.Context;
 import android.graphics.Bitmap;
-
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.load.model.GlideUrl;
-
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
+
 import ceui.lisa.R;
 import ceui.lisa.activities.Shaft;
 import ceui.lisa.models.IllustsBean;
 import ceui.lisa.transformer.LargeBitmapScaleTransformer;
 import ceui.lisa.utils.Common;
 import ceui.lisa.utils.GlideUtil;
-
-import static com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions.withCrossFade;
+import ceui.pixiv.utils.ImageCacheChain;
 
 
 /**
@@ -75,6 +76,17 @@ public class IllustDetailAdapter extends AbstractIllustAdapter<RecyclerView.View
         super.onBindViewHolder(holder, position);
         final TagHolder currentOne = (TagHolder) holder;
         Common.showLog("IllustDetailAdapter onBindViewHolder 000");
+
+        Object cached = ImageCacheChain.peek(mContext, allIllust, position);
+        if (cached instanceof Bitmap) {
+            Bitmap bitmap = (Bitmap) cached;
+            ViewGroup.LayoutParams params = currentOne.illust.getLayoutParams();
+            params.width = imageSize;
+            params.height = imageSize * bitmap.getHeight() / bitmap.getWidth();
+            currentOne.illust.setLayoutParams(params);
+            currentOne.illust.setImageBitmap(bitmap);
+        }
+
         boolean isLoadOriginalImage = Shaft.sSettings.isShowOriginalPreviewImage() || isForceOriginal;
         final GlideUrl imageUrl = isLoadOriginalImage ? GlideUtil.getOriginalImage(allIllust, position) :
                 GlideUtil.getLargeImage(allIllust, position);
@@ -90,7 +102,7 @@ public class IllustDetailAdapter extends AbstractIllustAdapter<RecyclerView.View
                     .override(imageSize, params.height)
                     .transform(new LargeBitmapScaleTransformer())
                     .transition(withCrossFade())
-                    .into(new SimpleTarget<Bitmap>() {
+                .into(new CustomTarget<Bitmap>() {
                         @Override
                         public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                             currentOne.illust.setImageBitmap(resource);
@@ -98,6 +110,10 @@ public class IllustDetailAdapter extends AbstractIllustAdapter<RecyclerView.View
                                 Shaft.getDefaultPrefs().edit().putBoolean(imageUrl.toStringUrl(), true).apply();
                             }
                         }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                    }
                     });
         } else {
             requestManager
@@ -106,7 +122,7 @@ public class IllustDetailAdapter extends AbstractIllustAdapter<RecyclerView.View
                     .override(imageSize, imageSize)
                     .transform(new LargeBitmapScaleTransformer())
                     .transition(withCrossFade())
-                    .into(new SimpleTarget<Bitmap>() {
+                .into(new CustomTarget<Bitmap>() {
                         @Override
                         public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                             ViewGroup.LayoutParams params = currentOne.illust.getLayoutParams();
@@ -118,6 +134,10 @@ public class IllustDetailAdapter extends AbstractIllustAdapter<RecyclerView.View
                                 Shaft.getDefaultPrefs().edit().putBoolean(imageUrl.toStringUrl(), true).apply();
                             }
                         }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                    }
                     });
         }
     }

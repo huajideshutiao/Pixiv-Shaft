@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import com.blankj.utilcode.util.BarUtils;
 
@@ -82,7 +82,10 @@ public class RankActivity extends BaseActivity<ActivityMultiViewPagerBinding> {
         final String[] titles = getTitles(CHINESE_TITLES, CHINESE_TITLES_MANGA, CHINESE_TITLES_NOVEL);
         final Fragment[] mFragments = getFragments(CHINESE_TITLES, CHINESE_TITLES_MANGA, CHINESE_TITLES_NOVEL);
 
-        baseBind.viewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
+        baseBind.viewPager.setAdapter(new FragmentStatePagerAdapter(
+            getSupportFragmentManager(),
+            FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
+        ) {
             @Override
             public Fragment getItem(int i) {
                 return mFragments[i];

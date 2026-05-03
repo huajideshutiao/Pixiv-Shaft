@@ -34,7 +34,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.blankj.utilcode.util.ColorUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
-import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.qmuiteam.qmui.skin.QMUISkinManager;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
@@ -118,6 +118,7 @@ public class FragmentSingleUgora extends BaseFragment<FragmentUgoraBinding> {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void initBundle(Bundle bundle) {
         illust = (IllustsBean) bundle.getSerializable(Params.CONTENT);
         illustId = bundle.getLong(Params.ILLUST_ID, 0);
@@ -159,11 +160,15 @@ public class FragmentSingleUgora extends BaseFragment<FragmentUgoraBinding> {
                 .asDrawable()
                 .load(GlideUtil.getLargeImage(illust))
                 .transition(DrawableTransitionOptions.withCrossFade())
-                .into(new SimpleTarget<Drawable>() {
+            .into(new CustomTarget<Drawable>() {
                     @Override
                     public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
                         baseBind.illustImage.setImageDrawable(resource);
                     }
+
+                @Override
+                public void onLoadCleared(@Nullable Drawable placeholder) {
+                }
                 });
     }
 

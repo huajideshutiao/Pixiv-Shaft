@@ -1,6 +1,7 @@
 package ceui.lisa.feature.worker;
 
 import android.os.Handler;
+import android.os.Looper;
 
 import java.util.ArrayList;
 
@@ -10,7 +11,7 @@ public class Worker {
 
     private ArrayList<AbstractTask> runningTask = new ArrayList<>();
     //private final Thread workThread = new Thread(this::execute);
-    private static final Handler handler = new Handler();
+    private static final Handler handler = new Handler(Looper.getMainLooper());
     private FeedBack mFeedBack;
     private FeedBack mFinalFeedBack;
 

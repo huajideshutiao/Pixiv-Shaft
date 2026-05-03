@@ -1,5 +1,8 @@
 package ceui.lisa.fragments;
 
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static ceui.lisa.fragments.ListFragment.animateDuration;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -35,9 +38,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static ceui.lisa.fragments.ListFragment.animateDuration;
-
 public class FragmentLikeIllustHorizontal extends BaseFragment<FragmentLikeIllustHorizontalBinding> {
 
     private final List<IllustsBean> allItems = new ArrayList<>();
@@ -56,6 +56,7 @@ public class FragmentLikeIllustHorizontal extends BaseFragment<FragmentLikeIllus
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void initBundle(Bundle bundle) {
         mUserDetailResponse = (UserDetailResponse) bundle.getSerializable(Params.CONTENT);
         type = bundle.getInt(Params.DATA_TYPE);

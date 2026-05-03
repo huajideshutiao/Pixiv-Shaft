@@ -4,7 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.widget.Toast;
+
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.qmuiteam.qmui.skin.QMUISkinManager;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
@@ -15,12 +22,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import android.view.ViewGroup;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.appcompat.widget.Toolbar;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import ceui.lisa.R;
 import ceui.lisa.activities.Shaft;
 import ceui.lisa.adapters.BaseAdapter;
@@ -243,6 +244,7 @@ public class FragmentSB extends NetListFragment<FragmentSelectTagBinding,
                             .addAction("添加", new QMUIDialogAction.ActionListener() {
                                 @Override
                                 public void onClick(QMUIDialog dialog, int index) {
+                                    @SuppressWarnings("deprecation")
                                     CharSequence text = builder.getEditText().getText();
                                     if (text != null && text.length() > 0) {
                                         addTag(text.toString());

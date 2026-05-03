@@ -18,6 +18,7 @@ public class NovelActivity extends BaseActivity<ActivityNovelBinding> {
     private PageLoader mPageLoader;
 
     @Override
+    @SuppressWarnings("deprecation")
     protected void initBundle(Bundle bundle) {
         mNovelDetail = (NovelDetail) bundle.getSerializable(Params.NOVEL_DETAIL);
     }

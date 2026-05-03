@@ -6,12 +6,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.CallSuper;
 import androidx.databinding.ViewDataBinding;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
 
 import com.scwang.smart.refresh.footer.ClassicsFooter;
 import com.scwang.smart.refresh.header.FalsifyFooter;
@@ -38,8 +38,6 @@ import ceui.lisa.notification.CallBackReceiver;
 import ceui.lisa.notification.CommonReceiver;
 import ceui.lisa.utils.Common;
 import ceui.lisa.utils.Params;
-
-import android.util.Log;
 
 /**
  * 联网获取xx列表，
@@ -272,6 +270,7 @@ public abstract class NetListFragment<Layout extends ViewDataBinding,
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     protected void initData() {
         mRemoteRepo = (RemoteRepo<Response>) mModel.getBaseRepo();
         super.initData();
@@ -289,6 +288,7 @@ public abstract class NetListFragment<Layout extends ViewDataBinding,
 
     @CallSuper
     @Override
+    @SuppressWarnings("unchecked")
     public void onAdapterPrepared() {
         mAdapter.setUuid(uuid);
         //注册本地广播
@@ -346,6 +346,7 @@ public abstract class NetListFragment<Layout extends ViewDataBinding,
                     final String intentUUID = intent.getStringExtra(Params.PAGE_UUID);
                     PageData pageData = Container.get().getPage(intentUUID);
                     if (pageData != null && TextUtils.equals(pageData.getUUID(), uuid)) {
+                        @SuppressWarnings("deprecation")
                         ListIllust listIllust = (ListIllust) bundle.getSerializable(Params.CONTENT);
                         if (listIllust != null && !Common.isEmpty(listIllust.getList())) {
                             if (!isAdded()) {

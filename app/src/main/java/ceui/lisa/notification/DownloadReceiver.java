@@ -28,11 +28,13 @@ public class DownloadReceiver<T> extends BroadcastReceiver {
             Bundle bundle = intent.getExtras();
             if (bundle != null) {
                 if (type == 0) {
+                    @SuppressWarnings("deprecation")
                     Holder holder = (Holder) bundle.getSerializable(Params.CONTENT);
                     if (mCallback != null) {
                         mCallback.doSomething((T) holder);
                     }
                 } else if (type == 1) {
+                    @SuppressWarnings("deprecation")
                     DownloadEntity downloadEntity = (DownloadEntity) bundle.getSerializable(Params.CONTENT);
                     if (mCallback != null) {
                         mCallback.doSomething((T) downloadEntity);

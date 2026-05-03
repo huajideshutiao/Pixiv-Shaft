@@ -229,6 +229,7 @@ public abstract class AppDatabase extends RoomDatabase {
                             .addMigrations(MIGRATION_29_30) // 注册 29 -> 30 迁移 (V3 阅读器 6 张表)
                             .addMigrations(MIGRATION_32_33) // 注册 32 -> 33 迁移 (批量下载队列)
                             .addMigrations(MIGRATION_33_34) // 注册 33 -> 34 迁移 (移除漫画阅读器)
+            @SuppressWarnings("deprecation")
                         .fallbackToDestructiveMigration()
                             .build();
         }

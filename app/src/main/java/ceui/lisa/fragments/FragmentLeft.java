@@ -8,15 +8,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import ceui.lisa.R;
 import ceui.lisa.activities.MainActivity;
 import ceui.lisa.activities.Shaft;
 import ceui.lisa.activities.TemplateActivity;
 import ceui.lisa.databinding.FragmentLeftBinding;
-import ceui.lisa.utils.MyOnTabSelectedListener;
 import ceui.lisa.utils.Dev;
+import ceui.lisa.utils.MyOnTabSelectedListener;
 import ceui.lisa.utils.Params;
 
 public class FragmentLeft extends BaseLazyFragment<FragmentLeftBinding> {
@@ -67,7 +67,10 @@ public class FragmentLeft extends BaseLazyFragment<FragmentLeftBinding> {
                 FragmentRecmdIllust.newInstance("插画"),
                 FragmentHotTag.newInstance(Params.TYPE_ILLUST)
         };
-        baseBind.viewPager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager(), 0) {
+        baseBind.viewPager.setAdapter(new FragmentStatePagerAdapter(
+            getChildFragmentManager(),
+            FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
+        ) {
             @NonNull
             @Override
             public Fragment getItem(int i) {

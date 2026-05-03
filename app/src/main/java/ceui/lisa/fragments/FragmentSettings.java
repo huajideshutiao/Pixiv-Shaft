@@ -162,6 +162,7 @@ public class FragmentSettings extends SwipeFragment<FragmentSettingsBinding> {
                     .addAction(getString(R.string.string_187), (dialog, index) -> dialog.dismiss())
                     .addAction(
                         R.string.sure, (dialog, index) -> {
+                            @SuppressWarnings("deprecation")
                             CharSequence input = builder.getEditText().getText();
                             String url = input != null ? input.toString().trim() : "";
                             Shaft.sSettings.setImageProxyUrl(url);
@@ -174,7 +175,9 @@ public class FragmentSettings extends SwipeFragment<FragmentSettingsBinding> {
                     .create().show();
                 String currentUrl = Shaft.sSettings.getImageProxyUrl();
                 if (!currentUrl.isEmpty()) {
-                    builder.getEditText().setText(currentUrl);
+                    @SuppressWarnings("deprecation")
+                    var editText = builder.getEditText();
+                    editText.setText(currentUrl);
                 }
             });
 
@@ -671,6 +674,7 @@ public class FragmentSettings extends SwipeFragment<FragmentSettingsBinding> {
                                         refreshStorageLabel.run();
                                     }
                                 });
+                                @SuppressWarnings("deprecation")
                                 Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
                                 mActivity.startActivityForResult(intent, BaseActivity.ASK_URI);
                             }
@@ -863,6 +867,7 @@ public class FragmentSettings extends SwipeFragment<FragmentSettingsBinding> {
             });
 
             baseBind.restoreRela.setOnClickListener(v -> {
+                @SuppressWarnings("deprecation")
                 Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
                 intent.addCategory(Intent.CATEGORY_OPENABLE);//必须
                 intent.setType("*/*");//必须
@@ -918,6 +923,7 @@ public class FragmentSettings extends SwipeFragment<FragmentSettingsBinding> {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void onActivityResult(
         int requestCode,
         int resultCode,

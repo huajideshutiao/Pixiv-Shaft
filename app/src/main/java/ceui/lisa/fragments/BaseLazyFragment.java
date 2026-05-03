@@ -11,6 +11,7 @@ public abstract class BaseLazyFragment<T extends ViewDataBinding> extends BaseFr
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         shouldLoadData();
@@ -21,6 +22,7 @@ public abstract class BaseLazyFragment<T extends ViewDataBinding> extends BaseFr
         shouldLoadData();
     }
 
+    @SuppressWarnings("deprecation")
     public void shouldLoadData() {
         if (!isInit) {
             return;

@@ -143,6 +143,7 @@ public class FragmentMutedTags extends LocalListFragment<FragmentBaseListBinding
                     .addAction(getString(R.string.string_437), new QMUIDialogAction.ActionListener() {
                         @Override
                         public void onClick(QMUIDialog dialog, int index) {
+                            @SuppressWarnings("deprecation")
                             CharSequence text = builder.getEditText().getText();
                             if (!TextUtils.isEmpty(text)) {
                                 addMutedTag(text.toString(), 1);
@@ -155,6 +156,7 @@ public class FragmentMutedTags extends LocalListFragment<FragmentBaseListBinding
                     .addAction(getString(R.string.string_213), new QMUIDialogAction.ActionListener() {
                         @Override
                         public void onClick(QMUIDialog dialog, int index) {
+                            @SuppressWarnings("deprecation")
                             CharSequence text = builder.getEditText().getText();
                             if (!TextUtils.isEmpty(text)) {
                                 addMutedTag(text.toString(), 0);

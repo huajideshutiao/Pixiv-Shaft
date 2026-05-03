@@ -537,16 +537,15 @@ public class Common {
                 context.getApplicationContext().getPackageName() + ".provider", sharedFile
             );
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
-            shareIntent.setType("image/*");
+            shareIntent.setType("image/jpeg");
             shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
             if (shareText != null) {
                 shareIntent.putExtra(Intent.EXTRA_TEXT, shareText);
             }
             shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            context.startActivity(Intent.createChooser(
-                shareIntent,
-                context.getString(R.string.share)
-            ));
+            Intent chooser = Intent.createChooser(shareIntent, context.getString(R.string.share));
+            chooser.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            context.startActivity(chooser);
         } catch (Exception e) {
             e.printStackTrace();
         }

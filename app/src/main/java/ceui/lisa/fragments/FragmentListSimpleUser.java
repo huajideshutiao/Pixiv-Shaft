@@ -28,6 +28,7 @@ public class FragmentListSimpleUser extends NetListFragment<FragmentBaseListBind
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void initBundle(Bundle bundle) {
         illustsBean = (IllustsBean) bundle.getSerializable(Params.CONTENT);
     }

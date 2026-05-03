@@ -3,15 +3,15 @@ package ceui.lisa.activities;
 import android.text.TextUtils;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.dynamicanimation.animation.DynamicAnimation;
 import androidx.dynamicanimation.animation.SpringAnimation;
 import androidx.dynamicanimation.animation.SpringForce;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
+
 import ceui.lisa.R;
 import ceui.lisa.databinding.ActivityMultiViewPagerTestBinding;
 import ceui.lisa.feature.ScaleTrans;
@@ -39,7 +39,10 @@ public class VPActivity extends BaseActivity<ActivityMultiViewPagerTestBinding> 
                 mContext.getString(R.string.new_fish),
                 mContext.getString(R.string.r_eighteen)
         };
-        baseBind.viewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
+        baseBind.viewPager.setAdapter(new FragmentStatePagerAdapter(
+            getSupportFragmentManager(),
+            FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
+        ) {
             @NonNull
             @Override
             public Fragment getItem(int position) {
@@ -82,7 +85,10 @@ public class VPActivity extends BaseActivity<ActivityMultiViewPagerTestBinding> 
         y.addEndListener(new DynamicAnimation.OnAnimationEndListener() {
             @Override
             public void onAnimationEnd(DynamicAnimation animation, boolean canceled, float value, float velocity) {
-                baseBind.viewPagerSmall.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
+                baseBind.viewPagerSmall.setAdapter(new FragmentStatePagerAdapter(
+                    getSupportFragmentManager(),
+                    FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
+                ) {
                     @NonNull
                     @Override
                     public Fragment getItem(int position) {

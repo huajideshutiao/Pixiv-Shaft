@@ -342,6 +342,7 @@ public class TemplateActivity extends BaseActivity<ActivityFragmentBinding> impl
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (childFragment != null) {
