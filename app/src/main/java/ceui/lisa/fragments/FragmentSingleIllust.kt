@@ -489,15 +489,29 @@ class FragmentSingleIllust : BaseFragment<FragmentSingleIllustBinding>() {
         }
         if (illust.page_count == 1) {
             baseBind.pSize.visibility = View.GONE
-            baseBind.darkBlank.visibility = View.INVISIBLE
-            baseBind.seeAll.visibility = View.INVISIBLE
+            baseBind.darkBlank.visibility = View.GONE
+            baseBind.seeAll.visibility = View.GONE
             baseBind.illustList.open()
         } else {
             baseBind.pSize.visibility = View.VISIBLE
             baseBind.pSize.text = String.format(Locale.getDefault(), "%dP", illust.page_count)
-            baseBind.darkBlank.visibility = View.VISIBLE
-            baseBind.seeAll.visibility = View.VISIBLE
-            baseBind.illustList.close()
+
+            // 先默认展开，以便测量内容的真实高度
+            baseBind.illustList.open()
+            baseBind.recyclerView.post {
+                if (baseBind.recyclerView.measuredHeight <= baseBind.illustList.maxHeight) {
+                    // 如果内容总高度还没有达到最大限制高度，则不需要展开/折叠功能
+                    baseBind.darkBlank.visibility = View.GONE
+                    baseBind.seeAll.visibility = View.GONE
+                } else {
+                    // 超过最大高度，执行折叠并显示按钮
+                    baseBind.darkBlank.visibility = View.VISIBLE
+                    baseBind.seeAll.visibility = View.VISIBLE
+                    baseBind.illustList.close()
+                    baseBind.seeAll.text = "点击展开"
+                }
+            }
+
             baseBind.seeAll.setOnClickListener {
                 if (baseBind.illustList.isExpand) {
                     baseBind.illustList.close()

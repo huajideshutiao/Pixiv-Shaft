@@ -65,7 +65,7 @@
                             android:overScrollMode="never"
                             android:scrollbars="none"
                             android:background="@color/light_bg"
-                            android:layout_height="match_parent">
+                            android:layout_height="wrap_content">
 
                         </androidx.recyclerview.widget.RecyclerView>
 

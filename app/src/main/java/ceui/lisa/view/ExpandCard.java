@@ -1,5 +1,7 @@
 package ceui.lisa.view;
 
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
@@ -8,8 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
-
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 public class ExpandCard extends CardView {
 
@@ -53,14 +53,14 @@ public class ExpandCard extends CardView {
                 }
             }
         }
-        setLayoutParams(layoutParams);
         isExpand = true;
+        setLayoutParams(layoutParams);
     }
 
     public void close() {
         if(isExpand){
             ViewGroup.LayoutParams layoutParams = getLayoutParams();
-            layoutParams.height = maxHeight;
+            layoutParams.height = WRAP_CONTENT;
             for (int i = 0; i < getChildCount(); i++) {
                 if (getChildAt(i) instanceof RecyclerView) {
                     final RecyclerView recyclerView = ((RecyclerView) getChildAt(i));
@@ -69,13 +69,26 @@ public class ExpandCard extends CardView {
                     }
                 }
             }
-            setLayoutParams(layoutParams);
             isExpand = false;
+            setLayoutParams(layoutParams);
         }
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int newHeightMeasureSpec = heightMeasureSpec;
+        if (!isExpand) {
+            newHeightMeasureSpec = MeasureSpec.makeMeasureSpec(maxHeight, MeasureSpec.AT_MOST);
+        }
+        super.onMeasure(widthMeasureSpec, newHeightMeasureSpec);
     }
 
     public boolean isExpand() {
         return isExpand;
+    }
+
+    public int getMaxHeight() {
+        return maxHeight;
     }
 
 }
