@@ -6,7 +6,6 @@ import android.graphics.Matrix
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
-import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -38,7 +37,6 @@ import com.github.panpf.zoomimage.view.zoom.OnViewTapListener
 import com.github.panpf.zoomimage.zoom.ReadMode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.File
 
 class FragmentImageDetail : BaseFragment<FragmentImageDetailBinding?>() {
@@ -99,7 +97,9 @@ class FragmentImageDetail : BaseFragment<FragmentImageDetailBinding?>() {
             // 0. 强制制动缩放引擎的所有内部动画（如手势回弹、进入缩放动画等）
             // 解决“快速进出导致异常拉伸”的竞态问题。
             try {
-                zoomable.javaClass.getMethod("stopAllAnimations").invoke(zoomable)
+                // 由于方法为 internal suspend，此处通过反射绕过访问限制。
+                zoomable.javaClass.getMethod("stopAllAnimation", String::class.java)
+                    .invoke(zoomable, "prepareForExit")
             } catch (e: Exception) {
             }
 
@@ -116,30 +116,25 @@ class FragmentImageDetail : BaseFragment<FragmentImageDetailBinding?>() {
             val pLoc = IntArray(2)
             parent.getLocationInWindow(pLoc)
 
-            // 4. 计算绝对物理边界。
-            val relL = (loc[0] + contentRect.left - pLoc[0]).toInt()
-            val relT = (loc[1] + contentRect.top - pLoc[1]).toInt()
-            val relR = (loc[0] + contentRect.right - pLoc[0]).toInt()
-            val relB = (loc[1] + contentRect.bottom - pLoc[1]).toInt()
-
-            // 5. [原子级操作] 锁定物理属性。
+            // 4. [原子级操作] 锁定物理属性并重置变换，绕过 RelativeLayout 的 Double Measure Pass。
             // 使用 FIT_XY 确保图片撑满我们手动设置的物理 Bounds。
-            baseBind.image.scaleType = ImageView.ScaleType.FIT_XY
-            baseBind.image.imageMatrix = Matrix()
+            // 直接调用 layout() 方法修改 mLeft, mTop, mRight, mBottom，Transition 引擎捕获时能立即读取到最终态。
+            baseBind.image.apply {
+                scaleType = ImageView.ScaleType.FIT_XY
+                imageMatrix = Matrix()
+                scaleX = 1.0f
+                scaleY = 1.0f
+                translationX = 0f
+                translationY = 0f
+                layout(
+                    (loc[0] + contentRect.left - pLoc[0]).toInt(),
+                    (loc[1] + contentRect.top - pLoc[1]).toInt(),
+                    (loc[0] + contentRect.right - pLoc[0]).toInt(),
+                    (loc[1] + contentRect.bottom - pLoc[1]).toInt()
+                )
+            }
 
-            // 6. 重置所有变换属性。
-            baseBind.image.scaleX = 1.0f
-            baseBind.image.scaleY = 1.0f
-            baseBind.image.translationX = 0f
-            baseBind.image.translationY = 0f
-
-            // 7. [核心] 绕过 RelativeLayout 的 Double Measure Pass。
-            // 直接调用 layout() 方法。这会直接修改 View 内部的 mLeft, mTop, mRight, mBottom。
-            // Transition 引擎在 captureStartValues 时会立即读取到这些值。
-            // 这种方式不会触发 requestLayout()，因此不会产生阶梯跳变。
-            baseBind.image.layout(relL, relT, relR, relB)
-
-            // 8. 递归禁用裁剪，保证在回归过程中可见。
+            // 5. 递归禁用裁剪，保证在回归过程中可见。
             var p: Any? = baseBind.image.parent
             while (p is ViewGroup) {
                 p.clipChildren = false
@@ -149,14 +144,6 @@ class FragmentImageDetail : BaseFragment<FragmentImageDetailBinding?>() {
 
             baseBind.downloadButton.visibility = View.GONE
             baseBind.progressCircular.visibility = View.GONE
-
-            // 彻底禁用缩放引擎，防止在过渡期间发生状态冲突。
-            try {
-                zoomable.javaClass.getMethod("setEnabled", Boolean::class.java)
-                    .invoke(zoomable, false)
-            } catch (e: Exception) {
-            }
-
         } catch (e: Exception) {
             Log.e(TAG, "prepareForExit failed", e)
         }
@@ -164,41 +151,37 @@ class FragmentImageDetail : BaseFragment<FragmentImageDetailBinding?>() {
 
     private fun loadImage() {
         baseBind.emptyFrame.visibility = View.GONE
-        val isUrlMode = mIllustsBean == null && !TextUtils.isEmpty(url)
-
-        // 核心修复：保持 ImageView 为 match_parent，确保滑条始终贴合屏幕边缘。
-        val params = baseBind.image.layoutParams
-        params.width = ViewGroup.LayoutParams.MATCH_PARENT
-        params.height = ViewGroup.LayoutParams.MATCH_PARENT
-        baseBind.image.layoutParams = params
-
+        val isUrlMode = mIllustsBean == null && !url.isNullOrEmpty()
         val imageUrl: String? = if (isUrlMode) {
             url
         } else {
             IllustDownload.getUrl(mIllustsBean, index, Params.IMAGE_RESOLUTION_ORIGINAL)
         }
 
-        if (imageUrl?.isNotEmpty() == true) {
-            if (imageUrl.startsWith("content://")) {
-                baseBind.image.loadImage(Uri.parse(imageUrl))
-                startTransition()
-                return
-            }
+        if (imageUrl.isNullOrEmpty()) return
 
-            val cachedFile = TaskPool.peekCachedFile(imageUrl)
-            if (cachedFile != null && cachedFile.exists()) {
-                baseBind.image.loadImage(cachedFile)
-                currentImageFile = cachedFile
-                startTransition()
-            }
+        if (imageUrl.startsWith("content://")) {
+            baseBind.image.loadImage(Uri.parse(imageUrl))
+            startTransition()
+            return
+        }
 
-            val ctx = requireContext().applicationContext
+        // 1. 优先使用本地缓存
+        TaskPool.peekCachedFile(imageUrl)?.takeIf { it.exists() }?.let {
+            baseBind.image.loadImage(it)
+            currentImageFile = it
+            startTransition()
+        }
+
+        // 2. 异步加载大图作为占位（仅在本地无缓存时）
+        if (currentImageFile == null) {
             val largeUrl = if (isUrlMode) url else IllustDownload.getUrl(
                 mIllustsBean,
                 index,
                 Params.IMAGE_RESOLUTION_LARGE
             )
             if (!largeUrl.isNullOrEmpty()) {
+                val ctx = requireContext().applicationContext
                 val imageSize = ctx.resources.displayMetrics.widthPixels -
                     2 * ctx.resources.getDimensionPixelSize(R.dimen.twelve_dp)
                 val overrideHeight = if (index == 0 && mIllustsBean != null) {
@@ -226,47 +209,43 @@ class FragmentImageDetail : BaseFragment<FragmentImageDetailBinding?>() {
 
                         override fun onLoadCleared(placeholder: Drawable?) {}
                         override fun onLoadFailed(errorDrawable: Drawable?) {
-                            if (currentImageFile == null) {
-                                startTransition()
-                            }
+                            if (currentImageFile == null) startTransition()
                         }
                     })
             } else {
                 startTransition()
             }
+        }
 
-            val task = TaskPool.getLoadTask(NamedUrl("", imageUrl))
-            task.result.observe(viewLifecycleOwner) { file ->
-                if (file != null && file.exists()) {
+        // 3. 加载/监听原图任务
+        val task = TaskPool.getLoadTask(NamedUrl("", imageUrl))
+        task.result.observe(viewLifecycleOwner) { file ->
+            if (file != null && file.exists()) {
+                if (currentImageFile != file) {
                     baseBind.image.loadImage(file)
                     currentImageFile = file
-                    startTransition()
+                }
+                startTransition()
 
-                    if (isUrlMode) {
-                        baseBind.downloadButton.visibility = View.VISIBLE
-                        baseBind.downloadButton.setOnClick {
-                            val ext = imageUrl.substringAfterLast('.', "jpg")
-                            val displayName = if (!saveName.isNullOrEmpty()) {
-                                "$saveName.$ext"
-                            } else {
-                                imageUrl.substringAfterLast('/')
-                            }
-                            val appContext = requireActivity().applicationContext
-                            viewLifecycleOwner.lifecycleScope.launch {
-                                withContext(Dispatchers.IO) {
-                                    val imageId = getImageIdInGallery(appContext, displayName)
-                                    if (imageId != null) {
-                                        deleteImageById(appContext, imageId)
-                                    }
-                                    saveImageToGallery(appContext, file, displayName)
-                                }
-                            }
+                if (isUrlMode) {
+                    baseBind.downloadButton.visibility = View.VISIBLE
+                    baseBind.downloadButton.setOnClick {
+                        val ext = imageUrl.substringAfterLast('.', "jpg")
+                        val displayName =
+                            if (!saveName.isNullOrEmpty()) "$saveName.$ext" else imageUrl.substringAfterLast(
+                                '/'
+                            )
+                        val appContext = requireContext().applicationContext
+                        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                            val imageId = getImageIdInGallery(appContext, displayName)
+                            if (imageId != null) deleteImageById(appContext, imageId)
+                            saveImageToGallery(appContext, file, displayName)
                         }
                     }
                 }
             }
-            baseBind.progressCircular.setUpWithTaskStatus(task.status, viewLifecycleOwner)
         }
+        baseBind.progressCircular.setUpWithTaskStatus(task.status, viewLifecycleOwner)
     }
 
     companion object {

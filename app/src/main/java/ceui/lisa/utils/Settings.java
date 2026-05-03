@@ -86,8 +86,8 @@ public class Settings {
     //使用自定义图片代理
     private boolean usePixivCat = false;
 
-    //自定义图片代理地址，默认 https://i.pixiv.cat
-    private String imageProxyUrl = "https://i.pixiv.cat";
+    //自定义图片代理地址，默认 https://i.pixiv.re
+    private String imageProxyUrl = "https://i.pixiv.re";
 
     //缩略图图片显示大图
     private boolean showLargeThumbnailImage = false;
@@ -317,7 +317,7 @@ public class Settings {
     }
 
     public String getImageProxyUrl() {
-        return TextUtils.isEmpty(imageProxyUrl) ? "https://i.pixiv.cat" : imageProxyUrl;
+        return TextUtils.isEmpty(imageProxyUrl) ? "https://i.pixiv.re" : imageProxyUrl;
     }
 
     public void setImageProxyUrl(String imageProxyUrl) {
