@@ -17,18 +17,14 @@ import ceui.lisa.fragments.FragmentAboutApp;
 import ceui.lisa.fragments.FragmentBookedTag;
 import ceui.lisa.fragments.FragmentCollection;
 import ceui.lisa.fragments.FragmentColors;
-import ceui.lisa.fragments.FragmentDoing;
-import ceui.lisa.fragments.FragmentDonate;
 import ceui.lisa.fragments.FragmentEditAccount;
 import ceui.lisa.fragments.FragmentEditFile;
-import ceui.lisa.fragments.FragmentFileName;
 import ceui.lisa.fragments.FragmentFollowUser;
 import ceui.lisa.fragments.FragmentHistoryTabs;
 import ceui.lisa.fragments.FragmentImageDetail;
 import ceui.lisa.fragments.FragmentLikeIllust;
 import ceui.lisa.fragments.FragmentLikeNovel;
 import ceui.lisa.fragments.FragmentListSimpleUser;
-import ceui.lisa.fragments.FragmentLive;
 import ceui.lisa.fragments.FragmentLocalUsers;
 import ceui.lisa.fragments.FragmentLogin;
 import ceui.lisa.fragments.FragmentMangaSeries;
@@ -38,22 +34,18 @@ import ceui.lisa.fragments.FragmentNew;
 import ceui.lisa.fragments.FragmentNewNovel;
 import ceui.lisa.fragments.FragmentNewNovels;
 import ceui.lisa.fragments.FragmentNiceFriend;
-import ceui.lisa.fragments.FragmentNovelHolder;
 import ceui.lisa.fragments.FragmentNovelMarkers;
 import ceui.lisa.fragments.FragmentNovelSeries;
 import ceui.lisa.fragments.FragmentNovelSeriesDetail;
-import ceui.lisa.fragments.FragmentPopularNovel;
 import ceui.lisa.fragments.FragmentPv;
 import ceui.lisa.fragments.FragmentRecmdIllust;
 import ceui.lisa.fragments.FragmentRecmdUser;
 import ceui.lisa.fragments.FragmentRelatedIllust;
 import ceui.lisa.fragments.FragmentRelatedUser;
-import ceui.lisa.fragments.FragmentSAF;
 import ceui.lisa.fragments.FragmentSB;
 import ceui.lisa.fragments.FragmentSearch;
 import ceui.lisa.fragments.FragmentSearchUser;
 import ceui.lisa.fragments.FragmentSettings;
-import ceui.lisa.fragments.FragmentStorage;
 import ceui.lisa.fragments.FragmentUserIllust;
 import ceui.lisa.fragments.FragmentUserInfo;
 import ceui.lisa.fragments.FragmentUserManga;
@@ -68,13 +60,11 @@ import ceui.lisa.helper.BackHandlerHelper;
 import ceui.lisa.models.IllustsBean;
 import ceui.lisa.models.NovelBean;
 import ceui.lisa.models.UserBean;
-import ceui.lisa.utils.Local;
 import ceui.lisa.utils.Params;
 import ceui.lisa.utils.ReverseResult;
 import ceui.loxia.ObjectPool;
 import ceui.loxia.ObjectType;
 import ceui.loxia.flag.FlagDescFragment;
-import ceui.loxia.flag.FlagReasonFragment;
 import ceui.pixiv.ui.comments.CommentsFragment;
 import ceui.pixiv.ui.novel.NovelSeriesFragment;
 import ceui.pixiv.ui.novel.NovelTextFragment;
@@ -194,8 +184,6 @@ public class TemplateActivity extends BaseActivity<ActivityFragmentBinding> impl
                     return new ceui.pixiv.ui.download.DownloadManagerV3Fragment();
                 case "推荐漫画":
                     return FragmentRecmdIllust.newInstance("漫画");
-                case "热度小说":
-                    return FragmentPopularNovel.newInstance(intent.getStringExtra(Params.KEY_WORD));
                 case "推荐小说":
                     return new FragmentNewNovel();
                 case "小说收藏":
@@ -224,34 +212,18 @@ public class TemplateActivity extends BaseActivity<ActivityFragmentBinding> impl
                     int uid = intent.getIntExtra(Params.USER_ID, 0);
                     return UncategorizedNovelsFragment.Companion.newInstance((long) uid);
                 }
-                case "Web首页":
-                    return new ceui.lisa.fragments.StreetMainFragment();
-                case "Web页面": {
-                    String webUrl = intent.getStringExtra(Params.URL);
-                    boolean saveCookies = intent.getBooleanExtra("saveCookies", false);
-                    return WebFragment.newInstance(
-                            webUrl != null ? webUrl : "https://www.pixiv.net/",
-                            null,
-                            saveCookies);
-                }
                 case "图片详情":
                     return FragmentImageDetail.newInstance(intent.getStringExtra(Params.URL), intent.getStringExtra(Params.TITLE));
                 case "绑定邮箱":
                     return new FragmentEditAccount();
                 case "编辑个人资料":
                     return new FragmentEditFile();
-                case "热门直播":
-                    return new FragmentLive();
                 case "标签屏蔽记录":
                     return FragmentViewPager.newInstance(Params.VIEW_PAGER_MUTED);
-                case "修改命名方式":
-                    return FragmentFileName.newInstance();
                 case "下载路径与文件名":
                     return new ceui.pixiv.ui.settings.DownloadPathSettingsFragment();
                 case "小说信息头":
                     return new ceui.pixiv.ui.settings.NovelHeaderSettingsFragment();
-                case "捐赠":
-                    return FragmentDonate.newInstance();
                 case "关注者的小说":
                     return new FragmentNewNovels();
                 case "漫画系列作品":
@@ -262,10 +234,6 @@ public class TemplateActivity extends BaseActivity<ActivityFragmentBinding> impl
                     return new FragmentNovelSeries();
                 case "我的作业环境":
                     return new FragmentWorkSpace();
-                case "存储访问":
-                    return new FragmentStorage();
-                case "任务中心":
-                    return new FragmentDoing();
                 case "我的插画收藏":
                     return FragmentCollection.newInstance(0);
                 case "我的小说收藏":
@@ -278,13 +246,6 @@ public class TemplateActivity extends BaseActivity<ActivityFragmentBinding> impl
                     return new FragmentNovelMarkers();
                 case "主题颜色":
                     return new FragmentColors();
-                case "测试测试":
-                    return new FragmentSAF();
-                case "举报插画":
-                    return FlagReasonFragment.Companion.newInstance(
-                            intent.getIntExtra(FlagDescFragment.FlagObjectIdKey, 0),
-                            intent.getIntExtra(FlagDescFragment.FlagObjectTypeKey, 0)
-                    );
                 case "填写举报详细信息":
                     return FlagDescFragment.Companion.newInstance(
                             intent.getIntExtra(FlagDescFragment.FlagReasonIdKey, 0),
@@ -399,17 +360,6 @@ public class TemplateActivity extends BaseActivity<ActivityFragmentBinding> impl
 
     @Override
     public void onColorSelected(int dialogId, int color) {
-        if (childFragment instanceof FragmentNovelHolder) {
-            if (dialogId == Params.DIALOG_NOVEL_BG_COLOR) {
-                Shaft.sSettings.setNovelHolderColor(color);
-                ((FragmentNovelHolder) childFragment).setBackgroundColor(color);
-            } else if (dialogId == Params.DIALOG_NOVEL_TEXT_COLOR) {
-                Shaft.sSettings.setNovelHolderTextColor(color);
-                ((FragmentNovelHolder) childFragment).setTextColor(color);
-            }
-
-            Local.setSettings(Shaft.sSettings);
-        }
     }
 
     @Override
@@ -425,10 +375,5 @@ public class TemplateActivity extends BaseActivity<ActivityFragmentBinding> impl
     }
 
     public void onFontSizeSelected(int size) {
-        if (childFragment instanceof FragmentNovelHolder) {
-            Shaft.sSettings.setNovelHolderTextSize(size);
-            ((FragmentNovelHolder) childFragment).setTextSize(size);
-            Local.setSettings(Shaft.sSettings);
-        }
     }
 }

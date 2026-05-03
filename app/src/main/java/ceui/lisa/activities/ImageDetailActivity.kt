@@ -5,6 +5,7 @@ import android.view.KeyEvent
 import android.view.View
 import android.widget.TextView
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.core.view.WindowInsetsCompat
@@ -47,7 +48,10 @@ class ImageDetailActivity : BaseActivity<ActivityImageDetailBinding?>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        (this as? ComponentActivity)?.enableEdgeToEdge()
+        (this as? ComponentActivity)?.enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.dark(android.graphics.Color.TRANSPARENT),
+            navigationBarStyle = SystemBarStyle.dark(android.graphics.Color.TRANSPARENT)
+        )
     }
 
     override fun initLayout(): Int {

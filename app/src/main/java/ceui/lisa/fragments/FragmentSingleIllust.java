@@ -25,6 +25,9 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.blankj.utilcode.util.ColorUtils;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.qmuiteam.qmui.skin.QMUISkinManager;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.scwang.smart.refresh.header.FalsifyFooter;
@@ -62,9 +65,6 @@ import ceui.lisa.view.ScrollChange;
 import ceui.lisa.viewmodel.AppLevelViewModel;
 import ceui.loxia.Illust;
 import ceui.loxia.ObjectPool;
-import ceui.pixiv.ui.task.LoadTask;
-import ceui.pixiv.ui.task.NamedUrl;
-import ceui.pixiv.ui.task.TaskPool;
 import ceui.pixiv.utils.BlurUtilsKt;
 import ceui.pixiv.utils.FastBlurTransformation;
 
@@ -264,35 +264,26 @@ public class FragmentSingleIllust extends BaseFragment<FragmentSingleIllustBindi
                 PixivOperate.muteIllust(illust);
                 return true;
             } else if (menuItem.getItemId() == R.id.action_share_image) {
-                String imageUrl = IllustDownload.getUrl(illust, 0);
-                if (imageUrl != null && !imageUrl.isEmpty()) {
-                    File cachedFile = TaskPool.peekCachedFile(imageUrl);
-                    if (cachedFile != null && cachedFile.exists()) {
-                        Common.shareImageFile(mContext, cachedFile, illust.getId() + "_p0.jpg");
-                    } else {
-                        String largeUrl =
-                            IllustDownload.getUrl(illust, 0, Params.IMAGE_RESOLUTION_LARGE);
-                        File largeFile =
-                            largeUrl != null ? TaskPool.peekCachedFile(largeUrl) : null;
-                        if (largeFile != null && largeFile.exists()) {
-                            Common.shareImageFile(mContext, largeFile, illust.getId() + "_p0.jpg");
-                        } else {
-                            NamedUrl namedUrl = new NamedUrl("", imageUrl);
-                            LoadTask task = TaskPool.INSTANCE.getLoadTask(namedUrl, true);
-                            task.getResult().observe(
-                                getViewLifecycleOwner(), file -> {
-                                    if (file != null && file.exists()) {
-                                        Common.shareImageFile(
-                                            mContext,
-                                            file,
-                                            illust.getId() + "_p0.jpg"
-                                        );
-                                    }
-                                }
-                            );
+                GlideUrl glideUrl = Shaft.sSettings.isShowOriginalPreviewImage()
+                    ? GlideUtil.getOriginalImage(illust, 0)
+                    : GlideUtil.getLargeImage(illust, 0);
+                Glide.with(FragmentSingleIllust.this)
+                    .asFile()
+                    .load(glideUrl)
+                    .onlyRetrieveFromCache(true)
+                    .into(new CustomTarget<File>() {
+                        @Override
+                        public void onResourceReady(
+                            File resource,
+                            Transition<? super File> transition
+                        ) {
+                            Common.shareImageFile(mContext, resource, illust.getId() + "_p0.jpg");
                         }
-                    }
-                }
+
+                        @Override
+                        public void onLoadCleared(android.graphics.drawable.Drawable placeholder) {
+                        }
+                    });
                 return true;
             }
             return false;

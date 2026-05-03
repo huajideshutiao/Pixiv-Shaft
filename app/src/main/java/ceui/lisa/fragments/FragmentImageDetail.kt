@@ -1,7 +1,6 @@
 package ceui.lisa.fragments
 
 
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
@@ -28,8 +27,6 @@ import ceui.pixiv.ui.task.TaskPool
 import ceui.pixiv.ui.works.ToggleToolnarViewModel
 import ceui.pixiv.utils.setOnClick
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.github.panpf.sketch.loadImage
 import com.github.panpf.zoomimage.view.zoom.OnViewTapListener
 import com.github.panpf.zoomimage.zoom.ReadMode
@@ -70,9 +67,31 @@ class FragmentImageDetail : BaseFragment<FragmentImageDetailBinding?>() {
             viewModel.toggleFullscreen()
         }
         baseBind.image.setOnLongClickListener {
-            val file = currentImageFile
+            val illust = mIllustsBean
+            val imageUrl = if (illust != null) {
+                IllustDownload.getUrl(illust, index, Params.IMAGE_RESOLUTION_ORIGINAL)
+            } else {
+                url
+            }
+
+            var file = currentImageFile
+            if (file == null && !imageUrl.isNullOrEmpty()) {
+                file = TaskPool.peekCachedFile(imageUrl)
+            }
+            if (file == null && !imageUrl.isNullOrEmpty()) {
+                try {
+                    file = Glide.with(this)
+                        .asFile()
+                        .load(GlideUrlChild(imageUrl))
+                        .onlyRetrieveFromCache(true)
+                        .submit()
+                        .get()
+                } catch (e: Exception) {
+                    Log.d(TAG, "[ImageDetail] Glide cache miss: ${e.message}")
+                }
+            }
+            
             if (file != null && file.exists()) {
-                val illust = mIllustsBean
                 val shareText = illust?.let {
                     getString(
                         R.string.share_illust,
@@ -87,6 +106,8 @@ class FragmentImageDetail : BaseFragment<FragmentImageDetailBinding?>() {
                     "${illust?.id ?: "image"}_p$index.jpg",
                     shareText
                 )
+            } else {
+                Common.showToast(R.string.string_381)
             }
             true
         }
@@ -112,8 +133,6 @@ class FragmentImageDetail : BaseFragment<FragmentImageDetailBinding?>() {
         Log.d(TAG, "[ImageDetail] loadImage index=$index, isUrlMode=$isUrlMode, url=$shortUrl")
 
         if (imageUrl?.isNotEmpty() == true) {
-            // content:// URI（来自下载完成页的 SAF 路径）直接用 Sketch 加载，
-            // 不走 TaskPool/Glide，因为 Glide 没有 SAF URI 的访问权限。
             if (imageUrl.startsWith("content://")) {
                 baseBind.image.loadImage(Uri.parse(imageUrl))
                 return
@@ -125,28 +144,32 @@ class FragmentImageDetail : BaseFragment<FragmentImageDetailBinding?>() {
                 "[ImageDetail] task acquired. taskId=${task.taskId}, status=${task.status.value}, hasResult=${task.result.value != null}, url=$shortUrl"
             )
 
-            // 原图尚未加载完时，若一级详情页的大图已在缓存，先用大图占位
+            // 原图尚未加载完时，先尝试用一级详情页的大图作为过渡
             if (mIllustsBean != null && task.result.value == null) {
                 val largeUrl = IllustDownload.getUrl(
                     mIllustsBean, index, Params.IMAGE_RESOLUTION_LARGE
                 )
                 if (!largeUrl.isNullOrEmpty() && largeUrl != imageUrl) {
-                    val largeFile = TaskPool.peekCachedFile(largeUrl)
-                    if (largeFile != null) {
+                    var placeholderFile = TaskPool.peekCachedFile(largeUrl)
+                    if (placeholderFile == null) {
+                        try {
+                            placeholderFile = Glide.with(this)
+                                .asFile()
+                                .load(GlideUrlChild(largeUrl))
+                                .onlyRetrieveFromCache(true)
+                                .submit()
+                                .get()
+                        } catch (e: Exception) {
+                            Log.d(TAG, "[ImageDetail] placeholder Glide cache miss: ${e.message}")
+                        }
+                    }
+                    if (placeholderFile != null) {
                         Log.d(
                             TAG,
-                            "[ImageDetail] placeholder HIT (TaskPool) path=${largeFile.absolutePath} size=${largeFile.length()}"
+                            "[ImageDetail] placeholder loaded: ${placeholderFile.absolutePath}"
                         )
-                        baseBind.image.loadImage(largeFile)
-                        currentImageFile = largeFile
-                    } else {
-                        Log.d(
-                            TAG,
-                            "[ImageDetail] placeholder MISS (TaskPool), trying Glide cache largeUrl=${
-                                largeUrl.substringAfterLast('/')
-                            }"
-                        )
-                        tryLoadFromGlideCache(largeUrl)
+                        baseBind.image.loadImage(placeholderFile)
+                        currentImageFile = placeholderFile
                     }
                 }
             }
@@ -182,33 +205,6 @@ class FragmentImageDetail : BaseFragment<FragmentImageDetailBinding?>() {
             }
             baseBind.progressCircular.setUpWithTaskStatus(task.status, viewLifecycleOwner)
         }
-    }
-
-    private fun tryLoadFromGlideCache(url: String) {
-        Glide.with(this)
-            .asFile()
-            .load(GlideUrlChild(url))
-            .onlyRetrieveFromCache(true)
-            .into(object : CustomTarget<File>() {
-                override fun onResourceReady(resource: File, transition: Transition<in File>?) {
-                    if (currentImageFile == null) {
-                        Log.d(
-                            TAG,
-                            "[ImageDetail] placeholder HIT (Glide) path=${resource.absolutePath} size=${resource.length()}"
-                        )
-                        baseBind.image.loadImage(resource)
-                        currentImageFile = resource
-                    }
-                }
-
-                override fun onLoadCleared(placeholder: Drawable?) {}
-                override fun onLoadFailed(errorDrawable: Drawable?) {
-                    Log.d(
-                        TAG,
-                        "[ImageDetail] placeholder MISS (Glide) url=${url.substringAfterLast('/')}"
-                    )
-                }
-            })
     }
 
     companion object {
