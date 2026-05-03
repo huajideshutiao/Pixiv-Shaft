@@ -353,17 +353,19 @@ class FragmentSingleUgora : BaseFragment<FragmentUgoraBinding>() {
 
         baseBind.playGif.setOnClickListener { nowPlayGif() }
 
-        baseBind.illustImage.setOnLongClickListener {
-            val imageUrl = IllustDownload.getUrl(illust, 0, Params.IMAGE_RESOLUTION_LARGE)
-            if (!imageUrl.isNullOrEmpty()) {
-                val cachedFile = TaskPool.peekCachedFile(imageUrl)
-                if (cachedFile != null && cachedFile.exists()) {
-                    Common.shareImageFile(mActivity, cachedFile, "${illust.id}_p0.jpg")
-                } else {
-                    Common.showToast(R.string.msg_load_fail)
-                }
+        baseBind.illustImage.transitionName = "image_0"
+        baseBind.illustImage.setOnClickListener {
+            val intent = Intent(mContext, TemplateActivity::class.java).apply {
+                putExtra("illust", illust)
+                putExtra(TemplateActivity.EXTRA_FRAGMENT, "图片详情")
+                putExtra("index", 0)
             }
-            true
+            val options = androidx.core.app.ActivityOptionsCompat.makeSceneTransitionAnimation(
+                mActivity,
+                baseBind.illustImage,
+                "image_0"
+            )
+            startActivity(intent, options.toBundle())
         }
 
         baseBind.refreshLayout.visibility = View.VISIBLE

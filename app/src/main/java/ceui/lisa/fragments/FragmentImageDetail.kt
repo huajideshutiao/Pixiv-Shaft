@@ -69,6 +69,7 @@ class FragmentImageDetail : BaseFragment<FragmentImageDetailBinding?>() {
             viewModel.toggleFullscreen()
         }
         baseBind.image.onViewLongPressListener = OnViewLongPressListener { _, _ ->
+            baseBind.image.performHapticFeedback(android.view.HapticFeedbackConstants.LONG_PRESS)
             val file = currentImageFile
             if (file != null && file.exists()) {
                 val bean = mIllustsBean
@@ -92,7 +93,9 @@ class FragmentImageDetail : BaseFragment<FragmentImageDetailBinding?>() {
     private fun startTransition() {
         val initialIndex = (parentFragment as? FragmentImageDetailPager)?.initialIndex ?: 0
         if (index == initialIndex) {
-            activity?.startPostponedEnterTransition()
+            baseBind.image.post {
+                activity?.startPostponedEnterTransition()
+            }
         }
     }
 

@@ -1,6 +1,7 @@
 package ceui.lisa.fragments
 
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.View
 import android.widget.TextView
 import androidx.core.os.BundleCompat
@@ -54,6 +55,7 @@ class FragmentImageDetailPager : BaseFragment<ActivityImageDetailBinding>(), Fra
     override fun initView() {
         val dataType = arguments?.getString("dataType")
         baseBind.viewPager.setPageTransformer(PageTransformerHelper.getCurrentTransformer() as? ViewPager2.PageTransformer)
+        baseBind.viewPager.offscreenPageLimit = 1
 
         val infoItems = listOfNotNull(baseBind.bottomRela)
 
@@ -188,8 +190,11 @@ class FragmentImageDetailPager : BaseFragment<ActivityImageDetailBinding>(), Fra
         val viewPager = baseBind.viewPager
         val adapter = viewPager.adapter ?: return false
         val currentItem = viewPager.currentItem
-        val nextItem =
-            if (keyCode == android.view.KeyEvent.KEYCODE_VOLUME_DOWN) currentItem + 1 else currentItem - 1
+        val nextItem = if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+            currentItem + 1
+        } else {
+            currentItem - 1
+        }
         if (nextItem in 0 until adapter.itemCount) {
             viewPager.setCurrentItem(nextItem, true)
             return true

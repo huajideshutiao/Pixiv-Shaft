@@ -83,6 +83,9 @@ public class TemplateActivity extends BaseActivity<ActivityFragmentBinding> impl
     @Override
     protected void initBundle(Bundle bundle) {
         dataType = bundle.getString(EXTRA_FRAGMENT);
+        if ("图片详情".equals(dataType) || "下载图片".equals(dataType) || "URL图片".equals(dataType)) {
+            postponeEnterTransition();
+        }
     }
 
     protected Fragment createNewFragment() {
@@ -367,6 +370,8 @@ public class TemplateActivity extends BaseActivity<ActivityFragmentBinding> impl
                         .commit();
                 childFragment = fragment;
             }
+        } else {
+            childFragment = fragment;
         }
     }
 

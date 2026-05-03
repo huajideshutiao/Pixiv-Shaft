@@ -68,6 +68,10 @@ class IllustDetailAdapter : AbstractIllustAdapter<RecyclerView.ViewHolder> {
         val context = mContext ?: return
         currentOne.illust.transitionName = "image_$position"
 
+        currentOne.illust.setOnClickListener {
+            holder.itemView.performClick()
+        }
+
         currentOne.illust.setOnLongClickListener {
             val isLoadOriginalImage = Shaft.sSettings.isShowOriginalPreviewImage || isForceOriginal
             val imageUrlStr = if (isLoadOriginalImage) {
