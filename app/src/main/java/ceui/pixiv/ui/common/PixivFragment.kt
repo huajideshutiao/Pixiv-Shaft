@@ -25,8 +25,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import ceui.lisa.R
+import ceui.lisa.activities.TemplateActivity
 import ceui.lisa.activities.UActivity
-import ceui.lisa.activities.VActivity
 import ceui.lisa.core.ArtworksMap
 import ceui.lisa.databinding.FragmentPixivListBinding
 import ceui.lisa.databinding.LayoutToolbarBinding
@@ -244,7 +244,8 @@ open class PixivFragment(layoutId: Int) : Fragment(layoutId),
     }
 
     override fun onClickIllust(illustId: Long) {
-        val intent = Intent(requireContext(), VActivity::class.java)
+        val intent = Intent(requireContext(), TemplateActivity::class.java)
+        intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "全屏查看")
         intent.putExtra(Params.SEED, fragmentViewModel.fragmentUniqueId)
         intent.putExtra(Params.ILLUST_ID, illustId)
         startActivity(intent)

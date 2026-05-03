@@ -56,6 +56,7 @@ import ceui.lisa.fragments.FragmentWhoFollowThisUser;
 import ceui.lisa.fragments.FragmentWorkSpace;
 import ceui.lisa.fragments.RecmdUserMap;
 import ceui.lisa.fragments.RecmdUserSnapshot;
+import ceui.lisa.fragments.VFragment;
 import ceui.lisa.helper.BackHandlerHelper;
 import ceui.lisa.models.IllustsBean;
 import ceui.lisa.models.NovelBean;
@@ -214,6 +215,12 @@ public class TemplateActivity extends BaseActivity<ActivityFragmentBinding> impl
                 }
                 case "图片详情":
                     return FragmentImageDetail.newInstance(intent.getStringExtra(Params.URL), intent.getStringExtra(Params.TITLE));
+                case "全屏查看": {
+                    String pageUUID = intent.getStringExtra(Params.PAGE_UUID);
+                    int index = intent.getIntExtra(Params.POSITION, 0);
+                    String seed = intent.getStringExtra(Params.SEED);
+                    return VFragment.newInstance(pageUUID, index, seed);
+                }
                 case "绑定邮箱":
                     return new FragmentEditAccount();
                 case "编辑个人资料":
@@ -306,10 +313,15 @@ public class TemplateActivity extends BaseActivity<ActivityFragmentBinding> impl
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_VOLUME_UP || keyCode == KeyEvent.KEYCODE_VOLUME_DOWN)
-                && childFragment instanceof NovelReaderV3Fragment) {
-            if (((NovelReaderV3Fragment) childFragment).handleVolumeKey(keyCode)) {
-                return true;
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_UP || keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+            if (childFragment instanceof NovelReaderV3Fragment) {
+                if (((NovelReaderV3Fragment) childFragment).handleVolumeKey(keyCode)) {
+                    return true;
+                }
+            } else if (childFragment instanceof VFragment) {
+                if (((VFragment) childFragment).handleVolumeKey(keyCode)) {
+                    return true;
+                }
             }
         }
         return super.onKeyDown(keyCode, event);

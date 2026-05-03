@@ -17,8 +17,7 @@ import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import ceui.lisa.R
-import ceui.lisa.activities.VActivity
-import ceui.pixiv.session.SessionManager
+import ceui.lisa.activities.TemplateActivity
 import ceui.lisa.core.Container
 import ceui.lisa.core.PageData
 import ceui.lisa.helper.AppLevelViewModelHelper
@@ -26,20 +25,18 @@ import ceui.lisa.http.NullCtrl
 import ceui.lisa.http.Retro
 import ceui.lisa.model.ListIllust
 import ceui.lisa.models.IllustsBean
-import ceui.lisa.notification.RecommendAppWidgetProvider.RecommendAppWidgetService
 import ceui.lisa.utils.GlideUtil
 import ceui.lisa.utils.Params
 import ceui.lisa.viewmodel.AppLevelViewModel
+import ceui.pixiv.session.SessionManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.AppWidgetTarget
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.Collections
 import java.util.Random
 import java.util.stream.Collectors
@@ -51,8 +48,6 @@ class RecommendAppWidgetProvider : AppWidgetProvider() {
             if (WIDGET_CLICK_TYPE_IMAGE == intent.getStringExtra(WIDGET_CLICK_TYPE)) {
                 val serializable = intent.getSerializableExtra(EXTRA_ILLUST_BEAN)
                 val illustsBean = serializable as IllustsBean?
-                val illustIntent = Intent(context, VActivity::class.java)
-                illustIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 val illustList = listOf(illustsBean)
                 AppLevelViewModelHelper.updateFollowUserStatus(
                     illustsBean!!.user,
@@ -60,8 +55,12 @@ class RecommendAppWidgetProvider : AppWidgetProvider() {
                 )
                 val pageData = PageData(illustList)
                 Container.get().addPageToMap(pageData)
-                illustIntent.putExtra(Params.POSITION, 0)
-                illustIntent.putExtra(Params.PAGE_UUID, pageData.uuid)
+                val illustIntent = Intent(context, TemplateActivity::class.java).apply {
+                    setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    putExtra(TemplateActivity.EXTRA_FRAGMENT, "全屏查看")
+                    putExtra(Params.POSITION, 0)
+                    putExtra(Params.PAGE_UUID, pageData.uuid)
+                }
                 context.startActivity(illustIntent)
             } else if (WIDGET_CLICK_TYPE_BTN == intent.getStringExtra(WIDGET_CLICK_TYPE)) {
 //                int appWidgetID = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0);

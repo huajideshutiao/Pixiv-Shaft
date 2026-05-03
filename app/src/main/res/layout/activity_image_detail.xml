@@ -12,12 +12,11 @@
         android:background="@color/black">
 
 
-        <ceui.lisa.view.FixedViewPager
+        <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/view_pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:overScrollMode="never"
-            android:scrollbars="none" />
+            android:overScrollMode="never" />
 
         <RelativeLayout
             android:id="@+id/bottom_rela"

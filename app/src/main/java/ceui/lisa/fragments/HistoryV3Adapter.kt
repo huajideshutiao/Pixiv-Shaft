@@ -14,7 +14,6 @@ import ceui.lisa.R
 import ceui.lisa.activities.Shaft
 import ceui.lisa.activities.TemplateActivity
 import ceui.lisa.activities.UActivity
-import ceui.lisa.activities.VActivity
 import ceui.lisa.core.Container
 import ceui.lisa.core.PageData
 import ceui.lisa.database.IllustHistoryEntity
@@ -192,7 +191,8 @@ class HistoryV3Adapter(
         val pageData = PageData(all)
         Container.get().addPageToMap(pageData)
         val index = all.indexOfFirst { it.id == illust.id }.coerceAtLeast(0)
-        val intent = Intent(context, VActivity::class.java).apply {
+        val intent = Intent(context, TemplateActivity::class.java).apply {
+            putExtra(TemplateActivity.EXTRA_FRAGMENT, "全屏查看")
             putExtra(Params.POSITION, index)
             putExtra(Params.PAGE_UUID, pageData.getUUID())
         }

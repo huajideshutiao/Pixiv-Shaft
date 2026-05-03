@@ -13,9 +13,9 @@ import androidx.activity.viewModels
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentPagerAdapter
 import androidx.lifecycle.lifecycleScope
-import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
 import ceui.lisa.R
 import ceui.lisa.databinding.ActivityImageDetailBinding
 import ceui.lisa.download.IllustDownload
@@ -84,7 +84,7 @@ class ImageDetailActivity : BaseActivity<ActivityImageDetailBinding?>() {
 
     override fun initView() {
         val dataType = intent.getStringExtra("dataType")
-        baseBind!!.viewPager.setPageTransformer(true, PageTransformerHelper.getCurrentTransformer())
+        baseBind!!.viewPager.setPageTransformer(PageTransformerHelper.getCurrentTransformer())
         val windowInsetsController = WindowInsetsControllerCompat(
             window,
             window.decorView
@@ -119,18 +119,16 @@ class ImageDetailActivity : BaseActivity<ActivityImageDetailBinding?>() {
                 return
             }
 
-            baseBind!!.viewPager.adapter = object : FragmentPagerAdapter(
-                supportFragmentManager
-            ) {
-                override fun getItem(i: Int): Fragment {
-                    return FragmentImageDetail.newInstance(i)
-                }
-
-                override fun getCount(): Int {
+            baseBind!!.viewPager.adapter = object : FragmentStateAdapter(this) {
+                override fun getItemCount(): Int {
                     return mIllustsBean!!.page_count
                 }
+
+                override fun createFragment(position: Int): Fragment {
+                    return FragmentImageDetail.newInstance(position)
+                }
             }
-            baseBind!!.viewPager.currentItem = initialIndex
+            baseBind!!.viewPager.setCurrentItem(initialIndex, false)
             checkDownload(initialIndex)
             downloadSingle?.setOnClickListener(View.OnClickListener {
                 IllustDownload.downloadIllustCertainPage(
@@ -142,10 +140,8 @@ class ImageDetailActivity : BaseActivity<ActivityImageDetailBinding?>() {
                     PixivOperate.postLikeDefaultStarType(mIllustsBean)
                 }
             })
-            baseBind!!.viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-                override fun onPageScrolled(i: Int, v: Float, i1: Int) {
-                }
-
+            baseBind!!.viewPager.registerOnPageChangeCallback(object :
+                ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(i: Int) {
                     checkDownload(i)
                     currentPage?.setText(
@@ -156,9 +152,6 @@ class ImageDetailActivity : BaseActivity<ActivityImageDetailBinding?>() {
                             mIllustsBean!!.page_count
                         )
                     )
-                }
-
-                override fun onPageScrollStateChanged(i: Int) {
                 }
             })
             if (mIllustsBean!!.page_count == 1) {
@@ -184,13 +177,11 @@ class ImageDetailActivity : BaseActivity<ActivityImageDetailBinding?>() {
                 finish()
                 return
             }
-            baseBind!!.viewPager.adapter = object : FragmentPagerAdapter(
-                supportFragmentManager
-            ) {
-                override fun getItem(i: Int): Fragment =
-                    FragmentImageDetail.newInstance(singleUrl, singleTitle)
+            baseBind!!.viewPager.adapter = object : FragmentStateAdapter(this) {
+                override fun getItemCount(): Int = 1
 
-                override fun getCount(): Int = 1
+                override fun createFragment(position: Int): Fragment =
+                    FragmentImageDetail.newInstance(singleUrl, singleTitle)
             }
         } else if ("下载详情" == dataType) {
             currentPage = findViewById(R.id.current_page)
@@ -198,23 +189,19 @@ class ImageDetailActivity : BaseActivity<ActivityImageDetailBinding?>() {
             localIllust = intent.getSerializableExtra("illust") as List<String>?
             initialIndex = intent.getIntExtra("index", 0)
 
-            baseBind!!.viewPager.adapter = object : FragmentPagerAdapter(
-                supportFragmentManager
-            ) {
-                override fun getItem(i: Int): Fragment {
-                    return FragmentImageDetail.newInstance(localIllust!![i])
+            baseBind!!.viewPager.adapter = object : FragmentStateAdapter(this) {
+                override fun getItemCount(): Int {
+                    return localIllust!!.size
                 }
 
-                override fun getCount(): Int {
-                    return localIllust!!.size
+                override fun createFragment(position: Int): Fragment {
+                    return FragmentImageDetail.newInstance(localIllust!![position])
                 }
             }
             currentPage?.setVisibility(View.INVISIBLE)
-            baseBind!!.viewPager.currentItem = initialIndex
-            baseBind!!.viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-                override fun onPageScrolled(i: Int, v: Float, i1: Int) {
-                }
-
+            baseBind!!.viewPager.setCurrentItem(initialIndex, false)
+            baseBind!!.viewPager.registerOnPageChangeCallback(object :
+                ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(i: Int) {
                     try {
                         downloadSingle?.setText(
@@ -226,9 +213,6 @@ class ImageDetailActivity : BaseActivity<ActivityImageDetailBinding?>() {
                     } catch (e: UnsupportedEncodingException) {
                         e.printStackTrace()
                     }
-                }
-
-                override fun onPageScrollStateChanged(i: Int) {
                 }
             })
             try {
@@ -260,7 +244,7 @@ class ImageDetailActivity : BaseActivity<ActivityImageDetailBinding?>() {
     override fun onBackPressed() {
         if (initialIndex == baseBind!!.viewPager.currentItem) {
             val currentFragment =
-                supportFragmentManager.findFragmentByTag("android:switcher:${baseBind!!.viewPager.id}:${baseBind!!.viewPager.currentItem}")
+                supportFragmentManager.findFragmentByTag("f${baseBind!!.viewPager.currentItem}")
 
             val detailFrag = currentFragment as? FragmentImageDetail ?: run {
                 super.onBackPressed()

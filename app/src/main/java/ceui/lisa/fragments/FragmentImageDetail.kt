@@ -19,6 +19,7 @@ import ceui.lisa.databinding.FragmentImageDetailBinding
 import ceui.lisa.download.IllustDownload
 import ceui.lisa.models.IllustsBean
 import ceui.lisa.transformer.LargeBitmapScaleTransformer
+import ceui.lisa.utils.Common
 import ceui.lisa.utils.GlideUrlChild
 import ceui.lisa.utils.Params
 import ceui.pixiv.ui.common.deleteImageById
@@ -33,6 +34,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.github.panpf.sketch.loadImage
+import com.github.panpf.zoomimage.view.zoom.OnViewLongPressListener
 import com.github.panpf.zoomimage.view.zoom.OnViewTapListener
 import com.github.panpf.zoomimage.zoom.ReadMode
 import kotlinx.coroutines.Dispatchers
@@ -66,6 +68,18 @@ class FragmentImageDetail : BaseFragment<FragmentImageDetailBinding?>() {
         }
         baseBind.image.onViewTapListener = OnViewTapListener { _, _ ->
             viewModel.toggleFullscreen()
+        }
+        baseBind.image.onViewLongPressListener = OnViewLongPressListener { _, _ ->
+            val file = currentImageFile
+            if (file != null && file.exists()) {
+                val bean = mIllustsBean
+                val fileName = if (bean != null) {
+                    "${bean.id}_p${index}.jpg"
+                } else {
+                    file.name
+                }
+                Common.shareImageFile(requireActivity(), file, fileName)
+            }
         }
         baseBind.image.transitionName = "image_$index"
         baseBind.image.zoomable.setReadMode(ReadMode.Default)

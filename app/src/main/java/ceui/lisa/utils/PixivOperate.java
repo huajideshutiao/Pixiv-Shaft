@@ -36,7 +36,6 @@ import ceui.lisa.R;
 import ceui.lisa.activities.OutWakeActivity;
 import ceui.lisa.activities.Shaft;
 import ceui.lisa.activities.TemplateActivity;
-import ceui.lisa.activities.VActivity;
 import ceui.lisa.cache.Cache;
 import ceui.lisa.core.Container;
 import ceui.lisa.core.PageData;
@@ -336,7 +335,8 @@ public class PixivOperate {
                                 Collections.singletonList(illustSearchResponse.getIllust()));
                         Container.get().addPageToMap(pageData);
 
-                        Intent intent = new Intent(context, VActivity.class);
+                        Intent intent = new Intent(context, TemplateActivity.class);
+                        intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "全屏查看");
                         intent.putExtra(Params.POSITION, 0);
                         intent.putExtra(Params.PAGE_UUID, pageData.getUUID());
                         context.startActivity(intent);
@@ -373,7 +373,8 @@ public class PixivOperate {
                                     Collections.singletonList(illust));
                             Container.get().addPageToMap(pageData);
 
-                            Intent intent = new Intent(context, VActivity.class);
+                            Intent intent = new Intent(context, TemplateActivity.class);
+                            intent.putExtra(TemplateActivity.EXTRA_FRAGMENT, "全屏查看");
                             intent.putExtra(Params.POSITION, 0);
                             intent.putExtra(Params.PAGE_UUID, pageData.getUUID());
                             context.startActivity(intent);

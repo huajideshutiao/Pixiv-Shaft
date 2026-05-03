@@ -3,7 +3,6 @@ package ceui.lisa.fragments
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
@@ -17,6 +16,7 @@ import android.widget.Toast
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -47,7 +47,6 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.util.Locale
 import kotlin.math.roundToInt
-import androidx.core.view.isVisible
 
 class LandingViewModel : ViewModel() {
     val isChecked = MutableLiveData(false)
@@ -69,6 +68,7 @@ class FragmentLogin : BaseFragment<ActivityLoginBinding>() {
 
     private var selectedTag = "en"
     private var cycleIndex = 0
+    private var cycleJob: Job? = null
     private val rowChecks = mutableMapOf<String, View>()
 
     // ── Lifecycle ──
@@ -90,6 +90,7 @@ class FragmentLogin : BaseFragment<ActivityLoginBinding>() {
             baseBind.languagePage.root.isVisible = true
             baseBind.loginPage.root.isVisible = false
             setupLanguagePage()
+            startGreetingCycle()
         }
         setupLoginPage()
     }
@@ -194,6 +195,22 @@ class FragmentLogin : BaseFragment<ActivityLoginBinding>() {
         cycleIndex = greetings.indexOfFirst { it.tag == tag }.coerceAtLeast(0)
         fadeGreetingTo(greetings[cycleIndex])
         applyContinueLabel()
+
+        // Restart cycle from selected language
+        startGreetingCycle()
+    }
+
+    private fun startGreetingCycle() {
+        cycleJob?.cancel()
+        cycleJob = viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                while (isActive) {
+                    delay(2200L)
+                    cycleIndex = (cycleIndex + 1) % greetings.size
+                    fadeGreetingTo(greetings[cycleIndex])
+                }
+            }
+        }
     }
 
     private fun applyGreeting(g: Greeting) {
@@ -202,7 +219,12 @@ class FragmentLogin : BaseFragment<ActivityLoginBinding>() {
     }
 
     private fun fadeGreetingTo(g: Greeting) {
-        applyGreeting(g)
+        baseBind.languagePage.greetingSubtitle.animate().alpha(0f).setDuration(180L).start()
+        baseBind.languagePage.greetingHero.animate().alpha(0f).setDuration(180L).withEndAction {
+            applyGreeting(g)
+            baseBind.languagePage.greetingHero.animate().alpha(1f).setDuration(260L).start()
+            baseBind.languagePage.greetingSubtitle.animate().alpha(0.6f).setDuration(260L).start()
+        }.start()
     }
 
     private fun applyContinueLabel() {

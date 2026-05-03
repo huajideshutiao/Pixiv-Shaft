@@ -19,7 +19,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import ceui.lisa.R
 import ceui.lisa.activities.Shaft
-import ceui.lisa.activities.VActivity
+import ceui.lisa.activities.TemplateActivity
 import ceui.lisa.core.Container
 import ceui.lisa.core.PageData
 import ceui.lisa.database.NovelAnnotationEntity
@@ -931,8 +931,14 @@ class NovelReaderV3Fragment : Fragment(R.layout.fragment_novel_reader_v3),
                             val bean = Shaft.sGson.let { g -> g.fromJson(g.toJson(illust), IllustsBean::class.java) }
                             val uuid = UUID.randomUUID().toString()
                             Container.get().addPageToMap(PageData(uuid, null, listOf(bean)))
-                            startActivity(Intent(requireContext(), VActivity::class.java).apply {
-                                putExtra(Params.POSITION, 0); putExtra(Params.PAGE_UUID, uuid)
+                            startActivity(
+                                Intent(
+                                    requireContext(),
+                                    TemplateActivity::class.java
+                                ).apply {
+                                    putExtra(TemplateActivity.EXTRA_FRAGMENT, "全屏查看")
+                                    putExtra(Params.POSITION, 0)
+                                    putExtra(Params.PAGE_UUID, uuid)
                             })
                         }
                 }

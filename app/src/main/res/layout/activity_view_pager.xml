@@ -5,17 +5,14 @@
 
     </data>
 
-    <RelativeLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
-        <androidx.viewpager.widget.ViewPager
-            android:layout_width="match_parent"
+        <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPager"
-            android:layout_height="match_parent">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
-        </androidx.viewpager.widget.ViewPager>
-
-    </RelativeLayout>
+    </FrameLayout>
 </layout>

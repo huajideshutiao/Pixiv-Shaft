@@ -12,7 +12,6 @@ import ceui.lisa.R
 import ceui.lisa.activities.Shaft
 import ceui.lisa.activities.TemplateActivity
 import ceui.lisa.activities.UActivity
-import ceui.lisa.activities.VActivity
 import ceui.lisa.core.Container
 import ceui.lisa.core.PageData
 import ceui.lisa.databinding.FragmentPixivListBinding
@@ -236,7 +235,8 @@ class NovelTextFragment : PixivFragment(R.layout.fragment_pixiv_list), FitsSyste
             val uuid = UUID.randomUUID().toString()
             val pageData = PageData(uuid, null, listOf(bean))
             Container.get().addPageToMap(pageData)
-            val intent = Intent(requireContext(), VActivity::class.java).apply {
+            val intent = Intent(requireContext(), TemplateActivity::class.java).apply {
+                putExtra(TemplateActivity.EXTRA_FRAGMENT, "全屏查看")
                 putExtra(Params.POSITION, 0)
                 putExtra(Params.PAGE_UUID, uuid)
             }

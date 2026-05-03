@@ -9,13 +9,13 @@ import android.widget.RemoteViews
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import ceui.lisa.R
-import ceui.lisa.activities.VActivity
-import ceui.pixiv.session.SessionManager
+import ceui.lisa.activities.TemplateActivity
 import ceui.lisa.core.Container
 import ceui.lisa.core.PageData
 import ceui.lisa.http.Retro
 import ceui.lisa.utils.GlideUtil
 import ceui.lisa.utils.Params
+import ceui.pixiv.session.SessionManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.request.RequestOptions
@@ -93,12 +93,14 @@ class IllustGridWidgetWorker(
                     views.setImageViewBitmap(IMAGE_VIEW_IDS[index], bitmap)
 
                     val illust = illusts.getOrNull(index) ?: return@forEachIndexed
-                    val clickIntent = Intent(context, VActivity::class.java)
-                    clickIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     val pageData = PageData(listOf(illust))
                     Container.get().addPageToMap(pageData)
-                    clickIntent.putExtra(Params.POSITION, 0)
-                    clickIntent.putExtra(Params.PAGE_UUID, pageData.uuid)
+                    val clickIntent = Intent(context, TemplateActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        putExtra(TemplateActivity.EXTRA_FRAGMENT, "全屏查看")
+                        putExtra(Params.POSITION, 0)
+                        putExtra(Params.PAGE_UUID, pageData.uuid)
+                    }
 
                     val pendingIntent = android.app.PendingIntent.getActivity(
                         context,
