@@ -42,7 +42,6 @@ import ceui.pixiv.session.SessionManager;
 import ceui.pixiv.utils.NetworkStateManager;
 import io.reactivex.exceptions.UndeliverableException;
 import io.reactivex.plugins.RxJavaPlugins;
-import me.jessyan.progressmanager.ProgressManager;
 import okhttp3.OkHttpClient;
 
 /**
@@ -164,7 +163,7 @@ public class Shaft extends Application implements ServicesProvider {
 
         ThemeHelper.applyTheme(null, sSettings.getThemeType());
 
-        OkHttpClient.Builder glideBuilder = ProgressManager.getInstance().with(new OkHttpClient.Builder());
+        OkHttpClient.Builder glideBuilder = new OkHttpClient.Builder();
         if (sSettings.isDirectConnect()) {
             // 图片走 https://i.pximg.net 原始 URL，在 OkHttp 层面：
             // 1. 自定义 DNS 绕过 DNS 污染

@@ -2,7 +2,6 @@ package ceui.lisa.fragments
 
 import android.content.Intent
 import android.text.TextUtils
-import android.view.LayoutInflater
 import android.view.View
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -12,9 +11,8 @@ import ceui.lisa.databinding.FragmentUserRightBinding
 import ceui.lisa.databinding.TagItemBinding
 import ceui.lisa.utils.Params
 import ceui.lisa.viewmodel.UserViewModel
+import ceui.pixiv.utils.populate
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
-import com.zhy.view.flowlayout.FlowLayout
-import com.zhy.view.flowlayout.TagAdapter
 
 class FragmentUserRight : SwipeFragment<FragmentUserRightBinding>() {
 
@@ -34,84 +32,75 @@ class FragmentUserRight : SwipeFragment<FragmentUserRightBinding>() {
 
     override fun initData() {
         val data = mUserViewModel.user.value ?: return
+        val profile = data.profile!!
+        val user = data.user!!
         val content: MutableList<String> = ArrayList()
-        if (data.profile.total_illusts > 0) {
-            content.add(getString(R.string.string_246) + ": " + data.profile.total_illusts)
+        if (profile.total_illusts > 0) {
+            content.add(getString(R.string.string_246) + ": " + profile.total_illusts)
         }
-        if (data.profile.total_manga > 0) {
-            content.add(getString(R.string.string_233) + ": " + data.profile.total_manga)
+        if (profile.total_manga > 0) {
+            content.add(getString(R.string.string_233) + ": " + profile.total_manga)
         }
-        if (data.profile.total_illust_series > 0) {
-            content.add(getString(R.string.string_230) +": " + data.profile.total_illust_series) //漫画系列
+        if (profile.total_illust_series > 0) {
+            content.add(getString(R.string.string_230) + ": " + profile.total_illust_series)
         }
-        if (data.profile.total_novels > 0) {
-            content.add(getString(R.string.string_237) + ": " + data.profile.total_novels)
+        if (profile.total_novels > 0) {
+            content.add(getString(R.string.string_237) + ": " + profile.total_novels)
         }
-        if (data.profile.total_novel_series > 0) {
-            content.add(getString(R.string.string_257)+ ": " + data.profile.total_novel_series)
+        if (profile.total_novel_series > 0) {
+            content.add(getString(R.string.string_257) + ": " + profile.total_novel_series)
         }
-        if (data.profile.total_illust_bookmarks_public > 0) {
-            content.add(getString(R.string.string_164) + ":" + data.profile.total_illust_bookmarks_public)
+        if (profile.total_illust_bookmarks_public > 0) {
+            content.add(getString(R.string.string_164) + ":" + profile.total_illust_bookmarks_public)
         }
-        content.add(getString(R.string.string_192)) //小说收藏
-        content.add(getString(R.string.string_436)) //相关用户
-        baseBind.tagLayout.adapter = object : TagAdapter<String>(content) {
-            override fun getView(parent: FlowLayout, position: Int, s: String?): View {
-                val binding: TagItemBinding = DataBindingUtil.inflate(
-                    LayoutInflater.from(mContext), R.layout.tag_item, null, false
-                )
-                binding.tagName.text = s
-                return binding.root
+        content.add(getString(R.string.string_192))
+        content.add(getString(R.string.string_436))
+        baseBind.tagLayout.populate(content, R.layout.tag_item) { view, s ->
+            val binding: TagItemBinding = DataBindingUtil.bind(view)!!
+            binding.tagName.text = s
+            binding.root.setOnClickListener {
+                val position = content.indexOf(s)
+                val intent = Intent(mContext, ContainerActivity::class.java)
+                intent.putExtra(Params.USER_ID, user.id)
+                when {
+                    content[position].contains(getString(R.string.string_246)) -> {
+                        intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "插画作品")
+                    }
+
+                    content[position].contains(getString(R.string.string_233)) -> {
+                        intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "漫画作品")
+                    }
+
+                    content[position].contains(getString(R.string.string_230)) -> {
+                        intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "漫画系列作品")
+                    }
+
+                    content[position].contains(getString(R.string.string_237)) -> {
+                        intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说作品")
+                    }
+
+                    content[position].contains(getString(R.string.string_257)) -> {
+                        intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说系列作品")
+                    }
+
+                    content[position].contains(getString(R.string.string_164)) -> {
+                        intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "插画/漫画收藏")
+                    }
+
+                    content[position].contains(getString(R.string.string_192)) -> {
+                        intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说收藏")
+                    }
+
+                    content[position].contains(getString(R.string.string_436)) -> {
+                        intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "相关用户")
+                    }
+                }
+                startActivity(intent)
             }
         }
-//        baseBind.banUser.setOnCheckedChangeListener { buttonView, isChecked ->
-//            if (isChecked) {
-//                PixivOperate.muteUser(data.user)
-//                mUserViewModel.isUserMuted.postValue(true)
-//            } else {
-//                PixivOperate.unMuteUser(data.user)
-//                mUserViewModel.isUserMuted.postValue(false)
-//            }
-//        }
-//        mUserViewModel.isUserMuted.observe(viewLifecycleOwner) { isMuted ->
-//            baseBind.banUser.isChecked = isMuted == true
-//        }
-//        baseBind.banUserRela.setOnClickListener { baseBind.banUser.performClick() }
-        baseBind.tagLayout.setOnTagClickListener { _, position, _ ->
-            val intent = Intent(mContext, ContainerActivity::class.java)
-            intent.putExtra(Params.USER_ID, data.user.userId)
-            when {
-                content[position].contains(getString(R.string.string_246)) -> {
-                    intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "插画作品")
-                }
-                content[position].contains(getString(R.string.string_233)) -> {
-                    intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "漫画作品")
-                }
-                content[position].contains(getString(R.string.string_230)) -> {
-                    intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "漫画系列作品")
-                }
-                content[position].contains(getString(R.string.string_237)) -> {
-                    intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说作品")
-                }
-                content[position].contains(getString(R.string.string_257)) -> {
-                    intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说系列作品")
-                }
-                content[position].contains(getString(R.string.string_164)) -> {
-                    intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "插画/漫画收藏")
-                }
-                content[position].contains(getString(R.string.string_192)) -> {
-                    intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说收藏")
-                }
-                content[position].contains(getString(R.string.string_436)) -> {
-                    intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "相关用户")
-                }
-            }
-            startActivity(intent)
-            true
-        }
-        if (!TextUtils.isEmpty(data.user.comment)) {
+        if (!TextUtils.isEmpty(user.comment)) {
             baseBind.comment.visibility = View.VISIBLE
-            baseBind.comment.text = data.user.comment
+            baseBind.comment.text = user.comment
         } else {
             baseBind.comment.visibility = View.GONE
         }
@@ -122,23 +111,23 @@ class FragmentUserRight : SwipeFragment<FragmentUserRightBinding>() {
             intent.putExtra(Params.CONTENT, data)
             startActivity(intent)
         }
-        if (!TextUtils.isEmpty(data.profile.webpage)) {
-            baseBind.realHome.text = data.profile.webpage
+        if (!TextUtils.isEmpty(profile.webpage)) {
+            baseBind.realHome.text = profile.webpage
         } else {
-            baseBind.realHome.text = "https://www.pixiv.net/users/%d".format(data.user.id)
+            baseBind.realHome.text = "https://www.pixiv.net/users/%d".format(user.id)
         }
-        if (!TextUtils.isEmpty(data.profile.twitter_url)) {
-            baseBind.realTwitter.text = data.profile.twitter_url
+        if (!TextUtils.isEmpty(profile.twitter_url)) {
+            baseBind.realTwitter.text = profile.twitter_url
         } else {
             baseBind.realTwitter.text = getString(R.string.no_info)
         }
-        if (!TextUtils.isEmpty(data.profile.region)) {
-            baseBind.realAddress.text = data.profile.region
+        if (!TextUtils.isEmpty(profile.region)) {
+            baseBind.realAddress.text = profile.region
         } else {
             baseBind.realAddress.text = getString(R.string.no_info)
         }
-        if (!TextUtils.isEmpty(data.profile.content)) {
-            baseBind.realJob.text = data.profile.content
+        if (!TextUtils.isEmpty(profile.comment)) {
+            baseBind.realJob.text = profile.comment
         } else {
             baseBind.realJob.text = getString(R.string.no_info)
         }

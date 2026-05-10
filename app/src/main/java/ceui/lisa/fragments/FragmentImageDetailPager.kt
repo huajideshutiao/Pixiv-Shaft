@@ -92,7 +92,7 @@ class FragmentImageDetailPager : BaseFragment<ActivityImageDetailBinding>(), Fra
                     baseBind.viewPager.currentItem,
                     activity as BaseActivity<*>
                 )
-                if (Shaft.sSettings.isAutoPostLikeWhenDownload && !mIllustsBean!!.isIs_bookmarked) {
+                if (Shaft.sSettings.isAutoPostLikeWhenDownload && !mIllustsBean!!.is_bookmarked) {
                     PixivOperate.postLikeDefaultStarType(mIllustsBean)
                 }
             }

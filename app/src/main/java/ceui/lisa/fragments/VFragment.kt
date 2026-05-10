@@ -82,7 +82,7 @@ class VFragment : BaseFragment<ActivityViewPagerBinding>(), VolumeKeyHandler {
                     val illustsBean = pageData.list[position]
                     return when {
                         illustsBean.id == 0 || !illustsBean.isVisible -> {
-                            FragmentImageDetail.newInstance(illustsBean.image_urls.maxImage)
+                            FragmentImageDetail.newInstance(illustsBean.image_urls?.maxImage!!)
                         }
 
                         illustsBean.isGif -> {

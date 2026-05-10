@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:zhy="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -219,17 +218,16 @@
 
                             </TextView>
 
-                            <com.zhy.view.flowlayout.TagFlowLayout
+                            <com.google.android.flexbox.FlexboxLayout
                                 android:id="@+id/illust_tag"
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent"
+                                android:layout_height="wrap_content"
                                 android:layout_marginTop="4dp"
                                 android:layout_marginBottom="4dp"
                                 android:layout_marginStart="@dimen/eight_dp"
-                                android:layout_marginEnd="@dimen/eight_dp"
-                                zhy:max_select="-1">
+                                android:layout_marginEnd="@dimen/eight_dp">
 
-                            </com.zhy.view.flowlayout.TagFlowLayout>
+                            </com.google.android.flexbox.FlexboxLayout>
 
 
                             <LinearLayout

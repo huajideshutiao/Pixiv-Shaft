@@ -21,6 +21,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "Pixiv-Shaft"
 
-include ':app', ':models', ':progressmanager', ':flowlayout-lib'
+include ':app', ':models'
 include ':annotations'
 include ':processor'

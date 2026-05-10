@@ -24,22 +24,25 @@ class FragmentUserInfo : BaseFragment<FragmentUserInfoBinding>(), Display<UserDe
     }
 
     override fun invoke(response: UserDetailResponse) {
-        baseBind.mainPage.setHtml(Common.checkEmpty(response.profile.webpage))
-        baseBind.twitter.setHtml(Common.checkEmpty(response.profile.twitter_url))
-        baseBind.description.setHtml(Common.checkEmpty(response.user.comment))
-        baseBind.pawoo.setHtml(Common.checkEmpty(response.profile.pawoo_url))
-        baseBind.computer.text = Common.checkEmpty(response.workspace.pc)
-        baseBind.monitor.text = Common.checkEmpty(response.workspace.monitor)
-        baseBind.app.text = Common.checkEmpty(response.workspace.tool)
-        baseBind.scanner.text = Common.checkEmpty(response.workspace.scanner)
-        baseBind.drawBoard.text = Common.checkEmpty(response.workspace.tablet)
-        baseBind.mouse.text = Common.checkEmpty(response.workspace.mouse)
-        baseBind.printer.text = Common.checkEmpty(response.workspace.printer)
-        baseBind.tableObjects.text = Common.checkEmpty(response.workspace.desktop)
-        baseBind.likeMusic.text = Common.checkEmpty(response.workspace.music)
-        baseBind.table.text = Common.checkEmpty(response.workspace.desk)
-        baseBind.chair.text = Common.checkEmpty(response.workspace.chair)
-        baseBind.otherText.text = Common.checkEmpty(response.workspace.comment)
+        val profile = response.profile!!
+        val user = response.user!!
+        val workspace = response.workspace!!
+        baseBind.mainPage.setHtml(Common.checkEmpty(profile.webpage))
+        baseBind.twitter.setHtml(Common.checkEmpty(profile.twitter_url))
+        baseBind.description.setHtml(Common.checkEmpty(user.comment))
+        baseBind.pawoo.setHtml(Common.checkEmpty(profile.pawoo_url))
+        baseBind.computer.text = Common.checkEmpty(workspace.pc)
+        baseBind.monitor.text = Common.checkEmpty(workspace.monitor)
+        baseBind.app.text = Common.checkEmpty(workspace.tool)
+        baseBind.scanner.text = Common.checkEmpty(workspace.scanner)
+        baseBind.drawBoard.text = Common.checkEmpty(workspace.tablet)
+        baseBind.mouse.text = Common.checkEmpty(workspace.mouse)
+        baseBind.printer.text = Common.checkEmpty(workspace.printer)
+        baseBind.tableObjects.text = Common.checkEmpty(workspace.desktop)
+        baseBind.likeMusic.text = Common.checkEmpty(workspace.music)
+        baseBind.table.text = Common.checkEmpty(workspace.desk)
+        baseBind.chair.text = Common.checkEmpty(workspace.chair)
+        baseBind.otherText.text = Common.checkEmpty(workspace.comment)
     }
 
     override fun initView() {

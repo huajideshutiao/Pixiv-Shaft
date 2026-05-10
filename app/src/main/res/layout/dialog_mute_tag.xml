@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -19,14 +20,13 @@
             android:text="@string/string_16"
             android:layout_height="wrap_content" />
 
-        <com.zhy.view.flowlayout.TagFlowLayout
+        <com.google.android.flexbox.FlexboxLayout
             android:layout_width="match_parent"
             android:id="@+id/tag_layout"
             android:layout_marginStart="@dimen/eight_dp"
             android:layout_marginEnd="@dimen/eight_dp"
-            android:layout_height="wrap_content">
-
-        </com.zhy.view.flowlayout.TagFlowLayout>
+            android:layout_height="wrap_content"
+            app:flexWrap="wrap" />
 
         <RelativeLayout
             android:layout_width="match_parent"

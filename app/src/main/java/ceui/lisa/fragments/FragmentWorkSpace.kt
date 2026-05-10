@@ -44,21 +44,22 @@ class FragmentWorkSpace : SwipeFragment<FragmentWorkSpaceBinding>(), Display<Use
     }
 
     override fun invoke(response: UserDetailResponse) {
-        setText(response.workspace.pc, baseBind.computer)
-        setText(response.workspace.monitor, baseBind.monitor)
-        setText(response.workspace.tool, baseBind.app)
-        setText(response.workspace.scanner, baseBind.scanner)
-        setText(response.workspace.tablet, baseBind.drawBoard)
-        setText(response.workspace.mouse, baseBind.mouse)
-        setText(response.workspace.printer, baseBind.printer)
-        setText(response.workspace.desktop, baseBind.tableObjects)
-        setText(response.workspace.music, baseBind.likeMusic)
-        setText(response.workspace.desk, baseBind.table)
-        setText(response.workspace.chair, baseBind.chair)
-        setText(response.workspace.comment, baseBind.otherText)
+        val workspace = response.workspace!!
+        setText(workspace.pc, baseBind.computer)
+        setText(workspace.monitor, baseBind.monitor)
+        setText(workspace.tool, baseBind.app)
+        setText(workspace.scanner, baseBind.scanner)
+        setText(workspace.tablet, baseBind.drawBoard)
+        setText(workspace.mouse, baseBind.mouse)
+        setText(workspace.printer, baseBind.printer)
+        setText(workspace.desktop, baseBind.tableObjects)
+        setText(workspace.music, baseBind.likeMusic)
+        setText(workspace.desk, baseBind.table)
+        setText(workspace.chair, baseBind.chair)
+        setText(workspace.comment, baseBind.otherText)
     }
 
-    private fun setText(string: String, view: EditText) {
+    private fun setText(string: String?, view: EditText) {
         try {
             if (!TextUtils.isEmpty(string)) {
                 view.setText(string)

@@ -6,13 +6,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.lifecycle.ViewModelProvider
 import ceui.lisa.R
-import ceui.lisa.activities.Shaft
 import ceui.lisa.databinding.FragmentHolderBinding
-import ceui.pixiv.session.SessionManager
 import ceui.lisa.utils.MyOnTabSelectedListener
 import ceui.lisa.utils.Params
 import ceui.lisa.viewmodel.UserViewModel
 import ceui.loxia.observeEvent
+import ceui.pixiv.session.SessionManager
 
 class FragmentHolder : BaseFragment<FragmentHolderBinding>() {
 
@@ -47,7 +46,7 @@ class FragmentHolder : BaseFragment<FragmentHolderBinding>() {
                         FragmentUserRight()
                 )
             }
-            data.profile.total_manga > 0 -> {
+            data.profile!!.total_manga > 0 -> {
                 titles = arrayOf(getString(R.string.type_illust), getString(R.string.type_manga), getString(R.string.userTab_other))
                 items = arrayOf<Fragment>(
                         FragmentUserIllust.newInstance(data.userId, false),

@@ -157,7 +157,7 @@ object DownloadItems {
         if (illust.page_count <= 1) {
             illust.meta_single_page?.original_image_url.orEmpty()
         } else {
-            illust.meta_pages.getOrNull(index)?.image_urls?.original.orEmpty()
+            illust.meta_pages?.getOrNull(index)?.image_urls?.original.orEmpty()
         }
 
     /**

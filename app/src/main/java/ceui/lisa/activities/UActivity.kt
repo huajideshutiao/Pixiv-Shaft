@@ -97,12 +97,12 @@ class UActivity : BaseActivity<ActivityNewUserBinding>(), Display<UserDetailResp
         mUserViewModel.isUserBlocked.value = block != null
         ObjectPool.get<UserBean>(userId.toLong()).observe(this) { user ->
             updateUser(user)
-            Common.showLog("updateUser invoke ${user.isIs_followed}")
+            Common.showLog("updateUser invoke ${user.is_followed}")
         }
     }
 
     private fun updateUser(user: UserBean) {
-        if (user.isIs_followed) {
+        if (user.is_followed) {
             baseBind.follow.isVisible = false
             baseBind.unfollow.isVisible = true
             baseBind.unfollow.setOnClick {
@@ -131,7 +131,7 @@ class UActivity : BaseActivity<ActivityNewUserBinding>(), Display<UserDetailResp
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : NullCtrl<UserDetailResponse>() {
                 override fun success(userResponse: UserDetailResponse) {
-                    ObjectPool.updateUser(userResponse.user)
+                    ObjectPool.updateUser(userResponse.user!!)
                     mUserViewModel.user.value = userResponse
                     runCatching {
                         val loxiaUser = Shaft.sGson.fromJson(Shaft.sGson.toJson(userResponse.user), ceui.loxia.User::class.java)
@@ -139,7 +139,7 @@ class UActivity : BaseActivity<ActivityNewUserBinding>(), Display<UserDetailResp
                     }
                     Shaft.appViewModel.updateFollowUserStatus(
                         userId,
-                        if (userResponse.user.isIs_followed)
+                        if (userResponse.user!!.is_followed)
                             AppLevelViewModel.FollowUserStatus.FOLLOWED
                         else
                             AppLevelViewModel.FollowUserStatus.NOT_FOLLOW
@@ -157,11 +157,11 @@ class UActivity : BaseActivity<ActivityNewUserBinding>(), Display<UserDetailResp
                 override fun success(userFollowDetail: UserFollowDetail) {
                     //mUserViewModel.getUserFollowDetail().setValue(userFollowDetail);
                     var followStatus = AppLevelViewModel.FollowUserStatus.NOT_FOLLOW
-                    if (userFollowDetail.isPublicFollow) {
+                    if (userFollowDetail.isPublicFollow()) {
                         followStatus = AppLevelViewModel.FollowUserStatus.FOLLOWED_PUBLIC
-                    } else if (userFollowDetail.isPrivateFollow) {
+                    } else if (userFollowDetail.isPrivateFollow()) {
                         followStatus = AppLevelViewModel.FollowUserStatus.FOLLOWED_PRIVATE
-                    } else if (userFollowDetail.isFollow) {
+                    } else if (userFollowDetail.isFollow()) {
                         followStatus = AppLevelViewModel.FollowUserStatus.FOLLOWED
                     }
                     Shaft.appViewModel.updateFollowUserStatus(userId, followStatus)
@@ -187,19 +187,19 @@ class UActivity : BaseActivity<ActivityNewUserBinding>(), Display<UserDetailResp
         baseBind.moreAction.visibility = View.VISIBLE
         baseBind.moreAction.setOnClickListener { _: View? ->
             val isMuted = java.lang.Boolean.TRUE == mUserViewModel.isUserMuted.value
-            val totalIllusts = data.profile.total_illusts
-            val totalManga = data.profile.total_manga
+            val totalIllusts = data.profile!!.total_illusts
+            val totalManga = data.profile!!.total_manga
 
             val labels = mutableListOf<String>()
             val actions = mutableListOf<() -> Unit>()
 
             if (totalIllusts > 0) {
                 labels.add("跳转到插画…")
-                actions.add { jumpTo(data.user.id, UserIllustJumpHelper.Kind.ILLUST, "插画作品") }
+                actions.add { jumpTo(data.user!!.id, UserIllustJumpHelper.Kind.ILLUST, "插画作品") }
             }
             if (totalManga > 0) {
                 labels.add("跳转到漫画…")
-                actions.add { jumpTo(data.user.id, UserIllustJumpHelper.Kind.MANGA, "漫画作品") }
+                actions.add { jumpTo(data.user!!.id, UserIllustJumpHelper.Kind.MANGA, "漫画作品") }
             }
             if (!isSelf) {
                 labels.add(
@@ -208,10 +208,10 @@ class UActivity : BaseActivity<ActivityNewUserBinding>(), Display<UserDetailResp
                 )
                 actions.add {
                     if (isMuted) {
-                        PixivOperate.unMuteUser(data.user)
+                        PixivOperate.unMuteUser(data.user!!)
                         mUserViewModel.isUserMuted.setValue(false)
                     } else {
-                        PixivOperate.muteUser(data.user)
+                        PixivOperate.muteUser(data.user!!)
                         mUserViewModel.isUserMuted.setValue(true)
                     }
                     mUserViewModel.refreshEvent.setValue(Event(100, 0L))
@@ -231,37 +231,37 @@ class UActivity : BaseActivity<ActivityNewUserBinding>(), Display<UserDetailResp
         val animation: Animation = AlphaAnimation(0.0f, 1.0f)
         animation.duration = 800L
         baseBind.centerHeader.startAnimation(animation)
-        if (data.user.isIs_premium) {
+        if (data.user!!.is_premium) {
             baseBind.vipImage.visibility = View.VISIBLE
         } else {
             baseBind.vipImage.visibility = View.GONE
         }
-        val bannerUrl = data.profile.background_image_url
+        val bannerUrl = data.profile!!.background_image_url
         if (!bannerUrl.isNullOrEmpty()) {
             Glide.with(mContext).load(GlideUtil.getUrl(bannerUrl)).into(baseBind.imageview)
             baseBind.bannerOverlay.visibility = View.VISIBLE
             baseBind.imageview.setOnClickListener {
-                openImageDetail(bannerUrl, "user_${data.user.id}_profile_banner")
+                openImageDetail(bannerUrl, "user_${data.user!!.id}_profile_banner")
             }
         }
-        Glide.with(mContext).load(GlideUtil.getHead(data.user)).into(baseBind.userHead)
-        val avatarUrl = data.user.profile_image_urls?.getMaxImage()
+        Glide.with(mContext).load(GlideUtil.getHead(data.user!!)).into(baseBind.userHead)
+        val avatarUrl = data.user!!.profile_image_urls?.maxImage
         if (!avatarUrl.isNullOrEmpty()) {
             baseBind.userHead.setOnClickListener {
-                openImageDetail(avatarUrl, "user_${data.user.id}_avatar")
+                openImageDetail(avatarUrl, "user_${data.user!!.id}_avatar")
             }
         }
-        baseBind.userName.text = data.user.name
-        baseBind.userName.setOnClickListener { Common.copy(mContext, data.user.id.toString()) }
+        baseBind.userName.text = data.user!!.name
+        baseBind.userName.setOnClickListener { Common.copy(mContext, data.user!!.id.toString()) }
         baseBind.userName.setOnLongClickListener {
-            Common.copy(mContext, data.user.name)
+            Common.copy(mContext, data.user!!.name)
             true
         }
-        baseBind.followCount.text = data.profile.total_follow_users.toString()
-        baseBind.pFriend.text = data.profile.total_mypixiv_users.toString()
+        baseBind.followCount.text = data.profile!!.total_follow_users.toString()
+        baseBind.pFriend.text = data.profile!!.total_mypixiv_users.toString()
         val pFriend = View.OnClickListener {
             val intent = Intent(mContext, ContainerActivity::class.java)
-            intent.putExtra(Params.USER_ID, data.user.id)
+            intent.putExtra(Params.USER_ID, data.user!!.id)
             intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "好P友")
             startActivity(intent)
         }
@@ -269,7 +269,7 @@ class UActivity : BaseActivity<ActivityNewUserBinding>(), Display<UserDetailResp
         baseBind.pFriendS.setOnClickListener(pFriend)
         val follow = View.OnClickListener {
             val intent = Intent(mContext, ContainerActivity::class.java)
-            intent.putExtra(Params.USER_ID, data.user.id)
+            intent.putExtra(Params.USER_ID, data.user!!.id)
             intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "正在关注")
             startActivity(intent)
         }

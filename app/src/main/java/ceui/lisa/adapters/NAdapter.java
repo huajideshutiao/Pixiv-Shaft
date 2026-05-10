@@ -3,14 +3,10 @@ package ceui.lisa.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.zhy.view.flowlayout.FlowLayout;
-import com.zhy.view.flowlayout.TagAdapter;
-import com.zhy.view.flowlayout.TagFlowLayout;
 
 import java.util.Collections;
 import java.util.List;
@@ -28,6 +24,7 @@ import ceui.lisa.models.TagsBean;
 import ceui.lisa.utils.GlideUtil;
 import ceui.lisa.utils.Params;
 import ceui.lisa.utils.PixivOperate;
+import ceui.pixiv.utils.FlexboxUtils;
 
 public class NAdapter extends BaseAdapter<NovelBean, RecyNovelBinding> {
 
@@ -84,25 +81,20 @@ public class NAdapter extends BaseAdapter<NovelBean, RecyNovelBinding> {
         List<TagsBean> tagsToShow = Shaft.sSettings.isShowNovelCardTags()
                 ? target.getTags()
                 : Collections.<TagsBean>emptyList();
-        bindView.baseBind.novelTag.setAdapter(new TagAdapter<TagsBean>(tagsToShow) {
-            @Override
-            public View getView(FlowLayout parent, int position, TagsBean s) {
-                TextView tv = (TextView) LayoutInflater.from(mContext).inflate(R.layout.recy_single_line_text_new,
-                        parent, false);
+        FlexboxUtils.populate(
+            bindView.baseBind.novelTag,
+            tagsToShow,
+            R.layout.recy_single_line_text_new,
+            (view, s, index) -> {
+                TextView tv = (TextView) view;
                 String tag = s.getName();
                 tv.setText(tag);
-                return tv;
-            }
-        });
-        bindView.baseBind.novelTag.setOnTagClickListener(new TagFlowLayout.OnTagClickListener() {
-            @Override
-            public boolean onTagClick(View view, int position, FlowLayout parent) {
+                view.setOnClickListener(v -> {
                 Intent intent = new Intent(mContext, SearchActivity.class);
-                intent.putExtra(Params.KEY_WORD, target.getTags().get(position).getName());
+                    intent.putExtra(Params.KEY_WORD, target.getTags().get(index).getName());
                 intent.putExtra(Params.INDEX, 1);
                 mContext.startActivity(intent);
-                return true;
-            }
+                });
         });
         bindView.baseBind.author.setText(target.getUser().getName());
         var date = target.getCreate_date().substring(0, 10);

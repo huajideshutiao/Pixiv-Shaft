@@ -100,7 +100,8 @@ class TagsFlowView(context: Context, attrs: AttributeSet?, defStyle: Int)
     private var nonCellCount = -1
 
     fun setJavaTags(tags: List<TagsBean>?) {
-        setTags(tags?.sortedBy { (it.translated_name ?: it.name).length }?.map { Tag(name = it.name, translated_name = it.translated_name) })
+        setTags(tags?.sortedBy { (it.translated_name?.length ?: it.name?.length ?: 0) }
+            ?.map { Tag(name = it.name, translated_name = it.translated_name) })
     }
 
     fun setTags(tags: List<Tag>?) {

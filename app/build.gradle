@@ -1,7 +1,6 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
-    id 'kotlin-kapt'
     id 'kotlin-parcelize'
     id 'androidx.navigation.safeargs.kotlin'
     id 'com.google.devtools.ksp'
@@ -141,8 +140,7 @@ dependencies {
     api 'io.reactivex.rxjava2:rxandroid:2.1.1'
 
     implementation project(":annotations")
-    implementation project(":processor")
-    kapt project(":processor")
+    ksp project(":processor")
 
     // Image Loading
     implementation "com.github.bumptech.glide:glide:${rootProject.ext.glide_version}"
@@ -192,8 +190,6 @@ dependencies {
     implementation "com.airbnb.android:lottie:6.7.1"
 
     implementation project(':models')
-    implementation project(':progressmanager')
-    implementation project(':flowlayout-lib')
 
     implementation 'androidx.webkit:webkit:1.12.1'
     implementation 'androidx.browser:browser:1.8.0'

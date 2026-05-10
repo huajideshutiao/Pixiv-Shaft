@@ -92,7 +92,7 @@
                 android:textSize="13sp">
             </TextView>
 
-            <com.zhy.view.flowlayout.TagFlowLayout
+            <com.google.android.flexbox.FlexboxLayout
                 android:layout_width="match_parent"
                 android:id="@+id/novel_tag"
                 android:layout_below="@id/date"
@@ -100,9 +100,9 @@
                 android:layout_marginStart="@dimen/eight_dp"
                 android:layout_marginEnd="@dimen/eight_dp"
                 android:layout_marginTop="@dimen/four_dp"
-                android:layout_height="wrap_content">
-
-            </com.zhy.view.flowlayout.TagFlowLayout>
+                android:layout_height="wrap_content"
+                app:flexDirection="row"
+                app:flexWrap="wrap" />
 
             <TextView
                 android:id="@+id/how_many_word"

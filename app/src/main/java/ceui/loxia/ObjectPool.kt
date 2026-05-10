@@ -63,7 +63,7 @@ object ObjectPool {
 
     fun followUser(userId: Long) {
         get<UserBean>(userId).value?.let { exist ->
-            exist.isIs_followed = true
+            exist.is_followed = true
             update(exist)
         }
         get<User>(userId).value?.let { exist ->
@@ -73,7 +73,7 @@ object ObjectPool {
 
     fun unFollowUser(userId: Long) {
         get<UserBean>(userId).value?.let { exist ->
-            exist.isIs_followed = false
+            exist.is_followed = false
             update(exist)
         }
         get<User>(userId).value?.let { exist ->

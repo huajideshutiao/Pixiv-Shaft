@@ -24,9 +24,9 @@ class MangaSeriesAdapter(
     ) {
         bindView.baseBind.seriesTitle.text = "#%s".format(target.title)
         bindView.baseBind.seriesSize.text = "共%d话".format(target.series_work_count)
-        if (!TextUtils.isEmpty(target.cover_image_urls.medium)) {
+        if (!TextUtils.isEmpty(target.cover_image_urls?.medium)) {
             Glide.with(mContext)
-                .load(GlideUtil.getUrl(target.cover_image_urls.medium))
+                .load(GlideUtil.getUrl(target.cover_image_urls?.medium))
                 .into(bindView.baseBind.imageView)
         }
         bindView.itemView.setOnClickListener {

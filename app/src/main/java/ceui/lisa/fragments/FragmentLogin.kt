@@ -322,7 +322,7 @@ class FragmentLogin : BaseFragment<ActivityLoginBinding>() {
         Dev.refreshUser = true
         UserEntity().apply {
             loginTime = System.currentTimeMillis()
-            userID = exportUser.user.id
+            userID = exportUser.user!!.id
             userGson = Shaft.sGson.toJson(Local.getUser())
             AppDatabase.getAppDatabase(mContext).downloadDao().insertUser(this)
         }

@@ -1,11 +1,8 @@
 package ceui.pixiv.ui.task
 
-
-import android.util.Log
-
 import android.net.Uri
+import android.util.Log
 import ceui.lisa.activities.Shaft
-import ceui.lisa.utils.Common
 import ceui.lisa.utils.GlideUrlChild
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -16,9 +13,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import me.jessyan.progressmanager.ProgressListener
-import me.jessyan.progressmanager.ProgressManager
-import me.jessyan.progressmanager.body.ProgressInfo
 import java.io.File
 
 open class LoadTask(
@@ -40,7 +34,6 @@ open class LoadTask(
 
     override suspend fun execute() {
         val shortUrl = content.url.substringAfterLast('/')
-        // 防止重复执行任务
         if (_status.value is TaskStatus.Executing || _status.value is TaskStatus.Finished) {
             if (_result.value != null) {
                 val cachedFile = _result.value
@@ -65,7 +58,6 @@ open class LoadTask(
         try {
             onStart()
             _status.value = TaskStatus.Executing(0)
-            observeProgress()
 
             val startMs = System.currentTimeMillis()
             val file = downloadFile()
@@ -79,10 +71,6 @@ open class LoadTask(
                 _status.value = TaskStatus.Finished
                 onEnd(file)
             } else {
-                Log.e(
-                    TAG,
-                    "[LoadTask] FAIL downloadFile returned null. taskId=$taskId, elapsed=${elapsedMs}ms, url=$shortUrl"
-                )
                 throw IllegalStateException("Unexpected null file")
             }
         } catch (ex: Exception) {
@@ -95,28 +83,6 @@ open class LoadTask(
         }
     }
 
-    private fun observeProgress() {
-        val shortUrl = content.url.substringAfterLast('/')
-        ProgressManager.getInstance().addResponseListener(content.url, object : ProgressListener {
-            override fun onProgress(progressInfo: ProgressInfo) {
-                val percent = progressInfo.percent
-                if (progressInfo.isFinish || percent == 100) {
-                    Log.d(TAG, "[LoadTask] PROGRESS 100%% finished. taskId=$taskId, url=$shortUrl")
-                    _status.value = TaskStatus.Finished
-                } else {
-                    if (_status.value != TaskStatus.Finished) {
-                        _status.value = TaskStatus.Executing(percent)
-                    }
-                }
-            }
-
-            override fun onError(id: Long, ex: Exception) {
-                Log.e(TAG, "[LoadTask] PROGRESS error. taskId=$taskId, url=$shortUrl", ex)
-                onError(ex)
-            }
-        })
-    }
-
     private suspend fun downloadFile(): File? {
         val shortUrl = content.url.substringAfterLast('/')
         Log.d(TAG, "[LoadTask] downloadFile enter IO. taskId=$taskId, url=$shortUrl")
@@ -124,10 +90,6 @@ open class LoadTask(
             val loadSource = content.url.takeIf { it.startsWith("http") }
                 ?.let { GlideUrlChild(it) }
                 ?: Uri.parse(content.url)
-            Log.d(
-                TAG,
-                "[LoadTask] Glide submit. taskId=$taskId, sourceType=${loadSource.javaClass.simpleName}, thread=${Thread.currentThread().name}"
-            )
             Glide.with(Shaft.getContext())
                 .asFile()
                 .load(loadSource)
@@ -151,7 +113,6 @@ open class LoadTask(
                     "[LoadTask] Glide onLoadFailed. taskId=$taskId, model=$model, url=$shortUrl",
                     ex
                 )
-                onError(ex)
                 return false
             }
 
@@ -170,7 +131,6 @@ open class LoadTask(
             }
         }
     }
-
 
     companion object {
         private const val TAG = "LoadTask"

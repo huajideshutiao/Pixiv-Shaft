@@ -13,7 +13,6 @@ import android.text.TextUtils
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -45,6 +44,7 @@ import ceui.lisa.viewmodel.AppLevelViewModel
 import ceui.loxia.ObjectPool
 import ceui.pixiv.utils.FastBlurTransformation
 import ceui.pixiv.utils.applyBlur
+import ceui.pixiv.utils.populate
 import com.blankj.utilcode.util.ColorUtils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
@@ -55,8 +55,6 @@ import com.qmuiteam.qmui.skin.QMUISkinManager
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog
 import com.scwang.smart.refresh.header.FalsifyFooter
 import com.scwang.smart.refresh.header.FalsifyHeader
-import com.zhy.view.flowlayout.FlowLayout
-import com.zhy.view.flowlayout.TagAdapter
 import java.util.Locale
 
 class FragmentSingleIllust : BaseFragment<FragmentSingleIllustBinding>() {
@@ -122,10 +120,10 @@ class FragmentSingleIllust : BaseFragment<FragmentSingleIllustBinding>() {
                 if (illust?.id == id) {
                     val isLiked = bundle.getBoolean(Params.IS_LIKED)
                     if (isLiked) {
-                        illust?.isIs_bookmarked = true
+                        illust?.is_bookmarked = true
                         baseBind.postLike.setImageResource(R.drawable.ic_favorite_red_24dp)
                     } else {
-                        illust?.isIs_bookmarked = false
+                        illust?.is_bookmarked = false
                         baseBind.postLike.setImageResource(R.drawable.ic_favorite_grey_24dp)
                     }
                 }
@@ -170,12 +168,13 @@ class FragmentSingleIllust : BaseFragment<FragmentSingleIllustBinding>() {
         baseBind.refreshLayout.setRefreshHeader(FalsifyHeader(mContext))
         baseBind.refreshLayout.setRefreshFooter(FalsifyFooter(mContext))
 
-        if (illust.series != null && !TextUtils.isEmpty(illust.series.title)) {
+        val series = illust.series
+        if (series != null && !TextUtils.isEmpty(series.title)) {
             val clickableSpan = object : ClickableSpan() {
                 override fun onClick(widget: View) {
                     val intent = Intent(mContext, ContainerActivity::class.java)
                     intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "漫画系列详情")
-                    intent.putExtra(Params.MANGA_SERIES_ID, illust.series.id)
+                    intent.putExtra(Params.MANGA_SERIES_ID, series.id)
                     startActivity(intent)
                 }
 
@@ -293,12 +292,12 @@ class FragmentSingleIllust : BaseFragment<FragmentSingleIllustBinding>() {
             } else {
                 IllustDownload.downloadIllustAllPages(illust, mContext as BaseActivity<*>)
             }
-            if (Shaft.sSettings.isAutoPostLikeWhenDownload && !illust.isIs_bookmarked) {
+            if (Shaft.sSettings.isAutoPostLikeWhenDownload && !illust.is_bookmarked) {
                 PixivOperate.postLikeDefaultStarType(illust)
             }
         }
         baseBind.userName.setOnLongClickListener {
-            Common.copy(mContext, illust.user.name.toString())
+            Common.copy(mContext, illust.user!!.name.toString())
             true
         }
         baseBind.related.setOnClickListener {
@@ -321,13 +320,13 @@ class FragmentSingleIllust : BaseFragment<FragmentSingleIllustBinding>() {
             intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "喜欢这个作品的用户")
             startActivity(intent)
         }
-        if (illust.isIs_bookmarked) {
+        if (illust.is_bookmarked) {
             baseBind.postLike.setImageResource(R.drawable.ic_favorite_red_24dp)
         } else {
             baseBind.postLike.setImageResource(R.drawable.ic_favorite_black_24dp)
         }
         baseBind.postLike.setOnClickListener {
-            if (illust.isIs_bookmarked) {
+            if (illust.is_bookmarked) {
                 baseBind.postLike.setImageResource(R.drawable.ic_favorite_black_24dp)
             } else {
                 baseBind.postLike.setImageResource(R.drawable.ic_favorite_red_24dp)
@@ -346,107 +345,102 @@ class FragmentSingleIllust : BaseFragment<FragmentSingleIllustBinding>() {
         }
         baseBind.userHead.setOnClickListener {
             val intent = Intent(mContext, UActivity::class.java)
-            intent.putExtra(Params.USER_ID, illust.user.id)
+            intent.putExtra(Params.USER_ID, illust.user!!.id)
             startActivity(intent)
         }
         baseBind.userName.setOnClickListener {
             val intent = Intent(mContext, UActivity::class.java)
-            intent.putExtra(Params.USER_ID, illust.user.id)
+            intent.putExtra(Params.USER_ID, illust.user!!.id)
             startActivity(intent)
         }
 
         baseBind.follow.setOnClickListener {
             val integerValue =
-                Shaft.appViewModel.getFollowUserLiveData(illust.user.id).value
+                Shaft.appViewModel.getFollowUserLiveData(illust.user!!.id).value
             if (AppLevelViewModel.FollowUserStatus.isFollowed(integerValue ?: 0)) {
-                PixivOperate.postUnFollowUser(illust.user.id)
-                illust.user.isIs_followed = false
+                PixivOperate.postUnFollowUser(illust.user!!.id)
+                illust.user!!.is_followed = false
             } else {
-                PixivOperate.postFollowUser(illust.user.id, Params.TYPE_PUBLIC)
-                illust.user.isIs_followed = true
+                PixivOperate.postFollowUser(illust.user!!.id, Params.TYPE_PUBLIC)
+                illust.user!!.is_followed = true
             }
         }
 
         baseBind.follow.setOnLongClickListener {
-            val integerValue = Shaft.appViewModel.getFollowUserLiveData(illust.user.id).value
+            val integerValue = Shaft.appViewModel.getFollowUserLiveData(illust.user!!.id).value
             if (!AppLevelViewModel.FollowUserStatus.isFollowed(integerValue ?: 0)) {
-                illust.user.isIs_followed = true
+                illust.user!!.is_followed = true
             }
-            PixivOperate.postFollowUser(illust.user.id, Params.TYPE_PRIVATE)
+            PixivOperate.postFollowUser(illust.user!!.id, Params.TYPE_PRIVATE)
             true
         }
 
         Glide.with(mContext)
-            .load(GlideUtil.getUrl(illust.user.profile_image_urls.medium))
+            .load(GlideUtil.getUrl(illust.user!!.profile_image_urls?.medium))
             .into(baseBind.userHead)
 
-        baseBind.userName.text = illust.user.name
+        baseBind.userName.text = illust.user!!.name
 
         val sizeString =
             SpannableString(getString(R.string.string_193, illust.width, illust.height))
         val currentPrimaryColorId = ColorUtils.getColor(R.color.page_default_background)
         sizeString.setSpan(
             ForegroundColorSpan(currentPrimaryColorId),
-            sizeString.length - illust.size.length,
+            sizeString.length - illust.getSize().length,
             sizeString.length,
             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
         )
         baseBind.illustPx.text = sizeString
 
-        baseBind.illustTag.adapter = object : TagAdapter<TagsBean>(illust.tags) {
-            override fun getView(parent: FlowLayout, position: Int, s: TagsBean): View {
-                val tv = LayoutInflater.from(mContext).inflate(
-                    R.layout.recy_single_line_text_new,
-                    parent, false
-                ) as TextView
-                var tag = s.name
-                if (!TextUtils.isEmpty(s.translated_name)) {
-                    tag = tag + "/" + s.translated_name
-                }
-                tv.text = tag
-                return tv
+        baseBind.illustTag.populate<TagsBean>(
+            illust.tags ?: emptyList(),
+            R.layout.recy_single_line_text_new
+        ) { view, s ->
+            val tv = view as TextView
+            var tag = s.name
+            if (!TextUtils.isEmpty(s.translated_name)) {
+                tag = "$tag/${s.translated_name}"
             }
-        }
-        baseBind.illustTag.setOnTagClickListener { _, position, _ ->
-            val intent = Intent(mContext, SearchActivity::class.java)
-            intent.putExtra(Params.KEY_WORD, illust.tags[position].name)
-            intent.putExtra(Params.INDEX, 0)
-            startActivity(intent)
-            true
-        }
-        baseBind.illustTag.setOnTagLongClickListener { _, position, _ ->
-            val tagName = illust.tags[position].name
-            val searchEntity =
-                PixivOperate.getSearchHistory(tagName, SEARCH_TYPE_DB_KEYWORD)
-            val isPinned = searchEntity != null && searchEntity.isPinned
-            QMUIDialog.MessageDialogBuilder(mContext)
-                .setTitle(tagName)
-                .setSkinManager(QMUISkinManager.defaultInstance(mContext))
-                .addAction(
-                    if (isPinned) getString(R.string.string_443) else getString(R.string.string_442)
-                ) { dialog, _ ->
-                    PixivOperate.insertPinnedSearchHistory(
-                        tagName,
-                        SEARCH_TYPE_DB_KEYWORD,
-                        !isPinned
-                    )
-                    Common.showToast(R.string.operate_success)
-                    dialog.dismiss()
-                }
-                .addAction(
-                    getString(R.string.string_120)
-                ) { dialog, _ ->
-                    Common.copy(mContext, tagName)
-                    dialog.dismiss()
-                }
-                .create()
-                .show()
-            true
+            tv.text = tag
+            tv.setOnClickListener {
+                val intent = Intent(mContext, SearchActivity::class.java)
+                intent.putExtra(Params.KEY_WORD, s.name)
+                intent.putExtra(Params.INDEX, 0)
+                startActivity(intent)
+            }
+            tv.setOnLongClickListener {
+                val tagName = s.name
+                val searchEntity = PixivOperate.getSearchHistory(tagName, SEARCH_TYPE_DB_KEYWORD)
+                val isPinned = searchEntity != null && searchEntity.isPinned
+                QMUIDialog.MessageDialogBuilder(mContext)
+                    .setTitle(tagName)
+                    .setSkinManager(QMUISkinManager.defaultInstance(mContext))
+                    .addAction(
+                        if (isPinned) getString(R.string.string_443) else getString(R.string.string_442)
+                    ) { dialog, _ ->
+                        PixivOperate.insertPinnedSearchHistory(
+                            tagName,
+                            SEARCH_TYPE_DB_KEYWORD,
+                            !isPinned
+                        )
+                        Common.showToast(R.string.operate_success)
+                        dialog.dismiss()
+                    }
+                    .addAction(
+                        getString(R.string.string_120)
+                    ) { dialog, _ ->
+                        Common.copy(mContext, tagName)
+                        dialog.dismiss()
+                    }
+                    .create()
+                    .show()
+                true
+            }
         }
 
         if (!TextUtils.isEmpty(illust.caption)) {
             baseBind.description.visibility = View.VISIBLE
-            baseBind.description.setHtml(illust.caption)
+            baseBind.description.setHtml(illust.caption ?: "")
         } else {
             baseBind.description.visibility = View.GONE
         }
@@ -459,10 +453,11 @@ class FragmentSingleIllust : BaseFragment<FragmentSingleIllustBinding>() {
         baseBind.recyclerView.isNestedScrollingEnabled = true
         baseBind.recyclerView.addItemDecoration(LinearItemDecorationNoLRTB(DensityUtil.dp2px(1.0f)))
 
-        val userString = SpannableString(getString(R.string.string_195, illust.user.id))
+        val user = illust.user!!
+        val userString = SpannableString(getString(R.string.string_195, user.id))
         userString.setSpan(
             ForegroundColorSpan(currentPrimaryColorId),
-            userString.length - illust.user.id.toString().length,
+            userString.length - user.id.toString().length,
             userString.length,
             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
         )
@@ -470,7 +465,7 @@ class FragmentSingleIllust : BaseFragment<FragmentSingleIllustBinding>() {
         baseBind.userId.setOnClickListener {
             Common.copy(
                 mContext,
-                illust.user.id.toString()
+                user.id.toString()
             )
         }
         val illustString = SpannableString(getString(R.string.string_194, illust.id))
@@ -523,7 +518,7 @@ class FragmentSingleIllust : BaseFragment<FragmentSingleIllustBinding>() {
             }
         }
 
-        Shaft.appViewModel.getFollowUserLiveData(illust.user.id).observe(
+        Shaft.appViewModel.getFollowUserLiveData(illust.user!!.id).observe(
             this
         ) { integer -> updateFollowUserUI(integer ?: 0) }
     }

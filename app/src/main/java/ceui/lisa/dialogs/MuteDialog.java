@@ -7,9 +7,6 @@ import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 
-import com.zhy.view.flowlayout.FlowLayout;
-import com.zhy.view.flowlayout.TagAdapter;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -24,6 +21,7 @@ import ceui.lisa.models.TagsBean;
 import ceui.lisa.utils.Common;
 import ceui.lisa.utils.Params;
 import ceui.lisa.utils.PixivOperate;
+import ceui.pixiv.utils.FlexboxExtKt;
 
 public class MuteDialog extends BaseDialog<DialogMuteTagBinding> {
 
@@ -46,93 +44,85 @@ public class MuteDialog extends BaseDialog<DialogMuteTagBinding> {
 
     @Override
     void initView(View v) {
-        // 计算 tag 状态
         List<TagsBean> muted = IllustNovelFilter.getMutedTags();
         List<TagsBean> illustTags = mIllust.getTags();
         Set<Integer> selectedIndex = new HashSet<>();
         for (int i = 0; i < illustTags.size(); i++) {
             TagsBean tagsBean = illustTags.get(i);
-            muteNotEffect.add(i,false);
+            muteNotEffect.add(i, false);
             for (TagsBean mutedBean : muted) {
                 if (tagsBean.getName().equals(mutedBean.getName())) {
-                    if(mutedBean.isEffective()){
+                    if (mutedBean.isEffective()) {
                         selectedIndex.add(i);
-                    }else{
-                        muteNotEffect.set(i,true);
+                    } else {
+                        muteNotEffect.set(i, true);
                     }
                     break;
                 }
             }
         }
 
-        TagAdapter<TagsBean> adapter = new TagAdapter<TagsBean>(mIllust.getTags()) {
-            @Override
-            public View getView(FlowLayout parent, int position, TagsBean o) {
-                View view = View.inflate(mContext, R.layout.recy_single_tag_text, null);
+        FlexboxExtKt.populate(
+            baseBind.tagLayout, mIllust.getTags(), R.layout.recy_single_tag_text, (view, o) -> {
                 TextView tag = view.findViewById(R.id.tag_title);
                 tag.setText(o.getName());
-                if (muteNotEffect.get(position)) {
-                    tag.setBackgroundResource(R.drawable.tag_stroke_checked_not_enable_bg);
-                }
-                return view;
-            }
+                int position = mIllust.getTags().indexOf(o);
 
-            @Override
-            public void onSelected(int position, View view) {
-                super.onSelected(position, view);
-                ((TextView) view).setTextColor(Common.resolveThemeAttribute(mContext, androidx.appcompat.R.attr.colorPrimary));
-                view.setBackgroundResource(R.drawable.tag_stroke_checked_bg);
-                selected.add(mIllust.getTags().get(position));
-            }
-
-            @Override
-            public void unSelected(int position, View view) {
-                super.unSelected(position, view);
                 if (muteNotEffect.get(position)) {
                     view.setBackgroundResource(R.drawable.tag_stroke_checked_not_enable_bg);
-                }else{
-                    view.setBackgroundResource(R.drawable.tag_stroke_bg);
-                }
-                ((TextView) view).setTextColor(ContextCompat.getColor(
-                    mContext,
-                    R.color.tag_text_unselect
-                ));
-                selected.remove(mIllust.getTags().get(position));
-            }
-        };
-        baseBind.tagLayout.setAdapter(adapter);
-        baseBind.cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-            }
-        });
-        baseBind.sure.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (selected.size() != 0) {
-                    PixivOperate.muteTags(selected);
-                    Common.showToast(mContext.getResources().getString(R.string.operate_success));
-                    dismiss();
+                } else if (selectedIndex.contains(position)) {
+                    tag.setTextColor(Common.resolveThemeAttribute(
+                        mContext,
+                        androidx.appcompat.R.attr.colorPrimary
+                    ));
+                view.setBackgroundResource(R.drawable.tag_stroke_checked_bg);
+                    if (!selected.contains(o)) {
+                        selected.add(o);
+                    }
                 } else {
-                    Common.showToast(getString(R.string.string_165));
-                }
+                    view.setBackgroundResource(R.drawable.tag_stroke_bg);
             }
-        });
-        baseBind.other.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mContext, ContainerActivity.class);
-                intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "标签屏蔽记录");
-                mContext.startActivity(intent);
-                dismiss();
-            }
-        });
 
-        //默认选中已屏蔽的标签
-        if (selectedIndex.size() != 0) {
-            adapter.setSelectedList(selectedIndex);
-        }
+                view.setOnClickListener(v1 -> {
+                    if (selected.contains(o)) {
+                        selected.remove(o);
+                        if (muteNotEffect.get(position)) {
+                            view.setBackgroundResource(R.drawable.tag_stroke_checked_not_enable_bg);
+                        } else {
+                            view.setBackgroundResource(R.drawable.tag_stroke_bg);
+                        }
+                        tag.setTextColor(ContextCompat.getColor(
+                            mContext,
+                            R.color.tag_text_unselect
+                        ));
+                    } else {
+                        selected.add(o);
+                        tag.setTextColor(Common.resolveThemeAttribute(
+                            mContext,
+                            androidx.appcompat.R.attr.colorPrimary
+                        ));
+                        view.setBackgroundResource(R.drawable.tag_stroke_checked_bg);
+                    }
+                });
+            }
+        );
+
+        baseBind.cancel.setOnClickListener(v1 -> dismiss());
+        baseBind.sure.setOnClickListener(v1 -> {
+            if (selected.size() != 0) {
+                PixivOperate.muteTags(selected);
+                Common.showToast(mContext.getResources().getString(R.string.operate_success));
+                dismiss();
+            } else {
+                Common.showToast(getString(R.string.string_165));
+            }
+        });
+        baseBind.other.setOnClickListener(v1 -> {
+            Intent intent = new Intent(mContext, ContainerActivity.class);
+            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "标签屏蔽记录");
+            mContext.startActivity(intent);
+            dismiss();
+        });
     }
 
     @Override
