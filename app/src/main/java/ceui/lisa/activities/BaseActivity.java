@@ -8,19 +8,20 @@ import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.SystemBarStyle;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.databinding.DataBindingUtil;
-import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.FragmentActivity;
+import androidx.viewbinding.ViewBinding;
 
 import ceui.lisa.R;
 import ceui.lisa.interfaces.FeedBack;
@@ -28,7 +29,7 @@ import ceui.lisa.utils.Common;
 import ceui.lisa.utils.Local;
 
 
-public abstract class BaseActivity<Layout extends ViewDataBinding> extends AppCompatActivity {
+public abstract class BaseActivity<Layout extends ViewBinding> extends AppCompatActivity {
 
     protected Context mContext;
     protected FragmentActivity mActivity;
@@ -78,11 +79,9 @@ public abstract class BaseActivity<Layout extends ViewDataBinding> extends AppCo
                 // 让系统处理 insets，避免 fitsSystemWindows 产生多余 padding
                 WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
             }
-            try {
-                baseBind = DataBindingUtil.setContentView(mActivity, mLayoutID);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
+
+            baseBind = onCreateBinding(getLayoutInflater());
+            setContentView(baseBind.getRoot());
 
             applyToolbarInsets();
             initModel();
@@ -92,6 +91,8 @@ public abstract class BaseActivity<Layout extends ViewDataBinding> extends AppCo
             e.printStackTrace();
         }
     }
+
+    protected abstract Layout onCreateBinding(@NonNull LayoutInflater inflater);
 
     public void initModel() {
 

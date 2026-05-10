@@ -3,6 +3,7 @@ package ceui.lisa.activities;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.view.LayoutInflater;
 
 import ceui.lisa.R;
 import ceui.lisa.databinding.ActivityNovelBinding;
@@ -93,5 +94,10 @@ public class NovelActivity extends BaseActivity<ActivityNovelBinding> {
         } else {
             baseBind.operateLl.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    protected ActivityNovelBinding onCreateBinding(LayoutInflater inflater) {
+        return ActivityNovelBinding.inflate(inflater);
     }
 }

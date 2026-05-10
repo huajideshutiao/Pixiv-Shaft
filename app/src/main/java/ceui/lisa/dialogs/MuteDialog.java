@@ -2,7 +2,9 @@ package ceui.lisa.dialogs;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
@@ -134,5 +136,14 @@ public class MuteDialog extends BaseDialog<DialogMuteTagBinding> {
     @SuppressWarnings("deprecation")
     public void initBundle(Bundle bundle) {
         mIllust = ((IllustsBean) bundle.getSerializable(Params.CONTENT));
+    }
+
+    @Override
+    protected DialogMuteTagBinding onCreateBinding(
+        LayoutInflater inflater,
+        ViewGroup container,
+        boolean attachToParent
+    ) {
+        return DialogMuteTagBinding.inflate(inflater, container, false);
     }
 }

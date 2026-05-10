@@ -12,11 +12,11 @@ import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.databinding.DataBindingUtil;
-import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.DialogFragment;
+import androidx.viewbinding.ViewBinding;
 
-public abstract class BaseDialog<Layout extends ViewDataBinding> extends DialogFragment {
+
+public abstract class BaseDialog<Layout extends ViewBinding> extends DialogFragment {
 
     protected Context mContext;
     protected Activity mActivity;
@@ -42,16 +42,18 @@ public abstract class BaseDialog<Layout extends ViewDataBinding> extends DialogF
 
     }
 
+    protected abstract Layout onCreateBinding(
+        @NonNull LayoutInflater inflater,
+        @Nullable ViewGroup container,
+        boolean attachToParent
+    );
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         initLayout();
-        baseBind = DataBindingUtil.inflate(inflater, mLayoutID, container, false);
-        if (baseBind != null) {
-            parentView = baseBind.getRoot();
-        } else {
-            parentView = inflater.inflate(mLayoutID, container, false);
-        }
+        baseBind = onCreateBinding(inflater, container, false);
+        parentView = baseBind.getRoot();
         return parentView;
     }
 

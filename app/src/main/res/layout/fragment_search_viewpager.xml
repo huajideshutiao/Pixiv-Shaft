@@ -1,17 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
-
-        <import type="ceui.pixiv.ui.search.SearchViewModel" />
-
-        <variable
-            name="viewModel"
-            type="SearchViewModel" />
-    </data>
-
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/circle_root_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -61,7 +51,6 @@
                         app:dividerDrawable="@drawable/spacer_8dp"
                         app:flexWrap="wrap"
                         app:showDivider="middle"
-                        app:tags="@={viewModel.tagList}"
                         app:tfv_cell_clickable="true">
 
                         <LinearLayout
@@ -72,8 +61,7 @@
                             android:gravity="center_vertical"
                             android:orientation="horizontal"
                             android:paddingHorizontal="@dimen/tag_padding"
-                            android:showDividers="middle"
-                            app:visibleOrGone="@{viewModel.tagList.size() &lt; 5}">
+                            android:showDividers="middle">
 
                             <ImageView
                                 android:layout_width="wrap_content"
@@ -148,4 +136,3 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
-</layout>

@@ -1,6 +1,7 @@
 package ceui.lisa.activities;
 
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -137,5 +138,10 @@ public class VPActivity extends BaseActivity<ActivityMultiViewPagerTestBinding> 
     @Override
     public boolean hideStatusBar() {
         return true;
+    }
+
+    @Override
+    protected ActivityMultiViewPagerTestBinding onCreateBinding(LayoutInflater inflater) {
+        return ActivityMultiViewPagerTestBinding.inflate(inflater);
     }
 }

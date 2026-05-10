@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
@@ -16,6 +17,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
 
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 import ceui.lisa.R;
 import ceui.lisa.activities.Shaft;
 import ceui.lisa.databinding.FragmentFilterBinding;
@@ -229,5 +232,14 @@ public class FragmentFilter extends BaseFragment<FragmentFilterBinding> {
 
     private void performSearch(){
         searchModel.getNowGo().setValue("search_now");
+    }
+
+    @Override
+    protected FragmentFilterBinding onCreateBinding(
+        @NonNull LayoutInflater inflater,
+        ViewGroup container,
+        boolean attachToParent
+    ) {
+        return FragmentFilterBinding.inflate(inflater, container, false);
     }
 }

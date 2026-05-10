@@ -1,5 +1,7 @@
 package ceui.lisa.fragments
 
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import ceui.lisa.R
 import ceui.lisa.databinding.FragmentUserInfoBinding
 import ceui.lisa.interfaces.Display
@@ -48,5 +50,13 @@ class FragmentUserInfo : BaseFragment<FragmentUserInfoBinding>(), Display<UserDe
     override fun initView() {
         baseBind.refreshLayout.setRefreshHeader(FalsifyHeader(mContext))
         baseBind.refreshLayout.setRefreshFooter(FalsifyFooter(mContext))
+    }
+
+    override fun onCreateBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        attachToParent: Boolean
+    ): FragmentUserInfoBinding {
+        return FragmentUserInfoBinding.inflate(inflater, container, false)
     }
 }

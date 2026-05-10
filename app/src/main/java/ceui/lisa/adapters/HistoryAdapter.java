@@ -7,8 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.databinding.DataBindingUtil;
-
 import com.bumptech.glide.Glide;
 
 import java.text.SimpleDateFormat;
@@ -128,9 +126,8 @@ public class HistoryAdapter extends BaseAdapter<IllustHistoryEntity, RecyViewHis
     @Override
     public ViewHolder<RecyViewHistoryBinding> getNormalItem(ViewGroup parent) {
         return new SpringHolder(
-                DataBindingUtil.inflate(
+            RecyViewHistoryBinding.inflate(
                         LayoutInflater.from(mContext),
-                        mLayoutID,
                         parent,
                         false
                 )

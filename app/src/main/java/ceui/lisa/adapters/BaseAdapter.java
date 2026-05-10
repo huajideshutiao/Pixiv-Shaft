@@ -6,18 +6,18 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.databinding.DataBindingUtil;
-import androidx.databinding.ViewDataBinding;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewbinding.ViewBinding;
 
 import java.util.List;
 
 import ceui.lisa.interfaces.OnItemClickListener;
 import ceui.lisa.interfaces.OnItemLongClickListener;
 import ceui.lisa.models.Starable;
+import ceui.lisa.utils.BindingUtils;
 import ceui.lisa.utils.Common;
 
-public abstract class BaseAdapter<Item, BindView extends ViewDataBinding> extends
+public abstract class BaseAdapter<Item, BindView extends ViewBinding> extends
         RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public static final int ITEM_HEAD = 1023;
@@ -73,7 +73,10 @@ public abstract class BaseAdapter<Item, BindView extends ViewDataBinding> extend
 
     @NonNull
     @Override
-    public ViewHolder<? extends ViewDataBinding> onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder<? extends ViewBinding> onCreateViewHolder(
+        @NonNull ViewGroup parent,
+        int viewType
+    ) {
         if (viewType == ITEM_NORMAL) {
             return getNormalItem(parent);
         } else {
@@ -112,15 +115,15 @@ public abstract class BaseAdapter<Item, BindView extends ViewDataBinding> extend
         return 0;
     }
 
-    public ViewHolder<? extends ViewDataBinding> getHeader(ViewGroup parent) {
+    public ViewHolder<? extends ViewBinding> getHeader(ViewGroup parent) {
         return null;
     }
 
     public ViewHolder<BindView> getNormalItem(ViewGroup parent) {
         return new ViewHolder<>(
-                DataBindingUtil.inflate(
+            BindingUtils.createBinding(
+                getClass(),
                         LayoutInflater.from(mContext),
-                        mLayoutID,
                         parent,
                         false
                 )

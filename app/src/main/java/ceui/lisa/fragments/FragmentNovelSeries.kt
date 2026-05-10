@@ -2,7 +2,9 @@ package ceui.lisa.fragments
 
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
-import androidx.databinding.ViewDataBinding
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.viewbinding.ViewBinding
 import ceui.lisa.R
 import ceui.lisa.activities.BaseActivity
 import ceui.lisa.adapters.BaseAdapter
@@ -29,7 +31,15 @@ import ceui.pixiv.ui.task.CrossSeriesDownloadTask
 class FragmentNovelSeries :
     NetListFragment<FragmentBaseListBinding, ListNovelSeries, NovelSeriesItem>() {
 
-    override fun adapter(): BaseAdapter<*, out ViewDataBinding> {
+    override fun onCreateBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        attachToParent: Boolean
+    ): FragmentBaseListBinding {
+        return FragmentBaseListBinding.inflate(inflater, container, attachToParent)
+    }
+
+    override fun adapter(): BaseAdapter<*, out ViewBinding> {
         return NovelSeriesAdapter(allItems, mContext)
     }
 

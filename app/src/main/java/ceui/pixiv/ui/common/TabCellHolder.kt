@@ -19,6 +19,5 @@ class TabCellViewHolder(bd: CellTabBinding) : ListItemViewHolder<CellTabBinding,
 
     override fun onBindViewHolder(holder: TabCellHolder, position: Int) {
         super.onBindViewHolder(holder, position)
-        binding.holder = holder
     }
 }

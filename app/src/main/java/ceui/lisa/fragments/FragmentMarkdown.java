@@ -7,6 +7,9 @@ import android.view.View;
 import java.io.IOException;
 
 import androidx.annotation.NonNull;
+
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 import ceui.lisa.R;
 import ceui.lisa.databinding.FragmentMarkdownBinding;
 import ceui.lisa.http.NullCtrl;
@@ -83,5 +86,14 @@ public class FragmentMarkdown extends BaseFragment<FragmentMarkdownBinding> {
                         }
                     }
                 });
+    }
+
+    @Override
+    protected FragmentMarkdownBinding onCreateBinding(
+        @NonNull LayoutInflater inflater,
+        ViewGroup container,
+        boolean attachToParent
+    ) {
+        return FragmentMarkdownBinding.inflate(inflater, container, false);
     }
 }

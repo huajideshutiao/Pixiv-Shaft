@@ -2,7 +2,7 @@ package ceui.lisa.fragments;
 
 import android.os.Bundle;
 
-import androidx.databinding.ViewDataBinding;
+import androidx.viewbinding.ViewBinding;
 
 import ceui.lisa.R;
 import ceui.lisa.adapters.BaseAdapter;
@@ -49,7 +49,7 @@ public class FragmentRelatedIllust extends NetListFragment<FragmentBaseListBindi
     }
 
     @Override
-    public BaseAdapter<?, ? extends ViewDataBinding> adapter() {
+    public BaseAdapter<?, ? extends ViewBinding> adapter() {
         return new IAdapter(allItems, mContext);
     }
 

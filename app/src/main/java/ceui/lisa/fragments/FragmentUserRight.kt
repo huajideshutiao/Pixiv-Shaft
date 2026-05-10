@@ -1,9 +1,10 @@
 package ceui.lisa.fragments
 
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import android.content.Intent
 import android.text.TextUtils
 import android.view.View
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import ceui.lisa.R
 import ceui.lisa.activities.ContainerActivity
@@ -56,7 +57,7 @@ class FragmentUserRight : SwipeFragment<FragmentUserRightBinding>() {
         content.add(getString(R.string.string_192))
         content.add(getString(R.string.string_436))
         baseBind.tagLayout.populate(content, R.layout.tag_item) { view, s ->
-            val binding: TagItemBinding = DataBindingUtil.bind(view)!!
+            val binding: TagItemBinding = TagItemBinding.bind(view)
             binding.tagName.text = s
             binding.root.setOnClickListener {
                 val position = content.indexOf(s)
@@ -139,5 +140,13 @@ class FragmentUserRight : SwipeFragment<FragmentUserRightBinding>() {
 
     override fun enableRefresh(): Boolean {
         return false
+    }
+
+    override fun onCreateBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        attachToParent: Boolean
+    ): FragmentUserRightBinding {
+        return FragmentUserRightBinding.inflate(inflater, container, false)
     }
 }

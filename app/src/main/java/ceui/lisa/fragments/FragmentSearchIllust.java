@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.databinding.ViewDataBinding;
+import androidx.viewbinding.ViewBinding;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import ceui.lisa.R;
@@ -99,7 +99,7 @@ public class FragmentSearchIllust extends NetListFragment<FragmentBaseListBindin
     }
 
     @Override
-    public BaseAdapter<?, ? extends ViewDataBinding> adapter() {
+    public BaseAdapter<?, ? extends ViewBinding> adapter() {
         return new IAdapter(allItems, mContext);
     }
 

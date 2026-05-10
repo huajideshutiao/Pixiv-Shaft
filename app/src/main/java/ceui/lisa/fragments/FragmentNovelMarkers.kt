@@ -1,7 +1,9 @@
 package ceui.lisa.fragments
 
-import androidx.databinding.ViewDataBinding
 import ceui.lisa.R
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.viewbinding.ViewBinding
 import ceui.lisa.adapters.BaseAdapter
 import ceui.lisa.adapters.NovelMarkersAdapter
 import ceui.lisa.core.BaseRepo
@@ -11,7 +13,15 @@ import ceui.lisa.models.MarkedNovelItem
 import ceui.lisa.repo.NovelMarkersRepo
 
 class FragmentNovelMarkers: NetListFragment<FragmentBaseListBinding, ListNovelMarkers, MarkedNovelItem>() {
-    override fun adapter(): BaseAdapter<*, out ViewDataBinding> {
+    override fun onCreateBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        attachToParent: Boolean
+    ): FragmentBaseListBinding {
+        return FragmentBaseListBinding.inflate(inflater, container, attachToParent)
+    }
+
+    override fun adapter(): BaseAdapter<*, out ViewBinding> {
         return NovelMarkersAdapter(allItems, mContext)
     }
 

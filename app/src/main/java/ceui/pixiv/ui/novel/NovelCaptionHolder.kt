@@ -28,7 +28,6 @@ class NovelCaptionViewHolder(bd: CellNovelCaptionBinding) : ListItemViewHolder<C
     override fun onBindViewHolder(holder: NovelCaptionHolder, position: Int) {
         super.onBindViewHolder(holder, position)
         val liveNovel = ObjectPool.get<Novel>(holder.novelId)
-        binding.novel = liveNovel
         liveNovel.observe(lifecycleOwner) { novel ->
             val rawCaption = novel.caption.orEmpty()
             val hasCaption = rawCaption.isNotEmpty()

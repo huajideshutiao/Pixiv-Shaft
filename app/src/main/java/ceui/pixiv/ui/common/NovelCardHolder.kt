@@ -48,8 +48,6 @@ class NovelCardViewHolder(bd: CellNovelCardBinding) :
         if (holder.showExtraMargin) {
             binding.novelRoot.updatePadding(12.ppppx, 0, 12.ppppx, 0)
         }
-        binding.novel = ObjectPool.get<Novel>(holder.novel.id)
-        binding.showTags = Shaft.sSettings.isShowNovelCardTags
 
         binding.selectIndicator.isVisible = holder.isMultiSelectMode
         if (holder.isMultiSelectMode) {

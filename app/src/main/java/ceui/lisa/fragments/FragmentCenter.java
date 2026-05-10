@@ -1,8 +1,10 @@
 package ceui.lisa.fragments;
 
 import android.content.Intent;
+import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -117,5 +119,14 @@ public class FragmentCenter extends SwipeFragment<FragmentNewCenterBinding> impl
         if(pivisionFragment != null){
             pivisionFragment.forceRefresh();
         }
+    }
+
+    @Override
+    protected FragmentNewCenterBinding onCreateBinding(
+        @NonNull LayoutInflater inflater,
+        ViewGroup container,
+        boolean attachToParent
+    ) {
+        return FragmentNewCenterBinding.inflate(inflater, container, false);
     }
 }

@@ -5,13 +5,11 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import java.util.List;
 
-import ceui.lisa.R;
 import ceui.lisa.databinding.RecyRecmdHeaderBinding;
 import ceui.lisa.models.IllustsBean;
 
@@ -33,9 +31,8 @@ public class IAdapterWithHeadView extends IAdapter {
     @Override
     public ViewHolder<RecyRecmdHeaderBinding> getHeader(ViewGroup parent) {
         mIllustHeader = new IllustHeader(
-                DataBindingUtil.inflate(
+            RecyRecmdHeaderBinding.inflate(
                         LayoutInflater.from(mContext),
-                        R.layout.recy_recmd_header,
                         null,
                         false
                 ), type

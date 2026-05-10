@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
-import androidx.databinding.ViewDataBinding;
+import androidx.viewbinding.ViewBinding;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -42,7 +42,7 @@ import ceui.loxia.RefreshStateKt;
 import jp.wasabeef.recyclerview.animators.BaseItemAnimator;
 import jp.wasabeef.recyclerview.animators.LandingAnimator;
 
-public abstract class ListFragment<Layout extends ViewDataBinding, Item>
+public abstract class ListFragment<Layout extends ViewBinding, Item>
     extends BaseLazyFragment<Layout> implements VolumeKeyHandler {
 
     private static final String TAG = "ListFragment";
@@ -53,7 +53,7 @@ public abstract class ListFragment<Layout extends ViewDataBinding, Item>
     protected RefreshLayout mRefreshLayout;
     protected ImageView noData;
     protected RelativeLayout emptyRela;
-    protected BaseAdapter<?, ? extends ViewDataBinding> mAdapter;
+    protected BaseAdapter<?, ? extends ViewBinding> mAdapter;
     protected List<Item> allItems = null;
     protected BaseModel<Item> mModel;
     protected Toolbar mToolbar;
@@ -63,7 +63,7 @@ public abstract class ListFragment<Layout extends ViewDataBinding, Item>
         mLayoutID = R.layout.fragment_base_list;
     }
 
-    public abstract BaseAdapter<?, ? extends ViewDataBinding> adapter();
+    public abstract BaseAdapter<?, ? extends ViewBinding> adapter();
 
     public abstract BaseRepo repository();
 

@@ -12,6 +12,8 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import com.blankj.utilcode.util.BarUtils;
 
+import android.view.LayoutInflater;
+
 import ceui.lisa.R;
 import ceui.lisa.activities.Shaft;
 import ceui.lisa.databinding.ViewpagerWithTablayoutBinding;
@@ -80,5 +82,14 @@ public class FragmentNewNovel extends BaseFragment<ViewpagerWithTablayoutBinding
         baseBind.tabLayout.setupWithViewPager(baseBind.viewPager);
         MyOnTabSelectedListener listener = new MyOnTabSelectedListener(mFragments);
         baseBind.tabLayout.addOnTabSelectedListener(listener);
+    }
+
+    @Override
+    protected ViewpagerWithTablayoutBinding onCreateBinding(
+        @NonNull LayoutInflater inflater,
+        ViewGroup container,
+        boolean attachToParent
+    ) {
+        return ViewpagerWithTablayoutBinding.inflate(inflater, container, false);
     }
 }

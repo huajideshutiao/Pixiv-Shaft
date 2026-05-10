@@ -8,9 +8,9 @@ import android.view.ViewGroup;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
-import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.viewbinding.ViewBinding;
 
 import com.scwang.smart.refresh.header.FalsifyFooter;
 
@@ -63,7 +63,7 @@ public class FragmentRight extends NetListFragment<FragmentNewRightBinding, List
     }
 
     @Override
-    public BaseAdapter<?, ? extends ViewDataBinding> adapter() {
+    public BaseAdapter<?, ? extends ViewBinding> adapter() {
         return isTimelineMode ? new TimelineAdapter(allItems, mContext) : new IAdapter(allItems, mContext);
     }
 

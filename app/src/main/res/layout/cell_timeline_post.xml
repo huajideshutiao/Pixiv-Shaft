@@ -1,22 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
-
-    <data>
-
-        <import type="ceui.pixiv.ui.user.following.TimelinePostHolder" />
-
-        <variable
-            name="user"
-            type="androidx.lifecycle.LiveData&lt;ceui.loxia.User>" />
-
-        <variable
-            name="holder"
-            type="TimelinePostHolder" />
-    </data>
-
-    <LinearLayout
+    xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -140,7 +126,6 @@
                         <ceui.loxia.ProgressTextButton
                             android:id="@+id/follow"
                             style="@style/BlueShiningButton"
-                            visibleOrGone="@{!user.is_followed()}"
                             android:layout_width="wrap_content"
                             android:layout_height="28dp"
                             android:paddingHorizontal="10dp"
@@ -153,7 +138,6 @@
                         <ceui.loxia.ProgressTextButton
                             android:id="@+id/unfollow"
                             style="@style/RedShiningButton"
-                            visibleOrGone="@{user.is_followed()}"
                             android:layout_width="wrap_content"
                             android:layout_height="28dp"
                             android:paddingHorizontal="10dp"
@@ -174,7 +158,6 @@
 
                     <com.google.android.material.imageview.ShapeableImageView
                         android:id="@+id/image"
-                        loadMedia="@{holder.illust.image_urls.large}"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:scaleType="centerCrop" />
@@ -276,5 +259,3 @@
         </androidx.cardview.widget.CardView>
 
     </LinearLayout>
-
-</layout>

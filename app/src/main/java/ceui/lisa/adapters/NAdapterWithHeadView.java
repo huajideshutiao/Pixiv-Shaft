@@ -4,11 +4,9 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import androidx.databinding.DataBindingUtil;
-
 import java.util.List;
 
-import ceui.lisa.R;
+import ceui.lisa.databinding.RecyRecmdHeaderBinding;
 import ceui.lisa.models.NovelBean;
 
 public class NAdapterWithHeadView extends NAdapter {
@@ -28,9 +26,8 @@ public class NAdapterWithHeadView extends NAdapter {
     @SuppressWarnings("unchecked")
     public ViewHolder getHeader(ViewGroup parent) {
         novelHeader = new NovelHeader(
-                DataBindingUtil.inflate(
+            RecyRecmdHeaderBinding.inflate(
                         LayoutInflater.from(mContext),
-                        R.layout.recy_recmd_header,
                         null,
                         false
                 )

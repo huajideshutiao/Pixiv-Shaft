@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.databinding.ViewDataBinding;
+import androidx.viewbinding.ViewBinding;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -75,7 +75,7 @@ public class FragmentSearchNovel extends NetListFragment<FragmentBaseListBinding
     }
 
     @Override
-    public BaseAdapter<?, ? extends ViewDataBinding> adapter() {
+    public BaseAdapter<?, ? extends ViewBinding> adapter() {
         return new NAdapter(allItems, mContext);
     }
 

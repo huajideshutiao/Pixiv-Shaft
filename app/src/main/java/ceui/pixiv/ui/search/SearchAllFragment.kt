@@ -29,7 +29,6 @@ class SearchAllFragment : PixivFragment(R.layout.fragment_search_all) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpToolbar(binding.toolbarLayout, binding.contentGroup)
-        binding.viewModel = searchViewModel
         binding.toolbarLayout.naviTitle.text = getString(R.string.search)
         binding.clearSearch.setOnClick {
             searchViewModel.inputDraft.value = ""

@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.webkit.URLUtil;
 import android.widget.TextView;
 
-import androidx.databinding.DataBindingUtil;
+import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -25,6 +25,8 @@ import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import android.view.LayoutInflater;
 
 import ceui.lisa.R;
 import ceui.lisa.activities.OutWakeActivity;
@@ -376,7 +378,8 @@ public class FragmentSearch extends BaseFragment<FragmentSearchBinding> {
             history,
             R.layout.recy_single_line_text_with_delete,
             (view, searchEntity, index) -> {
-                RecySingleLineTextWithDeleteBinding binding = DataBindingUtil.bind(view);
+                RecySingleLineTextWithDeleteBinding binding =
+                    RecySingleLineTextWithDeleteBinding.bind(view);
                 if (searchEntity.isPinned()) {
                     binding.fixed.setVisibility(View.VISIBLE);
                     binding.deleteItem.setVisibility(View.GONE);
@@ -564,5 +567,14 @@ public class FragmentSearch extends BaseFragment<FragmentSearchBinding> {
         if (fromClipboard) {
             hasSwitchSearchType = true;
         }
+    }
+
+    @Override
+    protected FragmentSearchBinding onCreateBinding(
+        @NonNull LayoutInflater inflater,
+        ViewGroup container,
+        boolean attachToParent
+    ) {
+        return FragmentSearchBinding.inflate(inflater, container, false);
     }
 }

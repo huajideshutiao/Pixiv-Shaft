@@ -31,6 +31,7 @@ import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 
 import java.io.File;
 
+import android.view.LayoutInflater;
 import ceui.lisa.R;
 import ceui.lisa.core.Manager;
 import ceui.lisa.databinding.ActivityCoverBinding;
@@ -449,5 +450,10 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
             }
         }
         return defaultPosition;
+    }
+
+    @Override
+    protected ActivityCoverBinding onCreateBinding(LayoutInflater inflater) {
+        return ActivityCoverBinding.inflate(inflater);
     }
 }

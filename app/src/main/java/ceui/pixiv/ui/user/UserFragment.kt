@@ -146,8 +146,6 @@ class UserFragment : PixivFragment(R.layout.fragment_user), ViewPagerFragment, S
             binding.headerContent.alpha = 1F - percentage
             binding.naviTitle.isVisible = (percentage == 1F)
         }
-        binding.user = viewModel.userLiveData
-        binding.profile = viewModel.userProfile
         binding.userViewPager.adapter = object : FragmentStateAdapter(this) {
             override fun getItemCount(): Int {
                 return 1

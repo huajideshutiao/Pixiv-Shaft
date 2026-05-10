@@ -9,7 +9,6 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.core.view.updatePaddingRelative
-import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.navArgs
 import ceui.lisa.R
 import ceui.lisa.databinding.CellEditingCommentBinding
@@ -41,20 +40,18 @@ class CommentsFragment : PixivFragment(R.layout.fragment_pixiv_list), CommentAct
         setUpRefreshState(binding, viewModel, ListMode.VERTICAL_COMMENT)
         binding.bottomLayout.isVisible = true
         binding.bottomLayout.background = ColorDrawable(Color.parseColor("#66000000"))
-        val childBinding = DataBindingUtil.inflate<CellEditingCommentBinding>(
+        val childBinding = CellEditingCommentBinding.inflate(
             layoutInflater,
-            R.layout.cell_editing_comment,
             binding.bottomLayout,
             true
         )
         // 设置根布局的点击监听
         binding.touchOutside.setOnTouchListener { _, _ ->
-            // 隐藏键盘
             hideKeyboard()
             false
         }
-        childBinding.lifecycleOwner = viewLifecycleOwner
-        childBinding.viewModel = dataSource
+
+        setUpRefreshState(binding, viewModel, ListMode.VERTICAL_COMMENT)
         childBinding.send.setOnClick {
             launchSuspend(it) {
                 dataSource.sendComment()

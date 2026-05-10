@@ -61,7 +61,6 @@ class OffsetPageViewHolder(bd: FragmentItemListDialogListDialogItemBinding) :
 
     override fun onBindViewHolder(holder: OffsetPageHolder, position: Int) {
         super.onBindViewHolder(holder, position)
-        binding.holder = holder
         binding.firstTitle.text = "第${holder.index + 1}页结果"
         binding.secondaryTitle.text = "第${holder.index * 30} ~ ${(holder.index + 1) * 30}个作品"
         binding.root.setOnClickListener {

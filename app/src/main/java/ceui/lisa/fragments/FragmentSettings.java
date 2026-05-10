@@ -12,7 +12,11 @@ import android.net.Uri;
 import android.os.Build;
 import android.text.TextUtils;
 
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
+
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -948,5 +952,14 @@ public class FragmentSettings extends SwipeFragment<FragmentSettingsBinding> {
         }
         Locale loc = ceui.pixiv.i18n.AppLocales.INSTANCE.currentLocale();
         return ceui.pixiv.i18n.AppLocales.INSTANCE.displayName(loc.toLanguageTag());
+    }
+
+    @Override
+    protected FragmentSettingsBinding onCreateBinding(
+        @NonNull LayoutInflater inflater,
+        ViewGroup container,
+        boolean attachToParent
+    ) {
+        return FragmentSettingsBinding.inflate(inflater, container, false);
     }
 }

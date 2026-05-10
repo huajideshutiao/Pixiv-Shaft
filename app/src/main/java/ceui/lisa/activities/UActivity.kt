@@ -5,6 +5,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.view.animation.AlphaAnimation
@@ -54,6 +55,10 @@ class UActivity : BaseActivity<ActivityNewUserBinding>(), Display<UserDetailResp
     private lateinit var mUserViewModel: UserViewModel
     override fun initLayout(): Int {
         return R.layout.activity_new_user
+    }
+
+    override fun onCreateBinding(inflater: LayoutInflater): ActivityNewUserBinding {
+        return ActivityNewUserBinding.inflate(inflater)
     }
 
     override fun initView() {

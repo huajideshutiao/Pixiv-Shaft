@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
-
-    </data>
-
-    <com.qmuiteam.qmui.widget.roundwidget.QMUIRoundRelativeLayout
+<com.qmuiteam.qmui.widget.roundwidget.QMUIRoundRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
         android:orientation="vertical"
         app:qmui_radius="@dimen/twelve_dp"
         app:qmui_borderWidth="0dp"
@@ -24,4 +19,3 @@
         </com.google.android.material.imageview.ShapeableImageView>
 
     </com.qmuiteam.qmui.widget.roundwidget.QMUIRoundRelativeLayout>
-</layout>

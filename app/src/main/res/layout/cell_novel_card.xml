@@ -1,28 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
-
-        <import type="ceui.loxia.Novel" />
-
-        <variable
-            name="novel"
-            type="androidx.lifecycle.LiveData&lt;Novel>" />
-
-        <variable
-            name="showTags"
-            type="boolean" />
-    </data>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/novel_root"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/novel_cover"
-            loadMedia="@{novel.image_urls.findMaxSizeUrl()}"
             android:layout_width="100dp"
             android:layout_height="0dp"
             app:layout_constraintDimensionRatio="240:338"
@@ -64,7 +49,6 @@
 
         <TextView
             android:id="@+id/series_name"
-            visibleOrGone="@{novel.series != null &amp;&amp; novel.series.title.length() > 0}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
@@ -121,7 +105,7 @@
                 android:layout_width="@dimen/min_widget_size"
                 android:layout_height="@dimen/min_widget_size"
                 android:padding="8dp"
-                android:src="@{novel.is_bookmarked() ? @drawable/icon_liked : @drawable/icon_not_liked}"
+                android:src="@drawable/icon_not_liked"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -132,7 +116,6 @@
 
         <ceui.pixiv.widgets.TagsFlowView
             android:id="@+id/novel_tag"
-            visibleOrGone="@{showTags &amp;&amp; novel.tags.size() > 0}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -140,7 +123,6 @@
             app:flexWrap="wrap"
             app:layout_constraintTop_toBottomOf="@+id/novel_cover"
             app:showDivider="middle"
-            app:tags="@{novel.tags}"
             app:tfv_max_lines="3"
             app:tfv_style="small" />
 
@@ -168,4 +150,3 @@
             app:layout_constraintTop_toBottomOf="@+id/novel_tag" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-</layout>

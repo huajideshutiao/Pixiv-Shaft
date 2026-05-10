@@ -29,7 +29,6 @@ class TaskPreviewViewHolder(bd: CellTaskPreviewBinding) : ListItemViewHolder<Cel
 
     override fun onBindViewHolder(holder: TaskPreviewHolder, position: Int) {
         super.onBindViewHolder(holder, position)
-        binding.holder = holder
         binding.root.setOnClickListener {
             it.findActionReceiverOrNull<TaskPreviewActionReceiver>()?.onClickTaskPreview(holder.humanReadableTask)
         }

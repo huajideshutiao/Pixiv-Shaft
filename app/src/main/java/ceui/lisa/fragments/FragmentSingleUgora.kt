@@ -12,7 +12,9 @@ import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import ceui.lisa.R
@@ -650,6 +652,14 @@ class FragmentSingleUgora : BaseFragment<FragmentUgoraBinding>() {
         } else {
             baseBind.follow.setText(R.string.string_4)
         }
+    }
+
+    override fun onCreateBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        attachToParent: Boolean
+    ): FragmentUgoraBinding {
+        return FragmentUgoraBinding.inflate(inflater, container, false)
     }
 
     companion object {

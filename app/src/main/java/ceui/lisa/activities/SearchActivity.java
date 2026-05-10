@@ -33,6 +33,7 @@ import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
 import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
 
+import android.view.LayoutInflater;
 import ceui.lisa.R;
 import ceui.lisa.adapters.SearchHintAdapter;
 import ceui.lisa.databinding.FragmentNewSearchBinding;
@@ -617,5 +618,10 @@ public class SearchActivity extends BaseActivity<FragmentNewSearchBinding> {
                     }
                 ).create();
         qmuiDialog.show();
+    }
+
+    @Override
+    protected FragmentNewSearchBinding onCreateBinding(LayoutInflater inflater) {
+        return FragmentNewSearchBinding.inflate(inflater);
     }
 }

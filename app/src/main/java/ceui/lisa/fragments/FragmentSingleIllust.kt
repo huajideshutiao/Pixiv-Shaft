@@ -13,7 +13,9 @@ import android.text.TextUtils
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import ceui.lisa.R
@@ -565,6 +567,14 @@ class FragmentSingleIllust : BaseFragment<FragmentSingleIllustBinding>() {
         } else {
             baseBind.follow.setText(R.string.string_4)
         }
+    }
+
+    override fun onCreateBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        attachToParent: Boolean
+    ): FragmentSingleIllustBinding {
+        return FragmentSingleIllustBinding.inflate(inflater, container, false)
     }
 
     companion object {

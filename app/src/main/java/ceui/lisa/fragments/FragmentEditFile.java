@@ -3,12 +3,15 @@ package ceui.lisa.fragments;
 import android.app.DatePickerDialog;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 
 import com.blankj.utilcode.util.UriUtils;
 import com.bumptech.glide.Glide;
@@ -330,5 +333,14 @@ public class FragmentEditFile extends SwipeFragment<FragmentEditFileBinding> imp
     @Override
     public SmartRefreshLayout getSmartRefreshLayout() {
         return baseBind.refreshLayout;
+    }
+
+    @Override
+    protected FragmentEditFileBinding onCreateBinding(
+        @NonNull LayoutInflater inflater,
+        ViewGroup container,
+        boolean attachToParent
+    ) {
+        return FragmentEditFileBinding.inflate(inflater, container, false);
     }
 }

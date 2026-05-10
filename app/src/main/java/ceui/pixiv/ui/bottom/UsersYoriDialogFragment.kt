@@ -69,7 +69,6 @@ class UsersYoriViewHolder(bd: CellUsersYoruItemBinding) :
 
     override fun onBindViewHolder(holder: UsersYoriHolder, position: Int) {
         super.onBindViewHolder(holder, position)
-        binding.holder = holder
         if (holder.count == 0) {
             binding.firstTitle.text = context.getString(R.string.not_selected)
         } else {

@@ -15,6 +15,12 @@ import ceui.lisa.models.UserState;
 import ceui.lisa.models.UserModel;
 import ceui.lisa.utils.Common;
 import ceui.lisa.utils.Local;
+
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -56,12 +62,18 @@ public class FragmentEditAccount extends BaseFragment<FragmentEditAccountBinding
         if (!TextUtils.isEmpty(SessionManager.INSTANCE.getMailAddress())) {
             baseBind.emailAddress.setText(SessionManager.INSTANCE.getMailAddress());
         }
-        // 新登录流程中，App不直接接触密码明文，所以不显示较为合理
-        // baseBind.userOldPassword.setText(Shaft.Local.getUser().getUser().getPassword());
-        // baseBind.userNewPassword.setText(Shaft.Local.getUser().getUser().getPassword());
         baseBind.pixivId.setText(SessionManager.INSTANCE.getAccountName());
         baseBind.pixivId.setEnabled(false);
         baseBind.submit.setOnClickListener(v -> submit());
+    }
+
+    @Override
+    protected FragmentEditAccountBinding onCreateBinding(
+        @NonNull LayoutInflater inflater,
+        ViewGroup container,
+        boolean attachToParent
+    ) {
+        return FragmentEditAccountBinding.inflate(inflater, container, false);
     }
 
     private void submit() {

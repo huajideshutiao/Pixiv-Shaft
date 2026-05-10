@@ -3,6 +3,7 @@ package ceui.lisa.activities;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -199,5 +200,10 @@ public class RankActivity extends BaseActivity<ActivityMultiViewPagerBinding> {
     @Override
     public boolean hideStatusBar() {
         return false;
+    }
+
+    @Override
+    protected ActivityMultiViewPagerBinding onCreateBinding(LayoutInflater inflater) {
+        return ActivityMultiViewPagerBinding.inflate(inflater);
     }
 }

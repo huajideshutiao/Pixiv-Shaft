@@ -50,8 +50,6 @@ class CommentViewHolder(bd: CellCommentBinding) :
     override fun onBindViewHolder(holder: CommentHolder, position: Int) {
         super.onBindViewHolder(holder, position)
 
-        binding.holder = holder
-
         binding.root.setOnClickListener { sender ->
             sender.findActionReceiverOrNull<CommentActionReceiver>()?.onClickComment(holder.comment)
         }
@@ -149,7 +147,6 @@ class CellChildCommentViewHolder(bd: CellChildCommentBinding) :
     override fun onBindViewHolder(holder: CommentChildHolder, position: Int) {
         super.onBindViewHolder(holder, position)
 
-        binding.holder = holder
         binding.root.setOnClickListener { sender ->
             sender.findActionReceiverOrNull<CommentActionReceiver>()?.onClickComment(holder.comment)
         }

@@ -1,16 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
-        <import type="ceui.pixiv.ui.comments.CommentChildHolder"/>
-        <import type="ceui.pixiv.session.SessionManager"/>
-        <variable
-            name="holder"
-            type="CommentChildHolder" />
-    </data>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:background="@drawable/cell_background"
         android:paddingTop="12dp"
@@ -107,7 +98,6 @@
             <TextView
                 android:id="@+id/reply"
                 android:layout_width="wrap_content"
-                visibleOrGone="@{SessionManager.INSTANCE.loggedInUid != holder.comment.user.id}"
                 android:layout_marginStart="12dp"
                 android:text="@string/string_176"
                 android:padding="12dp"
@@ -116,7 +106,6 @@
 
             <ceui.loxia.ProgressTextButton
                 android:id="@+id/delete"
-                visibleOrGone="@{SessionManager.INSTANCE.loggedInUid == holder.comment.user.id}"
                 android:layout_width="wrap_content"
                 android:text="@string/string_219"
                 app:ptb_progress_stroke_width="3.5dp"
@@ -127,4 +116,3 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-</layout>

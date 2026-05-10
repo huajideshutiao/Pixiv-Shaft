@@ -1,13 +1,7 @@
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<?xml version="1.0" encoding="utf-8"?>
 
-    <data>
-        <variable
-            name="user"
-            type="androidx.lifecycle.LiveData&lt;ceui.loxia.User>" />
-    </data>
-
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/user_profile_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -72,7 +66,6 @@
 
                     <ceui.loxia.ProgressTextButton
                         android:id="@+id/follow"
-                        visibleOrGone="@{!user.is_followed()}"
                         style="@style/BlueShiningButton"
                         android:layout_width="wrap_content"
                         android:visibility="gone"
@@ -84,7 +77,6 @@
 
                     <ceui.loxia.ProgressTextButton
                         android:id="@+id/unfollow"
-                        visibleOrGone="@{user.is_followed()}"
                         style="@style/RedShiningButton"
                         android:visibility="gone"
                         android:layout_width="wrap_content"
@@ -178,4 +170,3 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
-</layout>

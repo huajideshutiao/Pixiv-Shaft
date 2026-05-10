@@ -14,17 +14,14 @@ import androidx.annotation.Nullable;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.databinding.DataBindingUtil;
-import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-
-import ceui.lisa.R;
+import androidx.viewbinding.ViewBinding;
 
 import java.util.UUID;
 
-
-public abstract class BaseFragment<Layout extends ViewDataBinding> extends Fragment {
+import ceui.lisa.R;
+public abstract class BaseFragment<Layout extends ViewBinding> extends Fragment {
 
     protected View rootView;
     @NonNull
@@ -80,6 +77,12 @@ public abstract class BaseFragment<Layout extends ViewDataBinding> extends Fragm
         }
     }
 
+    protected abstract Layout onCreateBinding(
+        @NonNull LayoutInflater inflater,
+        @Nullable ViewGroup container,
+        boolean attachToParent
+    );
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -88,24 +91,15 @@ public abstract class BaseFragment<Layout extends ViewDataBinding> extends Fragm
         try {
             isInit = true;
             if (rootView != null) {
-                if (baseBind == null) {
-                    baseBind = DataBindingUtil.bind(rootView);
-                }
                 return rootView;
             }
             initLayout();
 
-            if (mLayoutID != -1) {
-                baseBind = DataBindingUtil.inflate(inflater, mLayoutID, container, false);
-                if (baseBind != null) {
-                    rootView = baseBind.getRoot();
-                } else {
-                    rootView = inflater.inflate(mLayoutID, container, false);
-                }
-                initView();
-                initData();
-                return rootView;
-            }
+            baseBind = onCreateBinding(inflater, container, false);
+            rootView = baseBind.getRoot();
+            initView();
+            initData();
+            return rootView;
         } catch (Exception e) {
             e.printStackTrace();
         }

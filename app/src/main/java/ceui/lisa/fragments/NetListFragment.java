@@ -10,7 +10,7 @@ import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.CallSuper;
-import androidx.databinding.ViewDataBinding;
+import androidx.viewbinding.ViewBinding;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.scwang.smart.refresh.footer.ClassicsFooter;
@@ -46,7 +46,7 @@ import ceui.lisa.utils.Params;
  * @param <Response> Type: {@link ListIllust}这次请求的Response.
  * @param <Item>     这个列表的单个Item实体类.
  */
-public abstract class NetListFragment<Layout extends ViewDataBinding,
+public abstract class NetListFragment<Layout extends ViewBinding,
         Response extends ListShow<Item>, Item> extends ListFragment<Layout, Item> {
 
     private static final String TAG = "NetListFragment";

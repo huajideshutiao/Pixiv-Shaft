@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
-    <data/>
 
-    <TextView
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/chapter_title"
         android:layout_width="match_parent"
         android:layout_height="52dp"
@@ -14,4 +12,3 @@
         android:paddingEnd="16dp"
         android:textColor="@color/v3_text_1"
         android:textSize="15sp"/>
-</layout>

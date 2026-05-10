@@ -14,6 +14,5 @@ class PvisionMiniCardViewHolder(bd: CellPvisionMiniCardBinding) : ListItemViewHo
 
     override fun onBindViewHolder(holder: PvisionMiniCardHolder, position: Int) {
         super.onBindViewHolder(holder, position)
-        binding.holder = holder
     }
 }

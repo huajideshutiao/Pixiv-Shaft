@@ -8,7 +8,7 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
-import androidx.databinding.ViewDataBinding;
+import androidx.viewbinding.ViewBinding;
 
 import com.bumptech.glide.Glide;
 
@@ -157,7 +157,7 @@ public class FragmentNovelSeriesDetail extends NetListFragment<FragmentNovelSeri
     }
 
     @Override
-    public BaseAdapter<?, ? extends ViewDataBinding> adapter() {
+    public BaseAdapter<?, ? extends ViewBinding> adapter() {
         return new NAdapter(allItems, mContext, true);
     }
 

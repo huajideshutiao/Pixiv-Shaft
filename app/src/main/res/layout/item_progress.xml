@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<com.google.android.material.progressindicator.CircularProgressIndicator xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
-
-    <data />
-
-    <com.google.android.material.progressindicator.CircularProgressIndicator
+    xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/donut_progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -16,5 +13,3 @@
         app:trackCornerRadius="4dp"
         app:trackThickness="5dp"
         tools:ignore="ObsoleteLayoutParam" />
-
-</layout>

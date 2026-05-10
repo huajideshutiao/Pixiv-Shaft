@@ -1,6 +1,6 @@
 package ceui.lisa.fragments;
 
-import androidx.databinding.ViewDataBinding;
+import androidx.viewbinding.ViewBinding;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +17,7 @@ import ceui.lisa.model.ColorItem;
 public class FragmentColors extends LocalListFragment<FragmentBaseListBinding, ColorItem> {
 
     @Override
-    public BaseAdapter<?, ? extends ViewDataBinding> adapter() {
+    public BaseAdapter<?, ? extends ViewBinding> adapter() {
         return new ColorAdapter(allItems, mContext);
     }
 

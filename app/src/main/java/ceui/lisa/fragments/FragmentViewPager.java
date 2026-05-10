@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,6 +30,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.List;
+
+import android.view.LayoutInflater;
 
 import ceui.lisa.R;
 import ceui.lisa.activities.BaseActivity;
@@ -307,5 +310,14 @@ public class FragmentViewPager extends BaseFragment<ViewpagerWithTablayoutBindin
                 }
             }).start();
         }
+    }
+
+    @Override
+    protected ViewpagerWithTablayoutBinding onCreateBinding(
+        LayoutInflater inflater,
+        ViewGroup container,
+        boolean attachToParent
+    ) {
+        return ViewpagerWithTablayoutBinding.inflate(inflater, container, false);
     }
 }

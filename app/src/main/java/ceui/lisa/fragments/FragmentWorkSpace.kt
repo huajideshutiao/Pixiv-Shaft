@@ -1,5 +1,7 @@
 package ceui.lisa.fragments
 
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import android.text.TextUtils
 import android.view.View
 import android.widget.EditText
@@ -120,5 +122,13 @@ class FragmentWorkSpace : SwipeFragment<FragmentWorkSpaceBinding>(), Display<Use
                     }
                 })
         }
+    }
+
+    override fun onCreateBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        attachToParent: Boolean
+    ): FragmentWorkSpaceBinding {
+        return FragmentWorkSpaceBinding.inflate(inflater, container, false)
     }
 }

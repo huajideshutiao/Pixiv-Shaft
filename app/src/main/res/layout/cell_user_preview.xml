@@ -1,21 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
-
-        <import type="ceui.pixiv.ui.user.UserPreviewHolder" />
-
-        <variable
-            name="holder"
-            type="UserPreviewHolder" />
-
-        <variable
-            name="user"
-            type="androidx.lifecycle.LiveData&lt;ceui.loxia.User>" />
-    </data>
-
-    <LinearLayout
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:background="@drawable/cell_background"
         android:layout_height="wrap_content"
@@ -76,7 +62,6 @@
 
                 <ceui.loxia.ProgressTextButton
                     android:id="@+id/follow"
-                    visibleOrGone="@{!user.is_followed()}"
                     style="@style/BlueShiningButton"
                     android:visibility="gone"
                     android:layout_width="wrap_content"
@@ -88,7 +73,6 @@
 
                 <ceui.loxia.ProgressTextButton
                     android:id="@+id/unfollow"
-                    visibleOrGone="@{user.is_followed()}"
                     style="@style/RedShiningButton"
                     android:visibility="gone"
                     android:layout_width="wrap_content"
@@ -105,7 +89,6 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/illusts_preview"
-            visibleOrGone="@{holder.userPreview.illusts.size() > 0}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
@@ -151,4 +134,3 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
-</layout>

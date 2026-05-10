@@ -3,7 +3,9 @@ package ceui.lisa.fragments
 
 import android.content.Intent
 import android.net.Uri
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import ceui.lisa.BuildConfig
 import ceui.lisa.R
 import ceui.lisa.activities.ContainerActivity
@@ -101,5 +103,13 @@ class FragmentAboutApp : SwipeFragment<FragmentAboutBinding>() {
 
 
     companion object {
+    }
+
+    override fun onCreateBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        attachToParent: Boolean
+    ): FragmentAboutBinding {
+        return FragmentAboutBinding.inflate(inflater, container, false)
     }
 }

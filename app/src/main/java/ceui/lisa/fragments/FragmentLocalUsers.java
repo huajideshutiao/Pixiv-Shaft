@@ -4,8 +4,9 @@ import android.content.Intent;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
-import androidx.databinding.DataBindingUtil;
+import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
 import com.scwang.smart.refresh.header.FalsifyFooter;
@@ -88,9 +89,10 @@ public class FragmentLocalUsers extends BaseFragment<FragmentLocalUserBinding> {
     }
 
     private void bindData(UserModel userModel) {
-        RecyLocalUserBinding binding = DataBindingUtil.inflate(
+        RecyLocalUserBinding binding = RecyLocalUserBinding.inflate(
                 LayoutInflater.from(mContext),
-                R.layout.recy_local_user, null, false);
+            null, false
+        );
         binding.userName.setText(String.format("%s (%s)", userModel.getUser().getName(),
                 userModel.getUser().getAccount()));
         binding.loginTime.setText(TextUtils.isEmpty(userModel.getUser().getMail_address()) ?
@@ -130,5 +132,14 @@ public class FragmentLocalUsers extends BaseFragment<FragmentLocalUserBinding> {
             }
         });
         baseBind.userList.addView(binding.getRoot());
+    }
+
+    @Override
+    protected FragmentLocalUserBinding onCreateBinding(
+        @NonNull LayoutInflater inflater,
+        ViewGroup container,
+        boolean attachToParent
+    ) {
+        return FragmentLocalUserBinding.inflate(inflater, container, false);
     }
 }

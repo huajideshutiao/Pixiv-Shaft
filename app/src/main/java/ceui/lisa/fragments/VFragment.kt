@@ -4,6 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.KeyEvent
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -210,6 +212,14 @@ class VFragment : BaseFragment<ActivityViewPagerBinding>(), VolumeKeyHandler {
             return true
         }
         return false
+    }
+
+    override fun onCreateBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        attachToParent: Boolean
+    ): ActivityViewPagerBinding {
+        return ActivityViewPagerBinding.inflate(inflater, container, false)
     }
 
     companion object {

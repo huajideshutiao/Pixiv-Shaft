@@ -72,7 +72,6 @@ class MenuViewHolder(bd: CellMenuBinding) : ListItemViewHolder<CellMenuBinding, 
 
     override fun onBindViewHolder(holder: MenuHolder, position: Int) {
         super.onBindViewHolder(holder, position)
-        binding.holder = holder
         binding.root.setOnClickListener {
             it.findActionReceiverOrNull<MenuActionReceiver>()?.onClickMenu(holder.menuItem)
         }

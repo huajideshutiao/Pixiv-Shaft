@@ -1,16 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
-
-    <data>
-
-        <variable
-            name="novel"
-            type="androidx.lifecycle.LiveData&lt;ceui.loxia.Novel>" />
-    </data>
-
-    <LinearLayout
+    xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -50,7 +42,7 @@
                     android:layout_width="@dimen/min_widget_size"
                     android:layout_height="@dimen/min_widget_size"
                     android:padding="8dp"
-                    android:src="@{novel.is_bookmarked() ? @drawable/icon_liked : @drawable/icon_not_liked}"
+                    android:src="@drawable/icon_not_liked"
                     app:layout_constraintBottom_toBottomOf="@+id/title"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/title"
@@ -110,7 +102,6 @@
         <!-- Series strip (conditional) -->
         <LinearLayout
             android:id="@+id/series_strip"
-            visibleOrGone="@{novel.series != null &amp;&amp; novel.series.title.length() > 0}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="12dp"
@@ -175,4 +166,3 @@
                 android:textSize="16sp" />
         </LinearLayout>
     </LinearLayout>
-</layout>

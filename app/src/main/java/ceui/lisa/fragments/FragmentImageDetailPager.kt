@@ -2,7 +2,9 @@ package ceui.lisa.fragments
 
 import android.os.Bundle
 import android.view.KeyEvent
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.os.BundleCompat
 import androidx.fragment.app.Fragment
@@ -227,6 +229,14 @@ class FragmentImageDetailPager : BaseFragment<ActivityImageDetailBinding>(), Fra
         } else {
             return false
         }
+    }
+
+    override fun onCreateBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        attachToParent: Boolean
+    ): ActivityImageDetailBinding {
+        return ActivityImageDetailBinding.inflate(inflater, container, false)
     }
 
     companion object {

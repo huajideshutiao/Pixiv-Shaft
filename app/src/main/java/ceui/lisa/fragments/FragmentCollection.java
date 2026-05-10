@@ -20,6 +20,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import android.view.LayoutInflater;
+
 import ceui.lisa.R;
 import ceui.lisa.activities.ContainerActivity;
 import ceui.lisa.activities.Shaft;
@@ -187,5 +189,14 @@ public class FragmentCollection extends BaseFragment<ViewpagerWithTablayoutBindi
 
             }
         });
+    }
+
+    @Override
+    protected ViewpagerWithTablayoutBinding onCreateBinding(
+        @NonNull LayoutInflater inflater,
+        ViewGroup container,
+        boolean attachToParent
+    ) {
+        return ViewpagerWithTablayoutBinding.inflate(inflater, container, false);
     }
 }

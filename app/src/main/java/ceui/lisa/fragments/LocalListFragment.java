@@ -2,7 +2,7 @@ package ceui.lisa.fragments;
 
 import android.view.View;
 
-import androidx.databinding.ViewDataBinding;
+import androidx.viewbinding.ViewBinding;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import ceui.lisa.R;
 import ceui.lisa.core.LocalRepo;
 import ceui.lisa.utils.Common;
 
-public abstract class LocalListFragment<Layout extends ViewDataBinding, Item>
+public abstract class LocalListFragment<Layout extends ViewBinding, Item>
         extends ListFragment<Layout, Item> {
 
     protected LocalRepo<List<Item>> mLocalRepo;

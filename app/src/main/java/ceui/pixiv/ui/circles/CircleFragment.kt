@@ -68,7 +68,6 @@ class CircleFragment : TitledViewPagerFragment(R.layout.fragment_circle) {
             binding.headerContent.alpha = 1F - percentage
             binding.naviTitle.isVisible = (percentage == 1F)
         }
-        binding.circle = viewModel.result
         binding.refreshLayout.setEnableRefresh(true)
         binding.refreshLayout.setEnableLoadMore(false)
         viewModel.refreshState.observe(viewLifecycleOwner) { state ->
@@ -87,7 +86,6 @@ class CircleFragment : TitledViewPagerFragment(R.layout.fragment_circle) {
                 binding.circleRootLayout.isVisible = true
             }
         }
-        binding.circle = viewModel.result
         viewModel.result.observe(viewLifecycleOwner) { circle ->
             binding.worksCount.text = "${circle.body?.total ?: 0}个作品"
             binding.tagIcon.setOnClick {

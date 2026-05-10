@@ -1,7 +1,9 @@
 package ceui.lisa.fragments
 
 import android.os.Bundle
-import androidx.databinding.ViewDataBinding
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.viewbinding.ViewBinding
 import ceui.lisa.R
 import ceui.lisa.adapters.BaseAdapter
 import ceui.lisa.adapters.IAdapter
@@ -32,7 +34,15 @@ class FragmentMangaSeriesDetail :
         }
     }
 
-    override fun adapter(): BaseAdapter<*, out ViewDataBinding> {
+    override fun onCreateBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        attachToParent: Boolean
+    ): FragmentBaseListBinding {
+        return FragmentBaseListBinding.inflate(inflater, container, attachToParent)
+    }
+
+    override fun adapter(): BaseAdapter<*, out ViewBinding> {
         return IAdapter(allItems, mContext)
     }
 

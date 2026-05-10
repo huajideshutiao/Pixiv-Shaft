@@ -1,8 +1,10 @@
 package ceui.lisa.fragments
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import androidx.databinding.ViewDataBinding
+import android.view.ViewGroup
+import androidx.viewbinding.ViewBinding
 import ceui.lisa.R
 import ceui.lisa.adapters.BaseAdapter
 import ceui.lisa.adapters.NAdapter
@@ -24,7 +26,15 @@ class FragmentNewNovels : NetListFragment<FragmentBaseListBinding, ListNovel, No
         hideToolbar = bundle.getBoolean(ARG_HIDE_TOOLBAR, false)
     }
 
-    override fun adapter(): BaseAdapter<*, out ViewDataBinding> {
+    override fun onCreateBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        attachToParent: Boolean
+    ): FragmentBaseListBinding {
+        return FragmentBaseListBinding.inflate(inflater, container, attachToParent)
+    }
+
+    override fun adapter(): BaseAdapter<*, out ViewBinding> {
         return NAdapter(allItems, mContext)
     }
 

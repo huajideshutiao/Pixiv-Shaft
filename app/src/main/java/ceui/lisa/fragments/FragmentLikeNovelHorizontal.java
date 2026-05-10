@@ -9,11 +9,14 @@ import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import android.view.LayoutInflater;
 
 import ceui.lisa.R;
 import ceui.lisa.activities.ContainerActivity;
@@ -154,5 +157,14 @@ public class FragmentLikeNovelHorizontal extends BaseFragment<FragmentLikeIllust
                         }
                     }
                 });
+    }
+
+    @Override
+    protected FragmentLikeIllustHorizontalBinding onCreateBinding(
+        @NonNull LayoutInflater inflater,
+        ViewGroup container,
+        boolean attachToParent
+    ) {
+        return FragmentLikeIllustHorizontalBinding.inflate(inflater, container, false);
     }
 }

@@ -59,8 +59,6 @@ class IllustCardViewHolder(bd: CellIllustCardBinding) :
     override fun onBindViewHolder(holder: IllustCardHolder, position: Int) {
         super.onBindViewHolder(holder, position)
 
-        binding.illust = ObjectPool.get<Illust>(holder.illust.id)
-
         val itemWidth = ((screenWidth - 12.ppppx) / 2F).roundToInt()
         Log.d(TAG, "dsaadssw22 ${holder.illust.height}, ${holder.illust.width}")
         val itemHeight =

@@ -23,7 +23,6 @@ class PvisionCardViewHolder(bd: CellPvisionCardBinding) : ListItemViewHolder<Cel
 
     override fun onBindViewHolder(holder: PvisionCardHolder, position: Int) {
         super.onBindViewHolder(holder, position)
-        binding.holder = holder
         binding.root.setOnClickListener {
             it.findActionReceiverOrNull<ArticleActionReceiver>()?.onClickArticle(holder.article)
         }

@@ -2,6 +2,8 @@
 
 package ceui.lisa.fragments
 
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.lifecycle.ViewModelProvider
@@ -89,5 +91,13 @@ class FragmentHolder : BaseFragment<FragmentHolderBinding>() {
         baseBind.tabLayout.setupWithViewPager(baseBind.viewPager)
         val listener = MyOnTabSelectedListener(items)
         baseBind.tabLayout.addOnTabSelectedListener(listener)
+    }
+
+    override fun onCreateBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        attachToParent: Boolean
+    ): FragmentHolderBinding {
+        return FragmentHolderBinding.inflate(inflater, container, false)
     }
 }

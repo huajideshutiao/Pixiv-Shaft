@@ -13,9 +13,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.databinding.BindingAdapter
-import androidx.databinding.InverseBindingAdapter
-import androidx.databinding.InverseBindingListener
+import ceui.lisa.databinding.RecySingleLineTextNewBinding
 import androidx.fragment.app.Fragment
 import ceui.lisa.R
 import ceui.lisa.activities.Shaft
@@ -66,8 +64,6 @@ class TagsFlowView(context: Context, attrs: AttributeSet?, defStyle: Int)
 
     private val tagList = mutableListOf<Tag>()
 
-    private var onInverseBindingListener: InverseBindingListener? = null
-
     private var onTagsChangedListener: (()->Unit)? = null
 
     fun setOnTagsChangedListener(listener: ()->Unit) {
@@ -75,12 +71,7 @@ class TagsFlowView(context: Context, attrs: AttributeSet?, defStyle: Int)
     }
 
     fun notifyChanged() {
-        onInverseBindingListener?.onChange()
         onTagsChangedListener?.invoke()
-    }
-
-    fun setOnTagsChangedInverseBindingListener(listener: InverseBindingListener) {
-        onInverseBindingListener = listener
     }
 
     private var onCellClickListener: ((tag: Tag, index: Int)->Unit)? = null
@@ -276,24 +267,4 @@ class TagsFlowView(context: Context, attrs: AttributeSet?, defStyle: Int)
 
 interface TagsActionReceiver {
     fun onClickTag(tag: Tag, objectType: String)
-}
-
-@BindingAdapter("webTags")
-fun TagsFlowView.binding_setWebTags(tags: List<WebTag>?) {
-    setTags(tags?.map { Tag(name = it.tag, translated_name = it.tag_translation) })
-}
-
-@BindingAdapter("tags")
-fun TagsFlowView.binding_setTags(tags: List<Tag>?) {
-    setTags(tags)
-}
-
-@InverseBindingAdapter(attribute = "tags", event = "onTagsChanged")
-fun TagsFlowView.binding_getTags() : List<Tag> {
-    return getTags()
-}
-
-@BindingAdapter("onTagsChanged")
-fun TagsFlowView.binding_setOnTagsChangedListener(listener: InverseBindingListener) {
-    setOnTagsChangedInverseBindingListener(listener)
 }

@@ -27,7 +27,6 @@ class TrendingTagViewHolder(bd: CellTrendingTagBinding) :
 
     override fun onBindViewHolder(holder: TrendingTagHolder, position: Int) {
         super.onBindViewHolder(holder, position)
-        binding.holder = holder
         Glide.with(context)
             .load(GlideUrlChild(holder.trendingTag.illust?.image_urls?.square_medium))
             .into(binding.image)

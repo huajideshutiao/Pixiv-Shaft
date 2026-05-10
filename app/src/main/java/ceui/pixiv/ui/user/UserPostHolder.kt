@@ -105,7 +105,5 @@ class UserPostViewHolder(bd: CellUserPostBinding) :
         }
 
         binding.postTime.text = DateParse.getTimeAgo(context, holder.illust.create_date)
-        binding.user = ObjectPool.get<User>(holder.illust.user?.id ?: 0L)
-        binding.holder = holder
     }
 }

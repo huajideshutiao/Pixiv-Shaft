@@ -8,6 +8,7 @@ import android.text.Spanned
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -366,6 +367,14 @@ class FragmentLogin : BaseFragment<ActivityLoginBinding>() {
     private fun dp(value: Float): Int = (value * resources.displayMetrics.density).roundToInt()
 
     private data class Greeting(val tag: String, val hero: String, val subtitle: String)
+
+    override fun onCreateBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        attachToParent: Boolean
+    ): ActivityLoginBinding {
+        return ActivityLoginBinding.inflate(inflater, container, false)
+    }
 }
 
 fun SpannableString.setLinkSpan(

@@ -28,7 +28,6 @@ class FlagDescFragment : PixivFragment(R.layout.fragment_flag_desc) {
         super.onViewCreated(view, savedInstanceState)
         binding.toolbar.toolbar.setNavigationOnClickListener { requireActivity().finish() }
         binding.toolbar.toolbarTitle.text = getString(R.string.flag_desc)
-        binding.viewModel = viewModel
         when (safeArgs.flagReasonId) {
             FlagReason.ContainsExcessiveSexualId -> {
                 binding.flagType.text = getString(R.string.contains_excessive_sexual)

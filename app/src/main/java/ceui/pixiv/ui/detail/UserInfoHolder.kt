@@ -30,7 +30,6 @@ class UserInfoViewHolder(bd: CellUserInfoBinding) : ListItemViewHolder<CellUserI
     override fun onBindViewHolder(holder: UserInfoHolder, position: Int) {
         super.onBindViewHolder(holder, position)
         val liveUser = ObjectPool.get<User>(holder.uid)
-        binding.user = liveUser
         lifecycleOwner?.let {
             liveUser.observe(it) { user ->
                 binding.root.setOnClickListener { sender ->

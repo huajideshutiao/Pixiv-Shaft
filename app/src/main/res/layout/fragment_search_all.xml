@@ -1,16 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
-        <import type="ceui.pixiv.ui.search.SearchViewModel" />
-
-        <variable
-            name="viewModel"
-            type="SearchViewModel" />
-    </data>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -56,7 +47,6 @@
                         android:id="@+id/clear_search"
                         android:layout_width="44dp"
                         android:padding="10dp"
-                        visibleOrGone="@{!viewModel.inputDraft.trim().empty}"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -108,4 +98,3 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-</layout>

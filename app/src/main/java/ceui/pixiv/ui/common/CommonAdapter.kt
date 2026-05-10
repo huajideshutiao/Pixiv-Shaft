@@ -5,7 +5,6 @@ import android.content.Context
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -53,9 +52,6 @@ class CommonAdapter(private val viewLifecycleOwner: LifecycleOwner) :
     ) {
         val item = getItem(position)
         holder.lifecycleOwner = viewLifecycleOwner
-        if (holder.binding is ViewDataBinding) {
-            holder.binding.lifecycleOwner = viewLifecycleOwner
-        }
         holder.onBindViewHolder(item, position)
     }
 

@@ -136,10 +136,6 @@ class TimelinePostViewHolder(bd: CellTimelinePostBinding) :
         val numberFormat = NumberFormat.getNumberInstance(Locale.getDefault())
         binding.viewCount.text = numberFormat.format(holder.illust.total_view ?: 0)
         binding.bookmarkCount.text = numberFormat.format(holder.illust.total_bookmarks ?: 0)
-
-        // Data binding
-        binding.user = ObjectPool.get<User>(holder.illust.user?.id ?: 0L)
-        binding.holder = holder
     }
 }
 

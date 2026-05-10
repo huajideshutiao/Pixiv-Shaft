@@ -3,6 +3,8 @@ package ceui.lisa.activities;
 import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
 
 import com.qmuiteam.qmui.skin.QMUISkinManager;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
@@ -292,5 +294,10 @@ public class OutWakeActivity extends BaseActivity<ActivityOutWakeBinding> {
             startActivity(i);
             finish();
         }
+    }
+
+    @Override
+    protected ActivityOutWakeBinding onCreateBinding(LayoutInflater inflater) {
+        return ActivityOutWakeBinding.inflate(inflater);
     }
 }

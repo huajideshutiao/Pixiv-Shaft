@@ -46,7 +46,6 @@ class SearchViewPagerFragment : TitledViewPagerFragment(R.layout.fragment_search
         headParams.height = ceui.lisa.activities.Shaft.statusHeight
         binding.head.layoutParams = headParams
 
-        binding.viewModel = searchViewModel
         combineLatest(searchViewModel.tagList, searchViewModel.inputDraft).observe(viewLifecycleOwner) {
             val tags = it?.first ?: listOf()
             val inputing = it?.second ?: ""

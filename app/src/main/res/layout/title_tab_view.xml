@@ -1,17 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
-
-    <data>
-
-        <variable
-            name="viewModel"
-            type="ceui.pixiv.widgets.TitleTabHolder" />
-
-    </data>
-
-    <FrameLayout
+    xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:clipToPadding="false"
@@ -23,8 +14,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
-            android:orientation="horizontal"
-            app:tabFocusFactor="@{viewModel.focusFactor}">
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/label"
@@ -47,8 +37,6 @@
                 android:layout_gravity="start|top"
                 android:layout_marginTop="3dp"
                 android:layout_marginEnd="2dp"
-                android:src="@drawable/tab_item_red_dot"
-                app:visibleOrGone="@{viewModel.showsRedDot}" />
+                android:src="@drawable/tab_item_red_dot" />
         </LinearLayout>
     </FrameLayout>
-</layout>

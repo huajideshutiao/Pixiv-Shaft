@@ -1,7 +1,6 @@
 package ceui.pixiv.widgets
 
 import android.view.View
-import androidx.databinding.BindingAdapter
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -19,13 +18,6 @@ import kotlinx.coroutines.runBlocking
 import kotlin.math.abs
 import kotlin.math.max
 
-
-@BindingAdapter("tabFocusFactor")
-fun View.binding_setTabFocusFacator(focusFactor: Float) {
-    this.scaleX = (focusFactor * 0.2F) + 0.8F
-    this.scaleY = (focusFactor * 0.2F) + 0.8F
-    this.alpha = (focusFactor * 0.3F) + 0.7F
-}
 
 fun View.setTabFocusFactor(factor: Float) {
     scaleX = 1.0f + factor * 0.2f
@@ -48,7 +40,6 @@ class TitleTabViewHolder(bd: TitleTabViewBinding) : ListItemViewHolder<TitleTabV
 
     override fun onBindViewHolder(holder: TitleTabHolder, position: Int) {
         super.onBindViewHolder(holder, position)
-        binding.viewModel = holder
     }
 }
 

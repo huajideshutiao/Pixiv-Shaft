@@ -1,5 +1,7 @@
 package ceui.lisa.update
 
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import ceui.lisa.R
@@ -57,5 +59,13 @@ class FragmentVersionHistory : SwipeFragment<FragmentVersionHistoryBinding>() {
     override fun onDestroyView() {
         super.onDestroyView()
         disposable?.dispose()
+    }
+
+    override fun onCreateBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        attachToParent: Boolean
+    ): FragmentVersionHistoryBinding {
+        return FragmentVersionHistoryBinding.inflate(inflater, container, false)
     }
 }

@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import androidx.core.content.ContextCompat;
-import androidx.databinding.DataBindingUtil;
 
 import ceui.lisa.R;
 import ceui.lisa.databinding.GlareLayoutBinding;
@@ -43,7 +42,7 @@ public class GlareLayout extends RelativeLayout {
     private void init() {
         mContext = getContext();
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        baseBind = DataBindingUtil.inflate(inflater, R.layout.glare_layout, this, true);
+        baseBind = GlareLayoutBinding.inflate(inflater, this, true);
         currentState = 0;
         baseBind.left.setOnClickListener(new OnClickListener() {
             @Override

@@ -20,7 +20,6 @@ import androidx.annotation.ColorInt
 import androidx.annotation.WorkerThread
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.isVisible
-import androidx.databinding.BindingAdapter
 import androidx.dynamicanimation.animation.DynamicAnimation
 import androidx.dynamicanimation.animation.SpringAnimation
 import androidx.dynamicanimation.animation.SpringForce
@@ -166,28 +165,24 @@ inline fun <reified T : View> View.findSibling(): T? {
 val View.size: Size
     get() = Size(width, height)
 
-@set:BindingAdapter("isSelected")
 var View.isSelected
     get() = isSelected
     set(value) {
         isSelected = value
     }
 
-@set:BindingAdapter("visibleOrGone")
 var View.visibleOrGone
     get() = visibility == View.VISIBLE
     set(value) {
         visibility = if (value) View.VISIBLE else View.GONE
     }
 
-@set:BindingAdapter("invisibleOrGone")
 var View.invisibleOrGone
     get() = visibility == View.INVISIBLE
     set(value) {
         visibility = if (value) View.INVISIBLE else View.GONE
     }
 
-@set:BindingAdapter("visibleOrInvisible")
 var View.visibleOrInvisible
     get() = visibility == View.VISIBLE
     set(value) {
@@ -195,21 +190,18 @@ var View.visibleOrInvisible
     }
 
 
-@set:BindingAdapter("isActivated")
 var View.isActivated
     get() = isActivated
     set(value) {
         isActivated = value
     }
 
-@set:BindingAdapter("isEnabled")
 var View.isEnabled
     get() = isEnabled
     set(value) {
         isEnabled = value
     }
 
-@set:BindingAdapter("isEnabledAndDark")
 var View.isEnabledAndDark
     get() = isEnabled
     set(value) {
@@ -221,7 +213,6 @@ var View.isEnabledAndDark
         }
     }
 
-@set:BindingAdapter("isClickableAndDark")
 var View.isClickableAndDark
     get() = isClickable
     set(value) {
@@ -233,14 +224,12 @@ var View.isClickableAndDark
         }
     }
 
-@set:BindingAdapter("updateText")
 var TextView.updateText: CharSequence?
     get() = text
     set(value) {
         text = value
         requestLayout()
     }
-@set:BindingAdapter("updateTextOneLine")
 var TextView.updateTextOneLine: CharSequence?
     get() = text
     set(value) {
@@ -466,13 +455,6 @@ fun measureTextWidth(content: String, textSize: Float, resources: Resources): In
     val paint = TextPaint()
     paint.textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, textSize, resources.displayMetrics)
     return StaticLayout.getDesiredWidth(content, paint).toInt()
-}
-
-@BindingAdapter("shadowRadius", "shadowColor")
-fun TextView.binding_setShadow(radius: Float, @ColorInt color: Int) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        setShadowLayer(radius, 0F, 0F, color)
-    }
 }
 
 

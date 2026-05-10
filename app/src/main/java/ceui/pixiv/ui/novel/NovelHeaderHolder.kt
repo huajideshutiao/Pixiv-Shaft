@@ -34,7 +34,6 @@ class NovelHeaderViewHolder(bd: CellNovelHeaderBinding) :
     override fun onBindViewHolder(holder: NovelHeaderHolder, position: Int) {
         super.onBindViewHolder(holder, position)
         val liveNovel = ObjectPool.get<Novel>(holder.novelId)
-        binding.novel = liveNovel
         binding.bookmark.setOnClick {
             it.findActionReceiverOrNull<NovelActionReceiver>()
                 ?.onClickBookmarkNovel(it, holder.novelId)

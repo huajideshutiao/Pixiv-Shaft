@@ -2,6 +2,7 @@ package ceui.lisa.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -164,6 +165,14 @@ class FragmentLikeIllustHorizontal : BaseFragment<FragmentLikeIllustHorizontalBi
                     baseBind.progress.visibility = View.INVISIBLE
                 }
             })
+    }
+
+    override fun onCreateBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        attachToParent: Boolean
+    ): FragmentLikeIllustHorizontalBinding {
+        return FragmentLikeIllustHorizontalBinding.inflate(inflater, container, false)
     }
 
     companion object {

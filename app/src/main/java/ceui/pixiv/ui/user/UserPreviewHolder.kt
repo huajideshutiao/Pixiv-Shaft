@@ -51,10 +51,6 @@ class UserPreviewViewHolder(bd: CellUserPreviewBinding) :
     ListItemViewHolder<CellUserPreviewBinding, UserPreviewHolder>(bd) {
     override fun onBindViewHolder(holder: UserPreviewHolder, position: Int) {
         super.onBindViewHolder(holder, position)
-        binding.holder = holder
-        holder.userPreview.user?.id?.let {
-            binding.user = ObjectPool.get<User>(it)
-        }
         binding.root.setOnClickListener { sender ->
             holder.userPreview.user?.id?.let {
                 sender.findActionReceiverOrNull<UserActionReceiver>()?.onClickUser(it)

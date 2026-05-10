@@ -7,7 +7,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import androidx.databinding.ViewDataBinding;
+import androidx.viewbinding.ViewBinding;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.scwang.smart.refresh.footer.ClassicsFooter;
@@ -30,7 +30,7 @@ import ceui.lisa.notification.CommonReceiver;
 import ceui.lisa.utils.Common;
 import ceui.lisa.utils.Params;
 
-public abstract class ReceiverListFragment<Layout extends ViewDataBinding,
+public abstract class ReceiverListFragment<Layout extends ViewBinding,
         Response extends ListShow<Item>, Item> extends NetListFragment<Layout, Response, Item> {
 
     protected BroadcastReceiver mReceiver = null, dataReceiver = null, scrollReceiver = null;

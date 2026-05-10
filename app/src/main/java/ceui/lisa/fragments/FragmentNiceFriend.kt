@@ -1,6 +1,8 @@
 package ceui.lisa.fragments
 
 import ceui.lisa.R
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import ceui.lisa.adapters.BaseAdapter
 import ceui.lisa.adapters.UAdapter
 import ceui.lisa.core.RemoteRepo
@@ -15,6 +17,14 @@ class FragmentNiceFriend : NetListFragment<FragmentBaseListBinding, ListUser, Us
 
     override fun repository(): RemoteRepo<ListUser> {
         return NiceFriendRepo(mActivity.intent.getIntExtra(Params.USER_ID, 0))
+    }
+
+    override fun onCreateBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        attachToParent: Boolean
+    ): FragmentBaseListBinding {
+        return FragmentBaseListBinding.inflate(inflater, container, attachToParent)
     }
 
     override fun adapter(): BaseAdapter<UserPreviewsBean, RecyUserPreviewBinding> {
