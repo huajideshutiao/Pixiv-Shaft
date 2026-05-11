@@ -4,14 +4,14 @@ import ceui.lisa.core.RemoteRepo
 import ceui.lisa.http.Retro
 import ceui.lisa.model.ListIllust
 import ceui.lisa.utils.Params
-import io.reactivex.Observable
+import retrofit2.Call
 
 class UserIllustRepo @JvmOverloads constructor(
     private val userID: Int,
     private val initialOffset: Int = 0
 ) : RemoteRepo<ListIllust>() {
 
-    override fun initApi(): Observable<ListIllust> {
+    override fun initApi(): Call<ListIllust> {
         return if (initialOffset > 0) {
             Retro.getAppApi().getNextIllust(buildOffsetUrl(userID, Params.TYPE_ILLUST, initialOffset))
         } else {
@@ -19,7 +19,7 @@ class UserIllustRepo @JvmOverloads constructor(
         }
     }
 
-    override fun initNextApi(): Observable<ListIllust> {
+    override fun initNextApi(): Call<ListIllust> {
         return Retro.getAppApi().getNextIllust(nextUrl)
     }
 }

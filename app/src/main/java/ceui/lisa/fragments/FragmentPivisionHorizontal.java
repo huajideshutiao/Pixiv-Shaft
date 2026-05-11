@@ -3,9 +3,11 @@ package ceui.lisa.fragments;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
 import android.content.Intent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import java.util.List;
@@ -94,5 +96,14 @@ public class FragmentPivisionHorizontal extends NetListFragment<FragmentPivision
     public void showDataBase() {
         baseBind.refreshLayout.finishRefresh(true);
         emptyRela.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    protected FragmentPivisionHorizontalBinding onCreateBinding(
+        @NonNull LayoutInflater inflater,
+        ViewGroup container,
+        boolean attachToParent
+    ) {
+        return FragmentPivisionHorizontalBinding.inflate(inflater, container, false);
     }
 }

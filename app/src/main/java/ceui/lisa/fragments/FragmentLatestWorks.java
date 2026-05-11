@@ -1,6 +1,10 @@
 package ceui.lisa.fragments;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
 
 import ceui.lisa.adapters.BaseAdapter;
 import ceui.lisa.adapters.IAdapter;
@@ -48,5 +52,14 @@ public class FragmentLatestWorks extends NetListFragment<FragmentBaseListBinding
     @Override
     public void initRecyclerView() {
         staggerRecyclerView();
+    }
+
+    @Override
+    protected FragmentBaseListBinding onCreateBinding(
+        @NonNull LayoutInflater inflater,
+        ViewGroup container,
+        boolean attachToParent
+    ) {
+        return FragmentBaseListBinding.inflate(inflater, container, false);
     }
 }

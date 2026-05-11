@@ -2,10 +2,13 @@ package ceui.lisa.fragments;
 
 import android.text.InputType;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 
 import com.qmuiteam.qmui.skin.QMUISkinManager;
@@ -169,5 +172,14 @@ public class FragmentMutedTags extends LocalListFragment<FragmentBaseListBinding
                     .show();
         }
         return true;
+    }
+
+    @Override
+    protected FragmentBaseListBinding onCreateBinding(
+        @NonNull LayoutInflater inflater,
+        ViewGroup container,
+        boolean attachToParent
+    ) {
+        return FragmentBaseListBinding.inflate(inflater, container, false);
     }
 }

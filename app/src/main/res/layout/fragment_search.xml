@@ -149,6 +149,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/twelve_dp"
                             android:layout_marginEnd="@dimen/four_dp"
+                            app:alignItems="flex_start"
                             app:flexDirection="row"
                             app:flexWrap="wrap" />
 
@@ -176,6 +177,7 @@
                         android:layout_marginStart="@dimen/twelve_dp"
                         android:layout_marginEnd="@dimen/four_dp"
                         android:layout_marginBottom="@dimen/twelve_dp"
+                        app:alignItems="flex_start"
                         app:flexDirection="row"
                         app:flexWrap="wrap" />
 

@@ -1,6 +1,6 @@
 package ceui.lisa.update
 
-import io.reactivex.Observable
+import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -11,7 +11,7 @@ interface GitHubApi {
     fun getLatestRelease(
         @Path("owner") owner: String,
         @Path("repo") repo: String
-    ): Observable<GitHubRelease>
+    ): Call<GitHubRelease>
 
     @GET("repos/{owner}/{repo}/releases")
     fun getReleases(
@@ -19,7 +19,7 @@ interface GitHubApi {
         @Path("repo") repo: String,
         @Query("per_page") perPage: Int = 100,
         @Query("page") page: Int = 1
-    ): Observable<List<GitHubRelease>>
+    ): Call<List<GitHubRelease>>
 
     companion object {
         const val BASE_URL = "https://api.github.com/"

@@ -4,7 +4,7 @@ import android.text.TextUtils
 import ceui.lisa.core.RemoteRepo
 import ceui.lisa.http.Retro
 import ceui.lisa.model.ListNovel
-import io.reactivex.Observable
+import retrofit2.Call
 
 class LikeNovelRepo(
     private val userID: Int,
@@ -12,7 +12,7 @@ class LikeNovelRepo(
     var tag: String?,
 ) : RemoteRepo<ListNovel>() {
 
-    override fun initApi(): Observable<ListNovel> {
+    override fun initApi(): Call<ListNovel> {
         return if (TextUtils.isEmpty(tag)) {
             Retro.getAppApi().getUserLikeNovel(userID, starType)
         } else {
@@ -20,7 +20,7 @@ class LikeNovelRepo(
         }
     }
 
-    override fun initNextApi(): Observable<ListNovel> {
+    override fun initNextApi(): Call<ListNovel> {
         return Retro.getAppApi().getNextNovel(nextUrl)
     }
 }

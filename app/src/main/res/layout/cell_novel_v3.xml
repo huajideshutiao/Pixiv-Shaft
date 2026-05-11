@@ -230,6 +230,7 @@
             android:id="@+id/tags_flow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:alignItems="flex_start"
             app:flexWrap="wrap" />
     </LinearLayout>
 

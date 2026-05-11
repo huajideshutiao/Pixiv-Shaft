@@ -16,6 +16,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import ceui.lisa.R
+import ceui.lisa.core.executeCall
 import ceui.lisa.database.AppDatabase
 import ceui.lisa.databinding.ActivityNewUserBinding
 import ceui.lisa.fragments.FragmentHolder.Companion.newInstance
@@ -44,10 +45,9 @@ import com.bumptech.glide.Glide
 import com.github.ybq.android.spinkit.style.Wave
 import com.qmuiteam.qmui.skin.QMUISkinManager
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog.MenuDialogBuilder
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.function.Function
 import kotlin.math.abs
 
 class UActivity : BaseActivity<ActivityNewUserBinding>(), Display<UserDetailResponse> {
@@ -131,34 +131,42 @@ class UActivity : BaseActivity<ActivityNewUserBinding>(), Display<UserDetailResp
 
     override fun initData() {
         baseBind.progress.visibility = View.VISIBLE
-        Retro.getAppApi().getUserDetail(userId)
-            .subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : NullCtrl<UserDetailResponse>() {
+        executeCall(
+            Retro.getAppApi().getUserDetail(userId),
+            Function.identity(),
+            object : NullCtrl<UserDetailResponse>() {
                 override fun success(userResponse: UserDetailResponse) {
-                    ObjectPool.updateUser(userResponse.user!!)
-                    mUserViewModel.user.value = userResponse
-                    runCatching {
-                        val loxiaUser = Shaft.sGson.fromJson(Shaft.sGson.toJson(userResponse.user), ceui.loxia.User::class.java)
-                        (application as? ceui.loxia.ServicesProvider)?.entityWrapper?.visitUser(this@UActivity, loxiaUser)
+                    userResponse.user?.let {
+                        ObjectPool.updateUser(it)
+                        runCatching {
+                            val loxiaUser = Shaft.sGson.fromJson(
+                                Shaft.sGson.toJson(it),
+                                ceui.loxia.User::class.java
+                            )
+                            (application as? ceui.loxia.ServicesProvider)?.entityWrapper?.visitUser(
+                                this@UActivity,
+                                loxiaUser
+                            )
+                        }
+                        Shaft.appViewModel.updateFollowUserStatus(
+                            userId,
+                            if (it.is_followed)
+                                AppLevelViewModel.FollowUserStatus.FOLLOWED
+                            else
+                                AppLevelViewModel.FollowUserStatus.NOT_FOLLOW
+                        )
                     }
-                    Shaft.appViewModel.updateFollowUserStatus(
-                        userId,
-                        if (userResponse.user!!.is_followed)
-                            AppLevelViewModel.FollowUserStatus.FOLLOWED
-                        else
-                            AppLevelViewModel.FollowUserStatus.NOT_FOLLOW
-                    )
+                    mUserViewModel.user.value = userResponse
                 }
 
                 override fun must() {
                     baseBind.progress.visibility = View.INVISIBLE
                 }
             })
-        Retro.getAppApi().getFollowDetail(userId)
-            .subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : NullCtrl<UserFollowDetail>() {
+        executeCall(
+            Retro.getAppApi().getFollowDetail(userId),
+            Function.identity(),
+            object : NullCtrl<UserFollowDetail>() {
                 override fun success(userFollowDetail: UserFollowDetail) {
                     //mUserViewModel.getUserFollowDetail().setValue(userFollowDetail);
                     var followStatus = AppLevelViewModel.FollowUserStatus.NOT_FOLLOW
@@ -179,6 +187,7 @@ class UActivity : BaseActivity<ActivityNewUserBinding>(), Display<UserDetailResp
     }
 
     override operator fun invoke(data: UserDetailResponse) {
+        val user = data.user ?: return
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.fragment_container, newInstance())
@@ -192,19 +201,20 @@ class UActivity : BaseActivity<ActivityNewUserBinding>(), Display<UserDetailResp
         baseBind.moreAction.visibility = View.VISIBLE
         baseBind.moreAction.setOnClickListener { _: View? ->
             val isMuted = java.lang.Boolean.TRUE == mUserViewModel.isUserMuted.value
-            val totalIllusts = data.profile!!.total_illusts
-            val totalManga = data.profile!!.total_manga
+            val profile = data.profile ?: return@setOnClickListener
+            val totalIllusts = profile.total_illusts
+            val totalManga = profile.total_manga
 
             val labels = mutableListOf<String>()
             val actions = mutableListOf<() -> Unit>()
 
             if (totalIllusts > 0) {
                 labels.add("跳转到插画…")
-                actions.add { jumpTo(data.user!!.id, UserIllustJumpHelper.Kind.ILLUST, "插画作品") }
+                actions.add { jumpTo(user.id, UserIllustJumpHelper.Kind.ILLUST, "插画作品") }
             }
             if (totalManga > 0) {
                 labels.add("跳转到漫画…")
-                actions.add { jumpTo(data.user!!.id, UserIllustJumpHelper.Kind.MANGA, "漫画作品") }
+                actions.add { jumpTo(user.id, UserIllustJumpHelper.Kind.MANGA, "漫画作品") }
             }
             if (!isSelf) {
                 labels.add(
@@ -213,10 +223,10 @@ class UActivity : BaseActivity<ActivityNewUserBinding>(), Display<UserDetailResp
                 )
                 actions.add {
                     if (isMuted) {
-                        PixivOperate.unMuteUser(data.user!!)
+                        PixivOperate.unMuteUser(user)
                         mUserViewModel.isUserMuted.setValue(false)
                     } else {
-                        PixivOperate.muteUser(data.user!!)
+                        PixivOperate.muteUser(user)
                         mUserViewModel.isUserMuted.setValue(true)
                     }
                     mUserViewModel.refreshEvent.setValue(Event(100, 0L))
@@ -236,37 +246,37 @@ class UActivity : BaseActivity<ActivityNewUserBinding>(), Display<UserDetailResp
         val animation: Animation = AlphaAnimation(0.0f, 1.0f)
         animation.duration = 800L
         baseBind.centerHeader.startAnimation(animation)
-        if (data.user!!.is_premium) {
+        if (user.is_premium) {
             baseBind.vipImage.visibility = View.VISIBLE
         } else {
             baseBind.vipImage.visibility = View.GONE
         }
-        val bannerUrl = data.profile!!.background_image_url
+        val bannerUrl = data.profile?.background_image_url
         if (!bannerUrl.isNullOrEmpty()) {
             Glide.with(mContext).load(GlideUtil.getUrl(bannerUrl)).into(baseBind.imageview)
             baseBind.bannerOverlay.visibility = View.VISIBLE
             baseBind.imageview.setOnClickListener {
-                openImageDetail(bannerUrl, "user_${data.user!!.id}_profile_banner")
+                openImageDetail(bannerUrl, "user_${user.id}_profile_banner")
             }
         }
-        Glide.with(mContext).load(GlideUtil.getHead(data.user!!)).into(baseBind.userHead)
-        val avatarUrl = data.user!!.profile_image_urls?.maxImage
+        Glide.with(mContext).load(GlideUtil.getHead(user)).into(baseBind.userHead)
+        val avatarUrl = user.profile_image_urls?.maxImage
         if (!avatarUrl.isNullOrEmpty()) {
             baseBind.userHead.setOnClickListener {
-                openImageDetail(avatarUrl, "user_${data.user!!.id}_avatar")
+                openImageDetail(avatarUrl, "user_${user.id}_avatar")
             }
         }
-        baseBind.userName.text = data.user!!.name
-        baseBind.userName.setOnClickListener { Common.copy(mContext, data.user!!.id.toString()) }
+        baseBind.userName.text = user.name
+        baseBind.userName.setOnClickListener { Common.copy(mContext, user.id.toString()) }
         baseBind.userName.setOnLongClickListener {
-            Common.copy(mContext, data.user!!.name)
+            Common.copy(mContext, user.name)
             true
         }
-        baseBind.followCount.text = data.profile!!.total_follow_users.toString()
-        baseBind.pFriend.text = data.profile!!.total_mypixiv_users.toString()
+        baseBind.followCount.text = data.profile?.total_follow_users?.toString() ?: "0"
+        baseBind.pFriend.text = data.profile?.total_mypixiv_users?.toString() ?: "0"
         val pFriend = View.OnClickListener {
             val intent = Intent(mContext, ContainerActivity::class.java)
-            intent.putExtra(Params.USER_ID, data.user!!.id)
+            intent.putExtra(Params.USER_ID, user.id)
             intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "好P友")
             startActivity(intent)
         }
@@ -274,7 +284,7 @@ class UActivity : BaseActivity<ActivityNewUserBinding>(), Display<UserDetailResp
         baseBind.pFriendS.setOnClickListener(pFriend)
         val follow = View.OnClickListener {
             val intent = Intent(mContext, ContainerActivity::class.java)
-            intent.putExtra(Params.USER_ID, data.user!!.id)
+            intent.putExtra(Params.USER_ID, user.id)
             intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "正在关注")
             startActivity(intent)
         }

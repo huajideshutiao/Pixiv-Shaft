@@ -1,5 +1,7 @@
 package ceui.lisa.http;
 
+import android.util.Log;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -15,8 +17,6 @@ import ceui.pixiv.session.SessionManager;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
-
-import android.util.Log;
 
 /**
  * 检测到 400 OAuth 过期时自动用 refresh_token 换新 access_token，并重放原请求。
@@ -77,11 +77,11 @@ public class TokenInterceptor implements Interceptor {
             PixivOAuthResponse response = PixivLogin.INSTANCE.refreshTokenBlocking(refreshToken);
             UserModel cached = Local.getUser();
             if (cached != null) {
-                cached.setAccess_token(response.getAccessToken());
-                cached.setRefresh_token(response.getRefreshToken());
-                cached.setExpires_in(response.getExpiresIn());
+                cached.access_token = response.getAccessToken();
+                cached.refresh_token = response.getRefreshToken();
+                cached.expires_in = response.getExpiresIn();
                 if (cached.getUser() != null) {
-                    cached.getUser().setIs_login(true);
+                    cached.getUser().set_login(true);
                 }
                 Local.saveUser(cached);
             } else {

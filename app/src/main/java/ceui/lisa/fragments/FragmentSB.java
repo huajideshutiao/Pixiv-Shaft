@@ -1,12 +1,16 @@
 package ceui.lisa.fragments;
 
+import static ceui.lisa.core.CallExtKt.executeCall;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -21,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
 import ceui.lisa.R;
 import ceui.lisa.activities.Shaft;
@@ -37,8 +42,6 @@ import ceui.lisa.models.TagsBean;
 import ceui.lisa.repo.SelectTagRepo;
 import ceui.lisa.utils.Common;
 import ceui.lisa.utils.Params;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 public class FragmentSB extends NetListFragment<FragmentSelectTagBinding,
         ListBookmarkTag, TagsBean> {
@@ -114,11 +117,12 @@ public class FragmentSB extends NetListFragment<FragmentSelectTagBinding,
             boolean isPrivate = baseBind.isPrivate.isChecked();
             String toastMsg = isPrivate ? getString(R.string.like_novel_success_private) : getString(R.string.like_novel_success_public);
             if(type.equals(Params.TYPE_ILLUST)){
-                Retro.getAppApi().postLikeIllust(illustID,
-                        isPrivate ? Params.TYPE_PRIVATE : Params.TYPE_PUBLIC)
-                        .subscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new ErrorCtrl<NullResponse>() {
+                executeCall(
+                    Retro.getAppApi().postLikeIllust(
+                        illustID,
+                        isPrivate ? Params.TYPE_PRIVATE : Params.TYPE_PUBLIC
+                    ),
+                    Function.identity(), new ErrorCtrl<NullResponse>() {
                             @Override
                             public void next(NullResponse nullResponse) {
                                 Common.showToast(toastMsg);
@@ -126,11 +130,12 @@ public class FragmentSB extends NetListFragment<FragmentSelectTagBinding,
                             }
                         });
             }else if(type.equals(Params.TYPE_NOVEL)){
-                Retro.getAppApi().postLikeNovel(illustID,
-                        isPrivate ? Params.TYPE_PRIVATE : Params.TYPE_PUBLIC)
-                        .subscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new ErrorCtrl<NullResponse>() {
+                executeCall(
+                    Retro.getAppApi().postLikeNovel(
+                        illustID,
+                        isPrivate ? Params.TYPE_PRIVATE : Params.TYPE_PUBLIC
+                    ),
+                    Function.identity(), new ErrorCtrl<NullResponse>() {
                             @Override
                             public void next(NullResponse nullResponse) {
                                 Common.showToast(toastMsg);
@@ -145,11 +150,12 @@ public class FragmentSB extends NetListFragment<FragmentSelectTagBinding,
             tempList.toArray(strings);
 
             if(type.equals(Params.TYPE_ILLUST)){
-                Retro.getAppApi().postLikeIllustWithTags(illustID,
-                        isPrivate ? Params.TYPE_PRIVATE : Params.TYPE_PUBLIC, strings)
-                        .subscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new ErrorCtrl<NullResponse>() {
+                executeCall(
+                    Retro.getAppApi().postLikeIllustWithTags(
+                        illustID,
+                        isPrivate ? Params.TYPE_PRIVATE : Params.TYPE_PUBLIC, strings
+                    ),
+                    Function.identity(), new ErrorCtrl<NullResponse>() {
                             @Override
                             public void next(NullResponse nullResponse) {
                                 Common.showToast(toastMsg);
@@ -157,11 +163,12 @@ public class FragmentSB extends NetListFragment<FragmentSelectTagBinding,
                             }
                         });
             }else if(type.equals(Params.TYPE_NOVEL)){
-                Retro.getAppApi().postLikeNovelWithTags(illustID,
-                        isPrivate ? Params.TYPE_PRIVATE : Params.TYPE_PUBLIC, strings)
-                        .subscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new ErrorCtrl<NullResponse>() {
+                executeCall(
+                    Retro.getAppApi().postLikeNovelWithTags(
+                        illustID,
+                        isPrivate ? Params.TYPE_PRIVATE : Params.TYPE_PUBLIC, strings
+                    ),
+                    Function.identity(), new ErrorCtrl<NullResponse>() {
                             @Override
                             public void next(NullResponse nullResponse) {
                                 Common.showToast(toastMsg);
@@ -314,4 +321,13 @@ public class FragmentSB extends NetListFragment<FragmentSelectTagBinding,
 //                    }
 //                });
 //    }
+
+    @Override
+    protected FragmentSelectTagBinding onCreateBinding(
+        @NonNull LayoutInflater inflater,
+        ViewGroup container,
+        boolean attachToParent
+    ) {
+        return FragmentSelectTagBinding.inflate(inflater, container, false);
+    }
 }

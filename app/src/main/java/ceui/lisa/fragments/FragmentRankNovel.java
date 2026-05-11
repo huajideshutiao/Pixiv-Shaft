@@ -1,6 +1,10 @@
 package ceui.lisa.fragments;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
 
 import ceui.lisa.adapters.BaseAdapter;
 import ceui.lisa.adapters.NAdapter;
@@ -49,5 +53,14 @@ public class FragmentRankNovel extends NetListFragment<FragmentBaseListBinding,
     @Override
     public BaseAdapter<NovelBean, RecyNovelBinding> adapter() {
         return new NAdapter(allItems, mContext);
+    }
+
+    @Override
+    protected FragmentBaseListBinding onCreateBinding(
+        @NonNull LayoutInflater inflater,
+        ViewGroup container,
+        boolean attachToParent
+    ) {
+        return FragmentBaseListBinding.inflate(inflater, container, false);
     }
 }

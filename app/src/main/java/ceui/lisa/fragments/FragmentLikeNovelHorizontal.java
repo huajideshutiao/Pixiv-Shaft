@@ -15,12 +15,15 @@ import androidx.recyclerview.widget.PagerSnapHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import android.view.LayoutInflater;
 
 import ceui.lisa.R;
 import ceui.lisa.activities.ContainerActivity;
 import ceui.lisa.adapters.NHAdapter;
+
+import static ceui.lisa.core.CallExtKt.executeCall;
 import ceui.lisa.databinding.FragmentLikeIllustHorizontalBinding;
 import ceui.lisa.http.NullCtrl;
 import ceui.lisa.http.Retro;
@@ -30,15 +33,13 @@ import ceui.lisa.models.NovelBean;
 import ceui.lisa.utils.DensityUtil;
 import ceui.lisa.utils.Params;
 import ceui.lisa.view.LinearItemHorizontalDecoration;
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
+import retrofit2.Call;
 
 public class FragmentLikeNovelHorizontal extends BaseFragment<FragmentLikeIllustHorizontalBinding> {
 
     private final List<NovelBean> allItems = new ArrayList<>();
     private NHAdapter mAdapter;
-    private int type; // 0某人收藏的小说，1某人创作的小说
+    private int type;
     private int userID;
     private int novelSize;
 
@@ -129,7 +130,7 @@ public class FragmentLikeNovelHorizontal extends BaseFragment<FragmentLikeIllust
 
     @Override
     protected void initData() {
-        Observable<ListNovel> mApi;
+        Call<ListNovel> mApi;
         if (type == 0) {
             mApi = Retro.getAppApi().getUserLikeNovel(
                     userID, Params.TYPE_PUBLIC);
@@ -137,9 +138,8 @@ public class FragmentLikeNovelHorizontal extends BaseFragment<FragmentLikeIllust
             mApi = Retro.getAppApi().getUserSubmitNovel(
                     userID);
         }
-        mApi.subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new NullCtrl<ListNovel>() {
+        executeCall(
+            mApi, Function.identity(), new NullCtrl<ListNovel>() {
                     @Override
                     public void success(ListNovel listNovel) {
                         if (listNovel.getList().size() > 0) {

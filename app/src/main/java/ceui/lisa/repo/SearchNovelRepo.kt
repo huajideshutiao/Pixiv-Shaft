@@ -6,7 +6,7 @@ import ceui.lisa.http.Retro
 import ceui.lisa.model.ListNovel
 import ceui.lisa.utils.PixivSearchParamUtil
 import ceui.lisa.viewmodel.SearchModel
-import io.reactivex.Observable
+import retrofit2.Call
 
 class SearchNovelRepo(
     var keyword: String?,
@@ -19,7 +19,7 @@ class SearchNovelRepo(
     private var r18Restriction: Int?
 ) : RemoteRepo<ListNovel>() {
 
-    override fun initApi(): Observable<ListNovel> {
+    override fun initApi(): Call<ListNovel> {
         val assembledKeyword: String = (keyword + when {
             TextUtils.isEmpty(starSize) -> ""
             else -> " $starSize"
@@ -46,7 +46,7 @@ class SearchNovelRepo(
         }
     }
 
-    override fun initNextApi(): Observable<ListNovel> {
+    override fun initNextApi(): Call<ListNovel> {
         return Retro.getAppApi().getNextNovel(nextUrl)
     }
 

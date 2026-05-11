@@ -2,9 +2,12 @@ package ceui.lisa.fragments;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -170,5 +173,14 @@ public class FragmentUserIllust extends NetListFragment<FragmentBaseListBinding,
     @Override
     public void initRecyclerView() {
         staggerRecyclerView();
+    }
+
+    @Override
+    protected FragmentBaseListBinding onCreateBinding(
+        @NonNull LayoutInflater inflater,
+        ViewGroup container,
+        boolean attachToParent
+    ) {
+        return FragmentBaseListBinding.inflate(inflater, container, false);
     }
 }

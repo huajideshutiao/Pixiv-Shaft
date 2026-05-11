@@ -5,13 +5,15 @@ import android.content.Intent;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import ceui.lisa.activities.Shaft;
+
+import static ceui.lisa.core.CallExtKt.executeCall;
 import ceui.lisa.http.ErrorCtrl;
 import ceui.lisa.http.Retro;
 import ceui.lisa.models.NullResponse;
 import ceui.lisa.utils.Params;
 import ceui.pixiv.widgets.RateAppManager;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
+
+import java.util.function.Function;
 
 public class BatchFollowTask extends AbstractTask {
 
@@ -31,11 +33,11 @@ public class BatchFollowTask extends AbstractTask {
     @Override
     public void run(IEnd end) {
         if (starType == 0) {
-            Retro.getAppApi().postFollow(
-                    userID, Params.TYPE_PUBLIC)
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new ErrorCtrl<NullResponse>() {
+            executeCall(
+                Retro.getAppApi().postFollow(
+                    userID, Params.TYPE_PUBLIC),
+                Function.identity(),
+                new ErrorCtrl<NullResponse>() {
                         @Override
                         public void next(NullResponse nullResponse) {
                             RateAppManager.INSTANCE.onUserEngaged();
@@ -51,11 +53,9 @@ public class BatchFollowTask extends AbstractTask {
                         }
                     });
         } else {
-            Retro.getAppApi().postUnFollow(
-                    userID)
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new ErrorCtrl<NullResponse>() {
+            executeCall(
+                Retro.getAppApi().postUnFollow(
+                    userID), Function.identity(), new ErrorCtrl<NullResponse>() {
                         @Override
                         public void next(NullResponse nullResponse) {
                             Intent intent = new Intent(Params.LIKED_USER);

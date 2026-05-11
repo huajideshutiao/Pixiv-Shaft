@@ -3,7 +3,7 @@ package ceui.lisa.http;
 import org.json.JSONArray;
 
 import ceui.lisa.model.ListIllust;
-import io.reactivex.Observable;
+import retrofit2.Call;
 import okhttp3.Cookie;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
@@ -25,6 +25,7 @@ public interface LofterApi {
      * */
 
     @GET("post/detail.api?product=lofter-android-7.3.4&targetblogid=4646138&supportposttypes=1,2,3,4,5,6&offset=0&postdigestnew=1&postid=11746220052&blogId=4646138&checkpwd=1&needgetpoststat=1")
-    Observable<ListIllust> getLofterRank(@Header("User-Agent") String header,
+    Call<ListIllust> getLofterRank(
+        @Header("User-Agent") String header,
                             @Header("Cookie") String cookie);
 }

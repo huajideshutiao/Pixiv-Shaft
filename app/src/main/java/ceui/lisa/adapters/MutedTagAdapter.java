@@ -39,7 +39,7 @@ public class MutedTagAdapter extends BaseAdapter<TagsBean, RecyMutedTagBinding> 
         bindView.baseBind.sideDecorator.setVisibility(allItems.get(position).getFilter_mode() != 0 ? View.VISIBLE : View.GONE);
 
         bindView.baseBind.isEffective.setOnCheckedChangeListener(null);
-        bindView.baseBind.isEffective.setChecked(target.isEffective());
+        bindView.baseBind.isEffective.setChecked(target.getEffective());
         bindView.baseBind.isEffective.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

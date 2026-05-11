@@ -23,33 +23,43 @@ class KspItemHolderProcessor(
 
     @OptIn(KspExperimental::class)
     override fun process(resolver: Resolver): List<KSAnnotated> {
-        val symbols = resolver.getSymbolsWithAnnotation(ItemHolder::class.qualifiedName!!)
+        val symbols = resolver.getSymbolsWithAnnotation("ceui.lisa.annotations.ItemHolder")
             .filterIsInstance<KSClassDeclaration>()
+            .toList()
 
-        if (!symbols.iterator().hasNext()) return emptyList()
+        if (symbols.isEmpty()) return emptyList()
 
         val holderEntries = mutableListOf<HolderEntry>()
         symbols.forEach { symbol ->
             if (symbol.validate()) {
                 val annotation = symbol.getAnnotationsByType(ItemHolder::class).firstOrNull()
                 if (annotation != null) {
-                    // In KSP, getting KClass from annotation is tricky. 
-                    // We often use KSAnnotation and get the value as KSType.
                     val ksAnnotation = symbol.annotations.find {
                         it.shortName.asString() == "ItemHolder"
                     }
                     val itemHolderType = ksAnnotation?.arguments?.find {
-                        it.name?.asString() == "itemHolderCls"
+                        it.name?.asString() == "itemHolderCls" || it.name == null
                     }?.value as? KSType
 
                     val itemHolderFullName =
                         itemHolderType?.declaration?.qualifiedName?.asString() ?: ""
+
+                    if (itemHolderFullName.isEmpty()) {
+                        logger.warn("ItemHolder type not resolved for ${symbol.simpleName.asString()}")
+                        return@forEach
+                    }
+
                     val itemHolderName = itemHolderFullName.split(".").last()
-                    val holderPackage = itemHolderFullName.substringBeforeLast(".", "") + "."
 
                     val primaryConstructor = symbol.primaryConstructor
                     val bindingType = primaryConstructor?.parameters?.firstOrNull()?.type?.resolve()
                     val bindingFullName = bindingType?.declaration?.qualifiedName?.asString() ?: ""
+
+                    if (bindingFullName.isEmpty()) {
+                        logger.warn("Binding type not resolved for ${symbol.simpleName.asString()}")
+                        return@forEach
+                    }
+
                     val bindingName = bindingFullName.split(".").last()
 
                     holderEntries.add(
@@ -74,7 +84,7 @@ class KspItemHolderProcessor(
 
     private fun generateFile(holderEntries: List<HolderEntry>) {
         val packageName = "ceui.pixiv.ui.viewholdermap"
-        val fileName = "ViewHolderMap"
+        val fileName = "ViewHolderFactory"
         val file: OutputStream = codeGenerator.createNewFile(
             Dependencies(false),
             packageName,

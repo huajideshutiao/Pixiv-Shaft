@@ -1,8 +1,11 @@
 package ceui.lisa.fragments;
 
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 
 import com.qmuiteam.qmui.skin.QMUISkinManager;
@@ -87,5 +90,14 @@ public class FragmentMutedObjects extends LocalListFragment<FragmentBaseListBind
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         return false;
+    }
+
+    @Override
+    protected FragmentBaseListBinding onCreateBinding(
+        @NonNull LayoutInflater inflater,
+        ViewGroup container,
+        boolean attachToParent
+    ) {
+        return FragmentBaseListBinding.inflate(inflater, container, false);
     }
 }

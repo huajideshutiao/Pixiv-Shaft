@@ -12,6 +12,7 @@ import ceui.lisa.activities.ContainerActivity
 import ceui.lisa.adapters.LAdapter
 import ceui.lisa.core.Container
 import ceui.lisa.core.PageData
+import ceui.lisa.core.executeCall
 import ceui.lisa.databinding.FragmentLikeIllustHorizontalBinding
 import ceui.lisa.helper.UserIllustJumpHelper
 import ceui.lisa.http.NullCtrl
@@ -23,17 +24,16 @@ import ceui.lisa.utils.DensityUtil
 import ceui.lisa.utils.Params
 import ceui.lisa.view.LinearItemHorizontalDecoration
 import com.github.ybq.android.spinkit.style.Wave
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator
+import retrofit2.Call
+import java.util.function.Function
 
 class FragmentLikeIllustHorizontal : BaseFragment<FragmentLikeIllustHorizontalBinding>() {
 
     private val allItems = mutableListOf<IllustsBean>()
     private var mUserDetailResponse: UserDetailResponse? = null
     private var mAdapter: LAdapter? = null
-    private var type: Int = 0 // 1插画收藏    2插画作品     3漫画作品
+    private var type: Int = 0
 
     override fun initBundle(bundle: Bundle) {
         mUserDetailResponse = bundle.getSerializable(Params.CONTENT) as? UserDetailResponse
@@ -141,16 +141,15 @@ class FragmentLikeIllustHorizontal : BaseFragment<FragmentLikeIllustHorizontalBi
 
     override fun initData() {
         val userID = mUserDetailResponse?.user?.id ?: return
-        val api: Observable<ListIllust>? = when (type) {
+        val api: Call<ListIllust>? = when (type) {
             1 -> Retro.getAppApi().getUserLikeIllust(userID, Params.TYPE_PUBLIC)
             2 -> Retro.getAppApi().getUserSubmitIllust(userID, Params.TYPE_ILLUST)
             3 -> Retro.getAppApi().getUserSubmitIllust(userID, Params.TYPE_MANGA)
             else -> null
         }
 
-        api?.subscribeOn(Schedulers.newThread())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : NullCtrl<ListIllust>() {
+        api?.let {
+            executeCall(it, Function.identity(), object : NullCtrl<ListIllust>() {
                 override fun success(listIllust: ListIllust) {
                     allItems.clear()
                     if (listIllust.list.size > 10) {
@@ -165,6 +164,7 @@ class FragmentLikeIllustHorizontal : BaseFragment<FragmentLikeIllustHorizontalBi
                     baseBind.progress.visibility = View.INVISIBLE
                 }
             })
+        }
     }
 
     override fun onCreateBinding(

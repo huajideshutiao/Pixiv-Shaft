@@ -1,12 +1,16 @@
 package ceui.lisa.fragments;
 
 import android.content.Intent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.recyclerview.widget.LinearLayoutManager;
 import ceui.lisa.R;
 import ceui.lisa.activities.Shaft;
 import ceui.lisa.activities.UActivity;
@@ -116,5 +120,14 @@ public class FragmentRecmdUserHorizontal extends NetListFragment<FragmentUserHor
                 baseBind.refreshLayout.setEnableLoadMore(false);
             }
         });
+    }
+
+    @Override
+    protected FragmentUserHorizontalBinding onCreateBinding(
+        @NonNull LayoutInflater inflater,
+        ViewGroup container,
+        boolean attachToParent
+    ) {
+        return FragmentUserHorizontalBinding.inflate(inflater, container, false);
     }
 }

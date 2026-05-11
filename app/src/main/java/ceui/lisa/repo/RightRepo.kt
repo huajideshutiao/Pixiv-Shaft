@@ -11,16 +11,16 @@ import ceui.lisa.view.MyDeliveryHeader
 import com.scwang.smart.refresh.footer.ClassicsFooter
 import com.scwang.smart.refresh.layout.api.RefreshFooter
 import com.scwang.smart.refresh.layout.api.RefreshHeader
-import io.reactivex.Observable
-import io.reactivex.functions.Function
+import retrofit2.Call
+import java.util.function.Function
 
 class RightRepo(var restrict: String?) : RemoteRepo<ListIllust>() {
 
-    override fun initApi(): Observable<ListIllust> {
+    override fun initApi(): Call<ListIllust> {
         return Retro.getAppApi().getFollowUserIllust(restrict)
     }
 
-    override fun initNextApi(): Observable<ListIllust> {
+    override fun initNextApi(): Call<ListIllust> {
         return Retro.getAppApi().getNextIllust(nextUrl)
     }
 

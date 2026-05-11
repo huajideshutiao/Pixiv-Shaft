@@ -13,24 +13,20 @@ import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
-import ceui.lisa.databinding.RecySingleLineTextNewBinding
 import androidx.fragment.app.Fragment
 import ceui.lisa.R
-import ceui.lisa.activities.Shaft
 import ceui.lisa.databinding.SmallTagCellBinding
 import ceui.lisa.databinding.TagCellBinding
 import ceui.lisa.models.TagsBean
-import ceui.lisa.utils.Dev
 import ceui.loxia.ObjectType
 import ceui.loxia.Tag
-import ceui.loxia.WebTag
 import ceui.loxia.findActionReceiverOrNull
 import ceui.loxia.findFragmentOrNull
 import ceui.loxia.hideKeyboard
-import ceui.pixiv.utils.ColorRandom
 import ceui.pixiv.utils.ShapedDrawables
 import ceui.pixiv.utils.getIntColor
-import com.blankj.utilcode.util.ColorUtils
+import com.google.android.flexbox.AlignItems
+import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayout
 
 class TagsFlowView(context: Context, attrs: AttributeSet?, defStyle: Int)
@@ -51,6 +47,8 @@ class TagsFlowView(context: Context, attrs: AttributeSet?, defStyle: Int)
         tagsMaxLines = line
     }
     init {
+        alignItems = AlignItems.FLEX_START
+        flexWrap = FlexWrap.WRAP
         val ta = context.obtainStyledAttributes(attrs, R.styleable.TagsFlowView)
         style = ta.getInt(R.styleable.TagsFlowView_tfv_style, Style.NORMAL)
         _cellClickable = ta.getBoolean(R.styleable.TagsFlowView_tfv_cell_clickable, true)

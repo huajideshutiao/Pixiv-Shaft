@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import ceui.lisa.activities.ContainerActivity;
 import ceui.lisa.activities.MainActivity;
-import io.reactivex.disposables.Disposable;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 
@@ -27,7 +26,7 @@ public class ReverseWebviewCallback implements ReverseImage.Callback {
     }
 
     @Override
-    public void onSubscribe(Disposable d) {
+    public void onSubscribe() {
         Common.showToast("Loading");
     }
 

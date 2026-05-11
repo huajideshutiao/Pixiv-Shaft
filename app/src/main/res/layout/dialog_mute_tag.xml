@@ -21,6 +21,7 @@
             android:layout_marginStart="@dimen/eight_dp"
             android:layout_marginEnd="@dimen/eight_dp"
             android:layout_height="wrap_content"
+            app:alignItems="flex_start"
             app:flexWrap="wrap" />
 
         <RelativeLayout

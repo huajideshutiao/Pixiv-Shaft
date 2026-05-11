@@ -109,11 +109,11 @@ public class UAdapter extends BaseAdapter<UserPreviewsBean, RecyUserPreviewBindi
                     if (allItems.get(position).getUser().isIs_followed()) {
                         PixivOperate.postUnFollowUser(allItems.get(position).getUser().getId());
                         Button postFollow = ((Button) v);
-                        allItems.get(position).getUser().setIs_followed(false);
+                        allItems.get(position).getUser().set_followed(false);
                         postFollow.setText(mContext.getString(R.string.post_follow));
                     } else {
                         PixivOperate.postFollowUser(allItems.get(position).getUser().getId(), Params.TYPE_PUBLIC);
-                        allItems.get(position).getUser().setIs_followed(true);
+                        allItems.get(position).getUser().set_followed(true);
                         Button postFollow = ((Button) v);
                         postFollow.setText(mContext.getString(R.string.post_unfollow));
                     }
@@ -142,7 +142,7 @@ public class UAdapter extends BaseAdapter<UserPreviewsBean, RecyUserPreviewBindi
         for (int i = 0; i < allItems.size(); i++) {
             if (allItems.get(i).getUser().getId() == id) {
                 //设置这个用户为已关注状态
-                allItems.get(i).getUser().setIs_followed(isLike);
+                allItems.get(i).getUser().set_followed(isLike);
                 if (headerSize() != 0) {//如果有header
                     notifyItemChanged(i + headerSize());
                 } else { //没有header

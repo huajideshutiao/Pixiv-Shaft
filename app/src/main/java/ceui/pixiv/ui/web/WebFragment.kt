@@ -6,8 +6,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Base64
 import android.view.ContextMenu
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
@@ -26,7 +24,6 @@ import ceui.lisa.activities.OutWakeActivity
 import ceui.lisa.activities.Shaft
 import ceui.lisa.databinding.FragmentWebBinding
 import ceui.lisa.utils.ClipBoardUtils
-import ceui.lisa.utils.Common
 import ceui.lisa.utils.Params
 import ceui.loxia.ClientManager
 import ceui.loxia.CsrfTokenProvider
@@ -192,6 +189,15 @@ class WebFragment : PixivFragment(R.layout.fragment_web) {
                         }
                     } else {
                         return false
+                    }
+                } else if (destiny.startsWith("pixiv://") || destiny.startsWith("shaftintent://")) {
+                    return try {
+                        val intent = Intent(requireContext(), OutWakeActivity::class.java)
+                        intent.setData(uri)
+                        startActivity(intent)
+                        true
+                    } catch (e: Exception) {
+                        false
                     }
                 } else if (destiny.contains("intent://account/")) {
                     return try {

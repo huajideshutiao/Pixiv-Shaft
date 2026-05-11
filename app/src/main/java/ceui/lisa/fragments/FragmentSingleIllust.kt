@@ -158,7 +158,7 @@ class FragmentSingleIllust : BaseFragment<FragmentSingleIllustBinding>() {
 
         baseBind.toolbar.setNavigationOnClickListener { finish() }
 
-        if (illust.id == 0 || !illust.isVisible) {
+        if (illust.id == 0 || !illust.visible) {
             Common.showToast(R.string.string_206)
             baseBind.refreshLayout.visibility = View.INVISIBLE
             finish()

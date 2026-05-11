@@ -1,5 +1,10 @@
 package ceui.lisa.fragments;
 
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+
 import java.util.List;
 
 import ceui.lisa.R;
@@ -58,5 +63,14 @@ public class FragmentRecmdUser extends NetListFragment<FragmentBaseListBinding,
             mRemoteRepo.setNextUrl(outerNextUrl);
         }
         super.lazyData();
+    }
+
+    @Override
+    protected FragmentBaseListBinding onCreateBinding(
+        @NonNull LayoutInflater inflater,
+        ViewGroup container,
+        boolean attachToParent
+    ) {
+        return FragmentBaseListBinding.inflate(inflater, container, false);
     }
 }

@@ -2,6 +2,7 @@ package ceui.lisa.fragments;
 
 import android.content.Intent;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -16,7 +17,6 @@ import ceui.lisa.activities.MainActivity;
 import ceui.lisa.activities.Shaft;
 import ceui.lisa.databinding.FragmentNewCenterBinding;
 import ceui.lisa.interfaces.VolumeKeyHandler;
-import ceui.lisa.utils.Dev;
 
 public class FragmentCenter extends SwipeFragment<FragmentNewCenterBinding> implements
     VolumeKeyHandler {
@@ -30,11 +30,10 @@ public class FragmentCenter extends SwipeFragment<FragmentNewCenterBinding> impl
 
     @Override
     protected void initView() {
-        if (Dev.hideMainActivityStatus) {
-            ViewGroup.LayoutParams headParams = baseBind.head.getLayoutParams();
-            headParams.height = Shaft.statusHeight;
-            baseBind.head.setLayoutParams(headParams);
-        }
+        ViewGroup.LayoutParams headParams = baseBind.head.getLayoutParams();
+        headParams.height = Shaft.statusHeight;
+        baseBind.head.setLayoutParams(headParams);
+        baseBind.head.setVisibility(View.VISIBLE);
 
         baseBind.toolbar.inflateMenu(R.menu.fragment_left);
         baseBind.toolbar.setNavigationOnClickListener(v -> {

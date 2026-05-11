@@ -24,7 +24,7 @@ data class IllustsBean(
     var total_bookmarks: Int = 0,
     var illust_ai_type: Int = 0,
     @get:JvmName("isIs_bookmarked") var is_bookmarked: Boolean = false,
-    var isVisible: Boolean = false,
+    @get:JvmName("isVisible") var visible: Boolean = false,
     var is_muted: Boolean = false,
     var tags: List<TagsBean>? = null,
     var tools: List<String>? = null,

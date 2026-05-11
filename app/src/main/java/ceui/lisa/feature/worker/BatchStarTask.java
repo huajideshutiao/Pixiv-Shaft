@@ -5,12 +5,14 @@ import android.content.Intent;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import ceui.lisa.activities.Shaft;
+
+import static ceui.lisa.core.CallExtKt.executeCall;
 import ceui.lisa.http.ErrorCtrl;
 import ceui.lisa.http.Retro;
 import ceui.lisa.models.NullResponse;
 import ceui.lisa.utils.Params;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
+
+import java.util.function.Function;
 
 public class BatchStarTask extends AbstractTask {
 
@@ -30,10 +32,10 @@ public class BatchStarTask extends AbstractTask {
     @Override
     public void run(IEnd end) {
         if (starType == 0) {
-            Retro.getAppApi().postLikeIllust(illustID, Params.TYPE_PUBLIC)
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new ErrorCtrl<NullResponse>() {
+            executeCall(
+                Retro.getAppApi().postLikeIllust(illustID, Params.TYPE_PUBLIC),
+                Function.identity(),
+                new ErrorCtrl<NullResponse>() {
                         @Override
                         public void next(NullResponse nullResponse) {
                             Intent intent = new Intent(Params.LIKED_ILLUST);
@@ -48,10 +50,10 @@ public class BatchStarTask extends AbstractTask {
                         }
                     });
         } else {
-            Retro.getAppApi().postDislikeIllust(illustID)
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new ErrorCtrl<NullResponse>() {
+            executeCall(
+                Retro.getAppApi().postDislikeIllust(illustID),
+                Function.identity(),
+                new ErrorCtrl<NullResponse>() {
                         @Override
                         public void next(NullResponse nullResponse) {
                             Intent intent = new Intent(Params.LIKED_ILLUST);

@@ -1,10 +1,12 @@
 package ceui.lisa.fragments;
 
 import android.content.Intent;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
@@ -36,7 +38,6 @@ import ceui.lisa.model.ListIllust;
 import ceui.lisa.models.IllustsBean;
 import ceui.lisa.repo.RightRepo;
 import ceui.lisa.utils.Common;
-import ceui.lisa.utils.Dev;
 import ceui.lisa.utils.Local;
 import ceui.lisa.utils.Params;
 import ceui.lisa.utils.QMUIMenuPopup;
@@ -71,11 +72,10 @@ public class FragmentRight extends NetListFragment<FragmentNewRightBinding, List
     public void initView() {
         super.initView();
 
-        if (Dev.hideMainActivityStatus) {
-            ViewGroup.LayoutParams headParams = baseBind.head.getLayoutParams();
-            headParams.height = Shaft.statusHeight;
-            baseBind.head.setLayoutParams(headParams);
-        }
+        ViewGroup.LayoutParams headParams = baseBind.head.getLayoutParams();
+        headParams.height = Shaft.statusHeight;
+        baseBind.head.setLayoutParams(headParams);
+        baseBind.head.setVisibility(View.VISIBLE);
 
         baseBind.toolbar.inflateMenu(R.menu.fragment_left);
         baseBind.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -318,5 +318,14 @@ public class FragmentRight extends NetListFragment<FragmentNewRightBinding, List
     public void forceRefresh() {
         emptyRela.setVisibility(View.INVISIBLE);
         super.forceRefresh();
+    }
+
+    @Override
+    protected FragmentNewRightBinding onCreateBinding(
+        @NonNull LayoutInflater inflater,
+        ViewGroup container,
+        boolean attachToParent
+    ) {
+        return FragmentNewRightBinding.inflate(inflater, container, false);
     }
 }

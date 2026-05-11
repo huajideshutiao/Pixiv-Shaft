@@ -70,6 +70,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
+            app:alignItems="flex_start"
             app:dividerDrawable="@drawable/spacer_8dp"
             app:flexWrap="wrap"
             app:showDivider="middle">

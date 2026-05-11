@@ -20,10 +20,11 @@ import ceui.lisa.R
 import ceui.lisa.activities.ContainerActivity
 import ceui.lisa.core.Container
 import ceui.lisa.core.PageData
+import ceui.lisa.core.executeCall
 import ceui.lisa.helper.AppLevelViewModelHelper
 import ceui.lisa.http.NullCtrl
 import ceui.lisa.http.Retro
-import ceui.lisa.model.ListIllust
+import ceui.lisa.model.RecmdIllust
 import ceui.lisa.models.IllustsBean
 import ceui.lisa.utils.GlideUtil
 import ceui.lisa.utils.Params
@@ -33,8 +34,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.AppWidgetTarget
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import java.util.function.Function
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import java.util.Collections
@@ -104,11 +104,11 @@ class RecommendAppWidgetProvider : AppWidgetProvider() {
 
                 val bearerToken = SessionManager.getBearerTokenOrEmpty()
                 if (bearerToken.isEmpty()) return@launch
-                Retro.getAppApi().getRecmdIllust(true)
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(object : NullCtrl<ListIllust?>() {
-                        override fun success(listIllust: ListIllust?) {
+                executeCall(
+                    Retro.getAppApi().getRecmdIllust(true),
+                    Function.identity(),
+                    object : NullCtrl<RecmdIllust>() {
+                        override fun success(listIllust: RecmdIllust) {
                             listIllust ?: return
                             val randomIllust = listIllust.illusts.random()
                                 val target = AppWidgetTarget(
@@ -194,11 +194,11 @@ class RecommendAppWidgetProvider : AppWidgetProvider() {
             if (!SessionManager.isLoggedIn) {
                 return START_STICKY
             }
-            Retro.getAppApi().getRecmdIllust(true)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : NullCtrl<ListIllust?>() {
-                    override fun success(listIllust: ListIllust?) {
+            executeCall(
+                Retro.getAppApi().getRecmdIllust(true),
+                Function.identity(),
+                object : NullCtrl<RecmdIllust>() {
+                    override fun success(listIllust: RecmdIllust) {
                         listIllust ?: return
                         items.clear()
                         items.addAll(

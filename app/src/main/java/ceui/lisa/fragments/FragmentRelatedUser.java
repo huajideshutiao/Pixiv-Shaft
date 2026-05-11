@@ -1,6 +1,10 @@
 package ceui.lisa.fragments;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
 
 import ceui.lisa.R;
 import ceui.lisa.adapters.BaseAdapter;
@@ -43,5 +47,14 @@ public class FragmentRelatedUser extends NetListFragment<FragmentBaseListBinding
     @Override
     public String getToolbarTitle() {
         return getString(R.string.string_436);
+    }
+
+    @Override
+    protected FragmentBaseListBinding onCreateBinding(
+        @NonNull LayoutInflater inflater,
+        ViewGroup container,
+        boolean attachToParent
+    ) {
+        return FragmentBaseListBinding.inflate(inflater, container, false);
     }
 }

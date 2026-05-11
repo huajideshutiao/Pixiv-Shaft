@@ -1,7 +1,9 @@
 package ceui.lisa.fragments;
 
 import android.content.Intent;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -15,7 +17,6 @@ import ceui.lisa.activities.MainActivity;
 import ceui.lisa.activities.Shaft;
 import ceui.lisa.databinding.FragmentLeftBinding;
 import ceui.lisa.interfaces.VolumeKeyHandler;
-import ceui.lisa.utils.Dev;
 import ceui.lisa.utils.MyOnTabSelectedListener;
 import ceui.lisa.utils.Params;
 
@@ -31,11 +32,10 @@ public class FragmentLeft extends BaseLazyFragment<FragmentLeftBinding> implemen
 
     @Override
     public void initView() {
-        if (Dev.hideMainActivityStatus) {
-            ViewGroup.LayoutParams headParams = baseBind.head.getLayoutParams();
-            headParams.height = Shaft.statusHeight;
-            baseBind.head.setLayoutParams(headParams);
-        }
+        ViewGroup.LayoutParams headParams = baseBind.head.getLayoutParams();
+        headParams.height = Shaft.statusHeight;
+        baseBind.head.setLayoutParams(headParams);
+        baseBind.head.setVisibility(View.VISIBLE);
 
         baseBind.toolbar.setNavigationOnClickListener(v -> {
             if (mActivity instanceof MainActivity) {
@@ -113,5 +113,14 @@ public class FragmentLeft extends BaseLazyFragment<FragmentLeftBinding> implemen
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    protected FragmentLeftBinding onCreateBinding(
+        @NonNull LayoutInflater inflater,
+        ViewGroup container,
+        boolean attachToParent
+    ) {
+        return FragmentLeftBinding.inflate(inflater, container, false);
     }
 }

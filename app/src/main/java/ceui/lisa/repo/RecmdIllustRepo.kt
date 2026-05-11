@@ -4,13 +4,13 @@ import ceui.lisa.core.RemoteRepo
 import ceui.lisa.http.Retro
 import ceui.lisa.model.ListIllust
 import ceui.lisa.model.RecmdIllust
-import io.reactivex.Observable
+import retrofit2.Call
 
 open class RecmdIllustRepo(
     private val dataType: String?
 ) : RemoteRepo<ListIllust>() {
 
-    override fun initApi(): Observable<RecmdIllust> {
+    override fun initApi(): Call<RecmdIllust> {
         val source = if ("漫画" == dataType) {
             Retro.getAppApi().getRecmdManga()
         } else {
@@ -19,7 +19,7 @@ open class RecmdIllustRepo(
         return source
     }
 
-    override fun initNextApi(): Observable<ListIllust> {
+    override fun initNextApi(): Call<ListIllust> {
         return Retro.getAppApi().getNextIllust(nextUrl)
     }
 

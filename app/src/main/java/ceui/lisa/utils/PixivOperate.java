@@ -3,6 +3,7 @@ package ceui.lisa.utils;
 
 import static com.blankj.utilcode.util.ColorUtils.getColor;
 import static com.blankj.utilcode.util.StringUtils.getString;
+import static ceui.lisa.core.CallExtKt.executeCall;
 
 import android.content.Context;
 import android.content.Intent;
@@ -31,6 +32,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import ceui.lisa.R;
 import ceui.lisa.activities.ContainerActivity;
@@ -38,10 +40,11 @@ import ceui.lisa.activities.OutWakeActivity;
 import ceui.lisa.activities.Shaft;
 import ceui.lisa.cache.Cache;
 import ceui.lisa.core.Container;
+import ceui.lisa.core.NetCallback;
 import ceui.lisa.core.PageData;
 import ceui.lisa.core.RxRun;
 import ceui.lisa.core.RxRunnable;
-import ceui.lisa.core.TryCatchObserverImpl;
+import ceui.lisa.core.ThreadUtil;
 import ceui.lisa.database.AppDatabase;
 import ceui.lisa.database.IllustHistoryEntity;
 import ceui.lisa.database.MuteEntity;
@@ -71,8 +74,6 @@ import ceui.loxia.ObjectPool;
 import ceui.pixiv.login.PixivOAuthConfig;
 import ceui.pixiv.session.SessionManager;
 import ceui.pixiv.widgets.RateAppManager;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -99,11 +100,9 @@ public class PixivOperate {
 
     public static void postFollowUser(int userID, String followType) {
         String pendingFollowType = Shaft.sSettings.isPrivateStar() ? Params.TYPE_PRIVATE : followType;
-        Retro.getAppApi().postFollow(
-                        userID, pendingFollowType)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new ErrorCtrl<NullResponse>() {
+        executeCall(
+            Retro.getAppApi().postFollow(
+                userID, pendingFollowType), Function.identity(), new ErrorCtrl<NullResponse>() {
 
                     @Override
                     public void next(NullResponse nullResponse) {
@@ -126,11 +125,9 @@ public class PixivOperate {
     }
 
     public static void postUnFollowUser(int userID) {
-        Retro.getAppApi().postUnFollow(
-                        userID)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new ErrorCtrl<NullResponse>() {
+        executeCall(
+            Retro.getAppApi().postUnFollow(
+                userID), Function.identity(), new ErrorCtrl<NullResponse>() {
                     @Override
                     public void next(NullResponse nullResponse) {
                         Intent intent = new Intent(Params.LIKED_USER);
@@ -162,11 +159,11 @@ public class PixivOperate {
         }
 
         if (illustsBean.isIs_bookmarked()) { //已收藏
-            illustsBean.setIs_bookmarked(false);
-            Retro.getAppApi().postDislikeIllust(illustsBean.getId())
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new ErrorCtrl<NullResponse>() {
+            illustsBean.set_bookmarked(false);
+            executeCall(
+                Retro.getAppApi().postDislikeIllust(illustsBean.getId()),
+                Function.identity(),
+                new ErrorCtrl<NullResponse>() {
                         @Override
                         public void next(NullResponse nullResponse) {
                             Intent intent = new Intent(Params.LIKED_ILLUST);
@@ -178,11 +175,11 @@ public class PixivOperate {
                         }
                     });
         } else { //没有收藏
-            illustsBean.setIs_bookmarked(true);
-            Retro.getAppApi().postLikeIllust(illustsBean.getId(), starType)
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new ErrorCtrl<NullResponse>() {
+            illustsBean.set_bookmarked(true);
+            executeCall(
+                Retro.getAppApi().postLikeIllust(illustsBean.getId(), starType),
+                Function.identity(),
+                new ErrorCtrl<NullResponse>() {
                         @Override
                         public void next(NullResponse nullResponse) {
                             RateAppManager.INSTANCE.onUserEngaged();
@@ -202,17 +199,17 @@ public class PixivOperate {
                                     && illustsBean.getUser() != null
                                     && !illustsBean.getUser().isIs_followed()) {
                                 postFollowUser(illustsBean.getUser().getId(), Params.TYPE_PUBLIC);
-                                illustsBean.getUser().setIs_followed(true);
+                                illustsBean.getUser().setItemStared(true);
                             }
                         }
                     });
 
             //收藏的时候，顺便请求这个作品的相关作品
             if (showRelated) {
-                Retro.getAppApi().relatedIllust(illustsBean.getId())
-                        .subscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new NullCtrl<ListIllust>() {
+                executeCall(
+                    Retro.getAppApi().relatedIllust(illustsBean.getId()),
+                    Function.identity(),
+                    new NullCtrl<ListIllust>() {
                             @Override
                             public void success(ListIllust listIllust) {
                                 Intent intent = new Intent(Params.FRAGMENT_ADD_RELATED_DATA);
@@ -232,11 +229,11 @@ public class PixivOperate {
         }
 
         if (novelBean.isIs_bookmarked()) { //已收藏
-            novelBean.setIs_bookmarked(false);
-            Retro.getAppApi().postDislikeNovel(novelBean.getId())
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new ErrorCtrl<NullResponse>() {
+            novelBean.set_bookmarked(false);
+            executeCall(
+                Retro.getAppApi().postDislikeNovel(novelBean.getId()),
+                Function.identity(),
+                new ErrorCtrl<NullResponse>() {
 
                         @Override
                         public void next(NullResponse nullResponse) {
@@ -252,12 +249,12 @@ public class PixivOperate {
                         }
                     });
         } else { //没有收藏
-            novelBean.setIs_bookmarked(true);
+            novelBean.set_bookmarked(true);
             String pendingType = Shaft.sSettings.isPrivateStar() ? Params.TYPE_PRIVATE : starType;
-            Retro.getAppApi().postLikeNovel(novelBean.getId(), pendingType)
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new ErrorCtrl<NullResponse>() {
+            executeCall(
+                Retro.getAppApi().postLikeNovel(novelBean.getId(), pendingType),
+                Function.identity(),
+                new ErrorCtrl<NullResponse>() {
                         @Override
                         public void next(NullResponse nullResponse) {
                             RateAppManager.INSTANCE.onUserEngaged();
@@ -280,7 +277,7 @@ public class PixivOperate {
                                     && novelBean.getUser() != null
                                     && !novelBean.getUser().isIs_followed()) {
                                 postFollowUser(novelBean.getUser().getId(), Params.TYPE_PUBLIC);
-                                novelBean.getUser().setIs_followed(true);
+                                novelBean.getUser().setItemStared(true);
                             }
                         }
                     });
@@ -300,11 +297,11 @@ public class PixivOperate {
                 .create();
         tipDialog.show();
         //Get response data
-        Retro.getAppApi()
-                .getIllustByID(illustID)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new NullCtrl<IllustSearchResponse>() {
+        executeCall(
+            Retro.getAppApi()
+                .getIllustByID(illustID),
+            Function.identity(),
+            new NullCtrl<IllustSearchResponse>() {
 
 
                     /**
@@ -356,10 +353,10 @@ public class PixivOperate {
 
     public static void getIllustByID(long illustID, Context context,
                                      ceui.lisa.interfaces.Callback<Void> success, ceui.lisa.interfaces.Callback<Void> fail) {
-        Retro.getAppApi().getIllustByID(illustID)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new NullCtrl<IllustSearchResponse>() {
+        executeCall(
+            Retro.getAppApi().getIllustByID(illustID),
+            Function.identity(),
+            new NullCtrl<IllustSearchResponse>() {
                     @Override
                     public void success(IllustSearchResponse illustSearchResponse) {
                         IllustsBean illust = illustSearchResponse.getIllust();
@@ -400,10 +397,10 @@ public class PixivOperate {
 
     public static void getNovelByID(long novel, Context context,
                                     ceui.lisa.interfaces.Callback<Void> callback) {
-        Retro.getAppApi().getNovelByID(novel)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new NullCtrl<NovelSearchResponse>() {
+        executeCall(
+            Retro.getAppApi().getNovelByID(novel),
+            Function.identity(),
+            new NullCtrl<NovelSearchResponse>() {
                     @Override
                     public void success(NovelSearchResponse novelSearchResponse) {
                         if (novelSearchResponse.getNovel() != null) {
@@ -430,10 +427,11 @@ public class PixivOperate {
     }
 
     public static void getGifInfo(IllustsBean illust, ErrorCtrl<GifResponse> errorCtrl) {
-        Retro.getAppApi().getGifPackage(illust.getId())
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(errorCtrl);
+        executeCall(
+            Retro.getAppApi().getGifPackage(illust.getId()),
+            Function.identity(),
+            errorCtrl
+        );
     }
 
     public static void muteTag(TagsBean tagsBean) {
@@ -453,7 +451,7 @@ public class PixivOperate {
         muteEntity.setId(tagName.hashCode());
         muteEntity.setTagJson(Shaft.sGson.toJson(tagsBean));
         muteEntity.setSearchTime(System.currentTimeMillis());
-        if (tagsBean.isEffective()) {
+        if (tagsBean.getEffective()) {
             Shaft.getContext().getResources().getString(R.string.string_356);
         } else {
             Shaft.getContext().getResources().getString(R.string.string_357);
@@ -548,7 +546,7 @@ public class PixivOperate {
         }
 
         if (illust.getId() > 0) {
-            Schedulers.io().scheduleDirect(() -> {
+            ThreadUtil.INSTANCE.runOnIo(() -> {
                 IllustHistoryEntity illustHistoryEntity = new IllustHistoryEntity();
                 illustHistoryEntity.setType(0);
                 illustHistoryEntity.setIllustID(illust.getId());
@@ -566,7 +564,7 @@ public class PixivOperate {
         }
 
         if (novelBean.getId() > 0) {
-            Schedulers.io().scheduleDirect(() -> {
+            ThreadUtil.INSTANCE.runOnIo(() -> {
                 IllustHistoryEntity illustHistoryEntity = new IllustHistoryEntity();
                 illustHistoryEntity.setIllustID(novelBean.getId());
                 illustHistoryEntity.setType(1);
@@ -765,9 +763,9 @@ public class PixivOperate {
 
                 return null;
             }
-        }, new TryCatchObserverImpl<>() {
+        }, new NetCallback<Void>() {
             @Override
-            public void error(Throwable e) {
+            public void onError(Throwable e) {
                 Common.showLog("encodeGifV2 error: " + e.getClass().getName() + " " + e.getMessage());
                 e.printStackTrace();
                 gifEncodingWorkSet.remove(illustsBean.getId());
@@ -817,11 +815,9 @@ public class PixivOperate {
         int currentMarkPage = novelMarkerBean.getPage();
         if (currentMarkPage == 0 || (currentMarkPage > 0 && currentMarkPage != page)) {
             novelMarkerBean.setPage(page);
-            Retro.getAppApi().postAddNovelMarker(
-                            novelId, page)
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new ErrorCtrl<NullResponse>() {
+            executeCall(
+                Retro.getAppApi().postAddNovelMarker(
+                    novelId, page), Function.identity(), new ErrorCtrl<NullResponse>() {
                         @Override
                         public void next(NullResponse nullResponse) {
                             if (view instanceof ImageView) {
@@ -832,11 +828,9 @@ public class PixivOperate {
                     });
         } else {
             novelMarkerBean.setPage(0);
-            Retro.getAppApi().postDeleteNovelMarker(
-                            novelId)
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new ErrorCtrl<NullResponse>() {
+            executeCall(
+                Retro.getAppApi().postDeleteNovelMarker(
+                    novelId), Function.identity(), new ErrorCtrl<NullResponse>() {
                         @Override
                         public void next(NullResponse nullResponse) {
                             if (view instanceof ImageView) {
@@ -853,11 +847,9 @@ public class PixivOperate {
         int page = marker.getPage();
         if (marker.isCancelled()) {
             marker.setCancelled(false);
-            Retro.getAppApi().postAddNovelMarker(
-                            novelId, page)
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new ErrorCtrl<NullResponse>() {
+            executeCall(
+                Retro.getAppApi().postAddNovelMarker(
+                    novelId, page), Function.identity(), new ErrorCtrl<NullResponse>() {
                         @Override
                         public void next(NullResponse nullResponse) {
                             if(view instanceof ImageView){
@@ -868,11 +860,9 @@ public class PixivOperate {
                     });
         } else {
             marker.setCancelled(true);
-            Retro.getAppApi().postDeleteNovelMarker(
-                            novelId)
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new ErrorCtrl<NullResponse>() {
+            executeCall(
+                Retro.getAppApi().postDeleteNovelMarker(
+                    novelId), Function.identity(), new ErrorCtrl<NullResponse>() {
                         @Override
                         public void next(NullResponse nullResponse) {
                             if(view instanceof ImageView){
@@ -885,14 +875,12 @@ public class PixivOperate {
     }
 
     public static void postNovelWatchlist(NovelSeriesItem series, Button btn) {
-        boolean add = !series.isWatchlist_added();
+        boolean add = !series.getWatchlist_added();
         int seriesId = series.getId();
         if (add) {
-            Retro.getAppApi().postWatchlistNovelAdd(
-                    seriesId)
-            .subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(new ErrorCtrl<NullResponse>() {
+            executeCall(
+                Retro.getAppApi().postWatchlistNovelAdd(
+                    seriesId), Function.identity(), new ErrorCtrl<NullResponse>() {
                 @Override
                 public void next(NullResponse nullResponse) {
                     series.setWatchlist_added(true);
@@ -900,11 +888,9 @@ public class PixivOperate {
                 }
             });
         } else {
-            Retro.getAppApi().postWatchlistNovelDelete(
-                    seriesId)
-            .subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(new ErrorCtrl<NullResponse>() {
+            executeCall(
+                Retro.getAppApi().postWatchlistNovelDelete(
+                    seriesId), Function.identity(), new ErrorCtrl<NullResponse>() {
                 @Override
                 public void next(NullResponse nullResponse) {
                     series.setWatchlist_added(false);

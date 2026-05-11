@@ -74,7 +74,7 @@ public class IllustNovelFilter {
 
         List<TagsBean> temp = getMutedTags();
         for (TagsBean bean : temp) {
-            if (bean.isEffective()) {
+            if (bean.getEffective()) {
                 String name = "*#" + bean.getName() + ",";
                 if (bean.getFilter_mode() == 0 && tagString.contains(name)) {
                     illustsBean.setShield(true);
@@ -96,7 +96,7 @@ public class IllustNovelFilter {
 
         List<TagsBean> temp = getMutedTags();
         for (TagsBean bean : temp) {
-            if (bean.isEffective()) {
+            if (bean.getEffective()) {
                 String name = "*#" + bean.getName() + ",";
                 if (bean.getFilter_mode() == 0 && tagString.contains(name)) {
 //                    illustsBean.setShield(true);

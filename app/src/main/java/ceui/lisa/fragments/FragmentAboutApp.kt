@@ -15,11 +15,10 @@ import ceui.lisa.update.GitHubRelease
 import ceui.lisa.update.UpdateBottomSheet
 import ceui.lisa.utils.Common
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
-import io.reactivex.disposables.Disposable
 
 class FragmentAboutApp : SwipeFragment<FragmentAboutBinding>() {
 
-    private var updateDisposable: Disposable? = null
+    private var checking = false
 
     override fun initLayout() {
         mLayoutID = R.layout.fragment_about
@@ -67,28 +66,30 @@ class FragmentAboutApp : SwipeFragment<FragmentAboutBinding>() {
     private fun performUpdateCheck(manual: Boolean) {
         baseBind.updateStatus.setText(R.string.update_checking)
 
-        updateDisposable?.dispose()
-        updateDisposable = AppUpdateChecker.checkForUpdate()
-            .subscribe({ result ->
-                AppUpdateChecker.markChecked()
-                when (result) {
-                    is AppUpdateChecker.UpdateResult.UpdateAvailable -> {
-                        val version = result.release.tagName.removePrefix("v").removePrefix("V")
-                        baseBind.updateStatus.text = getString(R.string.update_found_new, version)
-                        if (!manual && AppUpdateChecker.isVersionSkipped(version)) {
-                            return@subscribe
-                        }
-                        showUpdateDialog(result.release)
-                    }
-
-                    is AppUpdateChecker.UpdateResult.NoUpdate -> {
-                        baseBind.updateStatus.text =
-                            getString(R.string.update_already_latest, result.remoteVersion)
-                    }
-                }
-            }, { _ ->
+        AppUpdateChecker.checkForUpdate { result, error ->
+            AppUpdateChecker.markChecked()
+            if (error != null) {
                 baseBind.updateStatus.setText(R.string.update_check_failed)
-            })
+            } else when (result) {
+                is AppUpdateChecker.UpdateResult.UpdateAvailable -> {
+                    val version = result.release.tagName.removePrefix("v").removePrefix("V")
+                    baseBind.updateStatus.text = getString(R.string.update_found_new, version)
+                    if (!manual && AppUpdateChecker.isVersionSkipped(version)) {
+                        return@checkForUpdate
+                    }
+                    showUpdateDialog(result.release)
+                }
+
+                is AppUpdateChecker.UpdateResult.NoUpdate -> {
+                    baseBind.updateStatus.text =
+                        getString(R.string.update_already_latest, result.remoteVersion)
+                }
+
+                else -> {
+                    baseBind.updateStatus.setText(R.string.update_check_failed)
+                }
+            }
+        }
     }
 
     private fun showUpdateDialog(release: GitHubRelease) {
@@ -98,7 +99,6 @@ class FragmentAboutApp : SwipeFragment<FragmentAboutBinding>() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        updateDisposable?.dispose()
     }
 
 

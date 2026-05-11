@@ -3,8 +3,10 @@ package ceui.lisa.fragments;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
@@ -220,11 +222,11 @@ public class FragmentNovelSeriesDetail extends NetListFragment<FragmentNovelSeri
             public void onClick(View v) {
                 if (userBean.isIs_followed()) {
                     baseBind.postLikeUser.setText("添加关注");
-                    userBean.setIs_followed(false);
+                    userBean.set_followed(false);
                     PixivOperate.postUnFollowUser(userBean.getId());
                 } else {
                     baseBind.postLikeUser.setText("取消关注");
-                    userBean.setIs_followed(true);
+                    userBean.set_followed(true);
                     PixivOperate.postFollowUser(userBean.getId(),
                             Params.TYPE_PUBLIC);
                 }
@@ -235,7 +237,7 @@ public class FragmentNovelSeriesDetail extends NetListFragment<FragmentNovelSeri
             public boolean onLongClick(View view) {
                 if (!userBean.isIs_followed()) {
                     baseBind.postLikeUser.setText("取消关注");
-                    userBean.setIs_followed(true);
+                    userBean.set_followed(true);
                     PixivOperate.postFollowUser(userBean.getId(),
                             Params.TYPE_PRIVATE);
                 }
@@ -274,7 +276,7 @@ public class FragmentNovelSeriesDetail extends NetListFragment<FragmentNovelSeri
     }
 
     private void initAddToWatchListButton(NovelSeriesItem item) {
-        if (item.isWatchlist_added()) {
+        if (item.getWatchlist_added()) {
             baseBind.addToWatchlist.setText(R.string.already_in_your_watchlist);
         } else {
             baseBind.addToWatchlist.setText(R.string.add_to_watchlist);
@@ -283,5 +285,14 @@ public class FragmentNovelSeriesDetail extends NetListFragment<FragmentNovelSeri
         baseBind.addToWatchlist.setOnClickListener(v -> {
             PixivOperate.postNovelWatchlist(item, baseBind.addToWatchlist);
         });
+    }
+
+    @Override
+    protected FragmentNovelSeriesBinding onCreateBinding(
+        @NonNull LayoutInflater inflater,
+        ViewGroup container,
+        boolean attachToParent
+    ) {
+        return FragmentNovelSeriesBinding.inflate(inflater, container, false);
     }
 }

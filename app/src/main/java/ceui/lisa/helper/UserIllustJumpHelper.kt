@@ -11,11 +11,11 @@ import androidx.appcompat.app.AlertDialog
 import ceui.lisa.R
 import ceui.lisa.http.NullCtrl
 import ceui.lisa.http.Retro
+import ceui.lisa.core.executeCall
 import ceui.lisa.repo.buildOffsetUrl
 import ceui.lisa.utils.Common
 import com.qmuiteam.qmui.widget.dialog.QMUITipDialog
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import java.util.function.Function
 import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.util.Calendar
@@ -49,10 +49,10 @@ object UserIllustJumpHelper {
             .create()
         loading.show()
 
-        Retro.getAppApi().getUserDetail(userID)
-            .subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : NullCtrl<ceui.lisa.models.UserDetailResponse>() {
+        executeCall(
+            Retro.getAppApi().getUserDetail(userID),
+            Function.identity(),
+            object : NullCtrl<ceui.lisa.models.UserDetailResponse>() {
                 override fun success(resp: ceui.lisa.models.UserDetailResponse) {
                     if (activity.isAlive()) loading.dismiss()
                     if (!activity.isAlive()) return
@@ -249,30 +249,34 @@ object UserIllustJumpHelper {
         when (kind) {
             Kind.NOVEL -> {
                 val url = "https://app-api.pixiv.net/v1/user/novels?user_id=$userID&offset=$offset"
-                api.getNextNovel(url)
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(object : NullCtrl<ceui.lisa.model.ListNovel>() {
+                executeCall(
+                    api.getNextNovel(url),
+                    Function.identity(),
+                    object : NullCtrl<ceui.lisa.model.ListNovel>() {
                         override fun success(r: ceui.lisa.model.ListNovel) {
                             val d = r.list?.firstOrNull()?.create_date
                             onSuccess(parseDate(d))
                         }
                         override fun nullSuccess() { onSuccess(null) }
-                        override fun error(e: Throwable) { onFailure(e) }
+                        override fun onError(e: Throwable) {
+                            onFailure(e)
+                        }
                     })
             }
             else -> {
                 val type = if (kind == Kind.MANGA) "manga" else "illust"
-                api.getNextIllust(buildOffsetUrl(userID, type, offset))
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(object : NullCtrl<ceui.lisa.model.ListIllust>() {
+                executeCall(
+                    api.getNextIllust(buildOffsetUrl(userID, type, offset)),
+                    Function.identity(),
+                    object : NullCtrl<ceui.lisa.model.ListIllust>() {
                         override fun success(r: ceui.lisa.model.ListIllust) {
                             val d = r.list?.firstOrNull()?.create_date
                             onSuccess(parseDate(d))
                         }
                         override fun nullSuccess() { onSuccess(null) }
-                        override fun error(e: Throwable) { onFailure(e) }
+                        override fun onError(e: Throwable) {
+                            onFailure(e)
+                        }
                     })
             }
         }

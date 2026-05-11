@@ -16,6 +16,7 @@ import androidx.activity.SystemBarStyle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.ColorUtils;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
@@ -60,24 +61,21 @@ public abstract class BaseActivity<Layout extends ViewBinding> extends AppCompat
             }
 
             int primaryColor = Common.resolveThemeAttribute(mContext, androidx.appcompat.R.attr.colorPrimary);
+            boolean isDark = ColorUtils.calculateLuminance(primaryColor) < 0.5;
+
             if (isHarmonyOS()) {
                 // HarmonyOS 对 EdgeToEdge API 兼容性不佳，回退到直接设置状态栏/导航栏颜色
-                if (hideStatusBar()) {
-                    getWindow().setStatusBarColor(Color.TRANSPARENT);
-                    getWindow().setNavigationBarColor(Color.TRANSPARENT);
-                } else {
-                    getWindow().setStatusBarColor(primaryColor);
-                    getWindow().setNavigationBarColor(Color.TRANSPARENT);
-                }
-            } else if (hideStatusBar()) {
-                EdgeToEdge.enable(this);
+                getWindow().setStatusBarColor(Color.TRANSPARENT);
+                getWindow().setNavigationBarColor(Color.TRANSPARENT);
+                WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
             } else {
                 EdgeToEdge.enable(this,
-                        SystemBarStyle.auto(primaryColor, primaryColor),
+                    isDark ? SystemBarStyle.dark(Color.TRANSPARENT) : SystemBarStyle.light(
+                        Color.TRANSPARENT,
+                        Color.TRANSPARENT
+                    ),
                         SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT));
-                // 非透明状态栏的 Activity 不需要 edge-to-edge，
-                // 让系统处理 insets，避免 fitsSystemWindows 产生多余 padding
-                WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+                WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
             }
 
             baseBind = onCreateBinding(getLayoutInflater());

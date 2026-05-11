@@ -3,15 +3,15 @@ package ceui.lisa.repo
 import ceui.lisa.core.RemoteRepo
 import ceui.lisa.http.Retro
 import ceui.lisa.model.ListSimpleUser
-import io.reactivex.Observable
+import retrofit2.Call
 
 class SimpleUserRepo(private val illustID: Int) : RemoteRepo<ListSimpleUser>() {
 
-    override fun initApi(): Observable<ListSimpleUser> {
+    override fun initApi(): Call<ListSimpleUser> {
         return Retro.getAppApi().getUsersWhoLikeThisIllust(illustID)
     }
 
-    override fun initNextApi(): Observable<ListSimpleUser> {
+    override fun initNextApi(): Call<ListSimpleUser> {
         return Retro.getAppApi().getNextSimpleUser(nextUrl)
     }
 }

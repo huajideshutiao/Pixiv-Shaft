@@ -1,13 +1,15 @@
 package ceui.lisa.models
 
-import java.io.Serializable
-
 open class UserModel : UserHolder(), UserContainer, Starable {
     @JvmField
     var access_token: String? = null
+
+    @JvmField
     var expires_in: Int = 0
     var token_type: String? = null
     var scope: String? = null
+
+    @JvmField
     var refresh_token: String? = null
     var device_token: String? = null
     var local_user: String? = null

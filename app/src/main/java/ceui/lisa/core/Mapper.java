@@ -10,7 +10,8 @@ import ceui.lisa.model.ListTrendingtag;
 import ceui.lisa.models.IllustsBean;
 import ceui.lisa.models.NovelBean;
 import ceui.loxia.ObjectPool;
-import io.reactivex.functions.Function;
+
+import java.util.function.Function;
 
 /**
  * 默认Mapper，从列表中隐藏掉包含“已屏蔽tag”的作品

@@ -5,8 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import java.util.List;
 
 import ceui.lisa.R;
@@ -86,14 +90,16 @@ public class FragmentLikeNovel extends NetListFragment<FragmentBaseListBinding,
     @Override
     public void beforeFirstLoad(List<NovelBean> items) {
         if (Shaft.sSettings.isFilterInvalidBookmarks()) {
-            items.removeIf(novel -> !novel.isVisible() || novel.getUser() == null || novel.getUser().getId() == 0);
+            items.removeIf(novel -> !novel.getVisible() || novel.getUser() == null || novel.getUser()
+                .getId() == 0);
         }
     }
 
     @Override
     public void beforeNextLoad(List<NovelBean> items) {
         if (Shaft.sSettings.isFilterInvalidBookmarks()) {
-            items.removeIf(novel -> !novel.isVisible() || novel.getUser() == null || novel.getUser().getId() == 0);
+            items.removeIf(novel -> !novel.getVisible() || novel.getUser() == null || novel.getUser()
+                .getId() == 0);
         }
     }
 
@@ -105,5 +111,14 @@ public class FragmentLikeNovel extends NetListFragment<FragmentBaseListBinding,
     @Override
     public String getToolbarTitle() {
         return showToolbar ? getString(R.string.string_192) : super.getToolbarTitle();
+    }
+
+    @Override
+    protected FragmentBaseListBinding onCreateBinding(
+        @NonNull LayoutInflater inflater,
+        ViewGroup container,
+        boolean attachToParent
+    ) {
+        return FragmentBaseListBinding.inflate(inflater, container, false);
     }
 }

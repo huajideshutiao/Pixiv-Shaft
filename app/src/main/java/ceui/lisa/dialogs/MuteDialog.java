@@ -54,7 +54,7 @@ public class MuteDialog extends BaseDialog<DialogMuteTagBinding> {
             muteNotEffect.add(i, false);
             for (TagsBean mutedBean : muted) {
                 if (tagsBean.getName().equals(mutedBean.getName())) {
-                    if (mutedBean.isEffective()) {
+                    if (mutedBean.getEffective()) {
                         selectedIndex.add(i);
                     } else {
                         muteNotEffect.set(i, true);
@@ -106,6 +106,8 @@ public class MuteDialog extends BaseDialog<DialogMuteTagBinding> {
                         view.setBackgroundResource(R.drawable.tag_stroke_checked_bg);
                     }
                 });
+
+                return kotlin.Unit.INSTANCE;
             }
         );
 

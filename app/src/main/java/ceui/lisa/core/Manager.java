@@ -36,9 +36,6 @@ import ceui.lisa.utils.DownloadLimitTypeUtil;
 import ceui.lisa.utils.Params;
 import ceui.lisa.utils.PixivOperate;
 import ceui.pixiv.ui.task.TaskPool;
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -48,7 +45,7 @@ public class Manager {
 
     private final Context mContext = Shaft.getContext();
     private List<DownloadItem> content = new ArrayList<>();
-    private Disposable handle = null;
+    private ThreadUtil.DownloadHandle handle = null;
     private boolean isRunning = false;
 
     private Manager() {
@@ -56,17 +53,10 @@ public class Manager {
         currentIllustID = 0;
     }
 
-    /**
-     * 恢复未完成的下载任务。每条记录的 taskGson 内嵌完整 IllustsBean (~80KB)，
-     * 过去全表加载在主线程触发过 OOM (CursorWindow.nativeGetString)。改为：
-     *   1) 后台线程执行，避免阻塞 UI 启动；
-     *   2) 限制条数，并先 trim 历史堆积条目；
-     *   3) 包一层 try/catch，OOM/DB 异常时静默跳过而不让启动崩溃。
-     */
     private static final int MAX_RESTORE_ITEMS = 100;
 
     public void restore() {
-        Schedulers.io().scheduleDirect(() -> {
+        ThreadUtil.INSTANCE.runOnIo(() -> {
             try {
                 AppDatabase db = AppDatabase.getAppDatabase(mContext);
                 db.downloadDao().trimDownloading(MAX_RESTORE_ITEMS);
@@ -90,7 +80,7 @@ public class Manager {
                 synchronized (this) {
                     content = restored;
                 }
-                AndroidSchedulers.mainThread().scheduleDirect(() ->
+                ThreadUtil.INSTANCE.runOnMain(() ->
                         Common.showToast("下载记录恢复成功"));
             } catch (Throwable t) {
                 Common.showLog("Manager restore failed: " + t.getMessage());
@@ -152,16 +142,11 @@ public class Manager {
         Common.showLog("[PERF] safeAdd gsonMs=" + gsonMs + " dbInsertMs=" + dbMs);
     }
 
-    /**
-     * 标记任务完成。可在任意线程调用。
-     * 注意：content 列表修改不在此方法中，由调用方在主线程统一处理。
-     */
     private void complete(DownloadItem item, boolean isDownloadSuccess) {
         if (isDownloadSuccess) {
             item.setState(DownloadItem.DownloadState.SUCCESS);
             setCallback(uuid, null);
 
-            // Gson + DB 操作（IO 安全）
             DownloadingEntity entity = new DownloadingEntity();
             entity.setFileName(item.getName());
             entity.setUuid(item.getUuid());
@@ -176,15 +161,12 @@ public class Manager {
     public void addTasks(List<DownloadItem> list) {
         if (Common.isEmpty(list)) return;
 
-        // Gson 序列化 + DB INSERT 是重操作（172P 场景需序列化 ~13MB JSON + 172 次 INSERT），
-        // 必须在后台线程执行，否则主线程卡死。
-        Schedulers.io().scheduleDirect(() -> {
+        ThreadUtil.INSTANCE.runOnIo(() -> {
             long t0 = System.nanoTime();
             synchronized (this) {
                 if (content == null) {
                     content = new ArrayList<>();
                 }
-                // 批量构建一个 HashSet 做 O(1) 去重，避免 O(n^2) 逐项扫描
                 java.util.Set<String> existingUrls = new java.util.HashSet<>();
                 for (DownloadItem existing : content) {
                     existingUrls.add(existing.getUrl());
@@ -199,7 +181,7 @@ public class Manager {
             long totalMs = (System.nanoTime() - t0) / 1_000_000;
             Common.showLog("[PERF] addTasks total=" + list.size()
                     + " items, totalMs=" + totalMs);
-            AndroidSchedulers.mainThread().scheduleDirect(() -> {
+            ThreadUtil.INSTANCE.runOnMain(() -> {
                 if (DownloadLimitTypeUtil.startTaskWhenCreate()) {
                     startAll();
                 }
@@ -210,7 +192,6 @@ public class Manager {
     public void startAll() {
         if (!Common.isEmpty(content)) {
             for (DownloadItem item : content) {
-                //item.setProcessed(false);
                 item.setPaused(false);
                 if (item.getState() == DownloadItem.DownloadState.FAILED) {
                     item.setState(DownloadItem.DownloadState.INIT);
@@ -229,7 +210,6 @@ public class Manager {
         for (int i = 0; i < content.size(); i++) {
             DownloadItem downloadItem = content.get(i);
             if (downloadItem != null && downloadItem.getUuid().equals(uuid)) {
-                //downloadItem.setProcessed(false);
                 downloadItem.setPaused(false);
                 if(downloadItem.getState() == DownloadItem.DownloadState.FAILED){
                     downloadItem.setState(DownloadItem.DownloadState.INIT);
@@ -331,9 +311,7 @@ public class Manager {
         uuid = downloadItem.getUuid();
         Common.showLog("Manager 下载单个 当前进度" + downloadItem.getNonius());
 
-        // SAF factory 创建、文件查询、insert 全部在 IO 线程执行，
-        // 避免 172P 连续下载时 SAF 操作阻塞主线程。
-        Schedulers.io().scheduleDirect(() -> {
+        ThreadUtil.INSTANCE.runOnIo(() -> {
             DownloadFileFactory factory;
             try {
                 if (Shaft.sSettings.getDownloadWay() == 0 || downloadItem.getIllust().isGif()) {
@@ -344,7 +322,7 @@ public class Manager {
             } catch (Exception e) {
                 Common.showLog("[DL] factory init failed: " + e);
                 e.printStackTrace();
-                AndroidSchedulers.mainThread().scheduleDirect(() -> {
+                ThreadUtil.INSTANCE.runOnMain(() -> {
                     Common.showToast(mContext.getString(R.string.string_365));
                     complete(downloadItem, false);
                     stopAll();
@@ -358,7 +336,7 @@ public class Manager {
             if (shouldSkip) {
                 Common.showLog("[DL] skip download (already exists), illust=" + downloadItem.getIllust().getId());
                 complete(downloadItem, true);
-                AndroidSchedulers.mainThread().scheduleDirect(() -> {
+                ThreadUtil.INSTANCE.runOnMain(() -> {
                     content.remove(downloadItem);
                     loop();
                 });
@@ -374,7 +352,7 @@ public class Manager {
             } catch (Exception e) {
                 Common.showLog("[DL] factory.insert() failed: " + e);
                 e.printStackTrace();
-                AndroidSchedulers.mainThread().scheduleDirect(() -> {
+                ThreadUtil.INSTANCE.runOnMain(() -> {
                     Common.showToast(mContext.getString(R.string.string_365));
                     complete(downloadItem, false);
                     stopAll();
@@ -383,7 +361,7 @@ public class Manager {
             }
             if (targetUri == null) {
                 Common.showLog("[DL] factory.insert() returned null targetUri");
-                AndroidSchedulers.mainThread().scheduleDirect(() -> {
+                ThreadUtil.INSTANCE.runOnMain(() -> {
                     Common.showToast(mContext.getString(R.string.string_365));
                     complete(downloadItem, false);
                     stopAll();
@@ -412,8 +390,7 @@ public class Manager {
                 }
             }
 
-            // 回主线程启动 RxJava 下载链（handle 赋值需要在一致的线程）
-            AndroidSchedulers.mainThread().scheduleDirect(() ->
+            ThreadUtil.INSTANCE.runOnMain(() ->
                 startDownloadChain(context, downloadItem, factory, cachedFile, targetUri, dlUrl, passSize));
         });
     }
@@ -429,7 +406,9 @@ public class Manager {
         }
         Request request = reqBuilder.build();
 
-        handle = io.reactivex.rxjava3.core.Observable.<String>create(emitter -> {
+        handle = new ThreadUtil.DownloadHandle();
+
+        ThreadUtil.INSTANCE.runOnIo(() -> {
             Response response = null;
             InputStream inputStream = null;
             OutputStream outputStream = null;
@@ -447,14 +426,12 @@ public class Manager {
                     response = client.newCall(request).execute();
                     if (!response.isSuccessful()) {
                         Common.showLog("[DL-CACHE] network HTTP " + response.code() + " url=" + dlUrl);
-                        emitter.onError(new IOException("HTTP " + response.code()));
-                        return;
+                        throw new IOException("HTTP " + response.code());
                     }
                     ResponseBody body = response.body();
                     if (body == null) {
                         Common.showLog("[DL-CACHE] network empty body url=" + dlUrl);
-                        emitter.onError(new IOException("Empty response body"));
-                        return;
+                        throw new IOException("Empty response body");
                     }
                     inputStream = body.byteStream();
                     contentLength = body.contentLength();
@@ -472,8 +449,7 @@ public class Manager {
                     outputStream = context.getContentResolver().openOutputStream(targetUri, passSize > 0 ? "wa" : "w");
                 }
                 if (outputStream == null) {
-                    emitter.onError(new IOException("Cannot open output stream for " + targetUri));
-                    return;
+                    throw new IOException("Cannot open output stream for " + targetUri);
                 }
 
                 byte[] buffer = new byte[8192];
@@ -481,7 +457,7 @@ public class Manager {
                 int lastProgress = 0;
                 int len;
                 while ((len = inputStream.read(buffer)) != -1) {
-                    if (emitter.isDisposed()) {
+                    if (handle != null && handle.isDisposed()) {
                         return;
                     }
                     outputStream.write(buffer, 0, len);
@@ -492,7 +468,7 @@ public class Manager {
                             lastProgress = progress;
                             long finalDownloaded = downloaded;
                             long finalTotal = totalSize;
-                            AndroidSchedulers.mainThread().scheduleDirect(() -> {
+                            ThreadUtil.INSTANCE.runOnMain(() -> {
                                 DownloadProgress dp = new DownloadProgress(progress, finalDownloaded, finalTotal);
                                 downloadItem.setNonius(progress);
                                 downloadItem.setCurrentSize(finalDownloaded);
@@ -515,93 +491,91 @@ public class Manager {
                 long elapsedMs = (System.nanoTime() - copyStartNs) / 1_000_000L;
                 Common.showLog("[DL-CACHE] write done source=" + (cachedFile != null ? "cache" : "network")
                         + " bytes=" + downloaded + " elapsedMs=" + elapsedMs + " dst=" + targetUri);
-                emitter.onNext(targetUri.toString());
-                emitter.onComplete();
-            } catch (Exception e) {
-                if (!emitter.isDisposed()) {
-                    emitter.onError(e);
+
+                Common.showLog("downloadOne " + targetUri.toString());
+
+                if (downloadItem.getIllust().isGif()) {
+                    Shaft.getDefaultPrefs().edit()
+                        .putBoolean(Params.ILLUST_ID + "_" + downloadItem.getIllust().getId(), true)
+                        .apply();
+                    ThreadUtil.INSTANCE.runOnMain(() ->
+                        PixivOperate.unzipAndPlay(
+                            context,
+                            downloadItem.getIllust(),
+                            downloadItem.isAutoSave()
+                        ));
                 }
-            } finally {
-                if (inputStream != null) try { inputStream.close(); } catch (Exception ignored) {}
-                if (outputStream != null) try { outputStream.close(); } catch (Exception ignored) {}
-                if (response != null) try { response.close(); } catch (Exception ignored) {}
-            }
-        })
-        .subscribeOn(Schedulers.io())
-        // 完成回调保持在 IO 线程，Gson 序列化 + DB 操作 + finishWrite 不阻塞主线程。
-        // 只有 UI 通知（广播、Toast）和 loop() 回主线程。
-        .observeOn(Schedulers.io())
-        .doFinally(() -> {
-            currentIllustID = 0;
-            Common.showLog("doFinally ");
-            // loop 需要回主线程，因为它可能操作 UI 状态
-            AndroidSchedulers.mainThread().scheduleDirect(this::loop);
-        })
-        .subscribe(s -> {
-            Common.showLog("downloadOne " + s);
 
-            if(downloadItem.getIllust().isGif()){
-                Shaft.getDefaultPrefs().edit().putBoolean(Params.ILLUST_ID + "_" + downloadItem.getIllust().getId(), true).apply();
-                AndroidSchedulers.mainThread().scheduleDirect(() ->
-                    PixivOperate.unzipAndPlay(context, downloadItem.getIllust(), downloadItem.isAutoSave()));
-            }
-
-            // Gson 序列化 + DB 操作在 IO 线程执行
-            DownloadEntity downloadEntity = new DownloadEntity();
-            downloadEntity.setIllustGson(Shaft.sGson.toJson(downloadItem.getIllust()));
-            downloadEntity.setFileName(downloadItem.getName());
-            downloadEntity.setDownloadTime(System.currentTimeMillis());
-            downloadEntity.setFilePath(factory.getFileUri().toString());
-            AppDatabase.getAppDatabase(Shaft.getContext()).downloadDao().insert(downloadEntity);
-            Common.showLog("[DL-CACHE] db inserted DownloadEntity fileName=" + downloadEntity.getFileName()
+                DownloadEntity downloadEntity = new DownloadEntity();
+                downloadEntity.setIllustGson(Shaft.sGson.toJson(downloadItem.getIllust()));
+                downloadEntity.setFileName(downloadItem.getName());
+                downloadEntity.setDownloadTime(System.currentTimeMillis());
+                downloadEntity.setFilePath(factory.getFileUri().toString());
+                AppDatabase.getAppDatabase(Shaft.getContext()).downloadDao().insert(downloadEntity);
+                Common.showLog("[DL-CACHE] db inserted DownloadEntity fileName=" + downloadEntity.getFileName()
                     + " filePath=" + downloadEntity.getFilePath());
 
-            factory.finishWrite();
-            // Gson + DB 在 IO 线程
-            complete(downloadItem, true);
+                factory.finishWrite();
+                complete(downloadItem, true);
 
-            // content.remove + 广播必须在同一个 Runnable 里，
-            // 确保 adapter 收到通知时 item 已经被移除。
-            AndroidSchedulers.mainThread().scheduleDirect(() -> {
-                int sizeBefore = content.size();
-                boolean removed = content.remove(downloadItem);
-                Common.showLog("[DL-REMOVE] remove=" + removed + " sizeBefore=" + sizeBefore
+                ThreadUtil.INSTANCE.runOnMain(() -> {
+                    int sizeBefore = content.size();
+                    boolean removed = content.remove(downloadItem);
+                    Common.showLog("[DL-REMOVE] remove=" + removed + " sizeBefore=" + sizeBefore
                         + " sizeAfter=" + content.size() + " name=" + downloadItem.getName());
-                if (Shaft.sSettings.isToastDownloadResult()) {
-                    Common.showToast(downloadItem.getName() + mContext.getString(R.string.has_been_downloaded));
+                    if (Shaft.sSettings.isToastDownloadResult()) {
+                        Common.showToast(downloadItem.getName() + mContext.getString(R.string.has_been_downloaded));
+                    }
+                    {
+                        Intent intent = new Intent(Params.DOWNLOAD_ING);
+                        Holder holder = new Holder();
+                        holder.setCode(Params.DOWNLOAD_SUCCESS);
+                        holder.setDownloadItem(downloadItem);
+                        intent.putExtra(Params.CONTENT, holder);
+                        LocalBroadcastManager.getInstance(Shaft.getContext()).sendBroadcast(intent);
+                        Common.showLog("[DL-REMOVE] DOWNLOAD_ING broadcast sent");
+                    }
+                    {
+                        Intent intent = new Intent(Params.DOWNLOAD_FINISH);
+                        intent.putExtra(Params.CONTENT, downloadEntity);
+                        LocalBroadcastManager.getInstance(Shaft.getContext()).sendBroadcast(intent);
+                    }
+                });
+            } catch (Exception e) {
+                if (handle == null || !handle.isDisposed()) {
+                    Common.showLog("Manager download error: " + e.getMessage());
+                    if (Shaft.sSettings.isToastDownloadResult()) {
+                        ThreadUtil.INSTANCE.runOnMain(() ->
+                            Common.showToast("下载失败，原因：" + e.toString()));
+                    }
+                    Common.showLog("下载失败，原因：" + e.toString());
+                    complete(downloadItem, false);
+                    ThreadUtil.INSTANCE.runOnMain(() -> {
+                        Intent intent = new Intent(Params.DOWNLOAD_ING);
+                        Holder holder = new Holder();
+                        holder.setCode(Params.DOWNLOAD_FAILED);
+                        holder.setIndex(content.indexOf(downloadItem));
+                        holder.setDownloadItem(downloadItem);
+                        intent.putExtra(Params.CONTENT, holder);
+                        LocalBroadcastManager.getInstance(Shaft.getContext()).sendBroadcast(intent);
+                    });
                 }
-                {
-                    Intent intent = new Intent(Params.DOWNLOAD_ING);
-                    Holder holder = new Holder();
-                    holder.setCode(Params.DOWNLOAD_SUCCESS);
-                    holder.setDownloadItem(downloadItem);
-                    intent.putExtra(Params.CONTENT, holder);
-                    LocalBroadcastManager.getInstance(Shaft.getContext()).sendBroadcast(intent);
-                    Common.showLog("[DL-REMOVE] DOWNLOAD_ING broadcast sent");
+            } finally {
+                if (inputStream != null) try {
+                    inputStream.close();
+                } catch (Exception ignored) {
                 }
-                {
-                    Intent intent = new Intent(Params.DOWNLOAD_FINISH);
-                    intent.putExtra(Params.CONTENT, downloadEntity);
-                    LocalBroadcastManager.getInstance(Shaft.getContext()).sendBroadcast(intent);
+                if (outputStream != null) try {
+                    outputStream.close();
+                } catch (Exception ignored) {
                 }
-            });
-        }, throwable -> {
-            //下载失败，处理相关逻辑
-            Common.showLog("Manager download error: " + throwable.getMessage());
-            if (Shaft.sSettings.isToastDownloadResult()) {
-                Common.showToast("下载失败，原因：" + throwable.toString());
-            }
-            Common.showLog("下载失败，原因：" + throwable.toString());
-            complete(downloadItem, false);
-            {
-                //通知 DOWNLOAD_ING 有一项下载失败
-                Intent intent = new Intent(Params.DOWNLOAD_ING);
-                Holder holder = new Holder();
-                holder.setCode(Params.DOWNLOAD_FAILED);
-                holder.setIndex(content.indexOf(downloadItem));
-                holder.setDownloadItem(downloadItem);
-                intent.putExtra(Params.CONTENT, holder);
-                LocalBroadcastManager.getInstance(Shaft.getContext()).sendBroadcast(intent);
+                if (response != null) try {
+                    response.close();
+                } catch (Exception ignored) {
+                }
+                currentIllustID = 0;
+                Common.showLog("doFinally ");
+                ThreadUtil.INSTANCE.runOnMain(this::loop);
             }
         });
     }

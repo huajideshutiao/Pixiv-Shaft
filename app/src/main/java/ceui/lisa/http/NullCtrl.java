@@ -1,16 +1,16 @@
 package ceui.lisa.http;
 
+import ceui.lisa.core.NetCallback;
 
-public abstract class NullCtrl<T> extends ErrorCtrl<T> {
+public abstract class NullCtrl<T> extends NetCallback<T> {
 
     public abstract void success(T t);
 
     public void nullSuccess() {
-
     }
 
     @Override
-    public void next(T t) {
+    public void onSuccess(T t) {
         if (t != null) {
             success(t);
         } else {
@@ -20,12 +20,13 @@ public abstract class NullCtrl<T> extends ErrorCtrl<T> {
     }
 
     @Override
-    public void error(Throwable e) {
-        super.error(e);
+    public void onError(Throwable e) {
+        super.onError(e);
         must(false);
     }
 
+    @Override
     public void must(boolean isSuccess) {
-
+        must();
     }
 }

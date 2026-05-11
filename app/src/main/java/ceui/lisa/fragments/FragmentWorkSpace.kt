@@ -15,9 +15,9 @@ import ceui.lisa.interfaces.Display
 import ceui.lisa.models.NullResponse
 import ceui.lisa.models.UserDetailResponse
 import ceui.lisa.utils.Common
+import ceui.lisa.core.executeCall
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import java.util.function.Function
 
 class FragmentWorkSpace : SwipeFragment<FragmentWorkSpaceBinding>(), Display<UserDetailResponse> {
 
@@ -30,11 +30,11 @@ class FragmentWorkSpace : SwipeFragment<FragmentWorkSpaceBinding>(), Display<Use
     }
 
     public override fun initData() {
-        Retro.getAppApi()
-            .getUserDetail(SessionManager.loggedInUid.toInt())
-            .subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : NullCtrl<UserDetailResponse>() {
+        executeCall(
+            Retro.getAppApi()
+                .getUserDetail(SessionManager.loggedInUid.toInt()),
+            Function.identity(),
+            object : NullCtrl<UserDetailResponse>() {
                 override fun success(user: UserDetailResponse) {
                     invoke(user)
                 }
@@ -108,10 +108,10 @@ class FragmentWorkSpace : SwipeFragment<FragmentWorkSpaceBinding>(), Display<Use
             map["chair"] = Common.checkEmpty(baseBind.chair)
             map["comment"] = Common.checkEmpty(baseBind.otherText)
 
-            Retro.getAppApi().editWorkSpace(map)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : NullCtrl<NullResponse>() {
+            executeCall(
+                Retro.getAppApi().editWorkSpace(map),
+                Function.identity(),
+                object : NullCtrl<NullResponse>() {
                     override fun success(accountEditResponse: NullResponse) {
                         Common.showToast("修改成功！", true)
                         mActivity.finish()

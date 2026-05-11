@@ -12,11 +12,13 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import ceui.lisa.activities.Shaft;
+
+import static ceui.lisa.core.CallExtKt.executeCall;
 import ceui.lisa.http.NullCtrl;
 import ceui.lisa.http.Retro;
 import ceui.lisa.models.ReplyCommentBean;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
+
+import java.util.function.Function;
 import okhttp3.ResponseBody;
 
 public class CommentFilter {
@@ -64,10 +66,10 @@ public class CommentFilter {
 
     private static void updateRulesFromRemote() {
 
-        Retro.getResourceApi().getCommentFilterRule()
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new NullCtrl<ResponseBody>() {
+        executeCall(
+            Retro.getResourceApi().getCommentFilterRule(),
+            Function.identity(),
+            new NullCtrl<ResponseBody>() {
                     @Override
                     public void success(ResponseBody responseBody) {
                         try {

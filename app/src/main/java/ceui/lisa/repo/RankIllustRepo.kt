@@ -6,23 +6,23 @@ import ceui.lisa.core.RemoteRepo
 import ceui.lisa.http.Retro
 import ceui.lisa.model.ListIllust
 import ceui.lisa.utils.PixivOperate
-import io.reactivex.Observable
-import io.reactivex.functions.Function
+import retrofit2.Call
+import java.util.function.Function
 
 class RankIllustRepo(
     private val mode: String?,
     private val date: String?
 ) : RemoteRepo<ListIllust>() {
 
-    override fun initApi(): Observable<ListIllust> {
+    override fun initApi(): Call<ListIllust> {
         return Retro.getAppApi().getRank(mode, date)
     }
 
-    override fun initNextApi(): Observable<ListIllust> {
+    override fun initNextApi(): Call<ListIllust> {
         return Retro.getAppApi().getNextIllust(nextUrl)
     }
 
-    override fun mapper(): Function<in ListIllust, ListIllust> {
+    override fun mapper(): Function<ListIllust, ListIllust> {
         return Function { listIllust ->
             val mapped = Mapper<ListIllust>().apply(listIllust)
             if (Shaft.sSettings.isFilterRankBookmarked) {

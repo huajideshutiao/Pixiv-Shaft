@@ -1,6 +1,6 @@
 package ceui.lisa.http;
 
-import io.reactivex.Observable;
+import retrofit2.Call;
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
@@ -12,5 +12,5 @@ public interface TinEyeApi {
 
     @Multipart
     @POST("/search")
-    Observable<Response<ResponseBody>> query(@Part MultipartBody.Part part);
+    Call<Response<ResponseBody>> query(@Part MultipartBody.Part part);
 }

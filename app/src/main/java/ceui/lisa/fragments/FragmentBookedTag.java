@@ -2,8 +2,11 @@ package ceui.lisa.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -104,5 +107,14 @@ public class FragmentBookedTag extends NetListFragment<FragmentBaseListBinding,
         unSeparated.setCount(-1);
         unSeparated.setName("未分類");
         allItems.add(0, unSeparated);
+    }
+
+    @Override
+    protected FragmentBaseListBinding onCreateBinding(
+        @NonNull LayoutInflater inflater,
+        ViewGroup container,
+        boolean attachToParent
+    ) {
+        return FragmentBaseListBinding.inflate(inflater, container, false);
     }
 }

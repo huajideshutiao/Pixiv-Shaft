@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.View;
 
 import com.qmuiteam.qmui.skin.QMUISkinManager;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
@@ -13,6 +12,7 @@ import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
 import java.util.List;
 
 import ceui.lisa.R;
+import ceui.lisa.core.ThreadUtil;
 import ceui.lisa.database.AppDatabase;
 import ceui.lisa.database.UserEntity;
 import ceui.lisa.databinding.ActivityOutWakeBinding;
@@ -25,9 +25,6 @@ import ceui.lisa.utils.PixivOperate;
 import ceui.pixiv.login.PixivLogin;
 import ceui.pixiv.login.PixivOAuthResult;
 import ceui.pixiv.session.SessionManager;
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 public class OutWakeActivity extends BaseActivity<ActivityOutWakeBinding> {
 
@@ -190,68 +187,97 @@ public class OutWakeActivity extends BaseActivity<ActivityOutWakeBinding> {
 
                             if (host.equals("account")) {
                                 Common.showToast(getString(R.string.trying_login));
-                                Observable.fromCallable(() -> PixivLogin.INSTANCE.handleCallback(uri))
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(result -> {
-                                    if (result instanceof PixivOAuthResult.Failure) {
-                                        Common.showToast("登录失败: " + ((PixivOAuthResult.Failure) result).getMessage());
-                                        return;
+                                ThreadUtil.INSTANCE.runOnIo(() -> {
+                                    try {
+                                        Object result = PixivLogin.INSTANCE.handleCallback(uri);
+                                        ThreadUtil.INSTANCE.runOnMain(() -> {
+                                            if (result instanceof PixivOAuthResult.Failure) {
+                                                Common.showToast("登录失败: " + ((PixivOAuthResult.Failure) result).getMessage());
+                                                mActivity.finish();
+                                                return;
+                                            }
+                                            PixivOAuthResult.Success success =
+                                                (PixivOAuthResult.Success) result;
+                                            UserModel userModel = Shaft.sGson.fromJson(
+                                                success.getRawBody(),
+                                                UserModel.class
+                                            );
+
+                                            Common.showLog(userModel.toString());
+                                            Common.showToast("登录成功");
+
+                                            userModel.getUser().set_login(true);
+                                            Local.saveUser(userModel);
+                                            SessionManager.INSTANCE.updateSession(userModel);
+
+                                            UserEntity userEntity = new UserEntity();
+                                            userEntity.setLoginTime(System.currentTimeMillis());
+                                            userEntity.setUserID(userModel.getUser().getId());
+                                            userEntity.setUserGson(Shaft.sGson.toJson(Local.getUser()));
+
+                                            AppDatabase.getAppDatabase(mContext).downloadDao()
+                                                .insertUser(userEntity);
+
+                                            // 检测是否打开R18并提示开启，新注册未验证邮箱用户不提示
+                                            if (userModel.getUser()
+                                                .isR18Enabled() || !userModel.getUser()
+                                                .isIs_mail_authorized()) {
+                                                mActivity.finish();
+                                                Common.restart();
+                                            } else {
+                                                new QMUIDialog.MessageDialogBuilder(mActivity)
+                                                    .setTitle(R.string.string_216)
+                                                    .setMessage(R.string.string_400)
+                                                    .setSkinManager(QMUISkinManager.defaultInstance(
+                                                        mContext))
+                                                    .addAction(
+                                                        R.string.string_401,
+                                                        new QMUIDialogAction.ActionListener() {
+                                                            @Override
+                                                            public void onClick(
+                                                                QMUIDialog dialog,
+                                                                int index
+                                                            ) {
+                                                                dialog.dismiss();
+                                                                mActivity.finish();
+                                                                Common.restart();
+                                                            }
+                                                        }
+                                                    )
+                                                    .addAction(
+                                                        R.string.string_402,
+                                                        new QMUIDialogAction.ActionListener() {
+                                                            @Override
+                                                            public void onClick(
+                                                                QMUIDialog dialog,
+                                                                int index
+                                                            ) {
+                                                                Intent intent1 = new Intent(
+                                                                    mContext,
+                                                                    ContainerActivity.class
+                                                                );
+                                                                intent1.putExtra(
+                                                                    ContainerActivity.EXTRA_FRAGMENT,
+                                                                    "网页链接"
+                                                                );
+                                                                intent1.putExtra(
+                                                                    Params.URL,
+                                                                    Params.URL_R18_SETTING
+                                                                );
+                                                                startActivity(intent1);
+                                                            }
+                                                        }
+                                                    )
+                                                    .create()
+                                                    .show();
+                                            }
+                                        });
+                                    } catch (Exception throwable) {
+                                        ThreadUtil.INSTANCE.runOnMain(() -> {
+                                            Common.showToast("登录失败");
+                                            mActivity.finish();
+                                        });
                                     }
-                                    PixivOAuthResult.Success success = (PixivOAuthResult.Success) result;
-                                    UserModel userModel = Shaft.sGson.fromJson(success.getRawBody(), UserModel.class);
-
-                                    Common.showLog(userModel.toString());
-                                    Common.showToast("登录成功");
-
-                                    userModel.getUser().setIs_login(true);
-                                    Local.saveUser(userModel);
-                                    SessionManager.INSTANCE.updateSession(userModel);
-
-                                    UserEntity userEntity = new UserEntity();
-                                    userEntity.setLoginTime(System.currentTimeMillis());
-                                    userEntity.setUserID(userModel.getUser().getId());
-                                    userEntity.setUserGson(Shaft.sGson.toJson(Local.getUser()));
-
-                                    AppDatabase.getAppDatabase(mContext).downloadDao().insertUser(userEntity);
-
-                                    // 检测是否打开R18并提示开启，新注册未验证邮箱用户不提示
-                                    if (userModel.getUser().isR18Enabled() || !userModel.getUser().isIs_mail_authorized()) {
-                                        mActivity.finish();
-                                        Common.restart();
-                                    } else {
-                                        new QMUIDialog.MessageDialogBuilder(mActivity)
-                                                .setTitle(R.string.string_216)
-                                                .setMessage(R.string.string_400)
-                                                .setSkinManager(QMUISkinManager.defaultInstance(mContext))
-                                                .addAction(R.string.string_401, new QMUIDialogAction.ActionListener() {
-                                                    @Override
-                                                    public void onClick(QMUIDialog dialog, int index) {
-                                                        dialog.dismiss();
-                                                        mActivity.finish();
-                                                        Common.restart();
-                                                    }
-                                                })
-                                                .addAction(R.string.string_402, new QMUIDialogAction.ActionListener() {
-                                                    @Override
-                                                    public void onClick(QMUIDialog dialog, int index) {
-                                                        Intent intent1 = new Intent(
-                                                            mContext,
-                                                            ContainerActivity.class
-                                                        );
-                                                        intent1.putExtra(
-                                                            ContainerActivity.EXTRA_FRAGMENT,
-                                                            "网页链接"
-                                                        );
-                                                        intent1.putExtra(Params.URL, Params.URL_R18_SETTING);
-                                                        startActivity(intent1);
-                                                    }
-                                                })
-                                                .create()
-                                                .show();
-                                    }
-                                }, throwable -> {
-                                    Common.showToast("登录失败");
                                 });
                                 return;
                             }

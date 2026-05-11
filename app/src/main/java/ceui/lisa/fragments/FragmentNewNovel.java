@@ -1,6 +1,7 @@
 package ceui.lisa.fragments;
 
 import android.content.Intent;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +12,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import com.blankj.utilcode.util.BarUtils;
-
-import android.view.LayoutInflater;
 
 import ceui.lisa.R;
 import ceui.lisa.activities.Shaft;
@@ -29,8 +28,6 @@ public class FragmentNewNovel extends BaseFragment<ViewpagerWithTablayoutBinding
 
     @Override
     public void initView() {
-        // Size the status-bar spacer in viewpager_with_tablayout.xml so the
-        // toolbar sits below the translucent status bar (RankActivity pattern).
         baseBind.placeHolder.setVisibility(View.VISIBLE);
         ViewGroup.LayoutParams p = baseBind.placeHolder.getLayoutParams();
         p.height = BarUtils.getStatusBarHeight();

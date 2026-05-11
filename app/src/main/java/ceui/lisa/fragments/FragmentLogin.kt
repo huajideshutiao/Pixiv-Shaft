@@ -271,6 +271,11 @@ class FragmentLogin : BaseFragment<ActivityLoginBinding>() {
                 openProxyHint { openOAuthTab(ceui.pixiv.login.PixivLogin.startLoginUrl()) }
             }
         }
+        page.browserLoginButton.setOnClickListener {
+            checkAndNext {
+                openProxyHint { openInternalBrowser(ceui.pixiv.login.PixivLogin.startLoginUrl()) }
+            }
+        }
         page.signButton.setOnClickListener {
             checkAndNext {
                 openProxyHint { openOAuthTab(ceui.pixiv.login.PixivLogin.startSignUrl()) }
@@ -338,6 +343,14 @@ class FragmentLogin : BaseFragment<ActivityLoginBinding>() {
         } catch (_: ActivityNotFoundException) {
             Common.showToast("未找到浏览器")
         }
+    }
+
+    private fun openInternalBrowser(url: String) {
+        startActivity(Intent(mContext, ContainerActivity::class.java).apply {
+            putExtra(ContainerActivity.EXTRA_FRAGMENT, "网页链接")
+            putExtra(Params.URL, url)
+            putExtra(Params.TITLE, getString(R.string.now_login))
+        })
     }
 
     private fun openProxyHint(onConfirm: () -> Unit) {

@@ -14,6 +14,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import ceui.lisa.R
@@ -190,14 +192,20 @@ class UncategorizedNovelsFragment : PixivFragment(R.layout.fragment_pixiv_list),
                 val now = viewModel.isMultiSelect.value == true
                 viewModel.setMultiSelectMode(!now)
             }
-            val statusBarH = com.blankj.utilcode.util.BarUtils.getStatusBarHeight()
             val lp = ConstraintLayout.LayoutParams(size, size).apply {
                 topToTop = ConstraintLayout.LayoutParams.PARENT_ID
                 endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
-                topMargin = statusBarH + (8 * density).toInt()
+                topMargin = (8 * density).toInt()
                 marginEnd = (12 * density).toInt()
             }
             layoutParams = lp
+            ViewCompat.setOnApplyWindowInsetsListener(this) { v: View, windowInsets: WindowInsetsCompat ->
+                val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+                val lp = v.layoutParams as ConstraintLayout.LayoutParams
+                lp.topMargin = insets.top + (8 * density).toInt()
+                v.layoutParams = lp
+                windowInsets
+            }
         }
 
         val rootLayout = binding.root

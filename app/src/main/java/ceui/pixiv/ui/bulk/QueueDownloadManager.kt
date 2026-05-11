@@ -26,8 +26,6 @@ import ceui.pixiv.ui.bulk.QueueDownloadManager.loopJob
 import com.qmuiteam.qmui.skin.QMUISkinManager
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog
 import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction
-import io.reactivex.Observable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -35,10 +33,8 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
+import retrofit2.Call
 
 /**
  * 批量下载持久化队列消费者。
@@ -345,13 +341,12 @@ object QueueDownloadManager {
     private const val TAG = "QueueDownloadManager"
 }
 
-/** RxJava2 Observable -> suspend 单值。 */
-private suspend fun <T : Any> Observable<T>.awaitFirstSafe(): T = suspendCancellableCoroutine { cont ->
-    val disposable = subscribeOn(Schedulers.io())
-        .firstOrError()
-        .subscribe(
-            { cont.resume(it) },
-            { cont.resumeWithException(it) }
-        )
-    cont.invokeOnCancellation { disposable.dispose() }
+/** Call -> suspend 单值。 */
+private suspend fun <T : Any> Call<T>.awaitFirstSafe(): T = withContext(Dispatchers.IO) {
+    val response = execute()
+    if (response.isSuccessful) {
+        response.body() ?: throw IllegalStateException("Response body is null")
+    } else {
+        throw retrofit2.HttpException(response)
+    }
 }

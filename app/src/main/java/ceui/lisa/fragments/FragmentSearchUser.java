@@ -3,7 +3,9 @@ package ceui.lisa.fragments;
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -83,4 +85,13 @@ public class FragmentSearchUser extends NetListFragment<FragmentBaseListBinding,
     public String getToolbarTitle() {
         return getString(R.string.string_236) + word;
     }*/
+
+    @Override
+    protected FragmentBaseListBinding onCreateBinding(
+        @NonNull LayoutInflater inflater,
+        ViewGroup container,
+        boolean attachToParent
+    ) {
+        return FragmentBaseListBinding.inflate(inflater, container, false);
+    }
 }

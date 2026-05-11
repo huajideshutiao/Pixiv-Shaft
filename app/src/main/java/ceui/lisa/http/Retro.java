@@ -20,7 +20,6 @@ import okhttp3.Protocol;
 import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Retro {
@@ -127,7 +126,6 @@ public class Retro {
         Gson gson = new GsonBuilder().setLenient().create();
         return new Retrofit.Builder()
                 .client(client)
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .baseUrl(baseUrl)
                 .build();
@@ -138,7 +136,6 @@ public class Retro {
         OkHttpClient client = builder.build();
         return new Retrofit.Builder()
                 .client(client)
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .baseUrl(baseUrl)
                 .build();
     }
@@ -156,7 +153,6 @@ public class Retro {
                             return chain.proceed(localRequest);
                         }).build()
                 )
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .baseUrl(baseUrl)
                 .build();

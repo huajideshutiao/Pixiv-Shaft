@@ -1,9 +1,11 @@
 package ceui.lisa.fragments;
 
+import static ceui.lisa.core.CallExtKt.executeCall;
+
 import android.app.DatePickerDialog;
 import android.text.TextUtils;
-import android.view.View;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -22,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Function;
 
 import ceui.lisa.R;
 import ceui.lisa.databinding.FragmentEditFileBinding;
@@ -39,8 +42,6 @@ import ceui.lisa.utils.GlideUtil;
 import ceui.lisa.utils.Local;
 import ceui.lisa.utils.PixivOperate;
 import ceui.pixiv.session.SessionManager;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -86,10 +87,9 @@ public class FragmentEditFile extends SwipeFragment<FragmentEditFileBinding> imp
         baseBind.toolbar.toolbarTitle.setText(R.string.string_92);
         baseBind.toolbar.toolbar.setNavigationOnClickListener(v -> finish());
 
-        Retro.getAppApi().getPresets()
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new NullCtrl<Preset>() {
+        executeCall(
+            Retro.getAppApi().getPresets(),
+            Function.identity(), new NullCtrl<Preset>() {
                     @Override
                     public void success(Preset preset) {
                         invoke(preset);
@@ -135,10 +135,9 @@ public class FragmentEditFile extends SwipeFragment<FragmentEditFileBinding> imp
         parts.add(comment);
         parts.add(birthdayPart);
 
-        Retro.getAppApi().updateUserProfile(parts)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new NullCtrl<NullResponse>() {
+        executeCall(
+            Retro.getAppApi().updateUserProfile(parts),
+            Function.identity(), new NullCtrl<NullResponse>() {
                     @Override
                     public void success(NullResponse nullResponse) {
                         Common.showToast(getString(R.string.string_261));
@@ -149,7 +148,7 @@ public class FragmentEditFile extends SwipeFragment<FragmentEditFileBinding> imp
                                 if (response != null) {
                                     UserModel newUser = response.body();
                                     if (newUser != null) {
-                                        newUser.getUser().setIs_login(true);
+                                        newUser.getUser().set_login(true);
                                         Local.saveUser(newUser);
                                         Dev.refreshUser = true;
                                         mActivity.finish();
@@ -175,7 +174,7 @@ public class FragmentEditFile extends SwipeFragment<FragmentEditFileBinding> imp
         baseBind.address.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (preset.getProfile_presets().getAddresses().get(position).getIs_global()) {
+                if (preset.getProfile_presets().getAddresses().get(position).is_global()) {
                     baseBind.countryLl.setVisibility(View.VISIBLE);
                     isGlobal = true;
                 } else {
@@ -241,16 +240,15 @@ public class FragmentEditFile extends SwipeFragment<FragmentEditFileBinding> imp
 
 
         //加载预设信息
-        Retro.getAppApi().getUserDetail((int) SessionManager.INSTANCE.getLoggedInUid())
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new NullCtrl<UserDetailResponse>() {
+        executeCall(
+            Retro.getAppApi().getUserDetail((int) SessionManager.INSTANCE.getLoggedInUid()),
+            Function.identity(), new NullCtrl<UserDetailResponse>() {
                     @Override
                     public void success(UserDetailResponse user) {
                         for (int i = 0; i < preset.getProfile_presets().getAddresses().size(); i++) {
                             if (user.getProfile().getAddress_id() == preset.getProfile_presets().getAddresses().get(i).getId()) {
                                 baseBind.address.setSelection(i);
-                                if (preset.getProfile_presets().getAddresses().get(i).getIs_global()) {
+                                if (preset.getProfile_presets().getAddresses().get(i).is_global()) {
                                     for (int j = 0; j < preset.getProfile_presets().getCountries().size(); j++) {
                                         if (!TextUtils.isEmpty(user.getProfile().getCountry_code())) {
                                             if (user.getProfile().getCountry_code().equals(preset.getProfile_presets().getCountries().get(j).getCode())) {

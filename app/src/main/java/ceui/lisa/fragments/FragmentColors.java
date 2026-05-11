@@ -1,5 +1,9 @@
 package ceui.lisa.fragments;
 
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
 import androidx.viewbinding.ViewBinding;
 
 import java.util.ArrayList;
@@ -77,5 +81,14 @@ public class FragmentColors extends LocalListFragment<FragmentBaseListBinding, C
     protected void initData() {
         super.initData();
         fresh();
+    }
+
+    @Override
+    protected FragmentBaseListBinding onCreateBinding(
+        @NonNull LayoutInflater inflater,
+        ViewGroup container,
+        boolean attachToParent
+    ) {
+        return FragmentBaseListBinding.inflate(inflater, container, false);
     }
 }

@@ -20,8 +20,10 @@ import io.noties.markwon.AbstractMarkwonPlugin;
 import io.noties.markwon.LinkResolverDef;
 import io.noties.markwon.Markwon;
 import io.noties.markwon.MarkwonConfiguration;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
+
+import java.util.function.Function;
+
+import static ceui.lisa.core.CallExtKt.executeCall;
 import okhttp3.ResponseBody;
 
 public class FragmentMarkdown extends BaseFragment<FragmentMarkdownBinding> {
@@ -50,10 +52,10 @@ public class FragmentMarkdown extends BaseFragment<FragmentMarkdownBinding> {
     @Override
     protected void initData() {
         super.initData();
-        Retro.getResourceApi().getByPath(url)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new NullCtrl<ResponseBody>() {
+        executeCall(
+            Retro.getResourceApi().getByPath(url),
+            Function.identity(),
+            new NullCtrl<ResponseBody>() {
                     @Override
                     public void success(ResponseBody responseBody) {
                         try {

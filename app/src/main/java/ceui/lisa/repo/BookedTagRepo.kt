@@ -3,21 +3,21 @@ package ceui.lisa.repo
 import ceui.lisa.core.RemoteRepo
 import ceui.lisa.http.Retro
 import ceui.lisa.model.ListTag
-import io.reactivex.Observable
+import retrofit2.Call
 
 class BookedTagRepo(
     private val type: Int,
     private val starType: String?,
 ) : RemoteRepo<ListTag>() {
 
-    override fun initApi(): Observable<ListTag> {
+    override fun initApi(): Call<ListTag> {
         if (type == 1) {
             return Retro.getAppApi().getAllNovelBookmarkTags(currentUserID(), starType)
         }
         return Retro.getAppApi().getAllIllustBookmarkTags(currentUserID(), starType)
     }
 
-    override fun initNextApi(): Observable<ListTag> {
+    override fun initNextApi(): Call<ListTag> {
         return Retro.getAppApi().getNextTags(nextUrl)
     }
 }

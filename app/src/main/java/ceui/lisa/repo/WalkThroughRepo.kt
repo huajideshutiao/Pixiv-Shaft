@@ -3,15 +3,15 @@ package ceui.lisa.repo
 import ceui.lisa.core.RemoteRepo
 import ceui.lisa.http.Retro
 import ceui.lisa.model.ListIllust
-import io.reactivex.Observable
+import retrofit2.Call
 
 class WalkThroughRepo : RemoteRepo<ListIllust>() {
 
-    override fun initApi(): Observable<ListIllust> {
+    override fun initApi(): Call<ListIllust> {
         return Retro.getAppApi().getLoginBg()
     }
 
-    override fun initNextApi(): Observable<ListIllust>? {
+    override fun initNextApi(): Call<ListIllust>? {
         return null
     }
 

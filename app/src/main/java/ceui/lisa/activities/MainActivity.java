@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -31,7 +32,6 @@ import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 
 import java.io.File;
 
-import android.view.LayoutInflater;
 import ceui.lisa.R;
 import ceui.lisa.core.Manager;
 import ceui.lisa.databinding.ActivityCoverBinding;
@@ -70,7 +70,7 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
 
     @Override
     public boolean hideStatusBar() {
-        return Dev.hideMainActivityStatus;
+        return true;
     }
 
     @Override

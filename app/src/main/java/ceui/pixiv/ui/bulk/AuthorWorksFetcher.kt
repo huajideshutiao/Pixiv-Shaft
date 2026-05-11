@@ -10,17 +10,14 @@ import ceui.pixiv.db.queue.DownloadQueueDao
 import ceui.pixiv.db.queue.DownloadQueueEntity
 import ceui.pixiv.db.queue.QueueStatus
 import ceui.pixiv.db.queue.WorkType
-import io.reactivex.Observable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
+import kotlinx.coroutines.withContext
+import retrofit2.Call
 
 /**
  * 细粒度 fetcher 事件：dialog 用它驱动 CLI 风格的实时 verbose 显示。
@@ -177,13 +174,12 @@ class AuthorWorksFetcher(
     }
 }
 
-/** RxJava2 -> suspend 单值（Fetcher 内部专用）。 */
-private suspend fun <T : Any> Observable<T>.awaitFirstSafe(): T =
-    suspendCancellableCoroutine { cont ->
-        val disposable = subscribeOn(Schedulers.io()).firstOrError()
-        .subscribe(
-            { cont.resume(it) },
-            { cont.resumeWithException(it) }
-        )
-        cont.invokeOnCancellation { disposable.dispose() }
+/** Call -> suspend 单值（Fetcher 内部专用）。 */
+private suspend fun <T : Any> Call<T>.awaitFirstSafe(): T = withContext(Dispatchers.IO) {
+    val response = execute()
+    if (response.isSuccessful) {
+        response.body() ?: throw IllegalStateException("Response body is null")
+    } else {
+        throw retrofit2.HttpException(response)
     }
+}

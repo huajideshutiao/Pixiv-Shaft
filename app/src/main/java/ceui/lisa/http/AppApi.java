@@ -32,7 +32,6 @@ import ceui.lisa.models.Preset;
 import ceui.lisa.models.UserDetailResponse;
 import ceui.lisa.models.UserFollowDetail;
 import ceui.lisa.models.UserState;
-import io.reactivex.Observable;
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -55,36 +54,38 @@ public interface AppApi {
     /**
      * 获取排行榜
      * @param mode The type of rank:day/week/.../
-     * @return ListIllust Observable<ListIllust>{@link ListIllust}
+     * @return ListIllust Call<ListIllust>{@link ListIllust}
      */
     @GET("v1/illust/ranking?filter=for_android")
-    Observable<ListIllust> getRank(@Query("mode") String mode,
+    Call<ListIllust> getRank(
+        @Query("mode") String mode,
                                    @Query("date") String date);
     @GET("v1/novel/ranking?filter=for_android")
-    Observable<ListNovel> getRankNovel(@Query("mode") String mode,
+    Call<ListNovel> getRankNovel(
+        @Query("mode") String mode,
                                        @Query("date") String date);
 
     /**
      * 推荐榜单
      * @param include_ranking_illusts (indoubt)
-     * @return RecmdIllust Observable<RecmdIllust>{@link RecmdIllust}
+     * @return RecmdIllust Call<RecmdIllust>{@link RecmdIllust}
      */
     @GET("v1/illust/recommended?include_privacy_policy=true&filter=for_android")
-    Observable<RecmdIllust> getRecmdIllust(@Query("include_ranking_illusts") boolean include_ranking_illusts);
+    Call<RecmdIllust> getRecmdIllust(@Query("include_ranking_illusts") boolean include_ranking_illusts);
 
 
     @GET("v1/manga/recommended?include_privacy_policy=true&filter=for_android&include_ranking_illusts=true")
-    Observable<RecmdIllust> getRecmdManga();
+    Call<RecmdIllust> getRecmdManga();
 
     @GET("v1/novel/recommended?include_privacy_policy=true&filter=for_android&include_ranking_novels=true")
-    Observable<ListNovel> getRecmdNovel();
+    Call<ListNovel> getRecmdNovel();
 
     @GET("v1/novel/follow")
-    Observable<ListNovel> getBookedUserSubmitNovel(@Query("restrict") String restrict);
+    Call<ListNovel> getBookedUserSubmitNovel(@Query("restrict") String restrict);
 
 
     @GET("v1/trending-tags/{type}?filter=for_android&include_translated_tag_results=true")
-    Observable<ListTrendingtag> getHotTags(@Path("type") String type);
+    Call<ListTrendingtag> getHotTags(@Path("type") String type);
 
 
     /**
@@ -93,7 +94,7 @@ public interface AppApi {
      * @return
      */
     @GET("v1/walkthrough/illusts?filter=for_android")
-    Observable<ListIllust> getLoginBg();
+    Call<ListIllust> getLoginBg();
 
 
     /**
@@ -110,7 +111,8 @@ public interface AppApi {
      * end_date 结束时间
      */
     @GET("v1/search/illust?filter=for_android&include_translated_tag_results=true&merge_plain_keyword_results=true")
-    Observable<ListIllust> searchIllust(@Query("word") String word,
+    Call<ListIllust> searchIllust(
+        @Query("word") String word,
                                         @Query("sort") String sort,
                                         @Query("start_date") String startDate,
                                         @Query("end_date") String endDate,
@@ -120,7 +122,8 @@ public interface AppApi {
      * search_target=exact_match_for_tags,partial_match_for_tags,text(文本),keyword(关键词)
      */
     @GET("v1/search/novel?filter=for_android&include_translated_tag_results=true&merge_plain_keyword_results=true")
-    Observable<ListNovel> searchNovel(@Query("word") String word,
+    Call<ListNovel> searchNovel(
+        @Query("word") String word,
                                       @Query("sort") String sort,
                                       @Query("start_date") String startDate,
                                       @Query("end_date") String endDate,
@@ -128,7 +131,7 @@ public interface AppApi {
 
 
     @GET("v2/illust/related?filter=for_android")
-    Observable<ListIllust> relatedIllust(@Query("illust_id") int illust_id);
+    Call<ListIllust> relatedIllust(@Query("illust_id") int illust_id);
 
 
     /**
@@ -137,64 +140,70 @@ public interface AppApi {
      * @return
      */
     @GET("v1/user/recommended?filter=for_android")
-    Observable<ListUser> getRecmdUser();
+    Call<ListUser> getRecmdUser();
 
 
     @GET("v1/user/bookmarks/illust")
-    Observable<ListIllust> getUserLikeIllust(@Query("user_id") int user_id,
+    Call<ListIllust> getUserLikeIllust(
+        @Query("user_id") int user_id,
                                              @Query("restrict") String restrict,
                                              @Query("tag") String tag);
 
     @GET("v1/user/bookmarks/illust")
-    Observable<ListIllust> getUserLikeIllust(@Query("user_id") int user_id,
+    Call<ListIllust> getUserLikeIllust(
+        @Query("user_id") int user_id,
                                              @Query("restrict") String restrict);
 
     @GET("v1/user/bookmarks/novel")
-    Observable<ListNovel> getUserLikeNovel(@Query("user_id") int user_id,
+    Call<ListNovel> getUserLikeNovel(
+        @Query("user_id") int user_id,
                                            @Query("restrict") String restrict,
                                            @Query("tag") String tag);
 
     @GET("v1/user/bookmarks/novel")
-    Observable<ListNovel> getUserLikeNovel(@Query("user_id") int user_id,
+    Call<ListNovel> getUserLikeNovel(
+        @Query("user_id") int user_id,
                                            @Query("restrict") String restrict);
 
     @GET("v1/user/illusts?filter=for_android")
-    Observable<ListIllust> getUserSubmitIllust(@Query("user_id") int user_id,
+    Call<ListIllust> getUserSubmitIllust(
+        @Query("user_id") int user_id,
                                                @Query("type") String type);
 
     @GET("v1/user/novels")
-    Observable<ListNovel> getUserSubmitNovel(@Query("user_id") int user_id);
+    Call<ListNovel> getUserSubmitNovel(@Query("user_id") int user_id);
 
 
     @GET("v2/illust/follow")
-    Observable<ListIllust> getFollowUserIllust(@Query("restrict") String restrict);
+    Call<ListIllust> getFollowUserIllust(@Query("restrict") String restrict);
 
 
     @GET("v1/spotlight/articles?filter=for_android")
-    Observable<ListArticle> getArticles(@Query("category") String category);
+    Call<ListArticle> getArticles(@Query("category") String category);
 
 
     ///v1/user/detail?filter=for_android&user_id=24218478
     @GET("v1/user/detail?filter=for_android")
-    Observable<UserDetailResponse> getUserDetail(@Query("user_id") int user_id);
+    Call<UserDetailResponse> getUserDetail(@Query("user_id") int user_id);
 
 
     //  /v1/ugoira/metadata?illust_id=47297805
     @GET("v1/ugoira/metadata")
-    Observable<GifResponse> getGifPackage(@Query("illust_id") int illust_id);
+    Call<GifResponse> getGifPackage(@Query("illust_id") int illust_id);
 
 
     @FormUrlEncoded
     @POST("v1/user/follow/add")
-    Observable<NullResponse> postFollow(@Field("user_id") int user_id,
+    Call<NullResponse> postFollow(
+        @Field("user_id") int user_id,
                                         @Field("restrict") String followType);
 
     @FormUrlEncoded
     @POST("v1/user/follow/delete")
-    Observable<NullResponse> postUnFollow(@Field("user_id") int user_id);
+    Call<NullResponse> postUnFollow(@Field("user_id") int user_id);
 
     @GET("v1/user/follow/detail")
-    Observable<UserFollowDetail> getFollowDetail(@Query("user_id") int user_id);
+    Call<UserFollowDetail> getFollowDetail(@Query("user_id") int user_id);
 
 
     /**
@@ -205,94 +214,105 @@ public interface AppApi {
      * @return
      */
     @GET("v1/user/following?filter=for_android")
-    Observable<ListUser> getFollowUser(@Query("user_id") int user_id,
+    Call<ListUser> getFollowUser(
+        @Query("user_id") int user_id,
                                        @Query("restrict") String restrict);
 
 
     //获取关注 这个userid 的人
     @GET("v1/user/follower?filter=for_android")
-    Observable<ListUser> getWhoFollowThisUser(@Query("user_id") int user_id);
+    Call<ListUser> getWhoFollowThisUser(@Query("user_id") int user_id);
 
 
     @GET("/v3/illust/comments")
-    Observable<ListComment> getIllustComment(@Query("illust_id") int illust_id);
+    Call<ListComment> getIllustComment(@Query("illust_id") int illust_id);
 
     @GET("v3/novel/comments")
-    Observable<ListComment> getNovelComment(@Query("novel_id") int novel_id);
+    Call<ListComment> getNovelComment(@Query("novel_id") int novel_id);
 
     @GET
-    Observable<ListComment> getNextComment(@Url String nextUrl);
+    Call<ListComment> getNextComment(@Url String nextUrl);
 
 
     @FormUrlEncoded
     @POST("v1/illust/comment/add")
-    Observable<CommentHolder> postIllustComment(@Field("illust_id") int illust_id,
+    Call<CommentHolder> postIllustComment(
+        @Field("illust_id") int illust_id,
                                                 @Field("comment") String comment);
 
     @FormUrlEncoded
     @POST("v1/illust/comment/add")
-    Observable<CommentHolder> postIllustComment(@Field("illust_id") int illust_id,
+    Call<CommentHolder> postIllustComment(
+        @Field("illust_id") int illust_id,
                                                 @Field("comment") String comment,
                                                 @Field("parent_comment_id") int parent_comment_id);
 
     @FormUrlEncoded
     @POST("v1/novel/comment/add")
-    Observable<CommentHolder> postNovelComment(@Field("novel_id") int novel_id,
+    Call<CommentHolder> postNovelComment(
+        @Field("novel_id") int novel_id,
                                           @Field("comment") String comment);
 
     @FormUrlEncoded
     @POST("v1/novel/comment/add")
-    Observable<CommentHolder> postNovelComment(@Field("novel_id") int novel_id,
+    Call<CommentHolder> postNovelComment(
+        @Field("novel_id") int novel_id,
                                           @Field("comment") String comment,
                                           @Field("parent_comment_id") int parent_comment_id);
 
     @FormUrlEncoded
     @POST("v2/illust/bookmark/add")
-    Observable<NullResponse> postLikeIllust(@Field("illust_id") int illust_id,
+    Call<NullResponse> postLikeIllust(
+        @Field("illust_id") int illust_id,
                                             @Field("restrict") String restrict);
 
     @FormUrlEncoded
     @POST("v2/novel/bookmark/add")
-    Observable<NullResponse> postLikeNovel(@Field("novel_id") int novel_id,
+    Call<NullResponse> postLikeNovel(
+        @Field("novel_id") int novel_id,
                                            @Field("restrict") String restrict);
 
     @FormUrlEncoded
     @POST("v2/illust/bookmark/add")
-    Observable<NullResponse> postLikeIllustWithTags(@Field("illust_id") int illust_id,
+    Call<NullResponse> postLikeIllustWithTags(
+        @Field("illust_id") int illust_id,
                                                     @Field("restrict") String restrict,
                                                     @Field("tags[]") String... tags);
 
     @FormUrlEncoded
     @POST("v2/novel/bookmark/add")
-    Observable<NullResponse> postLikeNovelWithTags(@Field("novel_id") int novel_id,
+    Call<NullResponse> postLikeNovelWithTags(
+        @Field("novel_id") int novel_id,
                                                     @Field("restrict") String restrict,
                                                     @Field("tags[]") String... tags);
 
     @FormUrlEncoded
     @POST("v1/illust/bookmark/delete")
-    Observable<NullResponse> postDislikeIllust(@Field("illust_id") int illust_id);
+    Call<NullResponse> postDislikeIllust(@Field("illust_id") int illust_id);
 
     @FormUrlEncoded
     @POST("v1/novel/bookmark/delete")
-    Observable<NullResponse> postDislikeNovel(@Field("novel_id") int novel_id);
+    Call<NullResponse> postDislikeNovel(@Field("novel_id") int novel_id);
 
 
     @GET("v1/illust/detail?filter=for_android")
-    Observable<IllustSearchResponse> getIllustByID(@Query("illust_id") long illust_id);
+    Call<IllustSearchResponse> getIllustByID(@Query("illust_id") long illust_id);
 
 
     @GET("v1/search/user?filter=for_android")
-    Observable<ListUser> searchUser(@Query("word") String word);
+    Call<ListUser> searchUser(@Query("word") String word);
 
 
     @GET("v1/search/popular-preview/illust?filter=for_android&include_translated_tag_results=true&merge_plain_keyword_results=true")
-    Observable<ListIllust> popularPreview(@Query("word") String word,
+    Call<ListIllust> popularPreview(
+        @Query("word") String word,
                                           @Query("start_date") String startDate,
                                           @Query("end_date") String endDate,
                                           @Query("search_target") String search_target);
 
     @GET("v1/search/popular-preview/novel?filter=for_android&include_translated_tag_results=true&merge_plain_keyword_results=true")
-    Observable<ListNovel> popularNovelPreview(@Query("word") String word,
+    Call<ListNovel> popularNovelPreview(
+        @Query("word") String word,
                                           @Query("start_date") String startDate,
                                           @Query("end_date") String endDate,
                                           @Query("search_target") String search_target);
@@ -322,7 +342,7 @@ public interface AppApi {
      */
     // v2/search/autocomplete?merge_plain_keyword_results=true&word=%E5%A5%B3%E4%BD%93 HTTP/1.1
     @GET("v2/search/autocomplete?merge_plain_keyword_results=true")
-    Observable<ListTrendingtag> searchCompleteWord(@Query("word") String word);
+    Call<ListTrendingtag> searchCompleteWord(@Query("word") String word);
 
 
     /**
@@ -330,7 +350,8 @@ public interface AppApi {
      */
     //GET v1/user/bookmark-tags/illust?user_id=41531382&restrict=public HTTP/1.1
     @GET("v1/user/bookmark-tags/illust")
-    Observable<ListTag> getAllIllustBookmarkTags(@Query("user_id") int user_id,
+    Call<ListTag> getAllIllustBookmarkTags(
+        @Query("user_id") int user_id,
                                                  @Query("restrict") String restrict);
 
     /**
@@ -338,23 +359,24 @@ public interface AppApi {
      */
     //GET v1/user/bookmark-tags/novel?user_id=41531382&restrict=public HTTP/1.1
     @GET("v1/user/bookmark-tags/novel")
-    Observable<ListTag> getAllNovelBookmarkTags(@Query("user_id") int user_id,
+    Call<ListTag> getAllNovelBookmarkTags(
+        @Query("user_id") int user_id,
                                                 @Query("restrict") String restrict);
 
 
     @GET
-    Observable<ListTag> getNextTags(@Url String nextUrl);
+    Call<ListTag> getNextTags(@Url String nextUrl);
 
     /**
      * 获取单个插画收藏的标签
      */
     @GET("v2/illust/bookmark/detail")
-    Observable<ListBookmarkTag> getIllustBookmarkTags(@Query("illust_id") int illust_id);
+    Call<ListBookmarkTag> getIllustBookmarkTags(@Query("illust_id") int illust_id);
     /**
      * 获取单个小说收藏的标签
      */
     @GET("v2/novel/bookmark/detail")
-    Observable<ListBookmarkTag> getNovelBookmarkTags(@Query("novel_id") int novel_id);
+    Call<ListBookmarkTag> getNovelBookmarkTags(@Query("novel_id") int novel_id);
 
 
     /**
@@ -367,20 +389,20 @@ public interface AppApi {
      * @return
      */
     @GET("v1/mute/list")
-    Observable<MutedHistory> getMutedHistory();
+    Call<MutedHistory> getMutedHistory();
 
 
     //获取好P友
     @GET("v1/user/mypixiv?filter=for_android")
-    Observable<ListUser> getNiceFriend(@Query("user_id") int user_id);
+    Call<ListUser> getNiceFriend(@Query("user_id") int user_id);
 
     //获取最新作品
     @GET("v1/illust/new?filter=for_android")
-    Observable<ListIllust> getNewWorks(@Query("content_type") String content_type);
+    Call<ListIllust> getNewWorks(@Query("content_type") String content_type);
 
     //获取最新作品
     @GET("v1/novel/new")
-    Observable<ListNovel> getNewNovels();
+    Call<ListNovel> getNewNovels();
 
 
     @GET("/webview/v2/novel")
@@ -389,128 +411,129 @@ public interface AppApi {
 
     //获取好P友
     @GET("v1/user/me/state")
-    Observable<UserState> getAccountState();
+    Call<UserState> getAccountState();
 
     @Multipart
     @POST("v1/user/profile/edit")
-    Observable<NullResponse> updateUserProfile(@Part List<MultipartBody.Part> parts);
+    Call<NullResponse> updateUserProfile(@Part List<MultipartBody.Part> parts);
 
 
     @GET("v1/live/list")
-    Observable<ListLive> getLiveList(@Query("list_type") String list_type);
+    Call<ListLive> getLiveList(@Query("list_type") String list_type);
 
     @GET("v1/illust/bookmark/users?filter=for_android")
-    Observable<ListSimpleUser> getUsersWhoLikeThisIllust(@Query("illust_id") int illust_id);
+    Call<ListSimpleUser> getUsersWhoLikeThisIllust(@Query("illust_id") int illust_id);
 
     @GET("v2/novel/series")
-    Observable<ListNovelOfSeries> getNovelSeries(@Query("series_id") int series_id);
+    Call<ListNovelOfSeries> getNovelSeries(@Query("series_id") int series_id);
 
     @GET("v2/novel/detail")
-    Observable<NovelSearchResponse> getNovelByID(@Query("novel_id") long novel_id);
+    Call<NovelSearchResponse> getNovelByID(@Query("novel_id") long novel_id);
 
     @GET("v1/illust/series?filter=for_android")
-    Observable<ListMangaOfSeries> getMangaSeriesById(@Query("illust_series_id") int illust_series_id);
+    Call<ListMangaOfSeries> getMangaSeriesById(@Query("illust_series_id") int illust_series_id);
 
 
     @GET("v1/user/illust-series")
-    Observable<ListMangaSeries> getUserMangaSeries(@Query("user_id") int user_id);
+    Call<ListMangaSeries> getUserMangaSeries(@Query("user_id") int user_id);
 
 
     @GET("v1/user/novel-series")
-    Observable<ListNovelSeries> getUserNovelSeries(@Query("user_id") int user_id);
+    Call<ListNovelSeries> getUserNovelSeries(@Query("user_id") int user_id);
 
     @FormUrlEncoded
     @POST("v1/user/workspace/edit")
-    Observable<NullResponse> editWorkSpace(@FieldMap HashMap<String, String> fields);
+    Call<NullResponse> editWorkSpace(@FieldMap HashMap<String, String> fields);
 
 
     @GET("v1/user/profile/presets")
-    Observable<Preset> getPresets();
+    Call<Preset> getPresets();
 
     @GET("v2/illust/mypixiv")
-    Observable<ListIllust> getNiceFriendIllust();
+    Call<ListIllust> getNiceFriendIllust();
 
     @GET("v1/novel/mypixiv")
-    Observable<ListNovel> getNiceFriendNovel();
+    Call<ListNovel> getNiceFriendNovel();
 
 
     @GET
-    Observable<ListNovelSeries> getNextUserNovelSeries(@Url String next_url);
+    Call<ListNovelSeries> getNextUserNovelSeries(@Url String next_url);
 
     @GET
-    Observable<ListMangaSeries> getNextUserMangaSeries(@Url String next_url);
+    Call<ListMangaSeries> getNextUserMangaSeries(@Url String next_url);
 
     @GET
-    Observable<ListUser> getNextUser(@Url String next_url);
+    Call<ListUser> getNextUser(@Url String next_url);
 
     @GET
-    Observable<ListSimpleUser> getNextSimpleUser(@Url String next_url);
+    Call<ListSimpleUser> getNextSimpleUser(@Url String next_url);
 
 
     @GET
-    Observable<ListIllust> getNextIllust(@Url String next_url);
+    Call<ListIllust> getNextIllust(@Url String next_url);
 
     @GET
-    Observable<ListNovel> getNextNovel(@Url String next_url);
+    Call<ListNovel> getNextNovel(@Url String next_url);
 
     @GET
-    Observable<ListNovelOfSeries> getNextSeriesNovel(@Url String next_url);
+    Call<ListNovelOfSeries> getNextSeriesNovel(@Url String next_url);
 
     @GET
-    Observable<ListArticle> getNextArticles(@Url String next_url);
+    Call<ListArticle> getNextArticles(@Url String next_url);
 
 
     // 添加小说书签 相同id只能有1个 不同页数会直接覆盖
     @FormUrlEncoded
     @POST("v1/novel/marker/add")
-    Observable<NullResponse> postAddNovelMarker(@Field("novel_id") int novel_id,
+    Call<NullResponse> postAddNovelMarker(
+        @Field("novel_id") int novel_id,
                                            @Field("page") int page);
 
     // 删除小说书签
     @FormUrlEncoded
     @POST("v1/novel/marker/delete")
-    Observable<NullResponse> postDeleteNovelMarker(@Field("novel_id") int novel_id);
+    Call<NullResponse> postDeleteNovelMarker(@Field("novel_id") int novel_id);
 
     // 推荐用户
     @GET("v1/user/related?filter=for_android")
-    Observable<ListUser> getRelatedUsers(@Query("seed_user_id") int seed_user_id);
+    Call<ListUser> getRelatedUsers(@Query("seed_user_id") int seed_user_id);
 
     // 小说追更列表
     @GET("v1/watchlist/novel")
-    Observable<ListWatchlistNovel> getWatchlistNovel();
+    Call<ListWatchlistNovel> getWatchlistNovel();
 
     @GET
-    Observable<ListWatchlistNovel> getNextWatchlistNovel(@Url String next_url);
+    Call<ListWatchlistNovel> getNextWatchlistNovel(@Url String next_url);
 
     // 加入/取消追更小说
     @FormUrlEncoded
     @POST("v1/watchlist/novel/add")
-    Observable<NullResponse> postWatchlistNovelAdd(@Field("series_id") int series_id);
+    Call<NullResponse> postWatchlistNovelAdd(@Field("series_id") int series_id);
 
     @FormUrlEncoded
     @POST("v1/watchlist/novel/delete")
-    Observable<NullResponse> postWatchlistNovelDelete(@Field("series_id") int series_id);
+    Call<NullResponse> postWatchlistNovelDelete(@Field("series_id") int series_id);
 
     // 漫画追更列表
     @GET("v1/watchlist/manga")
-    Observable<ListWatchlistManga> getWatchlistManga();
+    Call<ListWatchlistManga> getWatchlistManga();
 
     @GET
-    Observable<ListWatchlistManga> getNextWatchlistManga(@Url String next_url);
+    Call<ListWatchlistManga> getNextWatchlistManga(@Url String next_url);
 
     // 加入/取消追更漫画
     @FormUrlEncoded
     @POST("v1/watchlist/manga/add")
-    Observable<NullResponse> postWatchlistMangaAdd(@Field("series_id") int series_id);
+    Call<NullResponse> postWatchlistMangaAdd(@Field("series_id") int series_id);
 
     @FormUrlEncoded
     @POST("v1/watchlist/manga/delete")
-    Observable<NullResponse> postWatchlistMangaDelete(@Field("series_id") int series_id);
+    Call<NullResponse> postWatchlistMangaDelete(@Field("series_id") int series_id);
 
     // 小说书签
     @GET("v2/novel/markers")
-    Observable<ListNovelMarkers> getNovelMarkers();
+    Call<ListNovelMarkers> getNovelMarkers();
 
     @GET
-    Observable<ListNovelMarkers> getNextNovelMarkers(@Url String next_url);
+    Call<ListNovelMarkers> getNextNovelMarkers(@Url String next_url);
 }

@@ -48,8 +48,10 @@ import ceui.lisa.utils.PixivOperate;
 import ceui.lisa.utils.SearchTypeUtil;
 import ceui.pixiv.ui.search.SearchHintViewModel;
 import ceui.pixiv.utils.FlexboxUtils;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
+
+import java.util.function.Function;
+
+import static ceui.lisa.core.CallExtKt.executeCall;
 
 
 public class FragmentSearch extends BaseFragment<FragmentSearchBinding> {
@@ -319,10 +321,9 @@ public class FragmentSearch extends BaseFragment<FragmentSearchBinding> {
     }
 
     private void getHotTags() {
-        Retro.getAppApi().getHotTags(Params.TYPE_ILLUST)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new NullCtrl<ListTrendingtag>() {
+        executeCall(
+            Retro.getAppApi().getHotTags(Params.TYPE_ILLUST),
+            Function.identity(), new NullCtrl<ListTrendingtag>() {
                     @Override
                     public void success(ListTrendingtag listTrendingtag) {
                         FlexboxUtils.populate(

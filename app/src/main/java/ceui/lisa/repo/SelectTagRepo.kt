@@ -1,12 +1,14 @@
 package ceui.lisa.repo
 
+import ceui.lisa.core.NetCallback
+import ceui.lisa.core.executeCall
 import ceui.lisa.core.RemoteRepo
 import ceui.lisa.http.Retro
 import ceui.lisa.model.ListBookmarkTag
 import ceui.lisa.model.ListTag
 import ceui.lisa.utils.Params
-import io.reactivex.Observable
-import io.reactivex.functions.Function
+import retrofit2.Call
+import java.util.function.Function
 
 class SelectTagRepo(
         private val id: Int,
@@ -16,35 +18,51 @@ class SelectTagRepo(
 
     var listTag: ListTag? = null
 
-    override fun initApi(): Observable<ListBookmarkTag> {
-
-        var api1: Observable<ListBookmarkTag>? = null
-        var api2: Observable<ListTag>? = null
-
-        when(type){
-            Params.TYPE_ILLUST -> {
-                api1 = Retro.getAppApi().getIllustBookmarkTags(id)
-                api2 = Retro.getAppApi().getAllIllustBookmarkTags(currentUserID(), Params.TYPE_PUBLIC)
-            }
-            Params.TYPE_NOVEL -> {
-                api1 = Retro.getAppApi().getNovelBookmarkTags(id)
-                api2 = Retro.getAppApi().getAllNovelBookmarkTags(currentUserID(), Params.TYPE_PUBLIC)
-            }
-        }
-
-        return api2!!.flatMap(
-            fun(listTag: ListTag): Observable<ListBookmarkTag> {
-                this.listTag = listTag
-                return api1!!
-            }
-        )
-    }
-
-    override fun initNextApi(): Observable<ListBookmarkTag>? {
+    override fun initApi(): Call<ListBookmarkTag>? {
         return null
     }
 
-    override fun mapper(): Function<in ListBookmarkTag, ListBookmarkTag> {
+    override fun initNextApi(): Call<ListBookmarkTag>? {
+        return null
+    }
+
+    override fun getFirstData(netCallback: NetCallback<ListBookmarkTag>) {
+        val api2 = when (type) {
+            Params.TYPE_ILLUST -> {
+                Retro.getAppApi().getAllIllustBookmarkTags(currentUserID(), Params.TYPE_PUBLIC)
+            }
+            Params.TYPE_NOVEL -> {
+                Retro.getAppApi().getAllNovelBookmarkTags(currentUserID(), Params.TYPE_PUBLIC)
+            }
+
+            else -> throw IllegalArgumentException("Unknown type: $type")
+        }
+
+        executeCall(api2, Function.identity(), object : NetCallback<ListTag>() {
+            override fun onSuccess(t: ListTag) {
+                listTag = t
+                val api1 = when (type) {
+                    Params.TYPE_ILLUST -> {
+                        Retro.getAppApi().getIllustBookmarkTags(id)
+                    }
+
+                    Params.TYPE_NOVEL -> {
+                        Retro.getAppApi().getNovelBookmarkTags(id)
+                    }
+
+                    else -> throw IllegalArgumentException("Unknown type: $type")
+                }
+                executeCall(api1, mapper(), netCallback)
+            }
+
+            override fun onError(e: Throwable) {
+                super.onError(e)
+                netCallback.must(false)
+            }
+        })
+    }
+
+    override fun mapper(): Function<ListBookmarkTag, ListBookmarkTag> {
         return Function { listBookmarkTag ->
             val tags = listBookmarkTag.list
             if (listTag != null) {

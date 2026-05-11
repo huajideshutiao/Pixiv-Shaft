@@ -9,15 +9,14 @@ import ceui.lisa.utils.PixivOperate
 import ceui.lisa.utils.PixivSearchParamUtil
 import ceui.lisa.utils.SearchTypeUtil
 import ceui.lisa.viewmodel.SearchModel
-import io.reactivex.Observable
-import io.reactivex.functions.Function
+import retrofit2.Call
+import java.util.function.Function
 
 class SearchIllustRepo(
     var keyword: String?,
     private var sortType: String?,
     var searchType: String?,
     var starSize: String?,
-    //var isPopular: Boolean,
     private var isPremium: Boolean?,
     private var startDate: String?,
     private var endDate: String?,
@@ -26,7 +25,7 @@ class SearchIllustRepo(
 
     private var filterMapper: FilterMapper? = null
 
-    override fun initApi(): Observable<ListIllust> {
+    override fun initApi(): Call<ListIllust> {
         if (sortType == PixivSearchParamUtil.TRENDING_BUILTIN_SORT_VALUE) {
             return loadTrendingBuiltinIllusts()
         }
@@ -57,18 +56,18 @@ class SearchIllustRepo(
         }
     }
 
-    override fun initNextApi(): Observable<ListIllust> {
+    override fun initNextApi(): Call<ListIllust> {
         return Retro.getAppApi().getNextIllust(nextUrl)
     }
 
-    override fun mapper(): Function<in ListIllust, ListIllust> {
+    override fun mapper(): Function<ListIllust, ListIllust> {
         if (this.filterMapper == null) {
             this.filterMapper = FilterMapper().enableFilterStarSize()
         }
         return this.filterMapper!!
     }
 
-    private fun loadTrendingBuiltinIllusts(): Observable<ListIllust> {
+    private fun loadTrendingBuiltinIllusts(): Call<ListIllust> {
         return Retro.getAppApi().popularPreview(
             keyword ?: "", startDate, endDate, searchType
         )
@@ -79,7 +78,6 @@ class SearchIllustRepo(
         sortType = searchModel.sortType.value
         searchType = searchModel.searchType.value
         starSize = searchModel.starSize.value
-        //isPopular = pop
         isPremium = searchModel.isPremium.value
         startDate = searchModel.startDate.value
         endDate = searchModel.endDate.value

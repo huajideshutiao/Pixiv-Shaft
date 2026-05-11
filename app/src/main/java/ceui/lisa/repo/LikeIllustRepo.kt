@@ -4,7 +4,7 @@ import android.text.TextUtils
 import ceui.lisa.core.RemoteRepo
 import ceui.lisa.http.Retro
 import ceui.lisa.model.ListIllust
-import io.reactivex.Observable
+import retrofit2.Call
 
 class LikeIllustRepo(
     private val userID: Int,
@@ -12,7 +12,7 @@ class LikeIllustRepo(
     var tag: String?
 ) : RemoteRepo<ListIllust>() {
 
-    override fun initApi(): Observable<ListIllust> {
+    override fun initApi(): Call<ListIllust> {
         return if (TextUtils.isEmpty(tag)) {
             Retro.getAppApi().getUserLikeIllust(userID, starType)
         } else {
@@ -20,7 +20,7 @@ class LikeIllustRepo(
         }
     }
 
-    override fun initNextApi(): Observable<ListIllust> {
+    override fun initNextApi(): Call<ListIllust> {
         return Retro.getAppApi().getNextIllust(nextUrl)
     }
 }

@@ -1,5 +1,10 @@
 package ceui.lisa.fragments;
 
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+
 import ceui.lisa.adapters.BaseAdapter;
 import ceui.lisa.adapters.NAdapter;
 import ceui.lisa.core.RemoteRepo;
@@ -25,5 +30,14 @@ public class FragmentLatestNovel extends NetListFragment<FragmentBaseListBinding
     @Override
     public boolean showToolbar() {
         return false;
+    }
+
+    @Override
+    protected FragmentBaseListBinding onCreateBinding(
+        @NonNull LayoutInflater inflater,
+        ViewGroup container,
+        boolean attachToParent
+    ) {
+        return FragmentBaseListBinding.inflate(inflater, container, false);
     }
 }

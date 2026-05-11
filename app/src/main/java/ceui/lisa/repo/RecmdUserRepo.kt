@@ -4,15 +4,15 @@ import ceui.lisa.core.RemoteRepo
 import ceui.lisa.http.Retro
 import ceui.lisa.model.ListUser
 import ceui.lisa.utils.Dev
-import io.reactivex.Observable
+import retrofit2.Call
 
 class RecmdUserRepo(private val isHorizontal: Boolean) : RemoteRepo<ListUser>() {
 
-    override fun initApi(): Observable<ListUser> {
+    override fun initApi(): Call<ListUser> {
         return Retro.getAppApi().getRecmdUser()
     }
 
-    override fun initNextApi(): Observable<ListUser>? {
+    override fun initNextApi(): Call<ListUser>? {
         if (isHorizontal) {
             return null
         }

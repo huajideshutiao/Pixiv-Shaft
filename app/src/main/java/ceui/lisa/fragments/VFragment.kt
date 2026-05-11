@@ -15,6 +15,7 @@ import ceui.lisa.activities.Shaft
 import ceui.lisa.core.ArtworksMap
 import ceui.lisa.core.Container
 import ceui.lisa.core.Mapper
+import ceui.lisa.core.executeCall
 import ceui.lisa.databinding.ActivityViewPagerBinding
 import ceui.lisa.helper.DeduplicateArrayList
 import ceui.lisa.http.NullCtrl
@@ -24,8 +25,7 @@ import ceui.lisa.model.ListIllust
 import ceui.lisa.utils.Common
 import ceui.lisa.utils.Params
 import ceui.lisa.utils.PixivOperate
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import java.util.function.Function
 
 class VFragment : BaseFragment<ActivityViewPagerBinding>(), VolumeKeyHandler {
 
@@ -83,7 +83,7 @@ class VFragment : BaseFragment<ActivityViewPagerBinding>(), VolumeKeyHandler {
                 override fun createFragment(position: Int): Fragment {
                     val illustsBean = pageData.list[position]
                     return when {
-                        illustsBean.id == 0 || !illustsBean.isVisible -> {
+                        illustsBean.id == 0 || !illustsBean.visible -> {
                             FragmentImageDetail.newInstance(illustsBean.image_urls?.maxImage!!)
                         }
 
@@ -119,10 +119,9 @@ class VFragment : BaseFragment<ActivityViewPagerBinding>(), VolumeKeyHandler {
                         if (!TextUtils.isEmpty(nextUrl)) {
                             if (!Container.get().isNetworking) {
                                 Common.showLog("Container 去请求下一页 $nextUrl")
-                                Retro.getAppApi().getNextIllust(nextUrl)
-                                    .subscribeOn(Schedulers.newThread())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(object : NullCtrl<ListIllust>() {
+                                executeCall(
+                                    Retro.getAppApi().getNextIllust(nextUrl),
+                                    Function.identity(), object : NullCtrl<ListIllust>() {
                                         override fun success(listIllust: ListIllust) {
                                             var mutableListIllust = listIllust
                                             val mapper = Mapper<ListIllust>()
@@ -148,8 +147,8 @@ class VFragment : BaseFragment<ActivityViewPagerBinding>(), VolumeKeyHandler {
                                             Container.get().isNetworking = false
                                         }
 
-                                        override fun subscribe(d: io.reactivex.disposables.Disposable) {
-                                            super.subscribe(d)
+                                        override fun onStart() {
+                                            super.onStart()
                                             Container.get().isNetworking = true
                                         }
                                     })

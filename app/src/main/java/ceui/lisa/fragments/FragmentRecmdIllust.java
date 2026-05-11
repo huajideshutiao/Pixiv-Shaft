@@ -5,7 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -19,10 +22,10 @@ import ceui.lisa.R;
 import ceui.lisa.activities.Shaft;
 import ceui.lisa.adapters.BaseAdapter;
 import ceui.lisa.adapters.IAdapterWithHeadView;
+import ceui.lisa.core.NetCallback;
 import ceui.lisa.core.RemoteRepo;
 import ceui.lisa.core.RxRun;
 import ceui.lisa.core.RxRunnable;
-import ceui.lisa.core.TryCatchObserverImpl;
 import ceui.lisa.database.AppDatabase;
 import ceui.lisa.database.IllustRecmdEntity;
 import ceui.lisa.databinding.FragmentBaseListBinding;
@@ -169,7 +172,9 @@ public class FragmentRecmdIllust extends NetListFragment<FragmentBaseListBinding
                 }
                 return null;
             }
-        }, new TryCatchObserverImpl<>());
+                    }, new NetCallback<Void>() {
+                    }
+        );
         mResponse.getRanking_illusts().forEach(new Consumer<IllustsBean>() {
             @Override
             public void accept(IllustsBean illustsBean) {
@@ -230,5 +235,14 @@ public class FragmentRecmdIllust extends NetListFragment<FragmentBaseListBinding
                 baseBind.refreshLayout.setRefreshFooter(new FalsifyFooter(mContext));
             }
         });
+    }
+
+    @Override
+    protected FragmentBaseListBinding onCreateBinding(
+        @NonNull LayoutInflater inflater,
+        ViewGroup container,
+        boolean attachToParent
+    ) {
+        return FragmentBaseListBinding.inflate(inflater, container, false);
     }
 }
