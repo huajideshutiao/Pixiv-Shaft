@@ -29,6 +29,7 @@ import ceui.loxia.ClientManager
 import ceui.loxia.CsrfTokenProvider
 import ceui.pixiv.session.SessionManager
 import ceui.pixiv.ui.common.PixivFragment
+import ceui.pixiv.ui.common.setupMaterialHeader
 import ceui.pixiv.ui.common.setUpToolbar
 import ceui.pixiv.ui.common.viewBinding
 import com.scwang.smart.refresh.header.MaterialHeader
@@ -116,7 +117,7 @@ class WebFragment : PixivFragment(R.layout.fragment_web) {
             }
         }
 
-        binding.refreshLayout.setRefreshHeader(MaterialHeader(requireContext()))
+        binding.refreshLayout.setupMaterialHeader(this)
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.setOnRefreshListener {
             binding.webView.reload()

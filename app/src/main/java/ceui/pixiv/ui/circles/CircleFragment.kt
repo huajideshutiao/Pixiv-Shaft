@@ -21,6 +21,7 @@ import ceui.pixiv.ui.common.TitledViewPagerFragment
 import ceui.pixiv.ui.common.constructVM
 import ceui.pixiv.ui.common.createResponseStore
 import ceui.pixiv.ui.common.pixivValueViewModel
+import ceui.pixiv.ui.common.setupMaterialHeader
 import ceui.pixiv.ui.search.SearchIlllustMangaFragment
 import ceui.pixiv.ui.search.SearchNovelFragment
 import ceui.pixiv.ui.search.SearchUserFragment
@@ -56,7 +57,7 @@ class CircleFragment : TitledViewPagerFragment(R.layout.fragment_circle) {
         binding.naviBack.setOnClick {
             findNavController().popBackStack()
         }
-        binding.refreshLayout.setRefreshHeader(MaterialHeader(requireContext()))
+        binding.refreshLayout.setupMaterialHeader(this)
         binding.appBar.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
             binding.refreshLayout.isEnabled = verticalOffset == 0
             val totalScrollRange = appBarLayout.totalScrollRange

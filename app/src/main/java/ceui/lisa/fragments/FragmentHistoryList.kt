@@ -10,6 +10,7 @@ import ceui.lisa.R
 import ceui.lisa.database.IllustHistoryEntity
 import ceui.lisa.databinding.FragmentHistoryListBinding
 import ceui.pixiv.ui.common.CommonAdapter
+import ceui.pixiv.ui.common.setupMaterialHeader
 import ceui.pixiv.ui.common.viewBinding
 import com.scwang.smart.refresh.footer.ClassicsFooter
 import com.scwang.smart.refresh.header.MaterialHeader
@@ -30,7 +31,7 @@ class FragmentHistoryList : Fragment(R.layout.fragment_history_list) {
         binding.recyclerView.itemAnimator = null
         binding.recyclerView.adapter = adapter
 
-        binding.refreshLayout.setRefreshHeader(MaterialHeader(requireContext()))
+        binding.refreshLayout.setupMaterialHeader(this)
         binding.refreshLayout.setRefreshFooter(ClassicsFooter(requireContext()))
         binding.refreshLayout.setOnRefreshListener {
             viewModel.loadFirst { binding.refreshLayout.finishRefresh() }

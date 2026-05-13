@@ -8,16 +8,17 @@ import androidx.annotation.Nullable;
 import androidx.viewbinding.ViewBinding;
 
 import com.scwang.smart.refresh.header.FalsifyFooter;
-import com.scwang.smart.refresh.header.FalsifyHeader;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshHeader;
+
+import ceui.pixiv.ui.common.RefreshHelper;
 
 public abstract class SwipeFragment<T extends ViewBinding>
         extends BaseLazyFragment<T> implements Swipe {
 
     @Override
     public RefreshHeader getHeader() {
-        return new FalsifyHeader(mContext);
+        return null;
     }
 
     @Override
@@ -31,7 +32,7 @@ public abstract class SwipeFragment<T extends ViewBinding>
         if (layout != null) {
             layout.setEnableRefresh(true);
             layout.setEnableLoadMore(true);
-            layout.setRefreshHeader(getHeader());
+            RefreshHelper.setupMaterialHeader(layout, this);
             layout.setRefreshFooter(getFooter());
         }
     }

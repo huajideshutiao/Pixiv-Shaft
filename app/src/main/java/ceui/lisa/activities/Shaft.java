@@ -22,7 +22,7 @@ import androidx.annotation.NonNull;
 import com.google.gson.Gson;
 import com.hjq.toast.Toaster;
 import com.scwang.smart.refresh.footer.ClassicsFooter;
-import com.scwang.smart.refresh.header.ClassicsHeader;
+import com.scwang.smart.refresh.header.MaterialHeader;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 
 import org.jetbrains.annotations.NotNull;
@@ -72,7 +72,7 @@ public class Shaft extends Application implements ServicesProvider {
 
     static {
         SmartRefreshLayout.setDefaultRefreshHeaderCreator((context, layout) -> {
-            return new ClassicsHeader(context);//.setTimeFormat(new DynamicTimeFormat("更新于 %s"));//指定为经典Header，默认是 贝塞尔雷达Header(BezierRadarHeader)
+            return new MaterialHeader(context);
         });
 
         SmartRefreshLayout.setDefaultRefreshFooterCreator((context, layout) ->

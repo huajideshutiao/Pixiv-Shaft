@@ -36,7 +36,9 @@ import ceui.lisa.utils.Common;
 import ceui.lisa.utils.DensityUtil;
 import ceui.lisa.view.LinearItemDecoration;
 import ceui.lisa.view.SpacesItemDecoration;
+import ceui.pixiv.ui.common.RefreshHelper;
 import ceui.lisa.viewmodel.BaseModel;
+import ceui.pixiv.ui.common.RefreshHelper;
 import ceui.loxia.ObjectPool;
 import ceui.loxia.RefreshStateKt;
 import jp.wasabeef.recyclerview.animators.BaseItemAnimator;
@@ -107,8 +109,11 @@ public abstract class ListFragment<Layout extends ViewBinding, Item>
             emptyRela.setVisibility(View.INVISIBLE);
             mRefreshLayout.autoRefresh();
         });
-        mRefreshLayout.setRefreshHeader(mModel.getBaseRepo().enableRefresh() ?
-                mModel.getBaseRepo().getHeader(mContext) : new FalsifyHeader(mContext));
+        if (mModel.getBaseRepo().enableRefresh()) {
+            RefreshHelper.setupMaterialHeader((com.scwang.smart.refresh.layout.SmartRefreshLayout) mRefreshLayout, this);
+        } else {
+            mRefreshLayout.setRefreshHeader(new FalsifyHeader(mContext));
+        }
         mRefreshLayout.setRefreshFooter(mModel.getBaseRepo().hasNext() ?
                 mModel.getBaseRepo().getFooter(mContext) : new FalsifyFooter(mContext));
 
@@ -162,7 +167,7 @@ public abstract class ListFragment<Layout extends ViewBinding, Item>
         if (!isLazy()) {
             //进页面主动刷新
             if (autoRefresh() && !mModel.isLoaded()) {
-                mRefreshLayout.autoRefresh();
+                ((View) mRefreshLayout).post(() -> mRefreshLayout.autoRefresh());
             }
         }
     }
@@ -175,7 +180,7 @@ public abstract class ListFragment<Layout extends ViewBinding, Item>
     public void lazyData() {
         //进页面主动刷新
         if (autoRefresh() && !mModel.isLoaded()) {
-            mRefreshLayout.autoRefresh();
+            ((View) mRefreshLayout).post(() -> mRefreshLayout.autoRefresh());
         }
     }
 

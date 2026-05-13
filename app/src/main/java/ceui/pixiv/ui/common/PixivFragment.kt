@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import ceui.lisa.R
 import ceui.lisa.activities.ContainerActivity
+import ceui.lisa.activities.Shaft
 import ceui.lisa.activities.UActivity
 import ceui.lisa.core.ArtworksMap
 import ceui.lisa.databinding.FragmentPixivListBinding
@@ -66,9 +67,11 @@ import ceui.pixiv.utils.setOnClick
 import ceui.pixiv.widgets.RateAppManager
 import ceui.pixiv.widgets.TagsActionReceiver
 import com.scwang.smart.refresh.footer.ClassicsFooter
+import com.scwang.smart.refresh.header.ClassicsHeader
 import com.scwang.smart.refresh.header.FalsifyFooter
 import com.scwang.smart.refresh.header.FalsifyHeader
 import com.scwang.smart.refresh.header.MaterialHeader
+import com.scwang.smart.refresh.layout.SmartRefreshLayout
 
 open class PixivFragment(layoutId: Int) : Fragment(layoutId),
     IllustCardActionReceiver,
@@ -355,7 +358,7 @@ fun Fragment.setUpRefreshState(
     setUpToolbar(binding.toolbarLayout, binding.listView)
     setUpLayoutManager(binding.listView, listMode)
     val ctx = requireContext()
-    binding.refreshLayout.setRefreshHeader(MaterialHeader(ctx))
+    binding.refreshLayout.setupMaterialHeader(this)
     binding.refreshLayout.setOnRefreshListener {
         viewModel.refresh(RefreshHint.PullToRefresh)
     }
@@ -525,6 +528,51 @@ fun Fragment.shareNovel(novel: Novel) {
             putExtra(Intent.EXTRA_TEXT, shareText)
         }.also { intent ->
             startActivity(Intent.createChooser(intent, ctx.getString(R.string.share)))
+        }
+    }
+}
+
+fun SmartRefreshLayout.setupMaterialHeader(fragment: Fragment) {
+    RefreshHelper.setupMaterialHeader(this, fragment)
+}
+
+object RefreshHelper {
+    @JvmStatic
+    fun setupMaterialHeader(layout: SmartRefreshLayout, fragment: Fragment) {
+        val context = layout.context
+        
+        // 1. 优先应用 Repository 提供的特色 Header。
+        val repoHeader = (fragment as? ceui.lisa.fragments.ListFragment<*, *>)?.repository()?.getHeader(context)
+        if (repoHeader != null) {
+            layout.setRefreshHeader(repoHeader)
+        }
+
+        // 2. 针对性参数调整：仅在确实使用 MaterialHeader 时进行物理偏移，避免干扰自定义动画。
+        val currentHeader = layout.refreshHeader
+        if (currentHeader is MaterialHeader) {
+            // MaterialHeader 建议高度为 64dp。
+            layout.setHeaderHeight(64f)
+
+            if (fragment is FitsSystemWindowFragment || fragment is TitledViewPagerFragment) {
+                // 沉浸式页面：将小球起跳位置下移状态栏高度。
+                // 注意：SmartRefreshLayout 的接口通常以 dp 为单位，此处进行转换。
+                val statusHeightDp = Shaft.statusHeight.toFloat() / context.resources.displayMetrics.density
+                layout.setHeaderInsetStart(statusHeightDp)
+            } else {
+                // 普通页面：不再设置 hardcoded 偏移，通过 clipChildren=false 允许其自然绘制。
+                layout.setHeaderInsetStart(0f)
+            }
+        }
+        
+        // 3. 彻底解决 View 体系的裁剪问题。
+        // 通过递归禁用所有父容器的裁剪限制，允许 Header 动画在弹跳过程中“溢出”其容器边界。
+        layout.clipChildren = false
+        layout.clipToPadding = false
+        var p = layout.parent
+        while (p is ViewGroup) {
+            p.clipChildren = false
+            p.clipToPadding = false
+            p = p.parent
         }
     }
 }

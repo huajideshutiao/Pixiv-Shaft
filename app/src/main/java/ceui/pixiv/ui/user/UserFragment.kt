@@ -1,4 +1,5 @@
-package ceui.pixiv.ui.user
+package ceui.pixiv.ui.user
+
 
 import android.util.Log
 
@@ -31,6 +32,7 @@ import ceui.pixiv.ui.common.FitsSystemWindowFragment
 import ceui.pixiv.ui.common.ImageUrlViewer
 import ceui.pixiv.ui.common.PixivFragment
 import ceui.pixiv.ui.common.ViewPagerFragment
+import ceui.pixiv.ui.common.setupMaterialHeader
 import ceui.pixiv.ui.common.constructVM
 import ceui.pixiv.ui.common.viewBinding
 import ceui.pixiv.utils.FastBlurTransformation
@@ -40,7 +42,6 @@ import com.blankj.utilcode.util.BarUtils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
 import com.bumptech.glide.request.RequestOptions.bitmapTransform
-import com.scwang.smart.refresh.header.MaterialHeader
 class UserFragment : PixivFragment(R.layout.fragment_user), ViewPagerFragment, SeeMoreAction,
     FitsSystemWindowFragment {
 
@@ -125,7 +126,7 @@ class UserFragment : PixivFragment(R.layout.fragment_user), ViewPagerFragment, S
         binding.naviBack.setOnClick {
             findNavController().popBackStack()
         }
-        binding.refreshLayout.setRefreshHeader(MaterialHeader(requireContext()))
+        binding.refreshLayout.setupMaterialHeader(this)
         binding.refreshLayout.setOnRefreshListener {
             viewModel.refresh(RefreshHint.PullToRefresh)
         }
