@@ -2,6 +2,7 @@ package ceui.lisa.adapters;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -27,6 +28,11 @@ public class EventAdapter extends BaseAdapter<IllustsBean, RecyUserEventBinding>
     @Override
     public void initLayout() {
         mLayoutID = R.layout.recy_user_event;
+    }
+
+    @Override
+    public RecyUserEventBinding createViewBinding(LayoutInflater inflater, ViewGroup parent, boolean attachToParent) {
+        return RecyUserEventBinding.inflate(inflater, parent, attachToParent);
     }
 
     @Override

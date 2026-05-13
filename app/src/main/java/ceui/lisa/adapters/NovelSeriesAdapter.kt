@@ -1,6 +1,8 @@
 package ceui.lisa.adapters
 
 import android.content.Context
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import android.content.Intent
 import ceui.lisa.R
 import ceui.lisa.activities.ContainerActivity
@@ -16,6 +18,10 @@ class NovelSeriesAdapter(
 
     override fun initLayout() {
         mLayoutID = R.layout.recy_novel_series_of_user
+    }
+
+    override fun createViewBinding(inflater: LayoutInflater, parent: ViewGroup, attachToParent: Boolean): RecyNovelSeriesOfUserBinding {
+        return RecyNovelSeriesOfUserBinding.inflate(inflater, parent, attachToParent)
     }
 
     override fun bindData(

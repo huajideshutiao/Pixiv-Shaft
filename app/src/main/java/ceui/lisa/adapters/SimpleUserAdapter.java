@@ -1,6 +1,8 @@
 package ceui.lisa.adapters;
 
 import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 import android.view.View;
 import android.widget.Button;
 
@@ -37,6 +39,11 @@ public class SimpleUserAdapter extends BaseAdapter<UserBean, RecySimpleUserBindi
     @Override
     public void initLayout() {
         mLayoutID = R.layout.recy_simple_user;
+    }
+
+    @Override
+    public RecySimpleUserBinding createViewBinding(LayoutInflater inflater, ViewGroup parent, boolean attachToParent) {
+        return RecySimpleUserBinding.inflate(inflater, parent, attachToParent);
     }
 
     @Override

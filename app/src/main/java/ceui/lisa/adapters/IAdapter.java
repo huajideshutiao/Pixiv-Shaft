@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupWindow;
@@ -53,6 +54,11 @@ public class IAdapter extends BaseAdapter<IllustsBean, RecyIllustStaggerBinding>
     @Override
     public void initLayout() {
         mLayoutID = R.layout.recy_illust_stagger;
+    }
+
+    @Override
+    public RecyIllustStaggerBinding createViewBinding(LayoutInflater inflater, ViewGroup parent, boolean attachToParent) {
+        return RecyIllustStaggerBinding.inflate(inflater, parent, attachToParent);
     }
 
     @Override

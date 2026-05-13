@@ -2,6 +2,8 @@ package ceui.lisa.adapters
 
 import android.content.Context
 import android.content.Intent
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 import android.view.View
 import ceui.lisa.R
 import ceui.lisa.activities.ContainerActivity
@@ -19,6 +21,10 @@ class WatchlistNovelAdapter(
 ) : BaseAdapter<WatchlistNovelItem, RecyWatchlistNovelBinding>(list, context) {
     override fun initLayout() {
         mLayoutID = R.layout.recy_watchlist_novel
+    }
+
+    override fun createViewBinding(inflater: LayoutInflater, parent: ViewGroup, attachToParent: Boolean): RecyWatchlistNovelBinding {
+        return RecyWatchlistNovelBinding.inflate(inflater, parent, attachToParent)
     }
 
     override fun bindData(

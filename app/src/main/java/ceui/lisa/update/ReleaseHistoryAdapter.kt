@@ -1,13 +1,16 @@
 package ceui.lisa.update
 
 import android.content.Context
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import ceui.lisa.BuildConfig
 import ceui.lisa.R
 import ceui.lisa.adapters.BaseAdapter
 import ceui.lisa.adapters.ViewHolder
 import ceui.lisa.databinding.ItemReleaseTimelineBinding
+import ceui.lisa.databinding.RecyMangaSeriesBinding
 import ceui.lisa.utils.Common
 import io.noties.markwon.AbstractMarkwonPlugin
 import io.noties.markwon.Markwon
@@ -18,6 +21,9 @@ class ReleaseHistoryAdapter(
     context: Context
 ) : BaseAdapter<GitHubRelease, ItemReleaseTimelineBinding>(targetList, context) {
 
+    override fun createViewBinding(inflater: LayoutInflater, parent: ViewGroup, attachToParent: Boolean): ItemReleaseTimelineBinding {
+        return ItemReleaseTimelineBinding.inflate(inflater, parent, attachToParent)
+    }
     private val markwon = Markwon.builder(context)
         .usePlugin(object : AbstractMarkwonPlugin() {
             override fun configureTheme(builder: MarkwonTheme.Builder) {

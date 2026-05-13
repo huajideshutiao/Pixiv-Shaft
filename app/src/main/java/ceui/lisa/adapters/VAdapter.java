@@ -1,6 +1,8 @@
 package ceui.lisa.adapters;
 
 import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 import android.view.View;
 
 import java.util.List;
@@ -18,6 +20,11 @@ public class VAdapter extends BaseAdapter<String, FragmentSingleNovelBinding> {
     @Override
     public void initLayout() {
         mLayoutID = R.layout.fragment_single_novel;
+    }
+
+    @Override
+    public FragmentSingleNovelBinding createViewBinding(LayoutInflater inflater, ViewGroup parent, boolean attachToParent) {
+        return FragmentSingleNovelBinding.inflate(inflater, parent, attachToParent);
     }
 
     @Override

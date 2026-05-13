@@ -273,7 +273,16 @@ public abstract class NetListFragment<Layout extends ViewBinding,
     @SuppressWarnings("unchecked")
     protected void initData() {
         mRemoteRepo = (RemoteRepo<Response>) mModel.getBaseRepo();
-        super.initData();
+        // 彻底切断 initData -> shouldLoadData -> lazyData 的链路
+        // initData 只负责基础 Repo 初始化
+    }
+
+    @Override
+    public void lazyData() {
+        super.lazyData();
+        if (!autoRefresh()) {
+            showDataBase();
+        }
     }
 
     /**

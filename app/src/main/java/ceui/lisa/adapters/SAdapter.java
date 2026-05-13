@@ -2,6 +2,8 @@ package ceui.lisa.adapters;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 import android.widget.CompoundButton;
 
 import java.util.List;
@@ -19,6 +21,11 @@ public class SAdapter extends BaseAdapter<TagsBean, RecySelectTagBinding> {
     @Override
     public void initLayout() {
         mLayoutID = R.layout.recy_select_tag;
+    }
+
+    @Override
+    public RecySelectTagBinding createViewBinding(LayoutInflater inflater, ViewGroup parent, boolean attachToParent) {
+        return RecySelectTagBinding.inflate(inflater, parent, attachToParent);
     }
 
     @Override

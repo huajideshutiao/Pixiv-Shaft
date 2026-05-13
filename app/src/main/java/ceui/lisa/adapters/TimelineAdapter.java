@@ -45,6 +45,11 @@ public class TimelineAdapter extends BaseAdapter<IllustsBean, RecyTimelineIllust
     }
 
     @Override
+    public RecyTimelineIllustBinding createViewBinding(LayoutInflater inflater, ViewGroup parent, boolean attachToParent) {
+        return RecyTimelineIllustBinding.inflate(inflater, parent, attachToParent);
+    }
+
+    @Override
     public void bindData(IllustsBean target, ViewHolder<RecyTimelineIllustBinding> bindView, int position) {
         // ── Header ──
         if (target.getUser() != null) {

@@ -3,6 +3,8 @@ package ceui.lisa.adapters;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -30,6 +32,11 @@ public class EmojiAdapter extends BaseAdapter<EmojiItem, RecyEmojiBinding> {
     @Override
     public void initLayout() {
         mLayoutID = R.layout.recy_emoji;
+    }
+
+    @Override
+    public RecyEmojiBinding createViewBinding(LayoutInflater inflater, ViewGroup parent, boolean attachToParent) {
+        return RecyEmojiBinding.inflate(inflater, parent, attachToParent);
     }
 
     @Override

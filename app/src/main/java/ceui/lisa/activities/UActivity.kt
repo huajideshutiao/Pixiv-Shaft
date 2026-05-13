@@ -188,10 +188,12 @@ class UActivity : BaseActivity<ActivityNewUserBinding>(), Display<UserDetailResp
 
     override operator fun invoke(data: UserDetailResponse) {
         val user = data.user ?: return
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.fragment_container, newInstance())
-            .commitNowAllowingStateLoss()
+        if (supportFragmentManager.findFragmentById(R.id.fragment_container) == null) {
+            supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.fragment_container, newInstance())
+                .commitNowAllowingStateLoss()
+        }
         val isSelf = userId.toLong() == SessionManager.loggedInUid
         if (isSelf) {
             baseBind.followLayout.visibility = View.GONE

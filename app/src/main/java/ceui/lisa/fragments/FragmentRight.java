@@ -266,6 +266,9 @@ public class FragmentRight extends NetListFragment<FragmentNewRightBinding, List
 
     @Override
     public void lazyData() {
+        if (headerFragment != null) {
+            return;
+        }
         super.lazyData();
 
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();

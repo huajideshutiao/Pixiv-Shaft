@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -134,20 +135,51 @@ public class SearchActivity extends BaseActivity<FragmentNewSearchBinding> {
             getSupportFragmentManager(),
             FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
         ) {
+            @Override
+            public void restoreState(Parcelable state, ClassLoader loader) {
+                if (state instanceof Bundle) {
+                    Bundle bundle = (Bundle) state;
+                    bundle.setClassLoader(loader);
+                    for (String key : bundle.keySet()) {
+                        if (key.startsWith("f")) {
+                            try {
+                                Fragment f = getSupportFragmentManager().getFragment(bundle, key);
+                                if (f == null) {
+                                    bundle.remove(key);
+                                }
+                            } catch (Exception e) {
+                                bundle.remove(key);
+                            }
+                        }
+                    }
+                }
+                try {
+                    super.restoreState(state, loader);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @NonNull
+            @Override
+            public Object instantiateItem(@NonNull ViewGroup container, int position) {
+                BaseFragment<?> fragment = (BaseFragment<?>) super.instantiateItem(container, position);
+                if (allPages != null && position < allPages.length) {
+                    allPages[position] = fragment;
+                }
+                return fragment;
+            }
+
             @NonNull
             @Override
             public Fragment getItem(int position) {
-                if (allPages[position] == null) {
-                    if (position == 0) {
-                        allPages[position] = FragmentSearchIllust.newInstance();
-                    } else if (position == 1) {
-                        allPages[position] = FragmentSearchNovel.newInstance();
-                    } else if (position == 2) {
-                        allPages[position] = FragmentSearchUser.newInstance(keyWord);
-                    }
+                if (position == 0) {
+                    return FragmentSearchIllust.newInstance();
+                } else if (position == 1) {
+                    return FragmentSearchNovel.newInstance();
+                } else {
+                    return FragmentSearchUser.newInstance(keyWord);
                 }
-
-                return allPages[position];
             }
 
             @Override

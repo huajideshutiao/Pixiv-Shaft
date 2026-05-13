@@ -1,6 +1,8 @@
 package ceui.lisa.adapters
 
 import android.content.Context
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import ceui.lisa.R
 import ceui.lisa.databinding.RecyArticalHorizonBinding
 import ceui.lisa.models.SpotlightArticlesBean
@@ -13,6 +15,10 @@ class PivisionHAdapter(targetList: MutableList<SpotlightArticlesBean>, context: 
 
     override fun initLayout() {
         mLayoutID = R.layout.recy_artical_horizon
+    }
+
+    override fun createViewBinding(inflater: LayoutInflater, parent: ViewGroup, attachToParent: Boolean): RecyArticalHorizonBinding {
+        return RecyArticalHorizonBinding.inflate(inflater, parent, attachToParent)
     }
 
     override fun bindData(

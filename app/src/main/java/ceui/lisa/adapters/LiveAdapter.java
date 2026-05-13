@@ -2,6 +2,7 @@ package ceui.lisa.adapters;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -30,6 +31,11 @@ public class LiveAdapter extends BaseAdapter<Live, RecyItemLiveBinding> {
     @Override
     public void initLayout() {
         mLayoutID = R.layout.recy_item_live;
+    }
+
+    @Override
+    public RecyItemLiveBinding createViewBinding(LayoutInflater inflater, ViewGroup parent, boolean attachToParent) {
+        return RecyItemLiveBinding.inflate(inflater, parent, attachToParent);
     }
 
     @Override

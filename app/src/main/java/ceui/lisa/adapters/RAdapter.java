@@ -1,6 +1,8 @@
 package ceui.lisa.adapters;
 
 import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
 
@@ -20,6 +22,11 @@ public class RAdapter extends BaseAdapter<IllustsBean, RecyRankIllustHorizontalB
     @Override
     public void initLayout() {
         mLayoutID = R.layout.recy_rank_illust_horizontal;
+    }
+
+    @Override
+    public RecyRankIllustHorizontalBinding createViewBinding(LayoutInflater inflater, ViewGroup parent, boolean attachToParent) {
+        return RecyRankIllustHorizontalBinding.inflate(inflater, parent, attachToParent);
     }
 
     @Override

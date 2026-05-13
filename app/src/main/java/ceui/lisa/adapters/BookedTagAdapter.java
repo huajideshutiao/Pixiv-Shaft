@@ -2,6 +2,8 @@ package ceui.lisa.adapters;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 import android.view.View;
 
 import java.util.List;
@@ -23,6 +25,11 @@ public class BookedTagAdapter extends BaseAdapter<TagsBean, RecyBookTagBinding> 
     @Override
     public void initLayout() {
         mLayoutID = R.layout.recy_book_tag;
+    }
+
+    @Override
+    public RecyBookTagBinding createViewBinding(LayoutInflater inflater, ViewGroup parent, boolean attachToParent) {
+        return RecyBookTagBinding.inflate(inflater, parent, attachToParent);
     }
 
     @Override

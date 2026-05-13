@@ -1,7 +1,9 @@
 package ceui.lisa.adapters
 
 import android.content.Context
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import ceui.lisa.R
 import ceui.lisa.databinding.RecyUserPreviewHorizontalBinding
 import ceui.lisa.models.UserPreviewsBean
@@ -13,6 +15,10 @@ class UserHAdapter(targetList: MutableList<UserPreviewsBean>, context: Context) 
 
     override fun initLayout() {
         mLayoutID = R.layout.recy_user_preview_horizontal
+    }
+
+    override fun createViewBinding(inflater: LayoutInflater, parent: ViewGroup, attachToParent: Boolean): RecyUserPreviewHorizontalBinding {
+        return RecyUserPreviewHorizontalBinding.inflate(inflater, parent, attachToParent)
     }
 
     override fun bindData(

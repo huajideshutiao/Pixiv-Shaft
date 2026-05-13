@@ -1,6 +1,8 @@
 package ceui.lisa.adapters;
 
 import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -28,6 +30,11 @@ public class VNewAdapter extends BaseAdapter<NovelDetail.NovelChapterBean, Fragm
     @Override
     public void initLayout() {
         mLayoutID = R.layout.fragment_single_novel;
+    }
+
+    @Override
+    public FragmentSingleNovelBinding createViewBinding(LayoutInflater inflater, ViewGroup parent, boolean attachToParent) {
+        return FragmentSingleNovelBinding.inflate(inflater, parent, attachToParent);
     }
 
     @Override

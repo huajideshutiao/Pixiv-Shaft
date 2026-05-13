@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,7 +47,7 @@ import ceui.lisa.utils.Common;
 import ceui.lisa.utils.MyOnTabSelectedListener;
 import ceui.lisa.utils.Params;
 
-public class FragmentViewPager extends BaseFragment<ViewpagerWithTablayoutBinding> implements
+public class FragmentViewPager extends BaseLazyFragment<ViewpagerWithTablayoutBinding> implements
     VolumeKeyHandler {
 
     private static final int REQUEST_CODE_IMPORT_MUTE = 20082;
@@ -96,7 +97,11 @@ public class FragmentViewPager extends BaseFragment<ViewpagerWithTablayoutBindin
             v.setPadding(0, bars.top, 0, 0);
             return windowInsets;
         });
+        baseBind.toolbar.setNavigationOnClickListener(v -> mActivity.finish());
+    }
 
+    @Override
+    public void lazyData() {
         if (TextUtils.equals(title, Params.VIEW_PAGER_MUTED)) {
             String[] CHINESE_TITLES = new String[]{
                     Shaft.getContext().getString(R.string.string_353),
@@ -115,6 +120,41 @@ public class FragmentViewPager extends BaseFragment<ViewpagerWithTablayoutBindin
                 getChildFragmentManager(),
                 FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
             ) {
+                @Override
+                public void restoreState(Parcelable state, ClassLoader loader) {
+                    if (state instanceof Bundle) {
+                        Bundle bundle = (Bundle) state;
+                        bundle.setClassLoader(loader);
+                        for (String key : bundle.keySet()) {
+                            if (key.startsWith("f")) {
+                                try {
+                                    Fragment f = getChildFragmentManager().getFragment(bundle, key);
+                                    if (f == null) {
+                                        bundle.remove(key);
+                                    }
+                                } catch (Exception e) {
+                                    bundle.remove(key);
+                                }
+                            }
+                        }
+                    }
+                    try {
+                        super.restoreState(state, loader);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @NonNull
+                @Override
+                public Object instantiateItem(@NonNull ViewGroup container, int position) {
+                    ListFragment fragment = (ListFragment) super.instantiateItem(container, position);
+                    if (mFragments != null && position < mFragments.length) {
+                        mFragments[position] = fragment;
+                    }
+                    return fragment;
+                }
+
                 @NonNull
                 @Override
                 public Fragment getItem(int position) {
@@ -178,6 +218,41 @@ public class FragmentViewPager extends BaseFragment<ViewpagerWithTablayoutBindin
                 getChildFragmentManager(),
                 FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
             ) {
+                @Override
+                public void restoreState(Parcelable state, ClassLoader loader) {
+                    if (state instanceof Bundle) {
+                        Bundle bundle = (Bundle) state;
+                        bundle.setClassLoader(loader);
+                        for (String key : bundle.keySet()) {
+                            if (key.startsWith("f")) {
+                                try {
+                                    Fragment f = getChildFragmentManager().getFragment(bundle, key);
+                                    if (f == null) {
+                                        bundle.remove(key);
+                                    }
+                                } catch (Exception e) {
+                                    bundle.remove(key);
+                                }
+                            }
+                        }
+                    }
+                    try {
+                        super.restoreState(state, loader);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @NonNull
+                @Override
+                public Object instantiateItem(@NonNull ViewGroup container, int position) {
+                    ListFragment fragment = (ListFragment) super.instantiateItem(container, position);
+                    if (mFragments != null && position < mFragments.length) {
+                        mFragments[position] = fragment;
+                    }
+                    return fragment;
+                }
+
                 @NonNull
                 @Override
                 public Fragment getItem(int position) {
@@ -200,12 +275,13 @@ public class FragmentViewPager extends BaseFragment<ViewpagerWithTablayoutBindin
         baseBind.tabLayout.setupWithViewPager(baseBind.viewPager);
         MyOnTabSelectedListener listener = new MyOnTabSelectedListener(mFragments);
         baseBind.tabLayout.addOnTabSelectedListener(listener);
-        baseBind.toolbar.setNavigationOnClickListener(v -> mActivity.finish());
     }
 
     public void forceRefresh() {
         try {
-            mFragments[baseBind.viewPager.getCurrentItem()].forceRefresh();
+            if (mFragments != null) {
+                mFragments[baseBind.viewPager.getCurrentItem()].forceRefresh();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -1,6 +1,8 @@
 package ceui.lisa.adapters;
 
 import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 
@@ -19,6 +21,11 @@ public class StringAdapter extends BaseAdapter<String, RecyStringBinding> {
     @Override
     public void initLayout() {
         mLayoutID = R.layout.recy_string;
+    }
+
+    @Override
+    public RecyStringBinding createViewBinding(LayoutInflater inflater, ViewGroup parent, boolean attachToParent) {
+        return RecyStringBinding.inflate(inflater, parent, attachToParent);
     }
 
 

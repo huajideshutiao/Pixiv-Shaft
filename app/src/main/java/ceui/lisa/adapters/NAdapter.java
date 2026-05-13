@@ -3,6 +3,8 @@ package ceui.lisa.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 import android.view.View;
 import android.widget.TextView;
 
@@ -44,6 +46,11 @@ public class NAdapter extends BaseAdapter<NovelBean, RecyNovelBinding> {
     @Override
     public void initLayout() {
         mLayoutID = R.layout.recy_novel;
+    }
+
+    @Override
+    public RecyNovelBinding createViewBinding(LayoutInflater inflater, ViewGroup parent, boolean attachToParent) {
+        return RecyNovelBinding.inflate(inflater, parent, attachToParent);
     }
 
     @Override

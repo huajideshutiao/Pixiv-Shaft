@@ -3,6 +3,8 @@ package ceui.lisa.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 import android.view.View;
 import android.widget.TextView;
 
@@ -30,6 +32,11 @@ public class NovelMarkersAdapter extends BaseAdapter<MarkedNovelItem, RecyNovelM
     @Override
     public void initLayout() {
         mLayoutID = R.layout.recy_novel_markers;
+    }
+
+    @Override
+    public RecyNovelMarkersBinding createViewBinding(LayoutInflater inflater, ViewGroup parent, boolean attachToParent) {
+        return RecyNovelMarkersBinding.inflate(inflater, parent, attachToParent);
     }
 
     @Override

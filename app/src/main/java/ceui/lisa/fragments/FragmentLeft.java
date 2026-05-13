@@ -1,6 +1,8 @@
 package ceui.lisa.fragments;
 
 import android.content.Intent;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -59,6 +61,9 @@ public class FragmentLeft extends BaseLazyFragment<FragmentLeftBinding> implemen
 
     @Override
     public void lazyData() {
+        if (mFragments != null) {
+            return;
+        }
         String[] TITLES = new String[]{
                 Shaft.getContext().getString(R.string.recommend_illust),
                 Shaft.getContext().getString(R.string.hot_tag)
@@ -71,6 +76,41 @@ public class FragmentLeft extends BaseLazyFragment<FragmentLeftBinding> implemen
             getChildFragmentManager(),
             FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
         ) {
+            @Override
+            public void restoreState(Parcelable state, ClassLoader loader) {
+                if (state instanceof Bundle) {
+                    Bundle bundle = (Bundle) state;
+                    bundle.setClassLoader(loader);
+                    for (String key : bundle.keySet()) {
+                        if (key.startsWith("f")) {
+                            try {
+                                Fragment f = getChildFragmentManager().getFragment(bundle, key);
+                                if (f == null) {
+                                    bundle.remove(key);
+                                }
+                            } catch (Exception e) {
+                                bundle.remove(key);
+                            }
+                        }
+                    }
+                }
+                try {
+                    super.restoreState(state, loader);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @NonNull
+            @Override
+            public Object instantiateItem(@NonNull ViewGroup container, int position) {
+                NetListFragment fragment = (NetListFragment) super.instantiateItem(container, position);
+                if (mFragments != null && position < mFragments.length) {
+                    mFragments[position] = fragment;
+                }
+                return fragment;
+            }
+
             @NonNull
             @Override
             public Fragment getItem(int i) {

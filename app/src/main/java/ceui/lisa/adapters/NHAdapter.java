@@ -1,6 +1,8 @@
 package ceui.lisa.adapters;
 
 import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
 
@@ -21,6 +23,11 @@ public class NHAdapter extends BaseAdapter<NovelBean, RecyRankNovelHorizontalBin
     @Override
     public void initLayout() {
         mLayoutID = R.layout.recy_rank_novel_horizontal;
+    }
+
+    @Override
+    public RecyRankNovelHorizontalBinding createViewBinding(LayoutInflater inflater, ViewGroup parent, boolean attachToParent) {
+        return RecyRankNovelHorizontalBinding.inflate(inflater, parent, attachToParent);
     }
 
     @Override

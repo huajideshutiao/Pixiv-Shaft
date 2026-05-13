@@ -1,6 +1,8 @@
 package ceui.lisa.adapters;
 
 import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 
@@ -20,6 +22,11 @@ public class PageAdapter extends BaseAdapter<IDWithList<IllustsBean>, RecyPageBi
     @Override
     public void initLayout() {
         mLayoutID = R.layout.recy_page;
+    }
+
+    @Override
+    public RecyPageBinding createViewBinding(LayoutInflater inflater, ViewGroup parent, boolean attachToParent) {
+        return RecyPageBinding.inflate(inflater, parent, attachToParent);
     }
 
     @Override

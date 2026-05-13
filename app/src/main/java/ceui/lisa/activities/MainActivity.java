@@ -14,6 +14,7 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,7 +24,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
@@ -106,29 +107,28 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
             return false;
         });
         baseBind.navigationView.setOnNavigationItemReselectedListener(item -> {
-            if (item.getItemId() == R.id.action_1) {
-                for (Fragment baseFragment : baseFragments) {
-                    if (baseFragment instanceof FragmentLeft) {
-                        ((FragmentLeft) baseFragment).forceRefresh();
-                    }
-                }
-            } else if (item.getItemId() == R.id.action_3) {
-                for (Fragment baseFragment : baseFragments) {
-                    if (baseFragment instanceof FragmentRight) {
-                        ((FragmentRight) baseFragment).forceRefresh();
-                    }
-                }
-            } else if (item.getItemId() == R.id.action_2) {
-                for (Fragment baseFragment : baseFragments) {
-                    if (baseFragment instanceof FragmentCenter) {
-                        ((FragmentCenter) baseFragment).forceRefresh();
-                    }
-                }
-            } else if (item.getItemId() == R.id.action_4) {
-                for (Fragment baseFragment : baseFragments) {
-                    if (baseFragment instanceof FragmentViewPager) {
-                        ((FragmentViewPager) baseFragment).forceRefresh();
-                    }
+            int targetIndex = -1;
+            int itemId = item.getItemId();
+            if (itemId == R.id.action_1) {
+                targetIndex = 0;
+            } else if (itemId == R.id.action_3) {
+                targetIndex = 1;
+            } else if (itemId == R.id.action_2) {
+                targetIndex = 2;
+            } else if (itemId == R.id.action_4) {
+                targetIndex = 3;
+            }
+
+            if (targetIndex != -1 && baseFragments != null && targetIndex < baseFragments.length) {
+                Fragment baseFragment = baseFragments[targetIndex];
+                if (baseFragment instanceof FragmentLeft) {
+                    ((FragmentLeft) baseFragment).forceRefresh();
+                } else if (baseFragment instanceof FragmentRight) {
+                    ((FragmentRight) baseFragment).forceRefresh();
+                } else if (baseFragment instanceof FragmentCenter) {
+                    ((FragmentCenter) baseFragment).forceRefresh();
+                } else if (baseFragment instanceof FragmentViewPager) {
+                    ((FragmentViewPager) baseFragment).forceRefresh();
                 }
             }
         });
@@ -164,27 +164,41 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
     private void initFragment() {
         if (Shaft.sSettings.isMainViewR18()) {
             baseBind.navigationView.inflateMenu(R.menu.main_activity0_with_r18);
-            baseFragments = new Fragment[]{
-                    new FragmentLeft(),
-                new FragmentRight(),
-                    new FragmentCenter(),
-                    FragmentViewPager.newInstance(Params.VIEW_PAGER_R18),
-            };
+            baseFragments = new Fragment[4];
         } else {
             baseBind.navigationView.inflateMenu(R.menu.main_activity0);
-            baseFragments = new Fragment[]{
-                    new FragmentLeft(),
-                new FragmentRight(),
-                new FragmentCenter()
-            };
+            baseFragments = new Fragment[3];
         }
-        baseBind.viewPager.setAdapter(new FragmentStatePagerAdapter(
+        baseBind.viewPager.setAdapter(new FragmentPagerAdapter(
             getSupportFragmentManager(),
-            FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
+            FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
         ) {
+            @NonNull
+            @Override
+            public Object instantiateItem(@NonNull ViewGroup container, int position) {
+                // 这个方法是 ViewPager 获取 Fragment 的真实入口。
+                // 如果是恢复状态，super 会返回已恢复的实例；如果是新创建，会调用 getItem。
+                Fragment fragment = (Fragment) super.instantiateItem(container, position);
+                // 同步到本地数组，确保 forceRefresh 等外部调用拿到的是正确的实例
+                if (baseFragments != null && position < baseFragments.length) {
+                    baseFragments[position] = fragment;
+                }
+                return fragment;
+            }
+
             @Override
             public Fragment getItem(int i) {
-                return baseFragments[i];
+                // 只有当没有可恢复的实例时才会走到这里。
+                if (i == 0) {
+                    return new FragmentLeft();
+                } else if (i == 1) {
+                    return new FragmentRight();
+                } else if (i == 2) {
+                    return new FragmentCenter();
+                } else if (i == 3) {
+                    return FragmentViewPager.newInstance(Params.VIEW_PAGER_R18);
+                }
+                return null;
             }
 
             @Override
@@ -192,7 +206,7 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
                 return baseFragments.length;
             }
         });
-        baseBind.viewPager.setOffscreenPageLimit(baseFragments.length - 1);
+        baseBind.viewPager.setOffscreenPageLimit(baseFragments.length);
         baseBind.viewPager.setCurrentItem(getNavigationInitPosition());
         Manager.get().restore();
 
@@ -442,12 +456,15 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
         if (navigationValue == null) {
             return defaultPosition;
         }
-        var clazz = navigationValue.getInstanceClass();
-        for (int i = 0; i < baseFragments.length; i++) {
-            Fragment fragment = baseFragments[i];
-            if (clazz == fragment.getClass()) {
-                return i;
-            }
+        Class<?> clazz = navigationValue.getInstanceClass();
+        if (clazz == FragmentLeft.class) {
+            return 0;
+        } else if (clazz == FragmentRight.class) {
+            return 1;
+        } else if (clazz == FragmentCenter.class) {
+            return 2;
+        } else if (clazz == FragmentViewPager.class) {
+            return 3;
         }
         return defaultPosition;
     }

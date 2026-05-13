@@ -44,6 +44,11 @@ public class HistoryAdapter extends BaseAdapter<IllustHistoryEntity, RecyViewHis
         mLayoutID = R.layout.recy_view_history;
     }
 
+    @Override
+    public RecyViewHistoryBinding createViewBinding(LayoutInflater inflater, ViewGroup parent, boolean attachToParent) {
+        return RecyViewHistoryBinding.inflate(inflater, parent, attachToParent);
+    }
+
     @SuppressLint("SetTextI18n")
     @Override
     public void bindData(IllustHistoryEntity target, ViewHolder<RecyViewHistoryBinding> bindView, int position) {

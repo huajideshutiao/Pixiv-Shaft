@@ -14,7 +14,6 @@ import java.util.List;
 import ceui.lisa.interfaces.OnItemClickListener;
 import ceui.lisa.interfaces.OnItemLongClickListener;
 import ceui.lisa.models.Starable;
-import ceui.lisa.utils.BindingUtils;
 import ceui.lisa.utils.Common;
 
 public abstract class BaseAdapter<Item, BindView extends ViewBinding> extends
@@ -62,6 +61,8 @@ public abstract class BaseAdapter<Item, BindView extends ViewBinding> extends
     public abstract void initLayout();
 
     public abstract void bindData(Item target, ViewHolder<BindView> bindView, int position);
+
+    public abstract BindView createViewBinding(LayoutInflater inflater, ViewGroup parent, boolean attachToParent);
 
     private void tryCatchBindData(Item target, ViewHolder<BindView> bindView, int position){
         try {
@@ -121,12 +122,7 @@ public abstract class BaseAdapter<Item, BindView extends ViewBinding> extends
 
     public ViewHolder<BindView> getNormalItem(ViewGroup parent) {
         return new ViewHolder<>(
-            BindingUtils.createBinding(
-                getClass(),
-                        LayoutInflater.from(mContext),
-                        parent,
-                        false
-                )
+            createViewBinding(LayoutInflater.from(mContext), parent, false)
         );
     }
 

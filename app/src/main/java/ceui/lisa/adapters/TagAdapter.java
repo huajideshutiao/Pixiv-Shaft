@@ -2,6 +2,8 @@ package ceui.lisa.adapters;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 import android.view.View;
 
 import com.bumptech.glide.Glide;
@@ -28,6 +30,11 @@ public class TagAdapter extends BaseAdapter<ListTrendingtag.TrendTagsBean, RecyT
     @Override
     public void initLayout() {
         mLayoutID = R.layout.recy_tag_grid;
+    }
+
+    @Override
+    public RecyTagGridBinding createViewBinding(LayoutInflater inflater, ViewGroup parent, boolean attachToParent) {
+        return RecyTagGridBinding.inflate(inflater, parent, attachToParent);
     }
 
     @Override

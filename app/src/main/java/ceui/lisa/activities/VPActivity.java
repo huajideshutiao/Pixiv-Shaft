@@ -1,8 +1,11 @@
 package ceui.lisa.activities;
 
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -44,6 +47,37 @@ public class VPActivity extends BaseActivity<ActivityMultiViewPagerTestBinding> 
             getSupportFragmentManager(),
             FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
         ) {
+            @Override
+            public void restoreState(Parcelable state, ClassLoader loader) {
+                if (state instanceof Bundle) {
+                    Bundle bundle = (Bundle) state;
+                    bundle.setClassLoader(loader);
+                    for (String key : bundle.keySet()) {
+                        if (key.startsWith("f")) {
+                            try {
+                                Fragment f = getSupportFragmentManager().getFragment(bundle, key);
+                                if (f == null) {
+                                    bundle.remove(key);
+                                }
+                            } catch (Exception e) {
+                                bundle.remove(key);
+                            }
+                        }
+                    }
+                }
+                try {
+                    super.restoreState(state, loader);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @NonNull
+            @Override
+            public Object instantiateItem(@NonNull ViewGroup container, int position) {
+                return super.instantiateItem(container, position);
+            }
+
             @NonNull
             @Override
             public Fragment getItem(int position) {

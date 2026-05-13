@@ -5,6 +5,8 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 import android.view.View;
 
 import java.util.List;
@@ -29,6 +31,11 @@ public class SearchHintAdapter extends BaseAdapter<ListTrendingtag.TrendTagsBean
     @Override
     public void initLayout() {
         mLayoutID = R.layout.recy_search_hint;
+    }
+
+    @Override
+    public RecySearchHintBinding createViewBinding(LayoutInflater inflater, ViewGroup parent, boolean attachToParent) {
+        return RecySearchHintBinding.inflate(inflater, parent, attachToParent);
     }
 
     @Override

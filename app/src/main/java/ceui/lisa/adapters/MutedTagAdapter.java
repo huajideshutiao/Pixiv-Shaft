@@ -2,6 +2,8 @@ package ceui.lisa.adapters;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 import android.view.View;
 import android.widget.CompoundButton;
 
@@ -22,6 +24,11 @@ public class MutedTagAdapter extends BaseAdapter<TagsBean, RecyMutedTagBinding> 
     @Override
     public void initLayout() {
         mLayoutID = R.layout.recy_muted_tag;
+    }
+
+    @Override
+    public RecyMutedTagBinding createViewBinding(LayoutInflater inflater, ViewGroup parent, boolean attachToParent) {
+        return RecyMutedTagBinding.inflate(inflater, parent, attachToParent);
     }
 
     @Override

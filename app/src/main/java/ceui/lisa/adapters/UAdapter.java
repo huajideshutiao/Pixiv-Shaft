@@ -1,6 +1,7 @@
 package ceui.lisa.adapters;
 
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -39,6 +40,11 @@ public class UAdapter extends BaseAdapter<UserPreviewsBean, RecyUserPreviewBindi
     @Override
     public void initLayout() {
         mLayoutID = R.layout.recy_user_preview;
+    }
+
+    @Override
+    public RecyUserPreviewBinding createViewBinding(LayoutInflater inflater, ViewGroup parent, boolean attachToParent) {
+        return RecyUserPreviewBinding.inflate(inflater, parent, attachToParent);
     }
 
     @Override

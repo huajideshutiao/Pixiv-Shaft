@@ -11,24 +11,22 @@ public abstract class BaseLazyFragment<T extends ViewBinding> extends BaseFragme
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
+    public void onResume() {
+        super.onResume();
         shouldLoadData();
     }
 
     @Override
     protected void initData() {
-        shouldLoadData();
+        // 移除 initData 中的自动触发，改由 onResume 触发
     }
 
-    @SuppressWarnings("deprecation")
     public void shouldLoadData() {
         if (!isInit) {
             return;
         }
 
-        if (getUserVisibleHint() && isLazy() && !isLoaded) {
+        if (isResumed() && !isLoaded) {
             lazyData();
             isLoaded = true;
         }

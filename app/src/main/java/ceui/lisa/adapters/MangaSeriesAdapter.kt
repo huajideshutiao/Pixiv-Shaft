@@ -1,6 +1,8 @@
 package ceui.lisa.adapters
 
 import android.content.Context
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import android.text.TextUtils
 import ceui.lisa.R
 import ceui.lisa.databinding.RecyMangaSeriesBinding
@@ -15,6 +17,10 @@ class MangaSeriesAdapter(
 
     override fun initLayout() {
         mLayoutID = R.layout.recy_manga_series
+    }
+
+    override fun createViewBinding(inflater: LayoutInflater, parent: ViewGroup, attachToParent: Boolean): RecyMangaSeriesBinding {
+        return RecyMangaSeriesBinding.inflate(inflater, parent, attachToParent)
     }
 
     override fun bindData(

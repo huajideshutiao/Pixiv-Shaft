@@ -1,5 +1,7 @@
 package ceui.lisa.fragments;
 
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -47,6 +49,41 @@ public class FragmentNew extends BaseFragment<ViewpagerWithTablayoutBinding> {
             getChildFragmentManager(),
             FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
         ) {
+            @Override
+            public void restoreState(Parcelable state, ClassLoader loader) {
+                if (state instanceof Bundle) {
+                    Bundle bundle = (Bundle) state;
+                    bundle.setClassLoader(loader);
+                    for (String key : bundle.keySet()) {
+                        if (key.startsWith("f")) {
+                            try {
+                                Fragment f = getChildFragmentManager().getFragment(bundle, key);
+                                if (f == null) {
+                                    bundle.remove(key);
+                                }
+                            } catch (Exception e) {
+                                bundle.remove(key);
+                            }
+                        }
+                    }
+                }
+                try {
+                    super.restoreState(state, loader);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @NonNull
+            @Override
+            public Object instantiateItem(@NonNull ViewGroup container, int position) {
+                Fragment fragment = (Fragment) super.instantiateItem(container, position);
+                if (position < mFragments.length) {
+                    mFragments[position] = fragment;
+                }
+                return fragment;
+            }
+
             @NonNull
             @Override
             public Fragment getItem(int position) {

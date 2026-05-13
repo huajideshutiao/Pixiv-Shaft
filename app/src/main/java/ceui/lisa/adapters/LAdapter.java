@@ -1,6 +1,7 @@
  package ceui.lisa.adapters;
 
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
@@ -28,6 +29,11 @@ public class LAdapter extends BaseAdapter<IllustsBean, RecyCardIllustBinding> {
     @Override
     public void initLayout() {
         mLayoutID = R.layout.recy_card_illust;
+    }
+
+    @Override
+    public RecyCardIllustBinding createViewBinding(LayoutInflater inflater, ViewGroup parent, boolean attachToParent) {
+        return RecyCardIllustBinding.inflate(inflater, parent, attachToParent);
     }
 
     @Override

@@ -2,6 +2,8 @@ package ceui.lisa.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 import android.view.View;
 
 import java.util.List;
@@ -27,6 +29,11 @@ public class ColorAdapter extends BaseAdapter<ColorItem, RecyColorBinding> {
     @Override
     public void initLayout() {
         mLayoutID = R.layout.recy_color;
+    }
+
+    @Override
+    public RecyColorBinding createViewBinding(LayoutInflater inflater, ViewGroup parent, boolean attachToParent) {
+        return RecyColorBinding.inflate(inflater, parent, attachToParent);
     }
 
     @Override

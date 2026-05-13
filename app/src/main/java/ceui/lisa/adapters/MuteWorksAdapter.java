@@ -47,6 +47,11 @@ public class MuteWorksAdapter extends BaseAdapter<MuteEntity, RecyViewHistoryBin
         mLayoutID = R.layout.recy_view_history;
     }
 
+    @Override
+    public RecyViewHistoryBinding createViewBinding(LayoutInflater inflater, ViewGroup parent, boolean attachToParent) {
+        return RecyViewHistoryBinding.inflate(inflater, parent, attachToParent);
+    }
+
     @SuppressLint("SetTextI18n")
     @Override
     public void bindData(MuteEntity target, ViewHolder<RecyViewHistoryBinding> bindView, int position) {
