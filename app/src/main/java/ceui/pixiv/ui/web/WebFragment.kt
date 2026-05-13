@@ -32,7 +32,6 @@ import ceui.pixiv.ui.common.PixivFragment
 import ceui.pixiv.ui.common.setupMaterialHeader
 import ceui.pixiv.ui.common.setUpToolbar
 import ceui.pixiv.ui.common.viewBinding
-import com.scwang.smart.refresh.header.MaterialHeader
 import java.io.InputStream
 import java.net.URLEncoder
 
@@ -139,11 +138,13 @@ class WebFragment : PixivFragment(R.layout.fragment_web) {
         webSettings.setSupportZoom(true)
         webSettings.builtInZoomControls = true
         webSettings.displayZoomControls = false
+        binding.webView.setBackgroundColor(0)
 
         binding.webView.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
                 binding.refreshLayout.finishRefresh()
+                binding.progressBar.visibility = View.GONE
                 
                 if (args.saveCookies) {
                     val cookie = CookieManager.getInstance().getCookie("https://www.pixiv.net")
@@ -163,6 +164,8 @@ class WebFragment : PixivFragment(R.layout.fragment_web) {
 
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 super.onPageStarted(view, url, favicon)
+                binding.progressBar.visibility = View.VISIBLE
+                binding.progressBar.progress = 0
             }
 
             override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
@@ -216,6 +219,16 @@ class WebFragment : PixivFragment(R.layout.fragment_web) {
         }
 
         binding.webView.webChromeClient = object : WebChromeClient() {
+            override fun onProgressChanged(view: WebView?, newProgress: Int) {
+                super.onProgressChanged(view, newProgress)
+                if (newProgress == 100) {
+                    binding.progressBar.visibility = View.GONE
+                } else {
+                    binding.progressBar.visibility = View.VISIBLE
+                    binding.progressBar.progress = newProgress
+                }
+            }
+
             override fun onShowFileChooser(webView: WebView?, filePathCallback: ValueCallback<Array<Uri>>?, fileChooserParams: FileChooserParams?): Boolean {
                 uploadMessageAboveL = filePathCallback
                 val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
