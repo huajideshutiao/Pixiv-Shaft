@@ -39,6 +39,11 @@
 -keep class ceui.lisa.utils.Settings { *; }
 -keepclassmembers class ceui.lisa.utils.Settings { *; }
 
+# KSP 生成的 ViewHolderFactory：通过反射加载，且 key 使用编译期类名 hashCode
+# 混淆后类名 hashCode 变化导致 viewType 匹配失败 → RuntimeException
+-keep class ceui.pixiv.ui.viewholdermap.ViewHolderFactory { *; }
+-keepnames class * extends ceui.pixiv.ui.common.ListItemHolder
+
 # @SerializedName 字段兜底：防止遗漏的模型类字段被重命名
 -keepclassmembers class * {
     @com.google.gson.annotations.SerializedName <fields>;

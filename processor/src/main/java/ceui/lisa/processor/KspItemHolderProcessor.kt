@@ -27,51 +27,58 @@ class KspItemHolderProcessor(
             .filterIsInstance<KSClassDeclaration>()
             .toList()
 
-        if (symbols.isEmpty()) return emptyList()
+        if (symbols.isEmpty()) {
+            logger.info("KspItemHolderProcessor: No @ItemHolder annotated classes found")
+            return emptyList()
+        }
+
+        logger.info("KspItemHolderProcessor: Found ${symbols.size} @ItemHolder annotated classes")
 
         val holderEntries = mutableListOf<HolderEntry>()
         symbols.forEach { symbol ->
-            if (symbol.validate()) {
-                val annotation = symbol.getAnnotationsByType(ItemHolder::class).firstOrNull()
-                if (annotation != null) {
-                    val ksAnnotation = symbol.annotations.find {
-                        it.shortName.asString() == "ItemHolder"
-                    }
-                    val itemHolderType = ksAnnotation?.arguments?.find {
-                        it.name?.asString() == "itemHolderCls" || it.name == null
-                    }?.value as? KSType
-
-                    val itemHolderFullName =
-                        itemHolderType?.declaration?.qualifiedName?.asString() ?: ""
-
-                    if (itemHolderFullName.isEmpty()) {
-                        logger.warn("ItemHolder type not resolved for ${symbol.simpleName.asString()}")
-                        return@forEach
-                    }
-
-                    val itemHolderName = itemHolderFullName.split(".").last()
-
-                    val primaryConstructor = symbol.primaryConstructor
-                    val bindingType = primaryConstructor?.parameters?.firstOrNull()?.type?.resolve()
-                    val bindingFullName = bindingType?.declaration?.qualifiedName?.asString() ?: ""
-
-                    if (bindingFullName.isEmpty()) {
-                        logger.warn("Binding type not resolved for ${symbol.simpleName.asString()}")
-                        return@forEach
-                    }
-
-                    val bindingName = bindingFullName.split(".").last()
-
-                    holderEntries.add(
-                        HolderEntry(
-                            existingPackage = symbol.packageName.asString() + ".",
-                            itemHolder = itemHolderName,
-                            binding = bindingName,
-                            bindingFullname = bindingFullName,
-                            viewHolder = symbol.simpleName.asString()
-                        )
-                    )
+            if (!symbol.validate()) {
+                logger.warn("KspItemHolderProcessor: Symbol validation failed for ${symbol.simpleName.asString()}")
+                return@forEach
+            }
+            val annotation = symbol.getAnnotationsByType(ItemHolder::class).firstOrNull()
+            if (annotation != null) {
+                val ksAnnotation = symbol.annotations.find {
+                    it.shortName.asString() == "ItemHolder"
                 }
+                val itemHolderType = ksAnnotation?.arguments?.find {
+                    it.name?.asString() == "itemHolderCls" || it.name == null
+                }?.value as? KSType
+
+                val itemHolderFullName =
+                    itemHolderType?.declaration?.qualifiedName?.asString() ?: ""
+
+                if (itemHolderFullName.isEmpty()) {
+                    logger.warn("ItemHolder type not resolved for ${symbol.simpleName.asString()}")
+                    return@forEach
+                }
+
+                val itemHolderName = itemHolderFullName.split(".").last()
+
+                val primaryConstructor = symbol.primaryConstructor
+                val bindingType = primaryConstructor?.parameters?.firstOrNull()?.type?.resolve()
+                val bindingFullName = bindingType?.declaration?.qualifiedName?.asString() ?: ""
+
+                if (bindingFullName.isEmpty()) {
+                    logger.warn("Binding type not resolved for ${symbol.simpleName.asString()}")
+                    return@forEach
+                }
+
+                val bindingName = bindingFullName.split(".").last()
+
+                holderEntries.add(
+                    HolderEntry(
+                        existingPackage = symbol.packageName.asString() + ".",
+                        itemHolder = itemHolderName,
+                        binding = bindingName,
+                        bindingFullname = bindingFullName,
+                        viewHolder = symbol.simpleName.asString()
+                    )
+                )
             }
         }
 
@@ -123,7 +130,7 @@ class KspItemHolderProcessor(
         }
 
         val buildMapEntries = holderEntries.map {
-            "    ${it.itemHolder}::class.java.hashCode() to ViewHolderFactory::${it.viewHolder}Builder"
+            "    \"${it.existingPackage}${it.itemHolder}\".hashCode() to ViewHolderFactory::${it.viewHolder}Builder"
         }
 
         content.append("\n    val VIEW_HOLDER_MAP = mapOf(\n")

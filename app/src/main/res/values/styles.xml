@@ -5,7 +5,14 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">#686bdd</item>
         <item name="colorPrimaryDark">#4749a0</item>
+        <item name="colorAccent">?attr/colorPrimary</item>
+        <item name="colorControlNormal">#999999</item>
         <item name="colorControlActivated">?attr/colorPrimary</item>
+        <item name="colorSurface">@color/white_to_deep_dark</item>
+        <item name="colorOnSurface">@color/rank_text_color</item>
+        <item name="colorOutline">@color/dark_bg</item>
+        <item name="colorSurfaceVariant">@color/f5_to_deep_dark</item>
+        <item name="colorOnSurfaceVariant">@color/about_user_left</item>
         <item name="colorSwitchThumbNormal">#F1F1F1</item>
         <item name="android:windowContentTransitions">true</item>
         <item name="android:windowAllowEnterTransitionOverlap">true</item>
