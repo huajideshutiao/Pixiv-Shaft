@@ -64,21 +64,26 @@ class UActivity : BaseActivity<ActivityNewUserBinding>(), Display<UserDetailResp
     override fun initView() {
         val wave = Wave()
         baseBind.progress.indeterminateDrawable = wave
-        baseBind.toolbar.setPadding(0, Shaft.statusHeight, 0, 0)
+        baseBind.statusBarSpacer.layoutParams.height = Shaft.statusHeight
         baseBind.toolbar.setNavigationOnClickListener { _: View? -> finish() }
         baseBind.toolbarLayout.viewTreeObserver.addOnGlobalLayoutListener(object :
             OnGlobalLayoutListener {
             override fun onGlobalLayout() {
+                // 精确计算最小高度：状态栏占位 + Toolbar(56dp) + TabLayout(40dp)
+                baseBind.toolbarLayout.minimumHeight = Shaft.statusHeight + baseBind.toolbar.height + baseBind.tabLayout.height
                 val offset =
-                    baseBind.toolbarLayout.height - Shaft.statusHeight - Shaft.toolbarHeight
+                    baseBind.toolbarLayout.height - baseBind.toolbarLayout.minimumHeight
                 baseBind.appBar.addOnOffsetChangedListener { _, verticalOffset ->
                     if (abs(verticalOffset) < 15) {
                         baseBind.centerHeader.alpha = 1.0f
+                        baseBind.centerHeader.visibility = View.VISIBLE
                         baseBind.toolbarTitle.alpha = 0.0f
                     } else if (offset - abs(verticalOffset) < 15) {
                         baseBind.centerHeader.alpha = 0.0f
+                        baseBind.centerHeader.visibility = View.INVISIBLE
                         baseBind.toolbarTitle.alpha = 1.0f
                     } else {
+                        baseBind.centerHeader.visibility = View.VISIBLE
                         baseBind.centerHeader.alpha = 1 + verticalOffset.toFloat() / offset
                         baseBind.toolbarTitle.alpha = -verticalOffset.toFloat() / offset
                     }
