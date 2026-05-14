@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.tabs.TabLayout
 import ceui.lisa.R
 import ceui.lisa.databinding.FragmentHolderBinding
 import ceui.lisa.utils.MyOnTabSelectedListener
@@ -88,9 +89,10 @@ class FragmentHolder : BaseFragment<FragmentHolderBinding>() {
                 return titles[position]
             }
         }
-        baseBind.tabLayout.setupWithViewPager(baseBind.viewPager)
+        val tabLayout = activity?.findViewById<TabLayout>(R.id.tab_layout)
+        tabLayout?.setupWithViewPager(baseBind.viewPager)
         val listener = MyOnTabSelectedListener(items)
-        baseBind.tabLayout.addOnTabSelectedListener(listener)
+        tabLayout?.addOnTabSelectedListener(listener)
     }
 
     override fun onCreateBinding(

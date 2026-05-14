@@ -18,7 +18,6 @@ import ceui.pixiv.db.queue.DownloadQueueEntity;
 @Database(
         entities = {
                 IllustHistoryEntity.class, //浏览历史
-                IllustRecmdEntity.class, //用不到，调试用
                 DownloadEntity.class, //下载历史
                 UserEntity.class, //多用户保存信息
                 SearchEntity.class, //搜索历史
@@ -36,7 +35,7 @@ import ceui.pixiv.db.queue.DownloadQueueEntity;
                 NovelCustomFontEntity.class, // V3 阅读器自定义字体
                 DownloadQueueEntity.class, // 批量下载队列（v33）
         },
-    version = 34,
+    version = 35,
         exportSchema = false
 )
 public abstract class AppDatabase extends RoomDatabase {
@@ -239,8 +238,6 @@ public abstract class AppDatabase extends RoomDatabase {
     public static void destroyInstance() {
         INSTANCE = null;
     }
-
-    public abstract IllustRecmdDao recmdDao();
 
     public abstract DownloadDao downloadDao();
 

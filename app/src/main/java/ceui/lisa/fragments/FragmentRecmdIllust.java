@@ -12,8 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
-import com.scwang.smart.refresh.header.FalsifyFooter;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -22,17 +20,10 @@ import ceui.lisa.R;
 import ceui.lisa.activities.Shaft;
 import ceui.lisa.adapters.BaseAdapter;
 import ceui.lisa.adapters.IAdapterWithHeadView;
-import ceui.lisa.core.NetCallback;
 import ceui.lisa.core.RemoteRepo;
-import ceui.lisa.core.RxRun;
-import ceui.lisa.core.RxRunnable;
-import ceui.lisa.database.AppDatabase;
-import ceui.lisa.database.IllustRecmdEntity;
 import ceui.lisa.databinding.FragmentBaseListBinding;
 import ceui.lisa.databinding.RecyIllustStaggerBinding;
-import ceui.lisa.helper.IllustNovelFilter;
 import ceui.lisa.helper.StaggeredManager;
-import ceui.lisa.http.NullCtrl;
 import ceui.lisa.model.ListIllust;
 import ceui.lisa.model.RecmdIllust;
 import ceui.lisa.models.IllustsBean;
@@ -51,7 +42,6 @@ public class FragmentRecmdIllust extends NetListFragment<FragmentBaseListBinding
         RecmdIllust, IllustsBean> {
 
     private String dataType;
-    private List<IllustRecmdEntity> localData;
     private BroadcastReceiver relatedReceiver;
 
     public static FragmentRecmdIllust newInstance(String dataType) {
@@ -156,25 +146,6 @@ public class FragmentRecmdIllust extends NetListFragment<FragmentBaseListBinding
     @Override
     public void onFirstLoaded(List<IllustsBean> illustsBeans) {
         ((RecmdModel) mModel).getRankList().clear();
-        RxRun.runOn(new RxRunnable<Void>() {
-            @Override
-            public Void execute() {
-                if (allItems != null) {
-                    if (allItems.size() >= 20) {
-                        for (int i = 0; i < 20; i++) {
-                            insertViewHistory(allItems.get(i));
-                        }
-                    } else {
-                        for (int i = 0; i < allItems.size(); i++) {
-                            insertViewHistory(allItems.get(i));
-                        }
-                    }
-                }
-                return null;
-            }
-                    }, new NetCallback<Void>() {
-                    }
-        );
         mResponse.getRanking_illusts().forEach(new Consumer<IllustsBean>() {
             @Override
             public void accept(IllustsBean illustsBean) {
@@ -184,57 +155,6 @@ public class FragmentRecmdIllust extends NetListFragment<FragmentBaseListBinding
         ((RecmdModel) mModel).getRankList().addAll(mResponse.getRanking_illusts());
         ((IAdapterWithHeadView) mAdapter).setHeadData(((RecmdModel) mModel).getRankList());
         mModel.tidyAppViewModel(((RecmdModel) mModel).getRankList());
-    }
-
-    private void insertViewHistory(IllustsBean illustsBean) {
-        IllustRecmdEntity illustRecmdEntity = new IllustRecmdEntity();
-        illustRecmdEntity.setIllustID(illustsBean.getId());
-        illustRecmdEntity.setIllustJson(Shaft.sGson.toJson(illustsBean));
-        illustRecmdEntity.setTime(System.currentTimeMillis());
-        AppDatabase.getAppDatabase(Shaft.getContext()).recmdDao().insert(illustRecmdEntity);
-    }
-
-    @Override
-    public void showDataBase() {
-        if (Common.isEmpty(localData)) {
-            return;
-        }
-        RxRun.runOn(new RxRunnable<List<IllustsBean>>() {
-            @Override
-            public List<IllustsBean> execute() throws Exception {
-                Thread.sleep(100);
-                List<IllustsBean> temp = new ArrayList<>();
-                for (int i = 0; i < localData.size(); i++) {
-                    IllustsBean illustsBean = Shaft.sGson.fromJson(
-                            localData.get(i).getIllustJson(), IllustsBean.class);
-                    if (!IllustNovelFilter.judge(illustsBean)) {
-                        temp.add(illustsBean);
-                    }
-                }
-                return temp;
-            }
-        }, new NullCtrl<List<IllustsBean>>() {
-            @Override
-            public void success(List<IllustsBean> illustsBeans) {
-                allItems.addAll(illustsBeans);
-                illustsBeans.forEach(new Consumer<IllustsBean>() {
-                    @Override
-                    public void accept(IllustsBean illustsBean) {
-                        ObjectPool.INSTANCE.updateIllust(illustsBean);
-                    }
-                });
-                ((RecmdModel) mModel).getRankList().addAll(illustsBeans);
-                mModel.tidyAppViewModel(illustsBeans);
-                ((IAdapterWithHeadView) mAdapter).setHeadData(((RecmdModel) mModel).getRankList());
-                mAdapter.notifyItemRangeInserted(mAdapter.headerSize(), allItems.size());
-            }
-
-            @Override
-            public void must(boolean isSuccess) {
-                baseBind.refreshLayout.finishRefresh(isSuccess);
-                baseBind.refreshLayout.setRefreshFooter(new FalsifyFooter(mContext));
-            }
-        });
     }
 
     @Override

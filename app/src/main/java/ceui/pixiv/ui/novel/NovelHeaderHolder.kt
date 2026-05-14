@@ -54,11 +54,20 @@ class NovelHeaderViewHolder(bd: CellNovelHeaderBinding) :
         }
         liveNovel.observe(lifecycleOwner) { novel ->
             if (novel == null) return@observe
+            binding.title.text = novel.title
             // Bookmark tint: icon_not_liked is white — invisible on light bg
             binding.bookmark.imageTintList = if (novel.is_bookmarked == true) {
                 null // icon_liked is already red
             } else {
                 ColorStateList.valueOf(context.getColor(R.color.v3_text_3))
+            }
+            // Series strip
+            val series = novel.series
+            if (series != null && series.title != null) {
+                binding.seriesName.text = series.title
+                binding.seriesStrip.isVisible = true
+            } else {
+                binding.seriesStrip.isVisible = false
             }
             // Meta line
             val date = novel.create_date?.replace('T', ' ')?.take(16).orEmpty()

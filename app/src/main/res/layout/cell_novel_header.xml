@@ -27,7 +27,6 @@
                     android:background="?attr/selectableItemBackground"
                     android:letterSpacing="-0.03"
                     android:lineSpacingMultiplier="1.2"
-                    android:text="@{novel.title}"
                     android:textColor="@color/v3_text_1"
                     android:textSize="23sp"
                     android:textStyle="bold"
@@ -151,7 +150,6 @@
                     android:layout_marginTop="1dp"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text="@{novel.series.title}"
                     android:textColor="@android:color/white"
                     android:textSize="14sp"
                     android:textStyle="bold" />
