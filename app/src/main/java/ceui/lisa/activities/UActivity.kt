@@ -38,6 +38,7 @@ import ceui.loxia.Event
 import ceui.loxia.ObjectPool
 import ceui.loxia.ProgressIndicator
 import ceui.loxia.ProgressTextButton
+import ceui.pixiv.route.AppRoute
 import ceui.pixiv.session.SessionManager
 import ceui.pixiv.utils.setOnClick
 import ceui.pixiv.widgets.RateAppManager
@@ -282,40 +283,33 @@ class UActivity : BaseActivity<ActivityNewUserBinding>(), Display<UserDetailResp
         baseBind.followCount.text = data.profile?.total_follow_users?.toString() ?: "0"
         baseBind.pFriend.text = data.profile?.total_mypixiv_users?.toString() ?: "0"
         val pFriend = View.OnClickListener {
-            val intent = Intent(mContext, ContainerActivity::class.java)
-            intent.putExtra(Params.USER_ID, user.id)
-            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "好P友")
-            startActivity(intent)
+            AppRoute.NiceFriend.start(mContext)
         }
         baseBind.pFriend.setOnClickListener(pFriend)
         baseBind.pFriendS.setOnClickListener(pFriend)
         val follow = View.OnClickListener {
-            val intent = Intent(mContext, ContainerActivity::class.java)
-            intent.putExtra(Params.USER_ID, user.id)
-            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "正在关注")
-            startActivity(intent)
+            AppRoute.Following(user.id).start(mContext)
         }
         baseBind.followCount.setOnClickListener(follow)
         baseBind.followS.setOnClickListener(follow)
     }
 
     private fun openImageDetail(imageUrl: String, saveName: String) {
-        startActivity(Intent(mContext, ContainerActivity::class.java).apply {
-            putExtra(ContainerActivity.EXTRA_FRAGMENT, "图片详情")
-            putExtra(Params.URL, imageUrl)
-            putExtra(Params.TITLE, saveName)
-        })
+        AppRoute.UrlImage(imageUrl, saveName).start(mContext)
     }
 
     private fun jumpTo(userID: Int, kind: UserIllustJumpHelper.Kind, fragmentTag: String) {
         UserIllustJumpHelper.showJumpDialog(this, userID, kind) { offset, pickedDate ->
             if (isFinishing || isDestroyed) return@showJumpDialog
-            val intent = Intent(this, ContainerActivity::class.java)
-            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, fragmentTag)
-            intent.putExtra(Params.USER_ID, userID)
-            intent.putExtra(Params.INITIAL_OFFSET, offset)
-            if (pickedDate != null) intent.putExtra(Params.TARGET_DATE, pickedDate)
-            startActivity(intent)
+            when (kind) {
+                UserIllustJumpHelper.Kind.ILLUST -> {
+                    AppRoute.UserIllust(userID, offset, pickedDate).start(this)
+                }
+                UserIllustJumpHelper.Kind.MANGA -> {
+                    AppRoute.UserManga(userID).start(this)
+                }
+                else -> {}
+            }
         }
     }
 }

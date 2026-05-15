@@ -71,7 +71,6 @@
 
                     <com.google.android.material.imageview.ShapeableImageView
                         android:id="@+id/user_icon"
-                        userIcon="@{user}"
                         android:layout_width="36dp"
                         android:layout_height="36dp"
                         android:scaleType="centerCrop"
@@ -88,7 +87,7 @@
                         android:layout_marginStart="10dp"
                         android:ellipsize="end"
                         android:maxLines="1"
-                        android:text="@{user.name}"
+                        android:text=""
                         android:textColor="@color/text00"
                         android:textSize="14sp"
                         android:textStyle="bold"
@@ -203,7 +202,7 @@
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:maxLines="2"
-                        android:text="@{holder.illust.title}"
+                        android:text=""
                         android:textColor="@color/text00"
                         android:textSize="15sp"
                         tools:text="Illustration Title" />

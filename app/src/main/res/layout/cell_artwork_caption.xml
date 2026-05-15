@@ -34,7 +34,7 @@
         <TextView
             android:id="@+id/illust_id"
             android:textSize="15sp"
-            android:text="@{`ID: ` + String.valueOf(illust.id)}"
+            android:text=""
             android:layout_marginBottom="12dp"
             android:layout_width="match_parent"
             android:textColor="@color/text00"
@@ -51,7 +51,7 @@
         <TextView
             android:id="@+id/user_id"
             android:textSize="15sp"
-            android:text="@{`UID: ` + String.valueOf(illust.user.id)}"
+            android:text=""
             android:layout_marginBottom="12dp"
             android:layout_width="match_parent"
             android:textColor="@color/text00"

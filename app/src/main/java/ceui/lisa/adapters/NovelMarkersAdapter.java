@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Locale;
 
 import ceui.lisa.R;
-import ceui.lisa.activities.ContainerActivity;
+import ceui.pixiv.route.AppRoute;
 import ceui.lisa.activities.SearchActivity;
 import ceui.lisa.activities.UActivity;
 import ceui.lisa.databinding.RecyNovelMarkersBinding;
@@ -46,10 +46,7 @@ public class NovelMarkersAdapter extends BaseAdapter<MarkedNovelItem, RecyNovelM
             bindView.baseBind.series.setText(String.format(mContext.getString(R.string.string_184),
                     target.getNovel().getSeries().getTitle()));
             bindView.baseBind.series.setOnClickListener(v -> {
-                Intent intent = new Intent(mContext, ContainerActivity.class);
-                    intent.putExtra(Params.ID, target.getNovel().getSeries().getId());
-                intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说系列详情");
-                    mContext.startActivity(intent);
+                new AppRoute.NovelSeriesDetail(target.getNovel().getSeries().getId()).start(mContext);
             });
         } else {
             bindView.baseBind.series.setVisibility(View.GONE);
@@ -81,10 +78,7 @@ public class NovelMarkersAdapter extends BaseAdapter<MarkedNovelItem, RecyNovelM
         Glide.with(mContext).load(GlideUtil.getHead(target.getNovel().getUser())).into(bindView.baseBind.userHead);
 
         bindView.baseBind.cover.setOnClickListener(v -> {
-            Intent intent = new Intent(mContext, ContainerActivity.class);
-            intent.putExtra(Params.URL, GlideUtil.getUrl(target.getNovel().getImage_urls().getMaxImage()).toStringUrl());
-            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "图片详情");
-            mContext.startActivity(intent);
+            new AppRoute.UrlImage(GlideUtil.getUrl(target.getNovel().getImage_urls().getMaxImage()).toStringUrl(), null).start(mContext);
         });
 
         bindView.baseBind.userHead.setOnClickListener(v -> {
@@ -100,11 +94,7 @@ public class NovelMarkersAdapter extends BaseAdapter<MarkedNovelItem, RecyNovelM
         });
 
         bindView.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(mContext, ContainerActivity.class);
-            intent.putExtra(Params.CONTENT, target.getNovel());
-            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说详情");
-            intent.putExtra("hideStatusBar", true);
-            mContext.startActivity(intent);
+            new AppRoute.NovelDetail((long) target.getNovel().getId()).start(mContext);
         });
 
         bindView.baseBind.mark.setOnClickListener(v ->

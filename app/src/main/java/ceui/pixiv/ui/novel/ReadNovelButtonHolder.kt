@@ -1,10 +1,8 @@
 package ceui.pixiv.ui.novel
 
-import android.content.Intent
-import ceui.lisa.activities.ContainerActivity
 import ceui.lisa.annotations.ItemHolder
 import ceui.lisa.databinding.ItemBigReadButtonBinding
-import ceui.lisa.utils.Params
+import ceui.pixiv.route.AppRoute
 import ceui.pixiv.ui.common.ListItemHolder
 import ceui.pixiv.ui.common.ListItemViewHolder
 import ceui.pixiv.utils.setOnClick
@@ -27,11 +25,7 @@ class ReadNovelButtonViewHolder(bd: ItemBigReadButtonBinding) :
         super.onBindViewHolder(holder, position)
         binding.btnRead.setOnClick {
             val ctx = it.context
-            val intent = Intent(ctx, ContainerActivity::class.java).apply {
-                putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说正文")
-                putExtra(Params.NOVEL_ID, holder.novelId)
-            }
-            ctx.startActivity(intent)
+            AppRoute.NovelReader(holder.novelId).start(ctx)
         }
     }
 }

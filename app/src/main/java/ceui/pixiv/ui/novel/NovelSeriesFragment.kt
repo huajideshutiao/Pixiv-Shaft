@@ -19,7 +19,7 @@ import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import ceui.lisa.R
-import ceui.lisa.activities.ContainerActivity
+import ceui.pixiv.route.AppRoute
 import ceui.lisa.activities.Shaft
 import ceui.lisa.activities.UActivity
 import ceui.lisa.core.Container
@@ -370,11 +370,7 @@ class NovelSeriesFragment : PixivFragment(R.layout.fragment_pixiv_list), NovelMu
     }
 
     override fun onClickNovel(novelId: Long) {
-        val intent = Intent(requireContext(), ContainerActivity::class.java).apply {
-            putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说详情")
-            putExtra(Params.NOVEL_ID, novelId)
-        }
-        startActivity(intent)
+        AppRoute.NovelDetail(novelId).start(requireContext())
     }
 
     override fun onClickIllust(illustId: Long) {
@@ -386,12 +382,7 @@ class NovelSeriesFragment : PixivFragment(R.layout.fragment_pixiv_list), NovelMu
             val uuid = UUID.randomUUID().toString()
             val pageData = PageData(uuid, null, listOf(bean))
             Container.get().addPageToMap(pageData)
-            val intent = Intent(requireContext(), ContainerActivity::class.java).apply {
-                putExtra(ContainerActivity.EXTRA_FRAGMENT, "全屏查看")
-                putExtra(Params.POSITION, 0)
-                putExtra(Params.PAGE_UUID, uuid)
-            }
-            startActivity(intent)
+            AppRoute.FullScreen(uuid, 0, null).start(requireContext())
         }
     }
 

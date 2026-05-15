@@ -1,6 +1,5 @@
 package ceui.lisa.fragments
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +7,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import ceui.lisa.R
-import ceui.lisa.activities.ContainerActivity
 import ceui.lisa.adapters.LAdapter
 import ceui.lisa.core.Container
 import ceui.lisa.core.PageData
@@ -23,6 +21,7 @@ import ceui.lisa.models.UserDetailResponse
 import ceui.lisa.utils.DensityUtil
 import ceui.lisa.utils.Params
 import ceui.lisa.view.LinearItemHorizontalDecoration
+import ceui.pixiv.route.AppRoute
 import com.github.ybq.android.spinkit.style.Wave
 import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator
 import retrofit2.Call
@@ -69,12 +68,7 @@ class FragmentLikeIllustHorizontal : BaseFragment<FragmentLikeIllustHorizontalBi
             val pageData = PageData(allItems)
             Container.get().addPageToMap(pageData)
 
-            val intent = Intent(mContext, ContainerActivity::class.java).apply {
-                putExtra(ContainerActivity.EXTRA_FRAGMENT, "全屏查看")
-                putExtra(Params.POSITION, position)
-                putExtra(Params.PAGE_UUID, pageData.uuid)
-            }
-            startActivity(intent)
+            AppRoute.FullScreen(pageData.uuid, position, null).start(requireContext())
         }
         baseBind.recyclerView.adapter = mAdapter
 
@@ -111,11 +105,12 @@ class FragmentLikeIllustHorizontal : BaseFragment<FragmentLikeIllustHorizontalBi
         }
 
         baseBind.howMany.setOnClickListener {
-            val intent = Intent(mContext, ContainerActivity::class.java).apply {
-                putExtra(ContainerActivity.EXTRA_FRAGMENT, baseBind.title.text.toString())
-                putExtra(Params.USER_ID, mUserDetailResponse?.user?.id ?: 0)
+            val userId = mUserDetailResponse?.user?.id ?: 0
+            when (type) {
+                1 -> AppRoute.LikeIllust(userId).start(requireContext())
+                2 -> AppRoute.UserIllust(userId).start(requireContext())
+                3 -> AppRoute.UserManga(userId).start(requireContext())
             }
-            startActivity(intent)
         }
 
         if (type == 2 || type == 3) {
@@ -124,16 +119,12 @@ class FragmentLikeIllustHorizontal : BaseFragment<FragmentLikeIllustHorizontalBi
                 val userID = mUserDetailResponse?.user?.id ?: 0
                 val kind =
                     if (type == 3) UserIllustJumpHelper.Kind.MANGA else UserIllustJumpHelper.Kind.ILLUST
-                val fragmentTag = if (type == 3) "漫画作品" else "插画作品"
                 UserIllustJumpHelper.showJumpDialog(mActivity, userID, kind) { offset, pickedDate ->
                     if (!isAdded) return@showJumpDialog
-                    val intent = Intent(mContext, ContainerActivity::class.java).apply {
-                        putExtra(ContainerActivity.EXTRA_FRAGMENT, fragmentTag)
-                        putExtra(Params.USER_ID, userID)
-                        putExtra(Params.INITIAL_OFFSET, offset)
-                        pickedDate?.let { putExtra(Params.TARGET_DATE, it) }
+                    when (type) {
+                        2 -> AppRoute.UserIllust(userID, offset, pickedDate).start(requireContext())
+                        3 -> AppRoute.UserManga(userID).start(requireContext())
                     }
-                    startActivity(intent)
                 }
             }
         }

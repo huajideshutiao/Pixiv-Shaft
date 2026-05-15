@@ -49,7 +49,6 @@ import java.util.Random;
 import java.util.stream.IntStream;
 
 import ceui.lisa.R;
-import ceui.lisa.activities.ContainerActivity;
 import ceui.lisa.activities.MainActivity;
 import ceui.lisa.activities.Shaft;
 import ceui.lisa.activities.UActivity;
@@ -60,6 +59,7 @@ import ceui.lisa.file.LegacyFile;
 import ceui.lisa.file.SAFile;
 import ceui.lisa.models.IllustsBean;
 import ceui.lisa.models.UserContainer;
+import ceui.pixiv.route.AppRoute;
 import ceui.pixiv.session.SessionManager;
 import okhttp3.MediaType;
 import okhttp3.Response;
@@ -112,10 +112,7 @@ public class Common {
                         .downloadDao().deleteUser(userEntity);
             }
             SessionManager.INSTANCE.updateSession(null);
-            Intent intent = new Intent(context, ContainerActivity.class);
-            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "登录注册");
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            context.startActivity(intent);
+            AppRoute.LoginRegister.INSTANCE.start(context);
         }
     }
 

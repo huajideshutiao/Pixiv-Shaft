@@ -9,7 +9,6 @@ import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import ceui.lisa.R
-import ceui.lisa.activities.ContainerActivity
 import ceui.lisa.activities.Shaft
 import ceui.lisa.activities.UActivity
 import ceui.lisa.core.Container
@@ -21,6 +20,7 @@ import ceui.lisa.utils.Params
 import ceui.loxia.Client
 import ceui.loxia.Novel
 import ceui.loxia.ObjectPool
+import ceui.pixiv.route.AppRoute
 import ceui.pixiv.ui.common.FitsSystemWindowFragment
 import ceui.pixiv.ui.common.ListMode
 import ceui.pixiv.ui.common.PixivFragment
@@ -72,12 +72,7 @@ class NovelTextFragment : PixivFragment(R.layout.fragment_pixiv_list), FitsSyste
         val palette = ceui.lisa.utils.V3Palette.from(requireContext())
         bottomView.btnRead.background = palette.pillPrimary(28f * resources.displayMetrics.density)
         bottomView.btnRead.setOnClick {
-            val ctx = requireContext()
-            val intent = Intent(ctx, ContainerActivity::class.java).apply {
-                putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说正文")
-                putExtra(Params.NOVEL_ID, novelId)
-            }
-            ctx.startActivity(intent)
+            AppRoute.NovelReader(novelId).start(requireContext())
         }
 
         // 任务 #1：移除顶部右上角的评论/分享/下载/复制链接悬浮按钮，
@@ -126,11 +121,7 @@ class NovelTextFragment : PixivFragment(R.layout.fragment_pixiv_list), FitsSyste
     }
 
     override fun onClickNovelComments(sender: View, novelId: Long) {
-        val intent = Intent(requireContext(), ContainerActivity::class.java).apply {
-            putExtra(ContainerActivity.EXTRA_FRAGMENT, "相关评论")
-            putExtra(Params.NOVEL_ID, novelId.toInt())
-        }
-        startActivity(intent)
+        AppRoute.Comments(novelId.toInt(), isNovel = true).start(requireContext())
     }
 
     override fun onClickDownloadNovel(sender: View, novelId: Long) {
@@ -219,11 +210,7 @@ class NovelTextFragment : PixivFragment(R.layout.fragment_pixiv_list), FitsSyste
     }
 
     override fun onClickNovel(novelId: Long) {
-        val intent = Intent(requireContext(), ContainerActivity::class.java).apply {
-            putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说详情")
-            putExtra(Params.NOVEL_ID, novelId)
-        }
-        startActivity(intent)
+        AppRoute.NovelDetail(novelId).start(requireContext())
     }
 
     override fun onClickIllust(illustId: Long) {
@@ -235,12 +222,7 @@ class NovelTextFragment : PixivFragment(R.layout.fragment_pixiv_list), FitsSyste
             val uuid = UUID.randomUUID().toString()
             val pageData = PageData(uuid, null, listOf(bean))
             Container.get().addPageToMap(pageData)
-            val intent = Intent(requireContext(), ContainerActivity::class.java).apply {
-                putExtra(ContainerActivity.EXTRA_FRAGMENT, "全屏查看")
-                putExtra(Params.POSITION, 0)
-                putExtra(Params.PAGE_UUID, uuid)
-            }
-            startActivity(intent)
+            AppRoute.FullScreen(uuid, 0, null).start(requireContext())
         }
     }
 

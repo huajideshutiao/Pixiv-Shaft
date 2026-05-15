@@ -3,9 +3,8 @@ package ceui.lisa.adapters
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.content.Intent
 import ceui.lisa.R
-import ceui.lisa.activities.ContainerActivity
+import ceui.pixiv.route.AppRoute
 import ceui.lisa.databinding.RecyNovelSeriesOfUserBinding
 import ceui.lisa.models.NovelSeriesItem
 import ceui.lisa.utils.Params
@@ -42,10 +41,7 @@ class NovelSeriesAdapter(
         )
 
         bindView.itemView.setOnClickListener {
-            val intent = Intent(mContext, ContainerActivity::class.java)
-            intent.putExtra(Params.ID, allItems[position].id)
-            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说系列详情")
-            mContext.startActivity(intent)
+            AppRoute.NovelSeriesDetail(allItems[position].id).start(mContext)
         }
     }
 }

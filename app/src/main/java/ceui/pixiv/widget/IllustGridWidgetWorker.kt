@@ -3,18 +3,16 @@ package ceui.pixiv.widget
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
 import android.view.View
 import android.widget.RemoteViews
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import ceui.lisa.R
-import ceui.lisa.activities.ContainerActivity
 import ceui.lisa.core.Container
 import ceui.lisa.core.PageData
 import ceui.lisa.http.Retro
 import ceui.lisa.utils.GlideUtil
-import ceui.lisa.utils.Params
+import ceui.pixiv.route.AppRoute
 import ceui.pixiv.session.SessionManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
@@ -94,20 +92,7 @@ class IllustGridWidgetWorker(
                     val illust = illusts.getOrNull(index) ?: return@forEachIndexed
                     val pageData = PageData(listOf(illust))
                     Container.get().addPageToMap(pageData)
-                    val clickIntent = Intent(context, ContainerActivity::class.java).apply {
-                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                        putExtra(ContainerActivity.EXTRA_FRAGMENT, "全屏查看")
-                        putExtra(Params.POSITION, 0)
-                        putExtra(Params.PAGE_UUID, pageData.uuid)
-                    }
-
-                    val pendingIntent = android.app.PendingIntent.getActivity(
-                        context,
-                        widgetId * 10 + index,
-                        clickIntent,
-                        android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE
-                    )
-                    views.setOnClickPendingIntent(IMAGE_VIEW_IDS[index], pendingIntent)
+                    AppRoute.FullScreen(pageData.uuid, 0, null).start(context)
                 }
             }
 

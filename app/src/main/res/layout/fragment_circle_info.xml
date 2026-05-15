@@ -39,7 +39,7 @@
                     android:gravity="center"
                     android:padding="20dp"
                     android:layout_width="match_parent"
-                    android:text="@{circle.body.meta.pixpedia.abstract}"
+                    android:text=""
                     android:layout_height="wrap_content"/>
 
                 <FrameLayout

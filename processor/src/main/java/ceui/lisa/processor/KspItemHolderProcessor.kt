@@ -118,24 +118,23 @@ class KspItemHolderProcessor(
 
         content.append("\nobject ViewHolderFactory {\n")
 
+        content.append("\n    fun createViewHolder(viewType: Int, parent: ViewGroup): ListItemViewHolder<out ViewBinding, out ListItemHolder>? {\n")
+        content.append("        return when (viewType) {\n")
+
         holderEntries.forEach {
-            content.append("\n    private fun ${it.viewHolder}Builder(parent: ViewGroup): ListItemViewHolder<out ViewBinding, out ListItemHolder> {\n")
-            content.append("        val binding = ${it.binding}.inflate(\n")
-            content.append("            LayoutInflater.from(parent.context),\n")
-            content.append("            parent,\n")
-            content.append("            false\n")
-            content.append("        )\n")
-            content.append("        return ${it.viewHolder}(binding)\n")
-            content.append("    }\n")
+            content.append("            \"${it.existingPackage}${it.itemHolder}\".hashCode() -> {\n")
+            content.append("                val binding = ${it.binding}.inflate(\n")
+            content.append("                    LayoutInflater.from(parent.context),\n")
+            content.append("                    parent,\n")
+            content.append("                    false\n")
+            content.append("                )\n")
+            content.append("                ${it.viewHolder}(binding)\n")
+            content.append("            }\n")
         }
 
-        val buildMapEntries = holderEntries.map {
-            "    \"${it.existingPackage}${it.itemHolder}\".hashCode() to ViewHolderFactory::${it.viewHolder}Builder"
-        }
-
-        content.append("\n    val VIEW_HOLDER_MAP = mapOf(\n")
-        content.append(buildMapEntries.joinToString(",\n"))
-        content.append("\n    )\n")
+        content.append("            else -> null\n")
+        content.append("        }\n")
+        content.append("    }\n")
         content.append("}\n")
 
         file.write(content.toString().toByteArray())

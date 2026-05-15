@@ -47,7 +47,6 @@
                     <com.google.android.material.imageview.ShapeableImageView
                         android:id="@+id/user_icon"
                         app:strokeWidth="1dp"
-                        userIcon="@{user}"
                         app:strokeColor="@color/colorWhite40"
                         android:layout_marginBottom="8dp"
                         android:scaleType="centerCrop"
@@ -57,7 +56,7 @@
 
                     <TextView
                         android:id="@+id/user_name"
-                        android:text="@{user.name}"
+                        android:text=""
                         android:layout_width="wrap_content"
                         android:layout_marginBottom="8dp"
                         android:textColor="@color/text00"

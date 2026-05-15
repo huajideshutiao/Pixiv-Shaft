@@ -8,7 +8,6 @@
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/user_icon"
-            userIcon="@{user}"
             android:layout_width="@dimen/user_head_size_feeds"
             android:layout_height="@dimen/user_head_size_feeds"
             app:strokeColor="@color/colorWhite40"
@@ -33,7 +32,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
-                android:text="@{user.name}"
+                android:text=""
                 android:textColor="@color/text00"
                 android:textSize="15sp" />
 
@@ -41,7 +40,7 @@
                 android:id="@+id/user_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{`@` + user.account + `  ·  UID ` + user.id}"
+                android:text=""
                 android:textColor="@color/text20"
                 android:textSize="13sp" />
         </LinearLayout>

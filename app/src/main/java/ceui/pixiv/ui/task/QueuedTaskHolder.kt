@@ -28,5 +28,6 @@ class QueuedTaskViewHolder(bd: CellQueuedTaskBinding) :
 
     override fun onBindViewHolder(holder: QueuedTaskHolder, position: Int) {
         super.onBindViewHolder(holder, position)
+        binding.taskName.text = holder.downloadTask.content.name
     }
 }

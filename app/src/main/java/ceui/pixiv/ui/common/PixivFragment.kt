@@ -26,7 +26,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import ceui.lisa.R
-import ceui.lisa.activities.ContainerActivity
 import ceui.lisa.activities.Shaft
 import ceui.lisa.activities.UActivity
 import ceui.lisa.core.ArtworksMap
@@ -54,6 +53,7 @@ import ceui.loxia.Tag
 import ceui.loxia.getHumanReadableMessage
 import ceui.loxia.launchSuspend
 import ceui.loxia.pushFragment
+import ceui.pixiv.route.AppRoute
 import ceui.pixiv.ui.chats.RedSectionHeaderHolder
 import ceui.pixiv.ui.circles.CircleFragmentArgs
 import ceui.pixiv.ui.detail.ArtworkViewPagerFragmentArgs
@@ -250,11 +250,7 @@ open class PixivFragment(layoutId: Int) : Fragment(layoutId),
     }
 
     override fun onClickIllust(illustId: Long) {
-        val intent = Intent(requireContext(), ContainerActivity::class.java)
-        intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "全屏查看")
-        intent.putExtra(Params.SEED, fragmentViewModel.fragmentUniqueId)
-        intent.putExtra(Params.ILLUST_ID, illustId)
-        startActivity(intent)
+        AppRoute.FullScreen(fragmentViewModel.fragmentUniqueId, 0, null).start(requireContext())
     }
 
     override fun onDestroy() {
@@ -263,14 +259,7 @@ open class PixivFragment(layoutId: Int) : Fragment(layoutId),
     }
 
     override fun onClickNovelSeries(sender: View, series: Series) {
-        val intent = android.content.Intent(
-            requireContext(),
-            ContainerActivity::class.java
-        ).apply {
-            putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说系列")
-            putExtra(ceui.pixiv.ui.novel.NovelSeriesFragment.ARG_SERIES_ID, series.id)
-        }
-        startActivity(intent)
+        AppRoute.NovelSeries(series.id).start(requireContext())
     }
 
     override fun onClickIllustSeries(sender: View, series: Series) {

@@ -49,6 +49,7 @@ import ceui.lisa.utils.GlideUtil;
 import ceui.lisa.utils.Params;
 import ceui.lisa.utils.ReverseImage;
 import ceui.lisa.utils.ReverseWebviewCallback;
+import ceui.pixiv.route.AppRoute;
 import ceui.pixiv.session.SessionManager;
 
 /**
@@ -234,9 +235,7 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
                 }).launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
             }
         } else {
-            Intent intent = new Intent(mContext, ContainerActivity.class);
-            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "登录注册");
-            startActivity(intent);
+            AppRoute.LoginRegister.INSTANCE.start(mContext);
             finish();
         }
     }
@@ -251,57 +250,32 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        Intent intent = null;
         if (id == nav_gallery) {
-            intent = new Intent(mContext, ContainerActivity.class);
-            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "下载管理");
-            intent.putExtra("hideStatusBar", false);
+            AppRoute.DownloadManager.INSTANCE.start(mContext);
         } else if (id == nav_slideshow) {
-            intent = new Intent(mContext, ContainerActivity.class);
-            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "浏览记录");
+            AppRoute.HistoryTabs.INSTANCE.start(mContext);
         } else if (id == R.id.nav_manage) {
-            intent = new Intent(mContext, ContainerActivity.class);
-            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "设置");
+            AppRoute.Settings.INSTANCE.start(mContext);
         } else if (id == R.id.nav_share) {
-            intent = new Intent(mContext, ContainerActivity.class);
-            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "关于软件");
+            AppRoute.About.INSTANCE.start(mContext);
         } else if (id == R.id.nav_reverse) {
             selectPhoto();
         } else if (id == R.id.muted_list) {
-            intent = new Intent(mContext, ContainerActivity.class);
-            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "标签屏蔽记录");
+            AppRoute.ViewPagerMuted.INSTANCE.start(mContext);
         } else if (id == R.id.nav_fans) {
-            intent = new Intent(mContext, ContainerActivity.class);
-            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "粉丝");
+            new AppRoute.Fans((int) SessionManager.INSTANCE.getLoggedInUid()).start(mContext);
         } else if (id == R.id.illust_star) {
-            intent = new Intent(mContext, ContainerActivity.class);
-            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "我的插画收藏");
-            intent.putExtra("hideStatusBar", false);
+            AppRoute.CollectionIllust.INSTANCE.start(mContext);
         } else if (id == R.id.novel_star) {
-            intent = new Intent(mContext, ContainerActivity.class);
-            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "我的小说收藏");
-            intent.putExtra("hideStatusBar", false);
+            AppRoute.CollectionNovel.INSTANCE.start(mContext);
         } else if (id == R.id.watchlist) {
-            intent = new Intent(mContext, ContainerActivity.class);
-            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "追更列表");
-            intent.putExtra("hideStatusBar", false);
+            AppRoute.CollectionWatchlist.INSTANCE.start(mContext);
         } else if (id == R.id.novel_markers) {
-            intent = new Intent(mContext, ContainerActivity.class);
-            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说书签");
-            intent.putExtra("hideStatusBar", false);
+            AppRoute.NovelMarkers.INSTANCE.start(mContext);
         } else if (id == R.id.follow_user) {
-            intent = new Intent(mContext, ContainerActivity.class);
-            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "我的关注");
-            intent.putExtra("hideStatusBar", false);
+            AppRoute.CollectionFollowing.INSTANCE.start(mContext);
         } else if (id == R.id.new_work) {
-            intent = new Intent(mContext, ContainerActivity.class);
-            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "网页链接");
-            intent.putExtra(Params.URL, "https://www.pixiv.net/upload.php");
-            intent.putExtra(Params.TITLE, getString(R.string.string_444));
-            intent.putExtra(Params.PREFER_PRESERVE, true);
-        }
-        if (intent != null) {
-            startActivity(intent);
+            new AppRoute.WebLink("https://www.pixiv.net/upload.php", getString(R.string.string_444)).start(mContext);
         }
 
         baseBind.drawerLayout.closeDrawer(GravityCompat.START);
@@ -408,10 +382,7 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
                 );
                 builder.setNegativeButton(mContext.getString(R.string.cancel), null);
                 builder.setNeutralButton(getString(R.string.see_download_task), (dialog, which) -> {
-                    Intent intent = new Intent(mContext, ContainerActivity.class);
-                    intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "下载管理");
-                    intent.putExtra("hideStatusBar", true);
-                    startActivity(intent);
+                    AppRoute.DownloadManager.INSTANCE.start(mContext);
                 });
                 AlertDialog alertDialog = builder.create();
                 alertDialog.show();

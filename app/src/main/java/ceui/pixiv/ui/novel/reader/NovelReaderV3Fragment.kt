@@ -18,7 +18,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import ceui.lisa.R
-import ceui.lisa.activities.ContainerActivity
 import ceui.lisa.activities.Shaft
 import ceui.lisa.core.Container
 import ceui.lisa.core.PageData
@@ -32,6 +31,7 @@ import ceui.lisa.utils.Params
 import ceui.loxia.Client
 import ceui.loxia.Novel
 import ceui.loxia.ObjectPool
+import ceui.pixiv.route.AppRoute
 import ceui.pixiv.ui.common.ImageUrlViewer
 import ceui.pixiv.ui.common.NOVEL_URL_HEAD
 import ceui.pixiv.ui.common.shareNovel
@@ -770,11 +770,7 @@ class NovelReaderV3Fragment : Fragment(R.layout.fragment_novel_reader_v3),
     }
 
     override fun onSeriesNovelSelected(novel: Novel) {
-        val intent = Intent(requireContext(), ContainerActivity::class.java).apply {
-            putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说正文")
-            putExtra(Params.NOVEL_ID, novel.id)
-        }
-        startActivity(intent)
+        AppRoute.NovelReader(novel.id).start(requireContext())
         activity?.finish()
     }
 
@@ -842,11 +838,7 @@ class NovelReaderV3Fragment : Fragment(R.layout.fragment_novel_reader_v3),
                 ),
                 Toast.LENGTH_SHORT,
             ).show()
-            val intent = Intent(requireContext(), ContainerActivity::class.java).apply {
-                putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说正文")
-                putExtra(Params.NOVEL_ID, neighbor.id)
-            }
-            startActivity(intent)
+            AppRoute.NovelReader(neighbor.id).start(requireContext())
             activity?.finish()
         }
         return true
@@ -932,15 +924,7 @@ class NovelReaderV3Fragment : Fragment(R.layout.fragment_novel_reader_v3),
                             val bean = Shaft.sGson.let { g -> g.fromJson(g.toJson(illust), IllustsBean::class.java) }
                             val uuid = UUID.randomUUID().toString()
                             Container.get().addPageToMap(PageData(uuid, null, listOf(bean)))
-                            startActivity(
-                                Intent(
-                                    requireContext(),
-                                    ContainerActivity::class.java
-                                ).apply {
-                                    putExtra(ContainerActivity.EXTRA_FRAGMENT, "全屏查看")
-                                    putExtra(Params.POSITION, 0)
-                                    putExtra(Params.PAGE_UUID, uuid)
-                            })
+                            AppRoute.FullScreen(uuid, 0, null).start(requireContext())
                         }
                 }
             }

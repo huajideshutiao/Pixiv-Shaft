@@ -2,6 +2,7 @@ package ceui.pixiv.ui.search
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.widget.doAfterTextChanged
 import ceui.lisa.R
 import ceui.lisa.core.ArtworksMap
 import ceui.lisa.databinding.FragmentSearchAllBinding
@@ -32,6 +33,9 @@ class SearchAllFragment : PixivFragment(R.layout.fragment_search_all) {
         binding.toolbarLayout.naviTitle.text = getString(R.string.search)
         binding.clearSearch.setOnClick {
             searchViewModel.inputDraft.value = ""
+        }
+        binding.inputBox.doAfterTextChanged { text ->
+            searchViewModel.inputDraft.value = text?.toString() ?: ""
         }
         binding.idSearchIllust.setOnClick { sender ->
             checkAndNext(sender) { word ->

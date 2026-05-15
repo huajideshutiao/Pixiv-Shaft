@@ -1,12 +1,11 @@
 package ceui.loxia.flag
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import ceui.lisa.R
-import ceui.lisa.activities.ContainerActivity
 import ceui.lisa.databinding.FragmentPixivListBinding
 import ceui.loxia.threadSafeArgs
+import ceui.pixiv.route.AppRoute
 import ceui.pixiv.ui.common.ListMode
 import ceui.pixiv.ui.common.PixivFragment
 import ceui.pixiv.ui.common.setUpCustomAdapter
@@ -69,11 +68,6 @@ class FlagReasonFragment : PixivFragment(R.layout.fragment_pixiv_list), FlagActi
     }
 
     override fun onClickFlagReason(holder: FlagReasonHolder) {
-        startActivity(Intent(requireContext(), ContainerActivity::class.java).apply {
-            putExtra(ContainerActivity.EXTRA_FRAGMENT, "填写举报详细信息")
-            putExtra(FlagDescFragment.FlagReasonIdKey, holder.id)
-            putExtra(FlagDescFragment.FlagObjectIdKey, safeArgs.flagObjectId)
-            putExtra(FlagDescFragment.FlagObjectTypeKey, safeArgs.flagObjectType)
-        })
+        AppRoute.FlagDesc(holder.id.toInt(), safeArgs.flagObjectId.toInt(), safeArgs.flagObjectType.toInt()).start(requireContext())
     }
 }

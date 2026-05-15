@@ -14,7 +14,6 @@
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/user_icon"
-                userIcon="@{holder.userPreview.user}"
                 android:layout_width="@dimen/user_head_size_feeds"
                 android:layout_height="@dimen/user_head_size_feeds"
                 app:strokeColor="@color/colorWhite40"
@@ -39,7 +38,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="4dp"
-                    android:text="@{holder.userPreview.user.name}"
+                    android:text=""
                     android:textColor="@color/text00"
                     android:textSize="15sp" />
 
@@ -47,7 +46,7 @@
                     android:id="@+id/user_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{`@` + holder.userPreview.user.account}"
+                    android:text=""
                     android:textColor="@color/text20"
                     android:textSize="13sp" />
             </LinearLayout>
@@ -96,8 +95,6 @@
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/illust_1"
-                visibleOrInvisible="@{holder.illust0 != null}"
-                loadSquareMedia="@{holder.illust0}"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 app:layout_constraintDimensionRatio="1:1"
@@ -107,8 +104,6 @@
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/illust_2"
-                visibleOrInvisible="@{holder.illust1 != null}"
-                loadSquareMedia="@{holder.illust1}"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginHorizontal="2dp"
@@ -120,8 +115,6 @@
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/illust_3"
-                visibleOrInvisible="@{holder.illust2 != null}"
-                loadSquareMedia="@{holder.illust2}"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 app:layout_constraintDimensionRatio="1:1"

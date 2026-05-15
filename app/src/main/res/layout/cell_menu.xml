@@ -22,7 +22,7 @@
                 android:textColor="@color/text00"
                 android:textSize="16sp"
                 tools:text="First Title"
-                android:text="@{holder.menuItem.title}"
+                android:text=""
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
@@ -33,7 +33,7 @@
                 android:visibility="gone"
                 tools:text="Secondary Title"
                 android:textSize="14sp"
-                android:text="@{holder.menuItem.secondaryTitle}"
+                android:text=""
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>

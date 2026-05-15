@@ -33,7 +33,6 @@ import java.util.Locale;
 
 import ceui.lisa.R;
 import ceui.lisa.activities.BaseActivity;
-import ceui.lisa.activities.ContainerActivity;
 import ceui.lisa.activities.Shaft;
 import ceui.lisa.databinding.FragmentSettingsBinding;
 import ceui.lisa.download.IllustDownload;
@@ -53,6 +52,7 @@ import ceui.loxia.Client;
 import ceui.pixiv.download.DownloadsRegistry;
 import ceui.pixiv.download.config.OverwritePolicy;
 import ceui.pixiv.download.config.StorageChoice;
+import ceui.pixiv.route.AppRoute;
 
 
 public class FragmentSettings extends SwipeFragment<FragmentSettingsBinding> {
@@ -70,41 +70,27 @@ public class FragmentSettings extends SwipeFragment<FragmentSettingsBinding> {
         // 1. 账号
         {
             baseBind.userManage.setOnClickListener(v -> {
-                Intent intent = new Intent(mContext, ContainerActivity.class);
-                intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "账号管理");
-                startActivity(intent);
+                AppRoute.LocalUsers.INSTANCE.start(mContext);
             });
 
             baseBind.editAccount.setOnClickListener(v -> {
-                Intent intent = new Intent(mContext, ContainerActivity.class);
-                intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "绑定邮箱");
-                startActivity(intent);
+                AppRoute.EditAccount.INSTANCE.start(mContext);
             });
 
             baseBind.editFile.setOnClickListener(v -> {
-                Intent intent = new Intent(mContext, ContainerActivity.class);
-                intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "编辑个人资料");
-                startActivity(intent);
+                AppRoute.EditFile.INSTANCE.start(mContext);
             });
 
             baseBind.workSpace.setOnClickListener(v -> {
-                Intent intent = new Intent(mContext, ContainerActivity.class);
-                intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "我的作业环境");
-                startActivity(intent);
+                AppRoute.WorkSpace.INSTANCE.start(mContext);
             });
 
             baseBind.r18Space.setOnClickListener(v -> {
-                Intent intent = new Intent(mContext, ContainerActivity.class);
-                intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "网页链接");
-                intent.putExtra(Params.URL, Params.URL_R18_SETTING);
-                startActivity(intent);
+                new AppRoute.WebLink(Params.URL_R18_SETTING, null).start(mContext);
             });
 
             baseBind.premiumSpace.setOnClickListener(v -> {
-                Intent intent = new Intent(mContext, ContainerActivity.class);
-                intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "网页链接");
-                intent.putExtra(Params.URL, Params.URL_PREMIUM_SETTING);
-                startActivity(intent);
+                new AppRoute.WebLink(Params.URL_PREMIUM_SETTING, null).start(mContext);
             });
 
             baseBind.loginOut.setOnClickListener(v -> {
@@ -138,11 +124,7 @@ public class FragmentSettings extends SwipeFragment<FragmentSettingsBinding> {
                 }
             });
             baseBind.directConnectLink.setOnClickListener(v -> {
-                Intent intent = new Intent(mContext, ContainerActivity.class);
-                intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "网页链接");
-                intent.putExtra(Params.URL, "https://github.com/Notsfsssf/Pix-EzViewer");
-                intent.putExtra(Params.TITLE, "PxEz项目主页");
-                startActivity(intent);
+                new AppRoute.WebLink("https://github.com/Notsfsssf/Pix-EzViewer", "PxEz项目主页").start(mContext);
             });
             baseBind.directConnectRela.setOnClickListener(v -> baseBind.autoDns.performClick());
 
@@ -371,9 +353,7 @@ public class FragmentSettings extends SwipeFragment<FragmentSettingsBinding> {
             // 主题色彩
             setThemeName();
             baseBind.colorSelectRela.setOnClickListener(v -> {
-                Intent intent = new Intent(mContext, ContainerActivity.class);
-                intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "主题颜色");
-                startActivity(intent);
+                AppRoute.Colors.INSTANCE.start(mContext);
             });
 
             baseBind.layoutMode.setText(Shaft.sSettings.isUseStaggeredLayout() ? getString(R.string.layout_staggered) : getString(
@@ -509,16 +489,12 @@ public class FragmentSettings extends SwipeFragment<FragmentSettingsBinding> {
             baseBind.fileNameS.setText(getString(R.string.download_path_title));
             baseBind.fileName.setText(getString(R.string.download_path_entry_desc));
             baseBind.fileNameRela.setOnClickListener(v -> {
-                Intent intent = new Intent(mContext, ContainerActivity.class);
-                intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "下载路径与文件名");
-                startActivity(intent);
+                AppRoute.DownloadPathSettings.INSTANCE.start(mContext);
             });
 
             // 下载内容信息头 —— 可视化勾选 / 拖拽排序小说 TXT 的元信息块
             baseBind.novelHeaderRela.setOnClickListener(v -> {
-                Intent intent = new Intent(mContext, ContainerActivity.class);
-                intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说信息头");
-                startActivity(intent);
+                AppRoute.NovelHeaderSettings.INSTANCE.start(mContext);
             });
 
             // 默认小说下载格式

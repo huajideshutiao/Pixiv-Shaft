@@ -27,7 +27,7 @@
             android:textColor="@android:color/white"
             android:textColorHint="@color/dark_text_color"
             android:textSize="13sp"
-            android:text="@={typingText}"
+            android:text=""
             android:background="@android:color/transparent"/>
 
 

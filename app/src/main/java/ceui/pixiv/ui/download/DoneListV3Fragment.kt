@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ceui.lisa.R
-import ceui.lisa.activities.ContainerActivity
 import ceui.lisa.activities.Shaft
 import ceui.lisa.database.AppDatabase
 import ceui.lisa.database.DownloadDao
@@ -27,6 +26,7 @@ import ceui.lisa.database.DownloadEntity
 import ceui.lisa.models.IllustsBean
 import ceui.lisa.utils.GlideUtil
 import ceui.lisa.utils.Params
+import ceui.pixiv.route.AppRoute
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -143,13 +143,7 @@ class DoneListV3Fragment : Fragment() {
     }
 
     private fun openDetail(group: DownloadGroup) {
-        // 取该 illust 全部 page 的 filePath（按 fileName 自然顺序）
-        val paths: ArrayList<String> = ArrayList(group.allFilePaths)
-        val intent = Intent(requireContext(), ContainerActivity::class.java)
-        intent.putExtra("illust", paths as Serializable)
-        intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "下载图片")
-        intent.putExtra("index", 0)
-        startActivity(intent)
+        AppRoute.DownloadImage(group.allFilePaths, 0).start(requireContext())
     }
 
     private fun deleteOne(group: DownloadGroup) {

@@ -75,7 +75,6 @@
 
                                 <com.google.android.material.imageview.ShapeableImageView
                                     android:id="@+id/user_avatar"
-                                    userIcon="@{user}"
                                     android:layout_width="100dp"
                                     app:strokeColor="@color/text00"
                                     app:strokeWidth="2dp"
@@ -91,8 +90,9 @@
                                     android:layout_height="wrap_content">
 
                                     <TextView
+                                        android:id="@+id/user_name"
                                         style="@style/textMontserratBold"
-                                        android:text="@{user.name}"
+                                        android:text=""
                                         android:textColor="@color/text00"
                                         android:includeFontPadding="false"
                                         tools:text="UserName"
@@ -118,8 +118,9 @@
                                 </LinearLayout>
 
                                 <TextView
+                                    android:id="@+id/user_account"
                                     style="@style/textMontserratMedium"
-                                    android:text="@{`@` + user.account}"
+                                    android:text=""
                                     android:textColor="@color/text10"
                                     tools:text="handle"
                                     android:includeFontPadding="false"
@@ -148,8 +149,9 @@
                                         android:layout_height="match_parent">
 
                                         <TextView
+                                            android:id="@+id/followers_count"
                                             style="@style/textMontserratBold"
-                                            android:text="@{String.valueOf(profile.profile.total_follow_users)}"
+                                            android:text=""
                                             android:textColor="@color/text00"
                                             android:includeFontPadding="false"
                                             android:textSize="20sp"
@@ -174,8 +176,9 @@
                                         android:layout_height="match_parent">
 
                                         <TextView
+                                            android:id="@+id/following_count"
                                             style="@style/textMontserratBold"
-                                            android:text="@{String.valueOf(profile.profile.total_mypixiv_users)}"
+                                            android:text=""
                                             android:textColor="@color/text00"
                                             android:includeFontPadding="false"
                                             android:textSize="20sp"
@@ -271,7 +274,7 @@
                                         android:textSize="20sp"
                                         style="@style/textMontserratSemiBold"
                                         android:maxLines="1"
-                                        android:text="@{user.name}"
+                                        android:text=""
                                         android:ellipsize="end"
                                         android:textColor="@color/text00"
                                         android:id="@+id/navi_title"

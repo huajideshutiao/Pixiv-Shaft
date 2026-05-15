@@ -17,7 +17,6 @@ import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import ceui.lisa.R
-import ceui.lisa.activities.ContainerActivity
 import ceui.lisa.core.Container
 import ceui.lisa.core.PageData
 import ceui.lisa.core.executeCall
@@ -27,7 +26,7 @@ import ceui.lisa.http.Retro
 import ceui.lisa.model.RecmdIllust
 import ceui.lisa.models.IllustsBean
 import ceui.lisa.utils.GlideUtil
-import ceui.lisa.utils.Params
+import ceui.pixiv.route.AppRoute
 import ceui.lisa.viewmodel.AppLevelViewModel
 import ceui.pixiv.session.SessionManager
 import com.bumptech.glide.Glide
@@ -55,13 +54,7 @@ class RecommendAppWidgetProvider : AppWidgetProvider() {
                 )
                 val pageData = PageData(illustList)
                 Container.get().addPageToMap(pageData)
-                val illustIntent = Intent(context, ContainerActivity::class.java).apply {
-                    setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    putExtra(ContainerActivity.EXTRA_FRAGMENT, "全屏查看")
-                    putExtra(Params.POSITION, 0)
-                    putExtra(Params.PAGE_UUID, pageData.uuid)
-                }
-                context.startActivity(illustIntent)
+                AppRoute.FullScreen(pageData.uuid, 0, null).start(context)
             } else if (WIDGET_CLICK_TYPE_BTN == intent.getStringExtra(WIDGET_CLICK_TYPE)) {
 //                int appWidgetID = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0);
 //                if (appWidgetID != 0) {

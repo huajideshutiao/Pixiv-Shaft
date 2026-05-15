@@ -24,6 +24,7 @@ import ceui.lisa.utils.Params;
 import ceui.lisa.utils.PixivOperate;
 import ceui.pixiv.login.PixivLogin;
 import ceui.pixiv.login.PixivOAuthResult;
+import ceui.pixiv.route.AppRoute;
 import ceui.pixiv.session.SessionManager;
 
 public class OutWakeActivity extends BaseActivity<ActivityOutWakeBinding> {
@@ -131,20 +132,11 @@ public class OutWakeActivity extends BaseActivity<ActivityOutWakeBinding> {
                                 },null);
                                 return;
                             } else if (uriString.toLowerCase().contains(HOST_ME)) {
-                                Intent i = new Intent(mContext, ContainerActivity.class);
-                                i.putExtra(Params.URL, uriString);
-                                i.putExtra(Params.TITLE, HOST_ME);
-                                i.putExtra(ContainerActivity.EXTRA_FRAGMENT, "网页链接");
-                                startActivity(i);
+                                new AppRoute.WebLink(uriString, HOST_ME).start(this);
                                 finish();
                                 return;
                             } else if (uriString.toLowerCase().contains(HOST_PIXIVISION)) {
-                                Intent i = new Intent(mContext, ContainerActivity.class);
-                                i.putExtra(Params.URL, uriString);
-                                i.putExtra(Params.TITLE, getString(R.string.pixiv_special));
-                                i.putExtra(ContainerActivity.EXTRA_FRAGMENT, "网页链接");
-                                i.putExtra(Params.PREFER_PRESERVE, true);
-                                startActivity(i);
+                                new AppRoute.WebLink(uriString, getString(R.string.pixiv_special)).start(this);
                                 finish();
                                 return;
                             }
@@ -252,19 +244,7 @@ public class OutWakeActivity extends BaseActivity<ActivityOutWakeBinding> {
                                                                 QMUIDialog dialog,
                                                                 int index
                                                             ) {
-                                                                Intent intent1 = new Intent(
-                                                                    mContext,
-                                                                    ContainerActivity.class
-                                                                );
-                                                                intent1.putExtra(
-                                                                    ContainerActivity.EXTRA_FRAGMENT,
-                                                                    "网页链接"
-                                                                );
-                                                                intent1.putExtra(
-                                                                    Params.URL,
-                                                                    Params.URL_R18_SETTING
-                                                                );
-                                                                startActivity(intent1);
+                                                                new AppRoute.WebLink(Params.URL_R18_SETTING, null).start(mContext);
                                                             }
                                                         }
                                                     )
@@ -315,9 +295,7 @@ public class OutWakeActivity extends BaseActivity<ActivityOutWakeBinding> {
             mActivity.startActivity(i);
             mActivity.finish();
         } else {
-            Intent i = new Intent(mContext, ContainerActivity.class);
-            i.putExtra(ContainerActivity.EXTRA_FRAGMENT, "登录注册");
-            startActivity(i);
+            AppRoute.LoginRegister.INSTANCE.start(this);
             finish();
         }
     }

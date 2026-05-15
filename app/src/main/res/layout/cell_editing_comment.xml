@@ -14,6 +14,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <EditText
+            android:id="@+id/edit_text"
             android:layout_width="0dp"
             android:layout_height="42dp"
             android:layout_marginEnd="6dp"
@@ -21,8 +22,8 @@
             android:textSize="14sp"
             android:textColorHint="@color/white40"
             android:background="@drawable/edittext_round_bg"
-            android:text="@={viewModel.editingComment}"
-            android:hint="@{viewModel.replyToComment.user.id > 0 ? (@string/string_176 + viewModel.replyToComment.user.name) : @string/string_49}"
+            android:text=""
+            android:hint="@string/string_49"
             android:textColor="@color/text00"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/send"

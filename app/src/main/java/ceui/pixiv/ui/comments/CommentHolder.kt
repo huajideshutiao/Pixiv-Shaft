@@ -117,6 +117,15 @@ class CommentViewHolder(bd: CellCommentBinding) :
         } else {
             binding.childCommentsList.isVisible = false
         }
+
+        val avatarUrl = holder.comment.user.profile_image_urls?.findMaxSizeUrl()
+        if (!avatarUrl.isNullOrEmpty()) {
+            Glide.with(binding.root.context)
+                .load(GlideUrlChild(avatarUrl))
+                .into(binding.userIcon)
+        }
+        binding.userName.text = holder.comment.user.name ?: ""
+        binding.commentContent.text = holder.comment.comment ?: ""
     }
 }
 
@@ -181,5 +190,14 @@ class CellChildCommentViewHolder(bd: CellChildCommentBinding) :
         }
 
         binding.commentTime.text = DateParse.displayCreateDate(holder.comment.date)
+
+        val avatarUrl = holder.comment.user.profile_image_urls?.findMaxSizeUrl()
+        if (!avatarUrl.isNullOrEmpty()) {
+            Glide.with(binding.root.context)
+                .load(GlideUrlChild(avatarUrl))
+                .into(binding.userIcon)
+        }
+        binding.userName.text = holder.comment.user.name ?: ""
+        binding.commentContent.text = holder.comment.comment ?: ""
     }
 }

@@ -1,13 +1,11 @@
 package ceui.lisa.fragments
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
 import androidx.recyclerview.widget.LinearLayoutManager
 import ceui.lisa.R
-import ceui.lisa.activities.ContainerActivity
 import ceui.lisa.adapters.BaseAdapter
 import ceui.lisa.adapters.MangaSeriesAdapter
 import ceui.lisa.core.BaseRepo
@@ -18,6 +16,7 @@ import ceui.lisa.repo.MangaSeriesRepo
 import ceui.lisa.utils.DensityUtil
 import ceui.lisa.utils.Params
 import ceui.lisa.view.LinearItemDecorationNoLRTB
+import ceui.pixiv.route.AppRoute
 
 class FragmentMangaSeries :
     NetListFragment<FragmentBaseListBinding, ListMangaSeries, MangaSeriesItem>() {
@@ -52,10 +51,7 @@ class FragmentMangaSeries :
             allItems,
             mContext
         ).setOnItemClickListener { _, position, _ ->
-            val intent = Intent(mContext, ContainerActivity::class.java)
-            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "漫画系列详情")
-            intent.putExtra(Params.MANGA_SERIES_ID, allItems[position].id)
-            startActivity(intent)
+            AppRoute.MangaSeriesDetail(allItems[position].id).start(requireContext())
         }
     }
 

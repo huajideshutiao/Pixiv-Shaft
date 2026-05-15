@@ -89,6 +89,9 @@ class CircleFragment : TitledViewPagerFragment(R.layout.fragment_circle) {
         }
         viewModel.result.observe(viewLifecycleOwner) { circle ->
             binding.worksCount.text = "${circle.body?.total ?: 0}个作品"
+            binding.tagName.text = "#" + (circle.body?.meta?.tag ?: "")
+            binding.tagTranslatedName.text = circle.body?.meta?.translatedTag ?: ""
+            binding.tagAbstract.text = circle.body?.meta?.meta?.title ?: ""
             binding.tagIcon.setOnClick {
                 circle?.body?.meta?.pixpedia?.illust?.id?.let { id ->
                     it.findActionReceiverOrNull<IllustIdActionReceiver>()?.onClickIllust(id)

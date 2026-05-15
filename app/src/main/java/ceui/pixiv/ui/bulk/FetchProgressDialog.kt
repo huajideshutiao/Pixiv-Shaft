@@ -1,6 +1,5 @@
 package ceui.pixiv.ui.bulk
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -10,7 +9,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import ceui.lisa.R
-import ceui.lisa.activities.ContainerActivity
+import ceui.pixiv.route.AppRoute
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -111,9 +110,7 @@ class FetchProgressDialog : DialogFragment(R.layout.dialog_fetch_progress) {
         closeBtn.setOnClickListener { dismissAllowingStateLoss() }
         openManagerBtn.setOnClickListener {
             val ctx = requireContext()
-            val intent = Intent(ctx, ContainerActivity::class.java)
-                .putExtra(ContainerActivity.EXTRA_FRAGMENT, "下载管理") // route key, not UI text
-            ctx.startActivity(intent)
+            AppRoute.DownloadManager.start(ctx)
             dismissAllowingStateLoss()
         }
 

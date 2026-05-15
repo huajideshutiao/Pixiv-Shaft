@@ -37,6 +37,8 @@ class TrendingTagViewHolder(bd: CellTrendingTagBinding) :
             it.findActionReceiverOrNull<TrendingTagActionReceiver>()?.onLongClickTrendingTag(holder.trendingTag)
             true
         }
+        binding.translatedName.text = holder.trendingTag.translated_name ?: ""
+        binding.tag.text = "#" + (holder.trendingTag.tag ?: "")
     }
 }
 

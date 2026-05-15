@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Locale;
 
 import ceui.lisa.R;
-import ceui.lisa.activities.ContainerActivity;
+import ceui.pixiv.route.AppRoute;
 import ceui.lisa.activities.SearchActivity;
 import ceui.lisa.activities.Shaft;
 import ceui.lisa.activities.UActivity;
@@ -65,10 +65,7 @@ public class NAdapter extends BaseAdapter<NovelBean, RecyNovelBinding> {
                 bindView.baseBind.series.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent = new Intent(mContext, ContainerActivity.class);
-                        intent.putExtra(Params.ID, allItems.get(position).getSeries().getId());
-                        intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说系列详情");
-                        mContext.startActivity(intent);
+                        new AppRoute.NovelSeriesDetail(allItems.get(position).getSeries().getId()).start(mContext);
                     }
                 });
             }
@@ -143,12 +140,7 @@ public class NAdapter extends BaseAdapter<NovelBean, RecyNovelBinding> {
             bindView.baseBind.like.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    Intent intent = new Intent(mContext, ContainerActivity.class);
-                    intent.putExtra(Params.ILLUST_ID, target.getId());
-                    intent.putExtra(Params.DATA_TYPE, Params.TYPE_NOVEL);
-                    intent.putExtra(Params.TAG_NAMES, target.getTagNames());
-                    intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "按标签收藏");
-                    mContext.startActivity(intent);
+                    new AppRoute.SbTag(target.getId(), Params.TYPE_NOVEL, target.getTagNames()).start(mContext);
                     return true;
                 }
             });
@@ -161,19 +153,12 @@ public class NAdapter extends BaseAdapter<NovelBean, RecyNovelBinding> {
             @Override
             public void onItemClick(View v, int position, int viewType) {
                 if (viewType == 0) {
-                    Intent intent = new Intent(mContext, ContainerActivity.class);
-                    intent.putExtra(Params.CONTENT, allItems.get(position));
-                    intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说详情");
-                    intent.putExtra("hideStatusBar", true);
-                    mContext.startActivity(intent);
+                    new AppRoute.NovelDetail((long) allItems.get(position).getId()).start(mContext);
                 } else if (viewType == 1) {
                     PixivOperate.postLikeNovel(allItems.get(position),
                             Params.TYPE_PUBLIC, v);
                 } else if (viewType == 2) {
-                    Intent intent = new Intent(mContext, ContainerActivity.class);
-                    intent.putExtra(Params.URL, GlideUtil.getUrl(allItems.get(position).getImage_urls().getMaxImage()).toStringUrl());
-                    intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "图片详情");
-                    mContext.startActivity(intent);
+                    new AppRoute.UrlImage(GlideUtil.getUrl(allItems.get(position).getImage_urls().getMaxImage()).toStringUrl(), null).start(mContext);
                 } else if (viewType == 3) {
                     Intent intent = new Intent(mContext, UActivity.class);
                     intent.putExtra(Params.USER_ID, allItems.get(position).getUser().getId());

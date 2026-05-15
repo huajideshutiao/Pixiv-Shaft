@@ -2,7 +2,6 @@ package ceui.lisa.fragments;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import java.util.List;
 
 import ceui.lisa.R;
-import ceui.lisa.activities.ContainerActivity;
 import ceui.lisa.adapters.BaseAdapter;
 import ceui.lisa.adapters.PivisionHAdapter;
 import ceui.lisa.core.BaseRepo;
@@ -26,6 +24,7 @@ import ceui.lisa.repo.PivisionRepo;
 import ceui.lisa.utils.DensityUtil;
 import ceui.lisa.utils.Params;
 import ceui.lisa.view.LinearItemHorizontalDecoration;
+import ceui.pixiv.route.AppRoute;
 import jp.wasabeef.recyclerview.animators.BaseItemAnimator;
 
 public class FragmentPivisionHorizontal extends NetListFragment<FragmentPivisionHorizontalBinding,
@@ -36,12 +35,7 @@ public class FragmentPivisionHorizontal extends NetListFragment<FragmentPivision
         return new PivisionHAdapter(allItems, mContext).setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View v, int position, int viewType) {
-                Intent intent = new Intent(mContext, ContainerActivity.class);
-                intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "网页链接");
-                intent.putExtra(Params.URL, allItems.get(position).getArticle_url());
-                intent.putExtra(Params.TITLE, getString(R.string.pixiv_special));
-                intent.putExtra(Params.PREFER_PRESERVE, true);
-                startActivity(intent);
+                new AppRoute.WebLink(allItems.get(position).getArticle_url(), null).start(mContext);
             }
         });
     }
@@ -74,10 +68,7 @@ public class FragmentPivisionHorizontal extends NetListFragment<FragmentPivision
     public void initView() {
         super.initView();
         baseBind.seeMore.setOnClickListener(v -> {
-            Intent intent = new Intent(mContext, ContainerActivity.class);
-            intent.putExtra("hideStatusBar", false);
-            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "特辑");
-            startActivity(intent);
+            AppRoute.Pv.INSTANCE.start(mContext);
         });
     }
 

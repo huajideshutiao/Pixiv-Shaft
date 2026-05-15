@@ -3,7 +3,6 @@ package ceui.lisa.fragments
 import android.content.Intent
 import androidx.core.view.isVisible
 import ceui.lisa.R
-import ceui.lisa.activities.ContainerActivity
 import ceui.lisa.activities.UActivity
 import ceui.lisa.annotations.ItemHolder
 import ceui.lisa.core.Container
@@ -13,6 +12,7 @@ import ceui.lisa.databinding.CellHistoryIllustV3Binding
 import ceui.lisa.models.IllustsBean
 import ceui.lisa.utils.GlideUtil
 import ceui.lisa.utils.Params
+import ceui.pixiv.route.AppRoute
 import ceui.pixiv.ui.common.ListItemHolder
 import ceui.pixiv.ui.common.ListItemViewHolder
 import com.bumptech.glide.Glide
@@ -77,11 +77,7 @@ class HistoryIllustViewHolder(bd: CellHistoryIllustV3Binding) :
             val pageData = PageData(all)
             Container.get().addPageToMap(pageData)
             val index = all.indexOfFirst { it.id == illust.id }.coerceAtLeast(0)
-            context.startActivity(Intent(context, ContainerActivity::class.java).apply {
-                putExtra(ContainerActivity.EXTRA_FRAGMENT, "全屏查看")
-                putExtra(Params.POSITION, index)
-                putExtra(Params.PAGE_UUID, pageData.uuid)
-            })
+            AppRoute.FullScreen(pageData.uuid, index, null).start(context)
         }
         binding.root.setOnLongClickListener {
             holder.onRequestDelete(entity)

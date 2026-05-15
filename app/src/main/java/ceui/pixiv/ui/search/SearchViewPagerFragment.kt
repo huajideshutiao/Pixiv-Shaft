@@ -4,6 +4,7 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
 import ceui.lisa.R
@@ -45,6 +46,10 @@ class SearchViewPagerFragment : TitledViewPagerFragment(R.layout.fragment_search
         val headParams = binding.head.layoutParams
         headParams.height = ceui.lisa.activities.Shaft.statusHeight
         binding.head.layoutParams = headParams
+
+        binding.tagEditer.doAfterTextChanged { text ->
+            searchViewModel.inputDraft.value = text?.toString() ?: ""
+        }
 
         combineLatest(searchViewModel.tagList, searchViewModel.inputDraft).observe(viewLifecycleOwner) {
             val tags = it?.first ?: listOf()

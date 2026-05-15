@@ -12,11 +12,11 @@ import androidx.fragment.app.FragmentTransaction;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 
 import ceui.lisa.R;
-import ceui.lisa.activities.ContainerActivity;
 import ceui.lisa.activities.MainActivity;
 import ceui.lisa.activities.Shaft;
 import ceui.lisa.databinding.FragmentNewCenterBinding;
 import ceui.lisa.interfaces.VolumeKeyHandler;
+import ceui.pixiv.route.AppRoute;
 
 public class FragmentCenter extends SwipeFragment<FragmentNewCenterBinding> implements
     VolumeKeyHandler {
@@ -57,32 +57,20 @@ public class FragmentCenter extends SwipeFragment<FragmentNewCenterBinding> impl
         baseBind.followNovels.setClipToOutline(true);
 
         baseBind.latestWork.setOnClickListener(v -> {
-            Intent intent = new Intent(mContext, ContainerActivity.class);
-            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "最新作品");
-            intent.putExtra("hideStatusBar", false);
-            startActivity(intent);
+            AppRoute.NewWorks.INSTANCE.start(mContext);
         });
         baseBind.manga.setOnClickListener(v -> {
-            Intent intent = new Intent(mContext, ContainerActivity.class);
-            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "推荐漫画");
-            startActivity(intent);
+            AppRoute.RecmdIllustManga.INSTANCE.start(mContext);
         });
         baseBind.novel.setOnClickListener(v -> {
-            Intent intent = new Intent(mContext, ContainerActivity.class);
-            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "推荐小说");
-            intent.putExtra("hideStatusBar", false);
-            startActivity(intent);
+            AppRoute.RecmdNovel.INSTANCE.start(mContext);
         });
 
         baseBind.walkThrough.setOnClickListener(v -> {
-            Intent intent = new Intent(mContext, ContainerActivity.class);
-            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "画廊");
-            startActivity(intent);
+            AppRoute.WalkThrough.INSTANCE.start(mContext);
         });
         baseBind.followNovels.setOnClickListener(v -> {
-            Intent intent = new Intent(mContext, ContainerActivity.class);
-            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "关注者的小说");
-            startActivity(intent);
+            AppRoute.FollowingNovels.INSTANCE.start(mContext);
         });
     }
 

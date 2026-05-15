@@ -2,6 +2,7 @@ package ceui.loxia.flag
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -28,6 +29,9 @@ class FlagDescFragment : PixivFragment(R.layout.fragment_flag_desc) {
         super.onViewCreated(view, savedInstanceState)
         binding.toolbar.toolbar.setNavigationOnClickListener { requireActivity().finish() }
         binding.toolbar.toolbarTitle.text = getString(R.string.flag_desc)
+        binding.inputBox.doAfterTextChanged { text ->
+            viewModel.desc.value = text?.toString() ?: ""
+        }
         when (safeArgs.flagReasonId) {
             FlagReason.ContainsExcessiveSexualId -> {
                 binding.flagType.text = getString(R.string.contains_excessive_sexual)

@@ -7,6 +7,7 @@ import ceui.lisa.activities.unfollowUser
 import ceui.lisa.annotations.ItemHolder
 import ceui.lisa.databinding.CellUserInfoBinding
 import ceui.lisa.utils.Common
+import ceui.lisa.utils.GlideUrlChild
 import ceui.lisa.utils.Params
 import ceui.loxia.ObjectPool
 import ceui.loxia.User
@@ -16,6 +17,7 @@ import ceui.pixiv.ui.common.ListItemHolder
 import ceui.pixiv.ui.common.ListItemViewHolder
 import ceui.pixiv.ui.user.UserActionReceiver
 import ceui.pixiv.utils.setOnClick
+import com.bumptech.glide.Glide
 
 
 class UserInfoHolder(val uid: Long) : ListItemHolder() {
@@ -64,6 +66,15 @@ class UserInfoViewHolder(bd: CellUserInfoBinding) : ListItemViewHolder<CellUserI
                         sender.findFragmentOrNull<Fragment>()?.unfollowUser(sender, it.toInt())
                     }
                 }
+
+                val avatarUrl = user?.profile_image_urls?.findMaxSizeUrl()
+                if (!avatarUrl.isNullOrEmpty()) {
+                    Glide.with(binding.root.context)
+                        .load(GlideUrlChild(avatarUrl))
+                        .into(binding.userIcon)
+                }
+                binding.userName.text = user?.name ?: ""
+                binding.userInfo.text = "@" + (user?.account ?: "") + "  ·  UID " + (user?.id ?: "")
             }
         }
     }

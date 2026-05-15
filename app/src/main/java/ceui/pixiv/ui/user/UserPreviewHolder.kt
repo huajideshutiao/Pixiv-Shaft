@@ -1,10 +1,12 @@
 package ceui.pixiv.ui.user
 
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import ceui.lisa.activities.followUser
 import ceui.lisa.activities.unfollowUser
 import ceui.lisa.annotations.ItemHolder
 import ceui.lisa.databinding.CellUserPreviewBinding
+import ceui.lisa.utils.GlideUrlChild
 import ceui.lisa.utils.Params
 import ceui.loxia.Illust
 import ceui.loxia.ObjectPool
@@ -16,6 +18,7 @@ import ceui.pixiv.ui.common.IllustCardActionReceiver
 import ceui.pixiv.ui.common.ListItemHolder
 import ceui.pixiv.ui.common.ListItemViewHolder
 import ceui.pixiv.utils.setOnClick
+import com.bumptech.glide.Glide
 
 class UserPreviewHolder(val userPreview: UserPreview) : ListItemHolder() {
     init {
@@ -80,6 +83,34 @@ class UserPreviewViewHolder(bd: CellUserPreviewBinding) :
             holder.illust2?.let {
                 sender.findActionReceiverOrNull<IllustCardActionReceiver>()?.onClickIllustCard(it)
             }
+        }
+
+        val user = holder.userPreview.user
+        val avatarUrl = user?.profile_image_urls?.findMaxSizeUrl()
+        if (!avatarUrl.isNullOrEmpty()) {
+            Glide.with(binding.root.context)
+                .load(GlideUrlChild(avatarUrl))
+                .into(binding.userIcon)
+        }
+        binding.userName.text = user?.name ?: ""
+        binding.userInfo.text = "@" + (user?.account ?: "")
+
+        val i0 = holder.illust0
+        val i1 = holder.illust1
+        val i2 = holder.illust2
+        binding.illustsPreview.isVisible = i0 != null || i1 != null || i2 != null
+        binding.illust1.isVisible = i0 != null
+        bindIllustImage(binding.illust1, i0)
+        binding.illust2.isVisible = i1 != null
+        bindIllustImage(binding.illust2, i1)
+        binding.illust3.isVisible = i2 != null
+        bindIllustImage(binding.illust3, i2)
+    }
+
+    private fun bindIllustImage(view: android.widget.ImageView, illust: Illust?) {
+        val url = illust?.image_urls?.medium
+        if (!url.isNullOrEmpty()) {
+            Glide.with(view.context).load(GlideUrlChild(url)).into(view)
         }
     }
 }

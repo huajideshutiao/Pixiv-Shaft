@@ -1,7 +1,6 @@
 package ceui.lisa.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
@@ -24,7 +23,7 @@ import java.util.List;
 import java.util.Locale;
 
 import ceui.lisa.R;
-import ceui.lisa.activities.ContainerActivity;
+import ceui.pixiv.route.AppRoute;
 import ceui.lisa.activities.Shaft;
 import ceui.lisa.core.Container;
 import ceui.lisa.core.PageData;
@@ -107,12 +106,7 @@ public class IAdapter extends BaseAdapter<IllustsBean, RecyIllustStaggerBinding>
         bindView.baseBind.likeButton.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Intent intent = new Intent(mContext, ContainerActivity.class);
-                intent.putExtra(Params.ILLUST_ID, target.getId());
-                intent.putExtra(Params.DATA_TYPE, Params.TYPE_ILLUST);
-                intent.putExtra(Params.TAG_NAMES, target.getTagNames());
-                intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "按标签收藏");
-                mContext.startActivity(intent);
+                new AppRoute.SbTag(target.getId(), Params.TYPE_ILLUST, target.getTagNames()).start(mContext);
                 return true;
             }
         });
@@ -198,11 +192,7 @@ public class IAdapter extends BaseAdapter<IllustsBean, RecyIllustStaggerBinding>
                 final PageData pageData = new PageData(uuid, nextUrl, allItems);
                 Container.get().addPageToMap(pageData);
 
-                Intent intent = new Intent(mContext, ContainerActivity.class);
-                intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "全屏查看");
-                intent.putExtra(Params.POSITION, position);
-                intent.putExtra(Params.PAGE_UUID, uuid);
-                mContext.startActivity(intent);
+                new AppRoute.FullScreen(uuid, position, null).start(mContext);
             }
         });
     }
@@ -260,11 +250,7 @@ public class IAdapter extends BaseAdapter<IllustsBean, RecyIllustStaggerBinding>
                 popView.findViewById(R.id.show_comment).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(mContext, ContainerActivity.class);
-                        intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "相关评论");
-                        intent.putExtra(Params.ILLUST_ID, illust.getId());
-                        intent.putExtra(Params.ILLUST_TITLE, illust.getTitle());
-                        mContext.startActivity(intent);
+                        new AppRoute.Comments(illust.getId(), false).start(mContext);
                         mNormalPopup.dismiss();
                     }
                 });

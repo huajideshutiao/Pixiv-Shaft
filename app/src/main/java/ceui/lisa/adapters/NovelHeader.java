@@ -10,13 +10,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import java.util.List;
 
-import ceui.lisa.activities.ContainerActivity;
 import ceui.lisa.activities.RankActivity;
 import ceui.lisa.databinding.RecyRecmdHeaderBinding;
 import ceui.lisa.models.NovelBean;
 import ceui.lisa.utils.DensityUtil;
-import ceui.lisa.utils.Params;
 import ceui.lisa.view.LinearItemHorizontalDecoration;
+import ceui.pixiv.route.AppRoute;
 
 public class NovelHeader extends ViewHolder<RecyRecmdHeaderBinding> {
 
@@ -31,11 +30,7 @@ public class NovelHeader extends ViewHolder<RecyRecmdHeaderBinding> {
         baseBind.topRela.startAnimation(animation);
         NHAdapter adapter = new NHAdapter(illustsBeans, context);
         adapter.setOnItemClickListener((v, position, viewType) -> {
-            Intent intent = new Intent(context, ContainerActivity.class);
-            intent.putExtra(Params.CONTENT, illustsBeans.get(position));
-            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说详情");
-            intent.putExtra("hideStatusBar", true);
-            context.startActivity(intent);
+            new AppRoute.NovelDetail(Long.valueOf(illustsBeans.get(position).getId())).start(context);
         });
         baseBind.ranking.setAdapter(adapter);
     }

@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.view.View
 import ceui.lisa.R
-import ceui.lisa.activities.ContainerActivity
+import ceui.pixiv.route.AppRoute
 import ceui.lisa.activities.UActivity
 import ceui.lisa.databinding.RecyWatchlistMangaBinding
 import ceui.lisa.models.WatchlistMangaItem
@@ -48,16 +48,10 @@ class WatchlistMangaAdapter(
             bindView.baseBind.lastDate.text = target.last_published_content_datetime!!
             bindView.baseBind.contentCount.text = mContext.getString(R.string.episode_number, target.published_content_count)
             bindView.itemView.setOnClickListener {
-                val intent = Intent(mContext, ContainerActivity::class.java)
-                intent.putExtra(Params.MANGA_SERIES_ID, target.id)
-                intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "漫画系列详情")
-                mContext.startActivity(intent)
+                AppRoute.MangaSeriesDetail(target.id).start(mContext)
             }
             bindView.baseBind.viewLatest.setOnClickListener {
-                val intent = Intent(mContext, ContainerActivity::class.java)
-                intent.putExtra(Params.MANGA_SERIES_ID, target.id)
-                intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "漫画系列详情")
-                mContext.startActivity(intent)
+                AppRoute.MangaSeriesDetail(target.id).start(mContext)
             }
             bindView.baseBind.author.setOnClickListener {
                 val intent = Intent(mContext, UActivity::class.java)

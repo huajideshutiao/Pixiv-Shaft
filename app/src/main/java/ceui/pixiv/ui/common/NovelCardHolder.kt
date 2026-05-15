@@ -6,6 +6,7 @@ import ceui.lisa.R
 import ceui.lisa.activities.Shaft
 import ceui.lisa.annotations.ItemHolder
 import ceui.lisa.databinding.CellNovelCardBinding
+import ceui.lisa.utils.GlideUrlChild
 import ceui.loxia.DateParse
 import ceui.loxia.Novel
 import ceui.loxia.ObjectPool
@@ -15,6 +16,7 @@ import ceui.pixiv.ui.novel.NovelSeriesActionReceiver
 import ceui.pixiv.ui.user.UserActionReceiver
 import ceui.pixiv.utils.ppppx
 import ceui.pixiv.utils.setOnClick
+import com.bumptech.glide.Glide
 
 class NovelCardHolder(val novel: Novel, val showExtraMargin: Boolean = false) : ListItemHolder() {
     var isMultiSelectMode: Boolean = false
@@ -109,6 +111,16 @@ class NovelCardViewHolder(bd: CellNovelCardBinding) :
         )
         binding.textCount.text =
             context.getString(R.string.how_many_words, holder.novel.text_length.toString())
+        binding.title.text = holder.novel.title ?: ""
+        binding.seriesName.text = holder.novel.series?.title ?: ""
+        val user = holder.novel.user
+        val avatarUrl = user?.profile_image_urls?.findMaxSizeUrl()
+        if (!avatarUrl.isNullOrEmpty()) {
+            Glide.with(binding.root.context)
+                .load(GlideUrlChild(avatarUrl))
+                .into(binding.userIcon)
+        }
+        binding.userName.text = user?.name ?: ""
     }
 }
 

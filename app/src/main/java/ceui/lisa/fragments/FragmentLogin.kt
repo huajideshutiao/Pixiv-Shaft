@@ -26,7 +26,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import ceui.lisa.R
-import ceui.lisa.activities.ContainerActivity
 import ceui.lisa.activities.MainActivity
 import ceui.lisa.activities.Shaft
 import ceui.lisa.database.AppDatabase
@@ -40,6 +39,7 @@ import ceui.lisa.utils.Dev
 import ceui.lisa.utils.Local
 import ceui.lisa.utils.Params
 import ceui.pixiv.i18n.AppLocales
+import ceui.pixiv.route.AppRoute
 import com.qmuiteam.qmui.skin.QMUISkinManager
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog.MessageDialogBuilder
 import kotlinx.coroutines.Job
@@ -129,9 +129,7 @@ class FragmentLogin : BaseFragment<ActivityLoginBinding>() {
         baseBind.toolbar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.action_settings -> {
-                    startActivity(Intent(mContext, ContainerActivity::class.java).apply {
-                        putExtra(ContainerActivity.EXTRA_FRAGMENT, "设置")
-                    })
+                    AppRoute.Settings.start(mContext)
                     true
                 }
 
@@ -315,11 +313,7 @@ class FragmentLogin : BaseFragment<ActivityLoginBinding>() {
     // ── Helpers ──
 
     private fun openWebPage(url: String, title: String) {
-        startActivity(Intent(mContext, ContainerActivity::class.java).apply {
-            putExtra(ContainerActivity.EXTRA_FRAGMENT, "网页链接")
-            putExtra(Params.URL, url)
-            putExtra(Params.TITLE, title)
-        })
+        AppRoute.WebLink(url, title).start(requireContext())
     }
 
     private fun performLogin(userJson: String) {
@@ -346,11 +340,7 @@ class FragmentLogin : BaseFragment<ActivityLoginBinding>() {
     }
 
     private fun openInternalBrowser(url: String) {
-        startActivity(Intent(mContext, ContainerActivity::class.java).apply {
-            putExtra(ContainerActivity.EXTRA_FRAGMENT, "网页链接")
-            putExtra(Params.URL, url)
-            putExtra(Params.TITLE, getString(R.string.now_login))
-        })
+        AppRoute.WebLink(url, getString(R.string.now_login)).start(requireContext())
     }
 
     private fun openProxyHint(onConfirm: () -> Unit) {

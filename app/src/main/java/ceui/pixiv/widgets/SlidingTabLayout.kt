@@ -40,6 +40,7 @@ class TitleTabViewHolder(bd: TitleTabViewBinding) : ListItemViewHolder<TitleTabV
 
     override fun onBindViewHolder(holder: TitleTabHolder, position: Int) {
         super.onBindViewHolder(holder, position)
+        binding.label.text = holder.title.value ?: ""
     }
 }
 

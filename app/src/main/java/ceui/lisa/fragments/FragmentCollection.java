@@ -1,6 +1,5 @@
 package ceui.lisa.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.MenuItem;
@@ -24,11 +23,11 @@ import java.util.Set;
 import android.view.LayoutInflater;
 
 import ceui.lisa.R;
-import ceui.lisa.activities.ContainerActivity;
 import ceui.lisa.activities.Shaft;
 import ceui.lisa.databinding.ViewpagerWithTablayoutBinding;
 import ceui.lisa.utils.MyOnTabSelectedListener;
 import ceui.lisa.utils.Params;
+import ceui.pixiv.route.AppRoute;
 import ceui.pixiv.session.SessionManager;
 
 public class FragmentCollection extends BaseFragment<ViewpagerWithTablayoutBinding> {
@@ -122,22 +121,10 @@ public class FragmentCollection extends BaseFragment<ViewpagerWithTablayoutBindi
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 if (baseBind.viewPager.getCurrentItem() == 0) {
-                    Intent intent = new Intent(mContext, ContainerActivity.class);
-                    intent.putExtra(
-                        ContainerActivity.EXTRA_KEYWORD,
-                            Params.TYPE_PUBLIC);
-                    intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "按标签筛选");
-                    intent.putExtra(Params.DATA_TYPE, type);
-                    startActivity(intent);
+                    new AppRoute.BookedTag(type, Params.TYPE_PUBLIC).start(mContext);
                     return true;
                 } else if (baseBind.viewPager.getCurrentItem() == 1) {
-                    Intent intent = new Intent(mContext, ContainerActivity.class);
-                    intent.putExtra(
-                        ContainerActivity.EXTRA_KEYWORD,
-                            Params.TYPE_PRIVATE);
-                    intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "按标签筛选");
-                    intent.putExtra(Params.DATA_TYPE, type);
-                    startActivity(intent);
+                    new AppRoute.BookedTag(type, Params.TYPE_PRIVATE).start(mContext);
                     return true;
                 }
                 return false;

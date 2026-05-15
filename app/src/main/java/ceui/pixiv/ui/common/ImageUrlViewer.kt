@@ -1,9 +1,7 @@
 package ceui.pixiv.ui.common
 
 import android.content.Context
-import android.content.Intent
-import ceui.lisa.activities.ContainerActivity
-import ceui.lisa.utils.Params
+import ceui.pixiv.route.AppRoute
 
 object ImageUrlViewer {
 
@@ -11,17 +9,6 @@ object ImageUrlViewer {
 
     fun open(ctx: Context, url: String, saveName: String? = null) {
         if (url.isBlank()) return
-        val intent = Intent(ctx, ContainerActivity::class.java).apply {
-            putExtra(ContainerActivity.EXTRA_FRAGMENT, "URL图片")
-            putExtra(Params.URL, url)
-            val cleaned = saveName?.let { sanitizeFileName(it) }
-            if (!cleaned.isNullOrBlank()) putExtra(Params.TITLE, cleaned)
-        }
-        ctx.startActivity(intent)
+        AppRoute.UrlImage(url, saveName).start(ctx)
     }
-
-    private val invalidFsChars = Regex("[\\\\/:*?\"<>|\\s]+")
-
-    private fun sanitizeFileName(raw: String): String =
-        raw.replace(invalidFsChars, "_").trim('_').take(80)
 }

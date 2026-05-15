@@ -35,7 +35,6 @@ import java.util.Map;
 import java.util.function.Function;
 
 import ceui.lisa.R;
-import ceui.lisa.activities.ContainerActivity;
 import ceui.lisa.activities.OutWakeActivity;
 import ceui.lisa.activities.Shaft;
 import ceui.lisa.cache.Cache;
@@ -74,6 +73,7 @@ import ceui.loxia.ObjectPool;
 import ceui.pixiv.login.PixivOAuthConfig;
 import ceui.pixiv.session.SessionManager;
 import ceui.pixiv.widgets.RateAppManager;
+import ceui.pixiv.route.AppRoute;
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -332,11 +332,7 @@ public class PixivOperate {
                                 Collections.singletonList(illustSearchResponse.getIllust()));
                         Container.get().addPageToMap(pageData);
 
-                        Intent intent = new Intent(context, ContainerActivity.class);
-                        intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "全屏查看");
-                        intent.putExtra(Params.POSITION, 0);
-                        intent.putExtra(Params.PAGE_UUID, pageData.getUUID());
-                        context.startActivity(intent);
+                        new AppRoute.FullScreen(pageData.getUUID(), 0, null).start(context);
                     }
 
                     @Override
@@ -370,11 +366,7 @@ public class PixivOperate {
                                     Collections.singletonList(illust));
                             Container.get().addPageToMap(pageData);
 
-                            Intent intent = new Intent(context, ContainerActivity.class);
-                            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "全屏查看");
-                            intent.putExtra(Params.POSITION, 0);
-                            intent.putExtra(Params.PAGE_UUID, pageData.getUUID());
-                            context.startActivity(intent);
+                            new AppRoute.FullScreen(pageData.getUUID(), 0, null).start(context);
 
                             if (success != null) {
                                 success.doSomething(null);
@@ -404,11 +396,7 @@ public class PixivOperate {
                     @Override
                     public void success(NovelSearchResponse novelSearchResponse) {
                         if (novelSearchResponse.getNovel() != null) {
-                            Intent intent = new Intent(context, ContainerActivity.class);
-                            intent.putExtra(Params.CONTENT, novelSearchResponse.getNovel());
-                            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说详情");
-                            intent.putExtra("hideStatusBar", true);
-                            context.startActivity(intent);
+                            new AppRoute.NovelDetail(Long.valueOf(novelSearchResponse.getNovel().getId())).start(context);
 
                             if (callback != null) {
                                 callback.doSomething(null);

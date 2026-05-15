@@ -38,7 +38,7 @@
                         android:background="@null"
                         android:textSize="15sp"
                         android:hint="@string/search_by_id_or_word"
-                        android:text="@={viewModel.inputDraft}"
+                        android:text=""
                         app:layout_constraintEnd_toStartOf="@+id/clear_search"
                         android:layout_width="0dp"
                         android:layout_height="match_parent" />

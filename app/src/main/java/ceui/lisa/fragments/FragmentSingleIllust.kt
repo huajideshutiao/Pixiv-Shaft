@@ -20,7 +20,6 @@ import android.widget.TextView
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import ceui.lisa.R
 import ceui.lisa.activities.BaseActivity
-import ceui.lisa.activities.ContainerActivity
 import ceui.lisa.activities.SearchActivity
 import ceui.lisa.activities.Shaft
 import ceui.lisa.activities.UActivity
@@ -40,6 +39,7 @@ import ceui.lisa.utils.PixivOperate
 import ceui.lisa.utils.SearchTypeUtil.SEARCH_TYPE_DB_KEYWORD
 import ceui.lisa.utils.ShareIllust
 import ceui.lisa.utils.toIllustsBean
+import ceui.pixiv.route.AppRoute
 import ceui.lisa.view.LinearItemDecorationNoLRTB
 import ceui.lisa.view.ScrollChange
 import ceui.lisa.viewmodel.AppLevelViewModel
@@ -174,10 +174,7 @@ class FragmentSingleIllust : BaseFragment<FragmentSingleIllustBinding>() {
         if (series != null && !TextUtils.isEmpty(series.title)) {
             val clickableSpan = object : ClickableSpan() {
                 override fun onClick(widget: View) {
-                    val intent = Intent(mContext, ContainerActivity::class.java)
-                    intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "漫画系列详情")
-                    intent.putExtra(Params.MANGA_SERIES_ID, series.id)
-                    startActivity(intent)
+                    AppRoute.MangaSeriesDetail(series.id).start(requireContext())
                 }
 
                 override fun updateDrawState(ds: TextPaint) {
@@ -303,24 +300,13 @@ class FragmentSingleIllust : BaseFragment<FragmentSingleIllustBinding>() {
             true
         }
         baseBind.related.setOnClickListener {
-            val intent = Intent(mContext, ContainerActivity::class.java)
-            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "相关作品")
-            intent.putExtra(Params.ILLUST_ID, illust.id)
-            intent.putExtra(Params.ILLUST_TITLE, illust.title)
-            startActivity(intent)
+            AppRoute.RelatedIllust(illust.id, illust.title).start(requireContext())
         }
         baseBind.comment.setOnClickListener {
-            val intent = Intent(mContext, ContainerActivity::class.java)
-            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "相关评论")
-            intent.putExtra(Params.ILLUST_ID, illust.id)
-            intent.putExtra(Params.ILLUST_TITLE, illust.title)
-            startActivity(intent)
+            AppRoute.Comments(illust.id).start(requireContext())
         }
         baseBind.illustLike.setOnClickListener {
-            val intent = Intent(mContext, ContainerActivity::class.java)
-            intent.putExtra(Params.CONTENT, illust)
-            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "喜欢这个作品的用户")
-            startActivity(intent)
+            AppRoute.LikeUsers(illust).start(requireContext())
         }
         if (illust.is_bookmarked) {
             baseBind.postLike.setImageResource(R.drawable.ic_favorite_red_24dp)
@@ -336,13 +322,7 @@ class FragmentSingleIllust : BaseFragment<FragmentSingleIllustBinding>() {
             PixivOperate.postLikeDefaultStarType(illust)
         }
         baseBind.postLike.setOnLongClickListener {
-            val intent = Intent(mContext, ContainerActivity::class.java)
-            intent.putExtra(Params.ILLUST_ID, illust.id)
-            intent.putExtra(Params.DATA_TYPE, Params.TYPE_ILLUST)
-            intent.putExtra(Params.TAG_NAMES, illust.tagNames)
-            intent.putExtra(Params.LAST_CLASS, javaClass.simpleName)
-            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "按标签收藏")
-            startActivity(intent)
+            AppRoute.SbTag(illust.id, Params.TYPE_ILLUST, illust.tagNames).start(requireContext())
             true
         }
         baseBind.userHead.setOnClickListener {

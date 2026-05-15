@@ -9,6 +9,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.core.view.updatePaddingRelative
+import androidx.core.widget.doAfterTextChanged
 import androidx.navigation.fragment.navArgs
 import ceui.lisa.R
 import ceui.lisa.databinding.CellEditingCommentBinding
@@ -52,6 +53,22 @@ class CommentsFragment : PixivFragment(R.layout.fragment_pixiv_list), CommentAct
         }
 
         setUpRefreshState(binding, viewModel, ListMode.VERTICAL_COMMENT)
+        childBinding.editText.doAfterTextChanged { text ->
+            dataSource.editingComment.value = text?.toString() ?: ""
+        }
+        dataSource.editingComment.observe(viewLifecycleOwner) { text ->
+            if (childBinding.editText.text?.toString() != text) {
+                childBinding.editText.setText(text)
+            }
+        }
+        dataSource.replyToComment.observe(viewLifecycleOwner) { replyToComment ->
+            val user = replyToComment?.user
+            if (user != null && user.id > 0) {
+                childBinding.editText.hint = "${getString(R.string.string_176)}${user.name}"
+            } else {
+                childBinding.editText.hint = getString(R.string.string_49)
+            }
+        }
         childBinding.send.setOnClick {
             launchSuspend(it) {
                 dataSource.sendComment()

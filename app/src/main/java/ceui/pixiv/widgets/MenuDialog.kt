@@ -3,6 +3,7 @@ package ceui.pixiv.widgets
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
@@ -72,6 +73,9 @@ class MenuViewHolder(bd: CellMenuBinding) : ListItemViewHolder<CellMenuBinding, 
 
     override fun onBindViewHolder(holder: MenuHolder, position: Int) {
         super.onBindViewHolder(holder, position)
+        binding.firstTitle.text = holder.menuItem.title
+        binding.secondaryTitle.text = holder.menuItem.secondaryTitle ?: ""
+        binding.secondaryTitle.isVisible = !holder.menuItem.secondaryTitle.isNullOrEmpty()
         binding.root.setOnClickListener {
             it.findActionReceiverOrNull<MenuActionReceiver>()?.onClickMenu(holder.menuItem)
         }

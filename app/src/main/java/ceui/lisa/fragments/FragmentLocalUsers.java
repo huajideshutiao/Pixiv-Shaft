@@ -1,6 +1,5 @@
 package ceui.lisa.fragments;
 
-import android.content.Intent;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ceui.lisa.R;
-import ceui.lisa.activities.ContainerActivity;
 import ceui.lisa.activities.Shaft;
 import ceui.lisa.core.RxRun;
 import ceui.lisa.core.RxRunnable;
@@ -31,6 +29,7 @@ import ceui.lisa.utils.Dev;
 import ceui.lisa.utils.GlideUtil;
 import ceui.lisa.utils.Local;
 import ceui.lisa.utils.Params;
+import ceui.pixiv.route.AppRoute;
 import ceui.pixiv.session.SessionManager;
 
 public class FragmentLocalUsers extends BaseFragment<FragmentLocalUserBinding> {
@@ -54,9 +53,7 @@ public class FragmentLocalUsers extends BaseFragment<FragmentLocalUserBinding> {
         baseBind.addUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, ContainerActivity.class);
-                intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "登录注册");
-                startActivity(intent);
+                AppRoute.LoginRegister.INSTANCE.start(mContext);
             }
         });
         baseBind.refreshLayout.setRefreshFooter(new FalsifyFooter(mContext));

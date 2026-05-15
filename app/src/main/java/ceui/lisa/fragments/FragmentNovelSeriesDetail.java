@@ -1,6 +1,5 @@
 package ceui.lisa.fragments;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -20,7 +19,6 @@ import java.util.stream.Collectors;
 
 import ceui.lisa.R;
 import ceui.lisa.activities.BaseActivity;
-import ceui.lisa.activities.ContainerActivity;
 import ceui.lisa.adapters.BaseAdapter;
 import ceui.lisa.adapters.NAdapter;
 import ceui.lisa.cache.Cache;
@@ -40,6 +38,7 @@ import ceui.lisa.utils.GlideUtil;
 import ceui.lisa.utils.Params;
 import ceui.lisa.utils.PixivOperate;
 import ceui.loxia.WebNovel;
+import ceui.pixiv.route.AppRoute;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -267,11 +266,7 @@ public class FragmentNovelSeriesDetail extends NetListFragment<FragmentNovelSeri
     private void initReadLatestButton(int latest, NovelBean novel) {
         baseBind.readLatest.setText(mContext.getString(R.string.read_latest_episode_with_num, latest));
         baseBind.readLatest.setOnClickListener(v -> {
-            Intent intent = new Intent(mContext, ContainerActivity.class);
-            intent.putExtra(Params.CONTENT, novel);
-            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说详情");
-            intent.putExtra("hideStatusBar", true);
-            mContext.startActivity(intent);
+            new AppRoute.NovelDetail((long) novel.getId()).start(mContext);
         });
     }
 

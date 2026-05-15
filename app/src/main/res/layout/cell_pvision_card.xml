@@ -15,10 +15,11 @@
             android:layout_height="0dp"/>
 
         <TextView
+            android:id="@+id/title"
             app:layout_constraintTop_toBottomOf="@+id/thumbnail"
             android:layout_width="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="@{holder.article.title}"
+            android:text=""
             app:layout_constraintStart_toStartOf="parent"
             android:textColor="@color/text00"
             android:layout_height="wrap_content"/>

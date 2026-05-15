@@ -1,11 +1,9 @@
 package ceui.pixiv.ui.novel
 
-import android.content.Intent
 import android.content.res.ColorStateList
 import android.view.View
 import androidx.core.view.isVisible
 import ceui.lisa.R
-import ceui.lisa.activities.ContainerActivity
 import ceui.lisa.annotations.ItemHolder
 import ceui.lisa.databinding.CellNovelHeaderBinding
 import ceui.lisa.utils.Common
@@ -14,6 +12,7 @@ import ceui.loxia.Novel
 import ceui.loxia.ObjectPool
 import ceui.loxia.Series
 import ceui.loxia.findActionReceiverOrNull
+import ceui.pixiv.route.AppRoute
 import ceui.pixiv.ui.common.ListItemHolder
 import ceui.pixiv.ui.common.ListItemViewHolder
 import ceui.pixiv.ui.common.NovelActionReceiver
@@ -93,13 +92,6 @@ interface NovelSeriesActionReceiver {
 }
 
 internal fun openTagBookmarkForNovel(sender: View, novel: Novel) {
-    val ctx = sender.context
     val tagNames = novel.tags.orEmpty().mapNotNull { it.name }.toTypedArray()
-    val intent = Intent(ctx, ContainerActivity::class.java).apply {
-        putExtra(ContainerActivity.EXTRA_FRAGMENT, "按标签收藏")
-        putExtra(Params.ILLUST_ID, novel.id.toInt())
-        putExtra(Params.DATA_TYPE, Params.TYPE_NOVEL)
-        putExtra(Params.TAG_NAMES, tagNames)
-    }
-    ctx.startActivity(intent)
+    AppRoute.SbTag(novel.id.toInt(), Params.TYPE_NOVEL, tagNames).start(sender.context)
 }

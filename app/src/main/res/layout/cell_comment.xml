@@ -12,7 +12,6 @@
             android:id="@+id/user_icon"
             android:layout_width="@dimen/user_head_size_feeds"
             android:layout_height="@dimen/user_head_size_feeds"
-            userIcon="@{holder.comment.user}"
             android:scaleType="centerCrop"
             app:strokeWidth="1dp"
             app:strokeColor="@color/colorWhite40"
@@ -24,7 +23,7 @@
         <TextView
             android:id="@+id/user_name"
             android:layout_width="wrap_content"
-            android:text="@{holder.comment.user.name}"
+            android:text=""
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:textColor="@color/text00"
@@ -66,7 +65,7 @@
             <TextView
                 android:id="@+id/comment_content"
                 android:layout_width="wrap_content"
-                android:text="@{holder.comment.comment}"
+                android:text=""
                 android:layout_height="wrap_content"
                 android:textColor="@color/text00"
                 android:textSize="16sp" />

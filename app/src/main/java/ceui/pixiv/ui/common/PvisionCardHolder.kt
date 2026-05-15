@@ -23,6 +23,13 @@ class PvisionCardViewHolder(bd: CellPvisionCardBinding) : ListItemViewHolder<Cel
 
     override fun onBindViewHolder(holder: PvisionCardHolder, position: Int) {
         super.onBindViewHolder(holder, position)
+        binding.title.text = holder.article.title ?: ""
+        val thumbUrl = holder.article.thumbnail
+        if (!thumbUrl.isNullOrEmpty()) {
+            Glide.with(binding.root.context)
+                .load(GlideUrlChild(thumbUrl))
+                .into(binding.thumbnail)
+        }
         binding.root.setOnClickListener {
             it.findActionReceiverOrNull<ArticleActionReceiver>()?.onClickArticle(holder.article)
         }

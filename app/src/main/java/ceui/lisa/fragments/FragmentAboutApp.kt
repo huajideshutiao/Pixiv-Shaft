@@ -8,12 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import ceui.lisa.BuildConfig
 import ceui.lisa.R
-import ceui.lisa.activities.ContainerActivity
 import ceui.lisa.databinding.FragmentAboutBinding
 import ceui.lisa.update.AppUpdateChecker
 import ceui.lisa.update.GitHubRelease
 import ceui.lisa.update.UpdateBottomSheet
 import ceui.lisa.utils.Common
+import ceui.pixiv.route.AppRoute
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
 
 class FragmentAboutApp : SwipeFragment<FragmentAboutBinding>() {
@@ -40,9 +40,7 @@ class FragmentAboutApp : SwipeFragment<FragmentAboutBinding>() {
                 performUpdateCheck(manual = true)
             }
             baseBind.versionHistory.setOnClickListener {
-                val intent = Intent(mContext, ContainerActivity::class.java)
-                intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "版本历史")
-                startActivity(intent)
+                AppRoute.VersionHistory.start(mContext)
             }
         } else {
             baseBind.githubUpdateSection.visibility = View.GONE

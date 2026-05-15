@@ -18,7 +18,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import ceui.lisa.R
-import ceui.lisa.activities.ContainerActivity
 import ceui.lisa.activities.SearchActivity
 import ceui.lisa.activities.Shaft
 import ceui.lisa.activities.UActivity
@@ -43,6 +42,7 @@ import ceui.lisa.utils.ShareIllust
 import ceui.lisa.utils.toIllustsBean
 import ceui.lisa.viewmodel.AppLevelViewModel
 import ceui.loxia.ObjectPool
+import ceui.pixiv.route.AppRoute
 import ceui.pixiv.ui.task.NamedUrl
 import ceui.pixiv.ui.task.TaskPool
 import ceui.pixiv.utils.FastBlurTransformation
@@ -356,17 +356,7 @@ class FragmentSingleUgora : BaseFragment<FragmentUgoraBinding>() {
 
         baseBind.illustImage.transitionName = "image_0"
         baseBind.illustImage.setOnClickListener {
-            val intent = Intent(mContext, ContainerActivity::class.java).apply {
-                putExtra("illust", illust)
-                putExtra(ContainerActivity.EXTRA_FRAGMENT, "图片详情")
-                putExtra("index", 0)
-            }
-            val options = androidx.core.app.ActivityOptionsCompat.makeSceneTransitionAnimation(
-                mActivity,
-                baseBind.illustImage,
-                "image_0"
-            )
-            startActivity(intent, options.toBundle())
+            AppRoute.ImageDetail(illust, 0).start(requireContext())
         }
 
         baseBind.refreshLayout.visibility = View.VISIBLE
@@ -461,24 +451,13 @@ class FragmentSingleUgora : BaseFragment<FragmentUgoraBinding>() {
             true
         }
         baseBind.related.setOnClickListener {
-            val intent = Intent(mContext, ContainerActivity::class.java)
-            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "相关作品")
-            intent.putExtra(Params.ILLUST_ID, illust.id)
-            intent.putExtra(Params.ILLUST_TITLE, illust.title)
-            startActivity(intent)
+            AppRoute.RelatedIllust(illust.id, illust.title).start(requireContext())
         }
         baseBind.comment.setOnClickListener {
-            val intent = Intent(mContext, ContainerActivity::class.java)
-            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "相关评论")
-            intent.putExtra(Params.ILLUST_ID, illust.id)
-            intent.putExtra(Params.ILLUST_TITLE, illust.title)
-            startActivity(intent)
+            AppRoute.Comments(illust.id).start(requireContext())
         }
         baseBind.illustLike.setOnClickListener {
-            val intent = Intent(mContext, ContainerActivity::class.java)
-            intent.putExtra(Params.CONTENT, illust)
-            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "喜欢这个作品的用户")
-            startActivity(intent)
+            AppRoute.LikeUsers(illust).start(requireContext())
         }
         if (illust.is_bookmarked) {
             baseBind.postLike.setImageResource(R.drawable.ic_favorite_red_24dp)
@@ -494,13 +473,7 @@ class FragmentSingleUgora : BaseFragment<FragmentUgoraBinding>() {
             PixivOperate.postLikeDefaultStarType(illust)
         }
         baseBind.postLike.setOnLongClickListener {
-            val intent = Intent(mContext, ContainerActivity::class.java)
-            intent.putExtra(Params.ILLUST_ID, illust.id)
-            intent.putExtra(Params.DATA_TYPE, Params.TYPE_ILLUST)
-            intent.putExtra(Params.TAG_NAMES, illust.tagNames)
-            intent.putExtra(Params.LAST_CLASS, javaClass.simpleName)
-            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "按标签收藏")
-            startActivity(intent)
+            AppRoute.SbTag(illust.id, Params.TYPE_ILLUST, illust.tagNames).start(requireContext())
             true
         }
         baseBind.userHead.setOnClickListener {

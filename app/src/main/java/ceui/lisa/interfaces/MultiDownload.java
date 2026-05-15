@@ -1,12 +1,11 @@
 package ceui.lisa.interfaces;
 
 import android.content.Context;
-import android.content.Intent;
 
 import java.util.List;
 
-import ceui.lisa.activities.ContainerActivity;
 import ceui.lisa.models.IllustsBean;
+import ceui.pixiv.route.AppRoute;
 import ceui.pixiv.ui.bulk.BulkSelectStorage;
 
 /**
@@ -23,8 +22,6 @@ public interface MultiDownload {
         List<IllustsBean> list = getIllustList();
         if (list == null || list.isEmpty()) return;
         BulkSelectStorage.INSTANCE.put(list);
-        Intent intent = new Intent(getContext(), ContainerActivity.class);
-        intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "批量选择");
-        getContext().startActivity(intent);
+        AppRoute.BulkSelect.INSTANCE.start(getContext());
     }
 }

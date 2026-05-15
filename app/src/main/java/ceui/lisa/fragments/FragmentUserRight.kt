@@ -2,16 +2,15 @@ package ceui.lisa.fragments
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.content.Intent
 import android.text.TextUtils
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import ceui.lisa.R
-import ceui.lisa.activities.ContainerActivity
 import ceui.lisa.databinding.FragmentUserRightBinding
 import ceui.lisa.databinding.TagItemBinding
 import ceui.lisa.utils.Params
 import ceui.lisa.viewmodel.UserViewModel
+import ceui.pixiv.route.AppRoute
 import ceui.pixiv.utils.populate
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
 
@@ -61,42 +60,39 @@ class FragmentUserRight : SwipeFragment<FragmentUserRightBinding>() {
             binding.tagName.text = s
             binding.root.setOnClickListener {
                 val position = content.indexOf(s)
-                val intent = Intent(mContext, ContainerActivity::class.java)
-                intent.putExtra(Params.USER_ID, user.id)
                 when {
                     content[position].contains(getString(R.string.string_246)) -> {
-                        intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "插画作品")
+                        AppRoute.UserIllust(user.id).start(requireContext())
                     }
 
                     content[position].contains(getString(R.string.string_233)) -> {
-                        intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "漫画作品")
+                        AppRoute.UserManga(user.id).start(requireContext())
                     }
 
                     content[position].contains(getString(R.string.string_230)) -> {
-                        intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "漫画系列作品")
+                        AppRoute.MangaSeries(user.id).start(requireContext())
                     }
 
                     content[position].contains(getString(R.string.string_237)) -> {
-                        intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说作品")
+                        AppRoute.UserNovel(user.id).start(requireContext())
                     }
 
                     content[position].contains(getString(R.string.string_257)) -> {
-                        intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说系列作品")
+                        AppRoute.NovelSeriesWorks.start(requireContext())
                     }
 
                     content[position].contains(getString(R.string.string_164)) -> {
-                        intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "插画/漫画收藏")
+                        AppRoute.LikeIllust(user.id).start(requireContext())
                     }
 
                     content[position].contains(getString(R.string.string_192)) -> {
-                        intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说收藏")
+                        AppRoute.LikeNovel(user.id).start(requireContext())
                     }
 
                     content[position].contains(getString(R.string.string_436)) -> {
-                        intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "相关用户")
+                        AppRoute.RelatedUser(user.id).start(requireContext())
                     }
                 }
-                startActivity(intent)
             }
         }
         if (!TextUtils.isEmpty(user.comment)) {
@@ -107,10 +103,7 @@ class FragmentUserRight : SwipeFragment<FragmentUserRightBinding>() {
         }
 
         baseBind.showDetail.setOnClickListener {
-            val intent = Intent(mContext, ContainerActivity::class.java)
-            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "详细信息")
-            intent.putExtra(Params.CONTENT, data)
-            startActivity(intent)
+            AppRoute.UserInfo.start(requireContext())
         }
         if (!TextUtils.isEmpty(profile.webpage)) {
             baseBind.realHome.text = profile.webpage

@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.view.View
 import ceui.lisa.R
-import ceui.lisa.activities.ContainerActivity
+import ceui.pixiv.route.AppRoute
 import ceui.lisa.activities.UActivity
 import ceui.lisa.databinding.RecyWatchlistNovelBinding
 import ceui.lisa.models.WatchlistNovelItem
@@ -49,10 +49,7 @@ class WatchlistNovelAdapter(
             bindView.baseBind.lastDate.text = target.last_published_content_datetime!!
             bindView.baseBind.contentCount.text = mContext.getString(R.string.episode_number, target.published_content_count)
             bindView.itemView.setOnClickListener {
-                val intent = Intent(mContext, ContainerActivity::class.java)
-                intent.putExtra(Params.ID, target.id)
-                intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说系列详情")
-                mContext.startActivity(intent)
+                AppRoute.NovelSeriesDetail(target.id).start(mContext)
             }
             bindView.baseBind.readLatest.setOnClickListener {
                 PixivOperate.getNovelByID(target.latest_content_id!!.toLong(), mContext, null)

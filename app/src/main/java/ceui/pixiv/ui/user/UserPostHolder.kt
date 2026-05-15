@@ -8,6 +8,7 @@ import ceui.lisa.activities.followUser
 import ceui.lisa.activities.unfollowUser
 import ceui.lisa.annotations.ItemHolder
 import ceui.lisa.databinding.CellUserPostBinding
+import ceui.lisa.utils.GlideUrlChild
 import ceui.lisa.utils.Params
 import ceui.loxia.DateParse
 import ceui.loxia.Illust
@@ -24,6 +25,7 @@ import ceui.pixiv.ui.common.ListItemViewHolder
 import ceui.pixiv.utils.ppppx
 import ceui.pixiv.utils.screenWidth
 import ceui.pixiv.utils.setOnClick
+import com.bumptech.glide.Glide
 import kotlin.math.roundToInt
 
 class UserPostHolder(val illust: Illust) : ListItemHolder() {
@@ -105,5 +107,15 @@ class UserPostViewHolder(bd: CellUserPostBinding) :
         }
 
         binding.postTime.text = DateParse.getTimeAgo(context, holder.illust.create_date)
+
+        val user = holder.illust.user
+        val avatarUrl = user?.profile_image_urls?.findMaxSizeUrl()
+        if (!avatarUrl.isNullOrEmpty()) {
+            Glide.with(binding.root.context)
+                .load(GlideUrlChild(avatarUrl))
+                .into(binding.userIcon)
+        }
+        binding.userName.text = user?.name ?: ""
+        binding.title.text = holder.illust.title ?: ""
     }
 }

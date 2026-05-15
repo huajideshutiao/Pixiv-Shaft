@@ -12,7 +12,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/bookmark"
             app:layout_constraintEnd_toStartOf="@+id/bookmark"
             android:textSize="16sp"
-            android:text="@{illust.title}"
+            android:text=""
             android:textStyle="bold"
             android:textColor="@color/text00"
             android:layout_width="0dp"
@@ -38,7 +38,7 @@
             android:layout_marginTop="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             android:textSize="14sp"
-            android:text="@{`系列：` + illust.series.title}"
+            android:text=""
 
             android:textStyle="bold"
             android:textColor="@color/buttonTextGreen"

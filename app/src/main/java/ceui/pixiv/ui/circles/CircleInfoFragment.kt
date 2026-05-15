@@ -18,5 +18,8 @@ class CircleInfoFragment : PixivFragment(R.layout.fragment_circle_info) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.result.observe(viewLifecycleOwner) { circle ->
+            binding.description.text = circle.body?.meta?.pixpedia?.abstract ?: ""
+        }
     }
 }

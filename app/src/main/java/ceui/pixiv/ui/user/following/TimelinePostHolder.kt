@@ -9,6 +9,7 @@ import ceui.lisa.activities.unfollowUser
 import ceui.lisa.annotations.ItemHolder
 import ceui.lisa.databinding.CellTimelineDateHeaderBinding
 import ceui.lisa.databinding.CellTimelinePostBinding
+import ceui.lisa.utils.GlideUrlChild
 import ceui.lisa.utils.Params
 import ceui.loxia.DateParse
 import ceui.loxia.Illust
@@ -27,6 +28,7 @@ import ceui.pixiv.ui.user.UserActionReceiver
 import ceui.pixiv.utils.ppppx
 import ceui.pixiv.utils.screenWidth
 import ceui.pixiv.utils.setOnClick
+import com.bumptech.glide.Glide
 import java.text.NumberFormat
 import java.util.Locale
 import kotlin.math.roundToInt
@@ -136,6 +138,16 @@ class TimelinePostViewHolder(bd: CellTimelinePostBinding) :
         val numberFormat = NumberFormat.getNumberInstance(Locale.getDefault())
         binding.viewCount.text = numberFormat.format(holder.illust.total_view ?: 0)
         binding.bookmarkCount.text = numberFormat.format(holder.illust.total_bookmarks ?: 0)
+
+        val user = holder.illust.user
+        val avatarUrl = user?.profile_image_urls?.findMaxSizeUrl()
+        if (!avatarUrl.isNullOrEmpty()) {
+            Glide.with(binding.root.context)
+                .load(GlideUrlChild(avatarUrl))
+                .into(binding.userIcon)
+        }
+        binding.userName.text = user?.name ?: ""
+        binding.title.text = holder.illust.title ?: ""
     }
 }
 

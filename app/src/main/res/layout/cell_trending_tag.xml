@@ -30,18 +30,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <TextView
+                    android:id="@+id/translated_name"
                     android:textColor="@color/text00"
                     android:textSize="13sp"
-                    android:text="@{holder.trendingTag.translated_name}"
+                    android:text=""
                     android:layout_width="wrap_content"
                     android:gravity="center"
                     android:layout_height="wrap_content"/>
 
                 <TextView
+                    android:id="@+id/tag"
                     android:textSize="12sp"
                     android:textColor="@color/text00"
                     android:layout_width="wrap_content"
-                    android:text="@{`#` + holder.trendingTag.tag}"
+                    android:text=""
                     android:gravity="center"
                     android:layout_height="wrap_content"/>
             </LinearLayout>

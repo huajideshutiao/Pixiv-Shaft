@@ -1,15 +1,11 @@
 package ceui.lisa.adapters
 
-import android.app.Activity
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.content.Intent
 import android.os.SystemClock
-import androidx.core.app.ActivityOptionsCompat
 import androidx.recyclerview.widget.RecyclerView
-import ceui.lisa.R
-import ceui.lisa.activities.ContainerActivity
+import ceui.pixiv.route.AppRoute
 import ceui.lisa.models.IllustsBean
 
 abstract class AbstractIllustAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Adapter<VH>() {
@@ -38,23 +34,7 @@ abstract class AbstractIllustAdapter<VH : RecyclerView.ViewHolder> : RecyclerVie
                 return@setOnClickListener
             }
             lastClickTime = SystemClock.elapsedRealtime()
-
-            val intent = Intent(mContext, ContainerActivity::class.java).apply {
-                putExtra("illust", allIllust)
-                putExtra(ContainerActivity.EXTRA_FRAGMENT, "图片详情")
-                putExtra("index", position)
-            }
-
-            if (mContext is Activity) {
-                val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                    mContext as Activity,
-                    holder.itemView.findViewById(R.id.illust_image),
-                    "image_$position"
-                )
-                mContext?.startActivity(intent, options.toBundle())
-            } else {
-                mContext?.startActivity(intent)
-            }
+            AppRoute.ImageDetail(allIllust, position).start(mContext!!)
         }
     }
 }

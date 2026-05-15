@@ -70,6 +70,8 @@ class UserFragment : PixivFragment(R.layout.fragment_user), ViewPagerFragment, S
             binding.iconVolunteer.isVisible = user.isVolunteer()
             val avatarUrl = user.profile_image_urls?.findMaxSizeUrl()
             if (!avatarUrl.isNullOrEmpty()) {
+                Glide.with(this).load(GlideUrlChild(avatarUrl))
+                    .into(binding.userAvatar)
                 binding.userAvatar.setOnClick {
                     ImageUrlViewer.open(
                         requireContext(),
@@ -81,9 +83,14 @@ class UserFragment : PixivFragment(R.layout.fragment_user), ViewPagerFragment, S
                 binding.userAvatar.setOnClickListener(null)
                 binding.userAvatar.isClickable = false
             }
+            binding.userName.text = user.name ?: ""
+            binding.userAccount.text = "@" + (user.account ?: "")
+            binding.naviTitle.text = user.name ?: ""
         }
         viewModel.userProfile.observe(viewLifecycleOwner) { profile ->
             binding.iconPrime.isVisible = profile.isPremium()
+            binding.followersCount.text = (profile.profile?.total_follow_users ?: 0).toString()
+            binding.followingCount.text = (profile.profile?.total_mypixiv_users ?: 0).toString()
             val bannerUrl = profile.profile?.background_image_url
             if (!bannerUrl.isNullOrEmpty()) {
                 Glide.with(this).load(GlideUrlChild(bannerUrl))

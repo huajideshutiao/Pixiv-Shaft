@@ -1,14 +1,12 @@
 package ceui.pixiv.ui.novel
 
-import android.content.Intent
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import ceui.lisa.R
-import ceui.lisa.activities.ContainerActivity
 import ceui.lisa.annotations.ItemHolder
 import ceui.lisa.databinding.CellUncategorizedNovelsCardBinding
-import ceui.lisa.utils.Params
 import ceui.lisa.utils.V3Palette
+import ceui.pixiv.route.AppRoute
 import ceui.pixiv.ui.common.ListItemHolder
 import ceui.pixiv.ui.common.ListItemViewHolder
 import ceui.pixiv.utils.setOnClick
@@ -62,11 +60,7 @@ class UncategorizedSeriesCardViewHolder(bd: CellUncategorizedNovelsCardBinding) 
         }
 
         binding.cardRoot.setOnClick {
-            val intent = Intent(context, ContainerActivity::class.java).apply {
-                putExtra(ContainerActivity.EXTRA_FRAGMENT, "未归类小说")
-                putExtra(Params.USER_ID, holder.userId.toInt())
-            }
-            context.startActivity(intent)
+            AppRoute.UncategorizedNovels(holder.userId.toInt()).start(context)
         }
     }
 }

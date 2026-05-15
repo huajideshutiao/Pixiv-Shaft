@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.UUID;
 
 import ceui.lisa.R;
-import ceui.lisa.activities.ContainerActivity;
 import ceui.lisa.activities.MainActivity;
 import ceui.lisa.activities.Shaft;
 import ceui.lisa.adapters.BaseAdapter;
@@ -39,6 +38,7 @@ import ceui.lisa.utils.QMUIMenuPopup;
 import ceui.lisa.view.OnCheckChangeListener;
 import ceui.lisa.viewmodel.BaseModel;
 import ceui.lisa.viewmodel.DynamicIllustModel;
+import ceui.pixiv.route.AppRoute;
 
 public class FragmentRight extends NetListFragment<FragmentNewRightBinding, ListIllust, IllustsBean> {
 
@@ -93,35 +93,15 @@ public class FragmentRight extends NetListFragment<FragmentNewRightBinding, List
             }
         });
         baseBind.seeMore.setOnClickListener(v -> {
-            Intent intent = new Intent(mContext, ContainerActivity.class);
-            intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "推荐用户");
             String handoffKey = null;
             if (headerFragment != null && headerFragment.allItems != null && !headerFragment.allItems.isEmpty()) {
-                // Hand off via in-memory map rather than Intent extras: the
-                // full UserPreviewsBean graph easily exceeds the ~1MB binder
-                // transaction limit and crashes on Android 15 (#820). We
-                // still want the detail page to show the same batch the
-                // user was just looking at, so stash a snapshot under a
-                // unique key and pass only the key.
                 handoffKey = UUID.randomUUID().toString();
                 RecmdUserMap.store.put(handoffKey, new RecmdUserSnapshot(
                         new ArrayList<>(headerFragment.allItems),
                         headerFragment.mRemoteRepo.getNextUrl()
                 ));
-                intent.putExtra(Params.USER_MODEL, handoffKey);
             }
-            // 即便我们的 intent 自身只装了 2 个 String，部分机型/系统版本会在
-            // startActivity 的 binder 事务里附带调用方 Activity 的状态快照，
-            // 仍可能触发 TransactionTooLargeException。兜底捕获，避免崩溃。
-            try {
-                startActivity(intent);
-            } catch (RuntimeException e) {
-                Common.showLog("FragmentRight seeMore startActivity failed: " + e.getMessage());
-                if (handoffKey != null) {
-                    RecmdUserMap.store.remove(handoffKey);
-                }
-                Common.showToast("打开页面失败，请稍后重试");
-            }
+            new AppRoute.RecmdUser(handoffKey).start(mContext);
         });
         baseBind.glareLayout.setListener(new OnCheckChangeListener() {
             final String[] types = {Params.TYPE_ALL, Params.TYPE_PUBLIC, Params.TYPE_PRIVATE};

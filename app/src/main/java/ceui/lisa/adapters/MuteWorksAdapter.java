@@ -4,7 +4,6 @@ import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,7 @@ import java.util.List;
 import java.util.Locale;
 
 import ceui.lisa.R;
-import ceui.lisa.activities.ContainerActivity;
+import ceui.pixiv.route.AppRoute;
 import ceui.lisa.activities.Shaft;
 import ceui.lisa.database.MuteEntity;
 import ceui.lisa.databinding.RecyViewHistoryBinding;
@@ -115,11 +114,7 @@ public class MuteWorksAdapter extends BaseAdapter<MuteEntity, RecyViewHistoryBin
 
             if (mOnItemClickListener != null) {
                 bindView.itemView.setOnClickListener(v -> {
-                    Intent intent = new Intent(mContext, ContainerActivity.class);
-                    intent.putExtra(Params.CONTENT, current);
-                    intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说详情");
-                    intent.putExtra("hideStatusBar", true);
-                    mContext.startActivity(intent);
+                    new AppRoute.NovelDetail((long) current.getId()).start(mContext);
                 });
                 bindView.baseBind.deleteItem.setOnClickListener(new View.OnClickListener() {
                     @Override

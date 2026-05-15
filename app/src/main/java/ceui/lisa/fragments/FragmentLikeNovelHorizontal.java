@@ -33,6 +33,7 @@ import ceui.lisa.models.NovelBean;
 import ceui.lisa.utils.DensityUtil;
 import ceui.lisa.utils.Params;
 import ceui.lisa.view.LinearItemHorizontalDecoration;
+import ceui.pixiv.route.AppRoute;
 import retrofit2.Call;
 
 public class FragmentLikeNovelHorizontal extends BaseFragment<FragmentLikeIllustHorizontalBinding> {
@@ -110,11 +111,7 @@ public class FragmentLikeNovelHorizontal extends BaseFragment<FragmentLikeIllust
         mAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View v, int position, int viewType) {
-                Intent intent = new Intent(mContext, ContainerActivity.class);
-                intent.putExtra(Params.CONTENT, allItems.get(position));
-                intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, "小说详情");
-                intent.putExtra("hideStatusBar", true);
-                startActivity(intent);
+                new AppRoute.NovelDetail(Long.valueOf(allItems.get(position).getId())).start(mContext);
             }
         });
         PagerSnapHelper snapHelper = new PagerSnapHelper();

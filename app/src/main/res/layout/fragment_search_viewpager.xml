@@ -77,7 +77,7 @@
                                 android:imeOptions="actionDone"
                                 android:inputType="text"
                                 android:singleLine="true"
-                                android:text="@={viewModel.inputDraft}"
+                                android:text=""
                                 android:textColor="@android:color/white"
                                 android:textColorHint="@color/dark_text_color"
                                 android:textSize="13sp" />
