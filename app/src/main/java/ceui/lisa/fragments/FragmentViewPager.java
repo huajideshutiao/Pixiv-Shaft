@@ -12,6 +12,8 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
@@ -50,11 +52,59 @@ import ceui.lisa.utils.Params;
 public class FragmentViewPager extends BaseLazyFragment<ViewpagerWithTablayoutBinding> implements
     VolumeKeyHandler {
 
-    private static final int REQUEST_CODE_IMPORT_MUTE = 20082;
     private static final String MUTE_RECORDS_FILE_NAME = "Shaft-MuteRecords.json";
 
     private String title;
     private ListFragment[] mFragments = null;
+
+    private final ActivityResultLauncher<Intent> importMuteLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() != RESULT_OK || result.getData() == null) return;
+                Uri uri = result.getData().getData();
+                if (uri == null) {
+                    Common.showToast(getString(R.string.mute_records_import_no_file));
+                    return;
+                }
+                new Thread(() -> {
+                    try {
+                        InputStream is = mContext.getContentResolver().openInputStream(uri);
+                        if (is == null) {
+                            mActivity.runOnUiThread(() ->
+                                    Common.showToast(getString(R.string.mute_records_import_no_file)));
+                            return;
+                        }
+                        int imported = 0;
+                        try (JsonReader reader = new JsonReader(new InputStreamReader(is))) {
+                            reader.beginArray();
+                            while (reader.hasNext()) {
+                                MuteEntity entity = Shaft.sGson.fromJson(reader, MuteEntity.class);
+                                if (entity == null || entity.getTagJson() == null || entity.getTagJson().isEmpty()) {
+                                    continue;
+                                }
+                                AppDatabase.getAppDatabase(mContext).searchDao().insertMuteTag(entity);
+                                imported++;
+                            }
+                            reader.endArray();
+                        }
+                        if (imported == 0) {
+                            mActivity.runOnUiThread(() ->
+                                    Common.showToast(getString(R.string.mute_records_import_invalid)));
+                            return;
+                        }
+                        int finalImported = imported;
+                        mActivity.runOnUiThread(() -> {
+                            forceRefresh();
+                            Common.showToast(getString(R.string.mute_records_import_success, finalImported));
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        mActivity.runOnUiThread(() ->
+                                Common.showToast(getString(R.string.mute_records_import_failed, String.valueOf(e.getMessage()))));
+                    }
+                }).start();
+            }
+    );
 
     @Override
     public boolean handleVolumeKey(int keyCode) {
@@ -325,7 +375,6 @@ public class FragmentViewPager extends BaseLazyFragment<ViewpagerWithTablayoutBi
                 }, null);
     }
 
-    @SuppressWarnings("deprecation")
     private void pickMuteRecordsFile() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -335,57 +384,7 @@ public class FragmentViewPager extends BaseLazyFragment<ViewpagerWithTablayoutBi
                     + "Download%2fShaftBackups%2f" + MUTE_RECORDS_FILE_NAME);
             intent.putExtra(EXTRA_INITIAL_URI, initialUri);
         }
-        startActivityForResult(intent, REQUEST_CODE_IMPORT_MUTE);
-    }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_IMPORT_MUTE && resultCode == RESULT_OK && data != null) {
-            Uri uri = data.getData();
-            if (uri == null) {
-                Common.showToast(getString(R.string.mute_records_import_no_file));
-                return;
-            }
-            new Thread(() -> {
-                try {
-                    InputStream is = mContext.getContentResolver().openInputStream(uri);
-                    if (is == null) {
-                        mActivity.runOnUiThread(() ->
-                                Common.showToast(getString(R.string.mute_records_import_no_file)));
-                        return;
-                    }
-                    int imported = 0;
-                    try (JsonReader reader = new JsonReader(new InputStreamReader(is))) {
-                        reader.beginArray();
-                        while (reader.hasNext()) {
-                            MuteEntity entity = Shaft.sGson.fromJson(reader, MuteEntity.class);
-                            if (entity == null || entity.getTagJson() == null || entity.getTagJson().isEmpty()) {
-                                continue;
-                            }
-                            AppDatabase.getAppDatabase(mContext).searchDao().insertMuteTag(entity);
-                            imported++;
-                        }
-                        reader.endArray();
-                    }
-                    if (imported == 0) {
-                        mActivity.runOnUiThread(() ->
-                                Common.showToast(getString(R.string.mute_records_import_invalid)));
-                        return;
-                    }
-                    int finalImported = imported;
-                    mActivity.runOnUiThread(() -> {
-                        forceRefresh();
-                        Common.showToast(getString(R.string.mute_records_import_success, finalImported));
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    mActivity.runOnUiThread(() ->
-                            Common.showToast(getString(R.string.mute_records_import_failed, String.valueOf(e.getMessage()))));
-                }
-            }).start();
-        }
+        importMuteLauncher.launch(intent);
     }
 
     @Override

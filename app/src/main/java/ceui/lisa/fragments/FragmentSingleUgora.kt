@@ -356,7 +356,7 @@ class FragmentSingleUgora : BaseFragment<FragmentUgoraBinding>() {
 
         baseBind.illustImage.transitionName = "image_0"
         baseBind.illustImage.setOnClickListener {
-            AppRoute.ImageDetail(illust, 0).start(requireContext())
+            AppRoute.ImageDetail(illust, 0).start(requireActivity(), baseBind.illustImage, "image_0")
         }
 
         baseBind.refreshLayout.visibility = View.VISIBLE
@@ -365,7 +365,7 @@ class FragmentSingleUgora : BaseFragment<FragmentUgoraBinding>() {
         baseBind.refreshLayout.setRefreshFooter(FalsifyFooter(mContext))
         baseBind.title.text = illust.title
         baseBind.title.setOnLongClickListener {
-            Common.copy(mContext, illust.title)
+            Common.copy(mContext, illust.title ?: "")
             true
         }
 
@@ -557,7 +557,7 @@ class FragmentSingleUgora : BaseFragment<FragmentUgoraBinding>() {
                         dialog.dismiss()
                     }
                     .addAction(getString(R.string.string_120)) { dialog, _ ->
-                        Common.copy(mContext, tagName)
+                        Common.copy(mContext, tagName ?: "")
                         dialog.dismiss()
                     }
                     .create()
@@ -573,7 +573,7 @@ class FragmentSingleUgora : BaseFragment<FragmentUgoraBinding>() {
         } else {
             baseBind.description.visibility = View.GONE
         }
-        baseBind.illustDate.text = Common.getLocalYYYYMMDDHHMMString(illust.create_date)
+        baseBind.illustDate.text = Common.getLocalYYYYMMDDHHMMString(illust.create_date ?: "")
         baseBind.illustView.text = illust.total_view.toString()
         baseBind.illustLike.text = illust.total_bookmarks.toString()
 

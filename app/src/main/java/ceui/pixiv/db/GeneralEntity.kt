@@ -16,10 +16,10 @@ data class GeneralEntity(
     val recordType: Int,
     val updatedTime: Long = System.currentTimeMillis()
 ) {
-    inline fun <reified T> typedObject(): T {
+    inline fun <reified T : Any> typedObject(): T {
         val obj = Shaft.sGson.fromJson(json, T::class.java)
         if (obj is ModelObject) {
-            ObjectPool.update(obj)
+            ObjectPool.update<ModelObject>(obj)
         }
         return obj
     }

@@ -1,7 +1,6 @@
 package ceui.lisa.activities;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
 import android.view.LayoutInflater;
 
@@ -71,12 +70,7 @@ public class NovelActivity extends BaseActivity<ActivityNovelBinding> {
         mPageLoader.dataInitSuccess();
         Common.showLog("drawContent initData ");
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                baseBind.pageView.drawCurPage(false);
-            }
-        }, 500L);
+        baseBind.pageView.postDelayed(() -> baseBind.pageView.drawCurPage(false), 500L);
     }
 
     @Override

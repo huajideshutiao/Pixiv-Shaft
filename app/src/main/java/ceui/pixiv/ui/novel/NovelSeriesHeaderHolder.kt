@@ -33,7 +33,7 @@ class NovelSeriesHeroViewHolder(bd: CellNovelSeriesHeroBinding) :
         val fmt = NumberFormat.getInstance()
 
         binding.title.text = series.title ?: ""
-        binding.title.setOnClick { Common.copy(it.context, series.title) }
+        binding.title.setOnClick { Common.copy(it.context, series.title ?: "") }
 
         // Bookmark
         binding.bookmark.setImageResource(

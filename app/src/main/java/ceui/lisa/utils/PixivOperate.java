@@ -10,8 +10,6 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -39,10 +37,7 @@ import ceui.lisa.activities.OutWakeActivity;
 import ceui.lisa.activities.Shaft;
 import ceui.lisa.cache.Cache;
 import ceui.lisa.core.Container;
-import ceui.lisa.core.NetCallback;
 import ceui.lisa.core.PageData;
-import ceui.lisa.core.RxRun;
-import ceui.lisa.core.RxRunnable;
 import ceui.lisa.core.ThreadUtil;
 import ceui.lisa.database.AppDatabase;
 import ceui.lisa.database.IllustHistoryEntity;
@@ -653,14 +648,13 @@ public class PixivOperate {
     }
 
     public static void encodeGifV2(Context context, File parentFile, IllustsBean illustsBean, boolean autoSave) {
-        RxRun.runOn(new RxRunnable<Void>() {
-            @Override
-            public Void execute() throws Exception {
+        ThreadUtil.INSTANCE.runOnIo(() -> {
+            try {
                 android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
                 long currentTimeMillis = System.currentTimeMillis();
                 if (gifEncodingWorkSet.containsKey(illustsBean.getId())
                         && (currentTimeMillis - gifEncodingWorkSet.get(illustsBean.getId())) < reEncodeTimeThresholdMillis) {
-                    return null;
+                    return;
                 }
                 gifEncodingWorkSet.put(illustsBean.getId(), currentTimeMillis);
                 Common.showLog("encodeGif 开始生成gif图");
@@ -685,7 +679,7 @@ public class PixivOperate {
                 AnimatedGifEncoder animatedGifEncoder = new AnimatedGifEncoder();
                 FileOutputStream outStream = new FileOutputStream(gifFile.getPath());
                 animatedGifEncoder.start(outStream);
-                animatedGifEncoder.setRepeat(0); // 无限循环
+                animatedGifEncoder.setRepeat(0);
 
                 int frameCount = allFiles.size();
 
@@ -696,7 +690,6 @@ public class PixivOperate {
                     if (frameCount == framesBeans.size()) {
                         Common.showLog("使用返回的delay 00");
 
-                        Handler mainHandler = new Handler(Looper.getMainLooper());
                         for (int i = 0; i < frameCount; i++) {
                             Bitmap bitmap = BitmapFactory.decodeFile(allFiles.get(i).getPath());
                             Common.showLog("编码中 00 " + frameCount + " " + (i + 1));
@@ -707,7 +700,7 @@ public class PixivOperate {
                             Back back = sBack.get(illustsBean.getId());
                             if (back != null) {
                                 float proc = i / (float) (frameCount - 1);
-                                mainHandler.post(() -> back.invoke(proc));
+                                ThreadUtil.INSTANCE.runOnMain(() -> back.invoke(proc));
                             }
                         }
                         sBack.remove(illustsBean.getId());
@@ -748,23 +741,20 @@ public class PixivOperate {
                 Intent intent = new Intent(Params.PLAY_GIF);
                 intent.putExtra(Params.ID, illustsBean.getId());
                 LocalBroadcastManager.getInstance(Shaft.getContext()).sendBroadcast(intent);
-
-                return null;
-            }
-        }, new NetCallback<Void>() {
-            @Override
-            public void onError(Throwable e) {
-                Common.showLog("encodeGifV2 error: " + e.getClass().getName() + " " + e.getMessage());
-                e.printStackTrace();
-                gifEncodingWorkSet.remove(illustsBean.getId());
-                try {
-                    File gifFile = LegacyFile.gifResultFile(context, illustsBean);
-                    if (gifFile.exists()) {
-                        gifFile.delete();
+            } catch (Exception e) {
+                ThreadUtil.INSTANCE.runOnMain(() -> {
+                    Common.showLog("encodeGifV2 error: " + e.getClass().getName() + " " + e.getMessage());
+                    e.printStackTrace();
+                    gifEncodingWorkSet.remove(illustsBean.getId());
+                    try {
+                        File gifFile = LegacyFile.gifResultFile(context, illustsBean);
+                        if (gifFile.exists()) {
+                            gifFile.delete();
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
+                });
             }
         });
     }

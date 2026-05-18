@@ -49,7 +49,7 @@ class NovelHeaderViewHolder(bd: CellNovelHeaderBinding) :
             }
         }
         binding.title.setOnClick {
-            Common.copy(context, liveNovel.value?.title)
+            Common.copy(context, liveNovel.value?.title ?: "")
         }
         liveNovel.observe(lifecycleOwner) { novel ->
             if (novel == null) return@observe

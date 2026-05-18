@@ -16,6 +16,7 @@ import ceui.lisa.models.IllustsBean
 import ceui.lisa.transformer.LargeBitmapScaleTransformer
 import ceui.lisa.utils.Common
 import ceui.lisa.utils.GlideUtil
+import ceui.pixiv.route.AppRoute
 import ceui.pixiv.ui.task.TaskPool
 import ceui.pixiv.utils.ImageCacheChain
 import com.bumptech.glide.Glide
@@ -69,7 +70,8 @@ class IllustDetailAdapter : AbstractIllustAdapter<RecyclerView.ViewHolder> {
         currentOne.illust.transitionName = "image_$position"
 
         currentOne.illust.setOnClickListener {
-            holder.itemView.performClick()
+            val activity = mFragment?.activity ?: return@setOnClickListener
+            AppRoute.ImageDetail(allIllust, position).start(activity, currentOne.illust, "image_$position")
         }
 
         currentOne.illust.setOnLongClickListener {

@@ -37,11 +37,12 @@ data class IllustsBean(
 
     fun getSize(): String = "${width}px * ${height}px"
 
-    fun getTagString(): String {
-        val tags = this.tags ?: return ""
-        if (tags.isEmpty()) return ""
-        return tags.joinToString("") { "*#${it.name}," }
-    }
+    val tagString: String
+        get() {
+            val tags = this.tags ?: return ""
+            if (tags.isEmpty()) return ""
+            return tags.joinToString("") { "*#${it.name}," }
+        }
 
     val tagNames: Array<String>
         get() {

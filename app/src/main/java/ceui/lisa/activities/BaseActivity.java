@@ -13,6 +13,8 @@ import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.SystemBarStyle;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -40,6 +42,26 @@ public abstract class BaseActivity<Layout extends ViewBinding> extends AppCompat
 
     public static final int ASK_URI = 42;
     private FeedBack mFeedBack;
+
+    private final ActivityResultLauncher<Intent> treeUriLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() != RESULT_OK || result.getData() == null) {
+                    return;
+                }
+                Uri treeUri = result.getData().getData();
+                if (treeUri != null) {
+                    Common.showLog(className + "onActivityResult " + treeUri.toString());
+                    Shaft.sSettings.setRootPathUri(treeUri.toString());
+                    final int takeFlags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                            | Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
+                    mContext.getContentResolver().takePersistableUriPermission(treeUri, takeFlags);
+                    Common.showToast("授权成功！");
+                    Local.setSettings(Shaft.sSettings);
+                    doAfterGranted();
+                }
+            }
+    );
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -142,26 +164,8 @@ public abstract class BaseActivity<Layout extends ViewBinding> extends AppCompat
         }
     }
 
-    @Override
-    @SuppressWarnings("deprecation")
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == ASK_URI) {
-            if (resultCode != RESULT_OK || data == null) {
-                return;
-            }
-            Uri treeUri = data.getData();
-            if (treeUri != null) {
-                Common.showLog(className + "onActivityResult " + treeUri.toString());
-                Shaft.sSettings.setRootPathUri(treeUri.toString());
-                final int takeFlags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-                        | Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
-                mContext.getContentResolver().takePersistableUriPermission(treeUri,takeFlags);
-                Common.showToast("授权成功！");
-                Local.setSettings(Shaft.sSettings);
-                doAfterGranted();
-            }
-        }
+    public ActivityResultLauncher<Intent> getTreeUriLauncher() {
+        return treeUriLauncher;
     }
 
     public void doAfterGranted() {

@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -372,15 +371,6 @@ public class ContainerActivity extends BaseActivity<ActivityFragmentBinding> imp
             }
         } else {
             childFragment = fragment;
-        }
-    }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (childFragment != null) {
-            childFragment.onActivityResult(requestCode, resultCode, data);
         }
     }
 

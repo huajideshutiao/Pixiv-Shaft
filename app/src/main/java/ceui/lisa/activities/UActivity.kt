@@ -276,7 +276,7 @@ class UActivity : BaseActivity<ActivityNewUserBinding>(), Display<UserDetailResp
         baseBind.userName.text = user.name
         baseBind.userName.setOnClickListener { Common.copy(mContext, user.id.toString()) }
         baseBind.userName.setOnLongClickListener {
-            Common.copy(mContext, user.name)
+            Common.copy(mContext, user.name ?: "")
             true
         }
         baseBind.followCount.text = data.profile?.total_follow_users?.toString() ?: "0"

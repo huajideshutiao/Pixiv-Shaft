@@ -371,19 +371,13 @@ public class IllustDownload {
                         .addAction(0, activity.getResources().getString(R.string.string_312),
                                 (dialog, index) -> {
                                     try {
-                                        new Thread(new Runnable() {
-                                            @Override
-                                            @SuppressWarnings("deprecation")
-                                            public void run() {
-                                                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-                                                if (!TextUtils.isEmpty(Shaft.sSettings.getRootPathUri()) &&
-                                                        Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                                    Uri start = Uri.parse(Shaft.sSettings.getRootPathUri());
-                                                    intent.putExtra(EXTRA_INITIAL_URI, start);
-                                                }
-                                                activity.startActivityForResult(intent, BaseActivity.ASK_URI);
-                                            }
-                                        }).start();
+                                        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+                                        if (!TextUtils.isEmpty(Shaft.sSettings.getRootPathUri()) &&
+                                                Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                            Uri start = Uri.parse(Shaft.sSettings.getRootPathUri());
+                                            intent.putExtra(EXTRA_INITIAL_URI, start);
+                                        }
+                                        activity.getTreeUriLauncher().launch(intent);
                                     } catch (Exception e) {
                                         Common.showToast(e.toString());
                                         e.printStackTrace();
@@ -405,19 +399,13 @@ public class IllustDownload {
                             .addAction(0, activity.getResources().getString(R.string.string_366),
                                     (dialog, index) -> {
                                         try {
-                                            new Thread(new Runnable() {
-                                                @Override
-                                                @SuppressWarnings("deprecation")
-                                                public void run() {
-                                                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-                                                    if (!TextUtils.isEmpty(Shaft.sSettings.getRootPathUri()) &&
-                                                            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                                        Uri start = Uri.parse(Shaft.sSettings.getRootPathUri());
-                                                        intent.putExtra(EXTRA_INITIAL_URI, start);
-                                                    }
-                                                    activity.startActivityForResult(intent, BaseActivity.ASK_URI);
-                                                }
-                                            }).start();
+                                            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+                                            if (!TextUtils.isEmpty(Shaft.sSettings.getRootPathUri()) &&
+                                                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                                Uri start = Uri.parse(Shaft.sSettings.getRootPathUri());
+                                                intent.putExtra(EXTRA_INITIAL_URI, start);
+                                            }
+                                            activity.getTreeUriLauncher().launch(intent);
                                         } catch (Exception e) {
                                             Common.showToast(e.toString());
                                             e.printStackTrace();

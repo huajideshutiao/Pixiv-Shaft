@@ -15,9 +15,9 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.blankj.utilcode.util.FileUtils;
@@ -56,6 +56,21 @@ import ceui.pixiv.route.AppRoute;
 
 
 public class FragmentSettings extends SwipeFragment<FragmentSettingsBinding> {
+
+    private final ActivityResultLauncher<Intent> openDocumentLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() != RESULT_OK || result.getData() == null) return;
+                try {
+                    Uri uri = result.getData().getData();
+                    String fileString = new String(UriUtils.uri2Bytes(uri));
+                    boolean restoreResult = BackupUtils.restoreBackups(mContext, fileString);
+                    Common.showToast(restoreResult ? getString(R.string.restore_success) : getString(R.string.restore_failed));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+    );
 
     @Override
     public void initLayout() {
@@ -674,9 +689,8 @@ public class FragmentSettings extends SwipeFragment<FragmentSettingsBinding> {
                                         refreshStorageLabel.run();
                                     }
                                 });
-                                @SuppressWarnings("deprecation")
                                 Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-                                mActivity.startActivityForResult(intent, BaseActivity.ASK_URI);
+                                ((BaseActivity<?>) mActivity).getTreeUriLauncher().launch(intent);
                             }
                         }
                     ).show();
@@ -867,17 +881,15 @@ public class FragmentSettings extends SwipeFragment<FragmentSettingsBinding> {
             });
 
             baseBind.restoreRela.setOnClickListener(v -> {
-                @SuppressWarnings("deprecation")
                 Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                intent.addCategory(Intent.CATEGORY_OPENABLE);//必须
-                intent.setType("*/*");//必须
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("*/*");
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     Uri backupFileUri = Uri.parse(
                         "content://com.android.externalstorage.documents/document/primary:" + "Download%2fShaftBackups%2fShaft-Backup.json");
-//                        Common.showToast(backupFileUri);
                     intent.putExtra(EXTRA_INITIAL_URI, backupFileUri);
                 }
-                startActivityForResult(intent, Params.REQUEST_CODE_CHOOSE);
+                openDocumentLauncher.launch(intent);
             });
         }
 
@@ -920,26 +932,6 @@ public class FragmentSettings extends SwipeFragment<FragmentSettingsBinding> {
     @Override
     public void onResume() {
         super.onResume();
-    }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public void onActivityResult(
-        int requestCode,
-        int resultCode,
-        @Nullable @org.jetbrains.annotations.Nullable Intent data
-    ) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == Params.REQUEST_CODE_CHOOSE && resultCode == RESULT_OK && data != null) {
-            try {
-                Uri uri = data.getData();
-                String fileString = new String(UriUtils.uri2Bytes(uri));
-                boolean restoreResult = BackupUtils.restoreBackups(mContext, fileString);
-                Common.showToast(restoreResult ? getString(R.string.restore_success) : getString(R.string.restore_failed));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     private String currentLanguageDisplay() {

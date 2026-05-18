@@ -44,11 +44,12 @@ data class NovelBean(
         is_bookmarked = isLiked
     }
 
-    fun getTagString(): String {
-        val tags = this.tags ?: return ""
-        if (tags.isEmpty()) return ""
-        return tags.joinToString("") { "*#${it.name}," }
-    }
+    val tagString: String
+        get() {
+            val tags = this.tags ?: return ""
+            if (tags.isEmpty()) return ""
+            return tags.joinToString("") { "*#${it.name}," }
+        }
 
     val tagNames: Array<String>
         get() {

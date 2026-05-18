@@ -196,7 +196,7 @@ class FragmentSingleIllust : BaseFragment<FragmentSingleIllustBinding>() {
             baseBind.title.text = illust.title
         }
         baseBind.title.setOnLongClickListener {
-            Common.copy(mContext, illust.title)
+            Common.copy(mContext, illust.title ?: "")
             true
         }
 
@@ -411,7 +411,7 @@ class FragmentSingleIllust : BaseFragment<FragmentSingleIllustBinding>() {
                     .addAction(
                         getString(R.string.string_120)
                     ) { dialog, _ ->
-                        Common.copy(mContext, tagName)
+                        Common.copy(mContext, tagName ?: "")
                         dialog.dismiss()
                     }
                     .create()
@@ -426,7 +426,7 @@ class FragmentSingleIllust : BaseFragment<FragmentSingleIllustBinding>() {
         } else {
             baseBind.description.visibility = View.GONE
         }
-        baseBind.illustDate.text = Common.getLocalYYYYMMDDHHMMString(illust.create_date)
+        baseBind.illustDate.text = Common.getLocalYYYYMMDDHHMMString(illust.create_date ?: "")
         baseBind.illustView.text = illust.total_view.toString()
         baseBind.illustLike.text = illust.total_bookmarks.toString()
 

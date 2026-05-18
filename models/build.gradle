@@ -29,7 +29,7 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
-    namespace 'ceui.lisa.models'
+    namespace = 'ceui.lisa.models'
 }
 
 dependencies {

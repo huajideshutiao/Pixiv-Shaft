@@ -1,7 +1,10 @@
 package ceui.pixiv.route
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.view.View
+import androidx.core.app.ActivityOptionsCompat
 import ceui.lisa.activities.ContainerActivity
 import ceui.lisa.models.IllustsBean
 import ceui.lisa.models.NovelBean
@@ -80,6 +83,16 @@ sealed class AppRoute(val type: RouteType) {
         intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, type.name)
         writeExtras(intent)
         context.startActivity(intent)
+    }
+
+    fun start(activity: Activity, sharedElement: View, sharedElementName: String) {
+        val intent = Intent(activity, ContainerActivity::class.java)
+        intent.putExtra(ContainerActivity.EXTRA_FRAGMENT, type.name)
+        writeExtras(intent)
+        val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+            activity, sharedElement, sharedElementName
+        )
+        activity.startActivity(intent, options.toBundle())
     }
 
     val postponesTransition: Boolean

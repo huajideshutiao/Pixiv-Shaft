@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -64,6 +65,26 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
     private TextView user_email;
     private long mExitTime;
     private Fragment[] baseFragments = null;
+
+    private final ActivityResultLauncher<Intent> pickImageLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() != RESULT_OK || result.getData() == null) return;
+                try {
+                    Uri imageUri = result.getData().getData();
+                    File innerImageFile = Common.copyUriToImageCacheFolder(imageUri);
+                    Uri innerImageFileUri = Uri.fromFile(innerImageFile);
+                    if (!ReverseImage.isFileSizeOkToSearch(imageUri, ReverseImage.DEFAULT_ENGINE)) {
+                        Common.showToast(getString(R.string.string_410));
+                        return;
+                    }
+                    ReverseImage.reverse(innerImageFileUri,
+                            ReverseImage.DEFAULT_ENGINE, new ReverseWebviewCallback(this, innerImageFileUri));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+    );
 
     @Override
     protected int initLayout() {
@@ -288,19 +309,18 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
         outState.clear();
     }
 
-    @SuppressWarnings("deprecation")
     private void selectPhoto() {
         new QMUIDialog.CheckableDialogBuilder(mActivity)
                 .addItems(ALL_SELECT_WAY, (dialog, which) -> {
                     if (which == 0) {
                         Intent intentToPickPic = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                         intentToPickPic.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-                        startActivityForResult(intentToPickPic, Params.REQUEST_CODE_CHOOSE);
+                        pickImageLauncher.launch(intentToPickPic);
                     } else {
                         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                        intent.addCategory(Intent.CATEGORY_OPENABLE);//必须
-                        intent.setType("image/*");//必须
-                        startActivityForResult(intent, Params.REQUEST_CODE_CHOOSE);
+                        intent.addCategory(Intent.CATEGORY_OPENABLE);
+                        intent.setType("image/*");
+                        pickImageLauncher.launch(intent);
                     }
                     dialog.dismiss();
                 }
@@ -317,27 +337,6 @@ public class MainActivity extends BaseActivity<ActivityCoverBinding>
             String mailAddress = SessionManager.INSTANCE.getMailAddress();
             user_email.setText(TextUtils.isEmpty(mailAddress) ?
                     mContext.getString(R.string.no_mail_address) : mailAddress);
-        }
-    }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == Params.REQUEST_CODE_CHOOSE && resultCode == RESULT_OK) {
-            try {
-                Uri imageUri = data.getData();
-                File innerImageFile = Common.copyUriToImageCacheFolder(imageUri);
-                Uri innerImageFileUri = Uri.fromFile(innerImageFile);
-                if (!ReverseImage.isFileSizeOkToSearch(imageUri, ReverseImage.DEFAULT_ENGINE)) {
-                    Common.showToast(getString(R.string.string_410));
-                    return;
-                }
-                ReverseImage.reverse(innerImageFileUri,
-                        ReverseImage.DEFAULT_ENGINE, new ReverseWebviewCallback(this, innerImageFileUri));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
     }
 

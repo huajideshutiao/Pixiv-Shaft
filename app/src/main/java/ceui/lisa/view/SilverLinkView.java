@@ -3,7 +3,6 @@ package ceui.lisa.view;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -22,7 +21,6 @@ public class SilverLinkView extends View implements GestureDetector.OnGestureLis
     private Context mContext;
     private Canvas mCanvas;
     private float centerX, centerY;
-    private final Handler mHandler = new Handler();
     private final HashMap<Integer, Integer> mHashMap = new HashMap<>();
     private GestureDetector mGestureDetector;
     private Paint mPaint;
@@ -194,7 +192,7 @@ public class SilverLinkView extends View implements GestureDetector.OnGestureLis
     }
 
     private void end() {
-        mHandler.removeCallbacks(mRunnable);
+        removeCallbacks(mRunnable);
     }
 
 
@@ -211,7 +209,7 @@ public class SilverLinkView extends View implements GestureDetector.OnGestureLis
                 circles = (int) ratio;
             }
             invalidate();
-            mHandler.postDelayed(mRunnable, 16);
+            postDelayed(mRunnable, 16);
         }
     };
 

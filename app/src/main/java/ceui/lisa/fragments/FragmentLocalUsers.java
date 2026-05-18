@@ -16,13 +16,11 @@ import java.util.List;
 
 import ceui.lisa.R;
 import ceui.lisa.activities.Shaft;
-import ceui.lisa.core.RxRun;
-import ceui.lisa.core.RxRunnable;
+import ceui.lisa.core.ThreadUtil;
 import ceui.lisa.database.AppDatabase;
 import ceui.lisa.database.UserEntity;
 import ceui.lisa.databinding.FragmentLocalUserBinding;
 import ceui.lisa.databinding.RecyLocalUserBinding;
-import ceui.lisa.http.NullCtrl;
 import ceui.lisa.models.UserModel;
 import ceui.lisa.utils.Common;
 import ceui.lisa.utils.Dev;
@@ -62,25 +60,26 @@ public class FragmentLocalUsers extends BaseFragment<FragmentLocalUserBinding> {
 
     @Override
     protected void initData() {
-        RxRun.runOn(new RxRunnable<List<UserModel>>() {
-            @Override
-            public List<UserModel> execute() {
+        ThreadUtil.INSTANCE.runOnIo(() -> {
+            try {
                 List<UserEntity> temp = AppDatabase.getAppDatabase(mContext)
                         .downloadDao().getAllUser();
                 allItems = new ArrayList<>();
                 for (int i = 0; i < temp.size(); i++) {
                     allItems.add(Shaft.sGson.fromJson(temp.get(i).getUserGson(), UserModel.class));
                 }
-                return allItems;
-            }
-        }, new NullCtrl<List<UserModel>>() {
-            @Override
-            public void success(List<UserModel> userModels) {
-                if (userModels.size() != 0) {
-                    for (int i = 0; i < userModels.size(); i++) {
-                        bindData(userModels.get(i));
+                List<UserModel> userModels = allItems;
+                ThreadUtil.INSTANCE.runOnMain(() -> {
+                    if (userModels.size() != 0) {
+                        for (int i = 0; i < userModels.size(); i++) {
+                            bindData(userModels.get(i));
+                        }
                     }
-                }
+                });
+            } catch (Exception e) {
+                ThreadUtil.INSTANCE.runOnMain(() -> {
+                    Common.showToast(e.toString());
+                });
             }
         });
     }

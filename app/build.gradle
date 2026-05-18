@@ -23,7 +23,7 @@ android {
     }
 
     lint {
-        abortOnError false
+        abortOnError = false
     }
 
     signingConfigs {
@@ -59,17 +59,17 @@ android {
             minifyEnabled false
             buildConfigField "boolean", "IS_DEBUG_MODE", "true"
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
+            signingConfig = signingConfigs.release
 
             applicationIdSuffix ".cshaft"
             resValue "string", "app_name", "Shaft(Debug)"
         }
         release {
             minifyEnabled true
-            shrinkResources true
+            shrinkResources = true
             buildConfigField "boolean", "IS_DEBUG_MODE", "false"
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
+            signingConfig = signingConfigs.release
 
             applicationIdSuffix ".pshaft"
             resValue "string", "app_name", "Shaft"
@@ -83,7 +83,7 @@ android {
     }
 
     buildFeatures {
-        viewBinding true
+        viewBinding = true
         buildConfig = true
     }
 
@@ -96,7 +96,7 @@ android {
         }
     }
 
-    namespace 'ceui.lisa'
+    namespace = 'ceui.lisa'
     kotlinOptions {
         jvmTarget = "17"
     }
@@ -142,14 +142,18 @@ dependencies {
     implementation libs.qmui
     implementation libs.viewpager.transforms
     implementation libs.recyclerview.animators
-    implementation libs.utilcodex
+    implementation(libs.utilcodex) {
+        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-android-extensions-runtime'
+    }
 
     implementation libs.bundles.review
 
     implementation libs.colorpicker
     implementation libs.splashscreen
 
-    implementation libs.panel.switch
+    implementation(libs.panel.switch) {
+        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-android-extensions-runtime'
+    }
 
     implementation libs.cronet.embedded
 
