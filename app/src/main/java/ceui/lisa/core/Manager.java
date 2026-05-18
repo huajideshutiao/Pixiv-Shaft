@@ -48,6 +48,22 @@ public class Manager {
     private ThreadUtil.DownloadHandle handle = null;
     private boolean isRunning = false;
 
+    private volatile OkHttpClient mDownloadOkHttpClient;
+
+    private OkHttpClient getDownloadOkHttpClient() {
+        OkHttpClient cached = mDownloadOkHttpClient;
+        if (cached != null) return cached;
+        synchronized (this) {
+            if (mDownloadOkHttpClient == null) {
+                OkHttpClient base = ((Shaft) Shaft.getContext()).getOkHttpClient();
+                mDownloadOkHttpClient = base.newBuilder()
+                        .protocols(java.util.Collections.singletonList(okhttp3.Protocol.HTTP_1_1))
+                        .build();
+            }
+            return mDownloadOkHttpClient;
+        }
+    }
+
     private Manager() {
         uuid = "";
         currentIllustID = 0;
@@ -397,7 +413,7 @@ public class Manager {
 
     private void startDownloadChain(Context context, DownloadItem downloadItem,
             DownloadFileFactory factory, File cachedFile, Uri targetUri, String dlUrl, long passSize) {
-        OkHttpClient client = ((Shaft) Shaft.getContext()).getOkHttpClient();
+        OkHttpClient client = getDownloadOkHttpClient();
         Request.Builder reqBuilder = new Request.Builder()
                 .url(downloadItem.getUrl())
                 .addHeader(Params.MAP_KEY, Params.IMAGE_REFERER);

@@ -1,14 +1,14 @@
 plugins {
-    id 'com.android.library'
-    id 'kotlin-android'
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
-    compileSdk rootProject.ext.compile_sdk
+    compileSdk Integer.parseInt(project.property("COMPILE_SDK"))
 
     defaultConfig {
-        minSdkVersion rootProject.ext.min_sdk
-        targetSdkVersion rootProject.ext.target_sdk
+        minSdk Integer.parseInt(project.property("MIN_SDK"))
+        targetSdk Integer.parseInt(project.property("TARGET_SDK"))
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
@@ -33,7 +33,6 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "androidx.core:core-ktx:${rootProject.ext.core_ktx_version}"
-    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:${rootProject.ext.desugar_version}"
+    implementation libs.core.ktx
+    coreLibraryDesugaring libs.desugar.jdk.libs
 }

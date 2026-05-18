@@ -13,7 +13,6 @@ import com.google.devtools.ksp.processing.SymbolProcessorProvider
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSType
-import com.google.devtools.ksp.validate
 import java.io.OutputStream
 
 class KspItemHolderProcessor(
@@ -21,14 +20,19 @@ class KspItemHolderProcessor(
     private val logger: KSPLogger
 ) : SymbolProcessor {
 
+    private var invoked = false
+
     @OptIn(KspExperimental::class)
     override fun process(resolver: Resolver): List<KSAnnotated> {
+        if (invoked) {
+            return emptyList()
+        }
+
         val symbols = resolver.getSymbolsWithAnnotation("ceui.lisa.annotations.ItemHolder")
             .filterIsInstance<KSClassDeclaration>()
             .toList()
 
         if (symbols.isEmpty()) {
-            logger.info("KspItemHolderProcessor: No @ItemHolder annotated classes found")
             return emptyList()
         }
 
@@ -36,10 +40,6 @@ class KspItemHolderProcessor(
 
         val holderEntries = mutableListOf<HolderEntry>()
         symbols.forEach { symbol ->
-            if (!symbol.validate()) {
-                logger.warn("KspItemHolderProcessor: Symbol validation failed for ${symbol.simpleName.asString()}")
-                return@forEach
-            }
             val annotation = symbol.getAnnotationsByType(ItemHolder::class).firstOrNull()
             if (annotation != null) {
                 val ksAnnotation = symbol.annotations.find {
@@ -52,39 +52,28 @@ class KspItemHolderProcessor(
                 val itemHolderFullName =
                     itemHolderType?.declaration?.qualifiedName?.asString() ?: ""
 
-                if (itemHolderFullName.isEmpty()) {
-                    logger.warn("ItemHolder type not resolved for ${symbol.simpleName.asString()}")
-                    return@forEach
-                }
-
-                val itemHolderName = itemHolderFullName.split(".").last()
-
                 val primaryConstructor = symbol.primaryConstructor
                 val bindingType = primaryConstructor?.parameters?.firstOrNull()?.type?.resolve()
                 val bindingFullName = bindingType?.declaration?.qualifiedName?.asString() ?: ""
 
-                if (bindingFullName.isEmpty()) {
-                    logger.warn("Binding type not resolved for ${symbol.simpleName.asString()}")
-                    return@forEach
-                }
-
-                val bindingName = bindingFullName.split(".").last()
-
-                holderEntries.add(
-                    HolderEntry(
-                        existingPackage = symbol.packageName.asString() + ".",
-                        itemHolder = itemHolderName,
-                        binding = bindingName,
-                        bindingFullname = bindingFullName,
-                        viewHolder = symbol.simpleName.asString()
+                if (itemHolderFullName.isNotEmpty() && bindingFullName.isNotEmpty()) {
+                    val bindingName = bindingFullName.split(".").last()
+                    holderEntries.add(
+                        HolderEntry(
+                            itemHolderFullName = itemHolderFullName,
+                            bindingName = bindingName,
+                            bindingFullname = bindingFullName,
+                            viewHolderFullName = symbol.qualifiedName?.asString() ?: ""
+                        )
                     )
-                )
+                } else {
+                    logger.warn("KspItemHolderProcessor: Could not resolve types for ${symbol.simpleName.asString()}. itemHolder: $itemHolderFullName, binding: $bindingFullName")
+                }
             }
         }
 
-        if (holderEntries.isNotEmpty()) {
-            generateFile(holderEntries)
-        }
+        generateFile(holderEntries)
+        invoked = true
 
         return emptyList()
     }
@@ -93,7 +82,7 @@ class KspItemHolderProcessor(
         val packageName = "ceui.pixiv.ui.viewholdermap"
         val fileName = "ViewHolderFactory"
         val file: OutputStream = codeGenerator.createNewFile(
-            Dependencies(false),
+            Dependencies(true),
             packageName,
             fileName
         )
@@ -106,15 +95,18 @@ class KspItemHolderProcessor(
         content.append("import ceui.pixiv.ui.common.ListItemHolder\n")
         content.append("import ceui.pixiv.ui.common.ListItemViewHolder\n")
 
+        val imports = mutableSetOf<String>()
         holderEntries.forEach {
-            content.append("import ${it.existingPackage}${it.viewHolder}\n")
-            content.append("import ${it.existingPackage}${it.itemHolder}\n")
+            imports.add(it.viewHolderFullName)
+            imports.add(it.itemHolderFullName)
         }
-
-        holderEntries.filter { it.binding.endsWith("Binding") }
-            .map { it.bindingFullname }
-            .distinct()
-            .forEach { content.append("import $it\n") }
+        
+        holderEntries.filter { it.bindingName.endsWith("Binding") }
+            .forEach { imports.add(it.bindingFullname) }
+            
+        imports.filter { it.isNotEmpty() }.sorted().forEach {
+            content.append("import $it\n")
+        }
 
         content.append("\nobject ViewHolderFactory {\n")
 
@@ -122,13 +114,14 @@ class KspItemHolderProcessor(
         content.append("        return when (viewType) {\n")
 
         holderEntries.forEach {
-            content.append("            \"${it.existingPackage}${it.itemHolder}\".hashCode() -> {\n")
-            content.append("                val binding = ${it.binding}.inflate(\n")
+            val viewHolderName = it.viewHolderFullName.split(".").last()
+            content.append("            \"${it.itemHolderFullName}\".hashCode() -> {\n")
+            content.append("                val binding = ${it.bindingName}.inflate(\n")
             content.append("                    LayoutInflater.from(parent.context),\n")
             content.append("                    parent,\n")
             content.append("                    false\n")
             content.append("                )\n")
-            content.append("                ${it.viewHolder}(binding)\n")
+            content.append("                $viewHolderName(binding)\n")
             content.append("            }\n")
         }
 
@@ -142,11 +135,10 @@ class KspItemHolderProcessor(
     }
 
     data class HolderEntry(
-        val existingPackage: String,
-        val itemHolder: String,
-        val binding: String,
+        val itemHolderFullName: String,
+        val bindingName: String,
         val bindingFullname: String,
-        val viewHolder: String,
+        val viewHolderFullName: String,
     )
 }
 

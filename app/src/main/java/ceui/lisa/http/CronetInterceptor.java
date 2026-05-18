@@ -65,7 +65,17 @@ public class CronetInterceptor implements Interceptor {
     private static CronetEngine buildEngine(Context context) {
         String rules = "MAP app-api.pixiv.net " + CF_IP_PRIMARY + ","
                 + " MAP oauth.secure.pixiv.net " + CF_IP_PRIMARY;
-        String experimental = "{\"HostResolverRules\":{\"host_resolver_rules\":\"" + rules + "\"}}";
+
+        // 这里的 experimental 配置是直连成功的核心。
+        // 它强制 Cronet 在不经过 TCP 探测的情况下直接发起 QUIC 连接。
+        String experimental = "{" +
+                "\"HostResolverRules\":{\"host_resolver_rules\":\"" + rules + "\"}," +
+                "\"quic\":{" +
+                    "\"force_quic_on_all_ips\":true," +
+                    "\"race_cert_verification\":true," +
+                    "\"connection_options\":\"PACE,IW10,CHLO,BBR2\"" +
+                "}" +
+                "}";
 
         File cacheDir = new File(context.getCacheDir(), "cronet");
         if (!cacheDir.exists()) cacheDir.mkdirs();
@@ -74,6 +84,7 @@ public class CronetInterceptor implements Interceptor {
                 .enableQuic(true)
                 .enableHttp2(true)
                 .setStoragePath(cacheDir.getAbsolutePath())
+                // 提示引擎这些域名支持 QUIC
                 .addQuicHint("app-api.pixiv.net", 443, 443)
                 .addQuicHint("oauth.secure.pixiv.net", 443, 443)
                 .setExperimentalOptions(experimental)

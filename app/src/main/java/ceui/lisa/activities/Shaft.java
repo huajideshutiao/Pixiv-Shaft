@@ -148,12 +148,8 @@ public class Shaft extends Application implements ServicesProvider {
 
         ThemeHelper.applyTheme(null, sSettings.getThemeType());
 
-        OkHttpClient.Builder glideBuilder = new OkHttpClient.Builder();
+        OkHttpClient.Builder glideBuilder = ceui.pixiv.utils.ProgressManager.with(new OkHttpClient.Builder());
         if (sSettings.isDirectConnect()) {
-            // 图片走 https://i.pximg.net 原始 URL，在 OkHttp 层面：
-            // 1. 自定义 DNS 绕过 DNS 污染
-            // 2. 无 SNI 的 TLS 绕过 GFW（图片服务器不要求 SNI）
-            // 3. 强制 HTTP/1.1 避免 H2 复用连接被 GFW 整体干扰
             try {
                 ceui.lisa.http.TrustAllCertManager trustManager = new ceui.lisa.http.TrustAllCertManager();
                 glideBuilder.sslSocketFactory(new ceui.lisa.http.RubySSLSocketFactory(), trustManager);

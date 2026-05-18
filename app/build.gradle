@@ -1,30 +1,24 @@
 plugins {
-    id 'com.android.application'
-    id 'kotlin-android'
-    id 'kotlin-parcelize'
-    id 'androidx.navigation.safeargs.kotlin'
-    id 'com.google.devtools.ksp'
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.navigation.safeargs)
+    alias(libs.plugins.ksp)
 }
 
 android {
-    compileSdk rootProject.ext.compile_sdk
+    compileSdk Integer.parseInt(project.property("COMPILE_SDK"))
 
     defaultConfig {
         applicationId "ceui.pixiv"
-        minSdkVersion rootProject.ext.min_sdk
-        targetSdkVersion rootProject.ext.target_sdk
+        minSdk Integer.parseInt(project.property("MIN_SDK"))
+        targetSdk Integer.parseInt(project.property("TARGET_SDK"))
         versionCode 40580
         versionName "4.6.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         resConfigs "zh-rCN", "zh-rTW", "zh-rHK", "en", "ja", "ko", "ru", "tr"
         ndk {
             abiFilters 'arm64-v8a'
-        }
-
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments = [:]
-            }
         }
     }
 
@@ -92,8 +86,8 @@ android {
         viewBinding true
         buildConfig = true
     }
-    
-    packagingOptions {
+
+    packaging {
         jniLibs {
             useLegacyPackaging = true
         }
@@ -109,97 +103,77 @@ android {
 }
 
 dependencies {
-    testImplementation "junit:junit:4.13.2"
-    androidTestImplementation "androidx.test.ext:junit:1.2.1"
-    androidTestImplementation "androidx.test.espresso:espresso-core:3.6.1"
+    testImplementation libs.junit
+    androidTestImplementation libs.test.ext.junit
+    androidTestImplementation libs.espresso.core
 
-    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
-    implementation 'androidx.appcompat:appcompat:1.7.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
-    implementation 'androidx.recyclerview:recyclerview:1.4.0'
-    implementation 'com.google.android.material:material:1.12.0'
+    implementation libs.appcompat
+    implementation libs.constraintlayout
+    implementation libs.recyclerview
+    implementation libs.material
 
-    // LifeCycle
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:${rootProject.ext.lifecycle_version}"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:${rootProject.ext.lifecycle_version}"
+    implementation libs.bundles.lifecycle
+    implementation libs.bundles.navigation
 
-    // Navigation
-    implementation "androidx.navigation:navigation-fragment-ktx:${rootProject.ext.nav_version}"
-    implementation "androidx.navigation:navigation-ui-ktx:${rootProject.ext.nav_version}"
+    implementation libs.kotlin.stdlib
+    implementation libs.core.ktx
+    implementation libs.bundles.coroutines
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:${rootProject.ext.kotlin_version}"
-    implementation "androidx.core:core-ktx:${rootProject.ext.core_ktx_version}"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0"
-
-    // Network
-    api "com.squareup.retrofit2:retrofit:${rootProject.ext.retrofit_version}"
-    api "com.squareup.retrofit2:converter-gson:${rootProject.ext.retrofit_version}"
+    api libs.bundles.retrofit
 
     implementation project(":annotations")
     ksp project(":processor")
 
-    // Image Loading
-    implementation "com.github.bumptech.glide:glide:${rootProject.ext.glide_version}"
-    implementation "com.github.bumptech.glide:okhttp3-integration:${rootProject.ext.glide_version}"
-    ksp "com.github.bumptech.glide:compiler:${rootProject.ext.glide_version}"
+    implementation libs.bundles.glide
+    ksp libs.glide.ksp
 
-    def refresh_version = "2.1.0"
-    implementation "io.github.scwang90:refresh-layout-kernel:$refresh_version"
-    implementation "io.github.scwang90:refresh-header-classics:$refresh_version"
-    implementation "io.github.scwang90:refresh-header-falsify:$refresh_version"
-    implementation "io.github.scwang90:refresh-header-material:$refresh_version"
-    implementation "io.github.scwang90:refresh-footer-classics:$refresh_version"
+    implementation libs.bundles.refresh
 
-    implementation "com.squareup.okhttp3:logging-interceptor:${rootProject.ext.okhttp_version}"
-    implementation 'jp.wasabeef:glide-transformations:4.3.0'
-    implementation 'com.github.ybq:Android-SpinKit:1.4.0'
-    implementation 'com.github.yalantis:ucrop:2.2.8'
-    
-    // Room
-    implementation "androidx.room:room-runtime:${rootProject.ext.room_version}"
-    implementation "androidx.room:room-ktx:${rootProject.ext.room_version}"
-    ksp "androidx.room:room-compiler:${rootProject.ext.room_version}"
-    
-    implementation "org.sufficientlysecure:html-textview:4.0"
-    implementation 'com.qmuiteam:qmui:2.0.1'
-    implementation 'com.ToxicBakery.viewpager.transforms:view-pager-transforms:2.0.24'
-    implementation 'jp.wasabeef:recyclerview-animators:4.0.2'
-    implementation 'com.blankj:utilcodex:1.31.1'
+    implementation libs.bundles.okhttp
 
-    implementation 'com.google.android.play:review:2.0.2'
-    implementation 'com.google.android.play:review-ktx:2.0.2'
+    implementation libs.glide.transformations
+    implementation libs.spinkit
+    implementation libs.ucrop
 
-    implementation 'com.jaredrummler:colorpicker:1.1.0'
-    implementation 'androidx.core:core-splashscreen:1.0.1'
+    implementation libs.bundles.room
+    ksp libs.room.compiler
 
-    implementation 'com.effective.android:panelSwitchHelper-androidx:1.3.13'
+    implementation libs.html.textview
+    implementation libs.qmui
+    implementation libs.viewpager.transforms
+    implementation libs.recyclerview.animators
+    implementation libs.utilcodex
 
-    implementation "com.squareup.okhttp3:okhttp:${rootProject.ext.okhttp_version}"
+    implementation libs.bundles.review
 
-    implementation 'org.chromium.net:cronet-embedded:143.7445.0'
+    implementation libs.colorpicker
+    implementation libs.splashscreen
 
-    implementation "com.airbnb.android:lottie:6.7.1"
+    implementation libs.panel.switch
+
+    implementation libs.cronet.embedded
+
+    implementation libs.lottie
 
     implementation project(':models')
 
-    implementation 'androidx.webkit:webkit:1.12.1'
-    implementation 'androidx.browser:browser:1.8.0'
+    implementation libs.webkit
+    implementation libs.browser
 
-    implementation 'com.github.SoxiaLiSA:pixiv-login:1.2.0'
-    implementation 'org.jsoup:jsoup:1.18.1'
+    implementation libs.pixiv.login
+    implementation libs.jsoup
 
-    implementation 'com.github.getActivity:ToastUtils:12.6'
+    implementation libs.toast.utils
 
-    implementation "androidx.documentfile:documentfile:1.0.1"
-    implementation "io.noties.markwon:core:4.6.2"
-    implementation "androidx.activity:activity-ktx:${rootProject.ext.activity_ktx_version}"
-    implementation "com.google.android.flexbox:flexbox:3.0.0"
+    implementation libs.documentfile
+    implementation libs.markwon.core
+    implementation libs.activity.ktx
+    implementation libs.flexbox
 
-    implementation "io.github.panpf.zoomimage:zoomimage-view-sketch4:1.4.0"
-    implementation "me.zhanghai.android.fastscroll:library:1.2.0"
+    implementation libs.zoomimage.view.sketch4
+    implementation libs.fastscroll
 
-    implementation "androidx.work:work-runtime-ktx:${rootProject.ext.work_version}"
+    implementation libs.work.runtime.ktx
 
-    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:${rootProject.ext.desugar_version}"
+    coreLibraryDesugaring libs.desugar.jdk.libs
 }

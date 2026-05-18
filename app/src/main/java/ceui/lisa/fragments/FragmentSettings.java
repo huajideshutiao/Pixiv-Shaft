@@ -113,11 +113,21 @@ public class FragmentSettings extends SwipeFragment<FragmentSettingsBinding> {
         // 2. 网络
         {
             baseBind.autoDns.setChecked(Shaft.sSettings.isDirectConnect());
+            // DoH 只在直连开启时生效，跟随直连开关显隐
+            baseBind.useSecureDnsGroup.setVisibility(
+                    Shaft.sSettings.isDirectConnect() ? android.view.View.VISIBLE : android.view.View.GONE);
             baseBind.autoDns.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 boolean changed = isChecked != Shaft.sSettings.isDirectConnect();
                 Shaft.sSettings.setDirectConnect(isChecked);
                 Common.showToast(getString(R.string.string_428), 2);
                 Local.setSettings(Shaft.sSettings);
+
+                android.view.ViewGroup secureDnsParent = (android.view.ViewGroup) baseBind.useSecureDnsGroup.getParent();
+                if (secureDnsParent != null) {
+                    androidx.transition.TransitionManager.beginDelayedTransition(secureDnsParent, new androidx.transition.AutoTransition());
+                }
+                baseBind.useSecureDnsGroup.setVisibility(isChecked ? android.view.View.VISIBLE : android.view.View.GONE);
+
                 if (changed) {
                     Retro.refreshAppApi();
                     Client.INSTANCE.reset();
@@ -127,6 +137,16 @@ public class FragmentSettings extends SwipeFragment<FragmentSettingsBinding> {
                 new AppRoute.WebLink("https://github.com/Notsfsssf/Pix-EzViewer", "PxEz项目主页").start(mContext);
             });
             baseBind.directConnectRela.setOnClickListener(v -> baseBind.autoDns.performClick());
+
+            // 安全 DNS (DoH)
+            baseBind.useSecureDns.setChecked(Shaft.sSettings.isUseSecureDns());
+            baseBind.useSecureDns.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                Shaft.sSettings.setUseSecureDns(isChecked);
+                Common.showToast(getString(R.string.string_428), 2);
+                Local.setSettings(Shaft.sSettings);
+                ceui.lisa.http.HttpDns.invalidate();
+            });
+            baseBind.useSecureDnsRela.setOnClickListener(v -> baseBind.useSecureDns.performClick());
 
             //自定义图片代理
             baseBind.usePixivCat.setChecked(Shaft.sSettings.isUsePixivCat());

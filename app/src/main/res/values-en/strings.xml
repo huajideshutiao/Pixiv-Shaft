@@ -1075,4 +1075,6 @@
     <string name="dlmgr_done_empty_hint">Completed downloads will appear here</string>
     <string name="dlmgr_done_action_refresh">Refresh</string>
     <string name="dlmgr_done_action_clear_history">Clear records</string>
+    <string name="use_secure_dns_title">Secure DNS (DoH)</string>
+    <string name="use_secure_dns_summary">Resolve Pixiv hosts via Cloudflare DoH; turn off if your local DNS is already trusted</string>
 </resources>

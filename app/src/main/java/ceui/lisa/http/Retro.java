@@ -101,7 +101,15 @@ public class Retro {
      */
     private static Retrofit buildRetrofit(String baseUrl, boolean directConnect) {
         OkHttpClient.Builder builder = getLogClient();
+        
+        // 1. 先加日志，确保能看到被 Cronet 接管前的完整请求
+        okhttp3.logging.HttpLoggingInterceptor l = new okhttp3.logging.HttpLoggingInterceptor(
+                message -> android.util.Log.i(TAG, message));
+        l.setLevel(okhttp3.logging.HttpLoggingInterceptor.Level.BASIC);
+        builder.addInterceptor(l);
+
         try {
+            // 2. 加 Header
             builder.addInterceptor(chain -> {
                 Request original = chain.request();
                 Request.Builder reqBuilder = addHeader(original.newBuilder());
@@ -113,15 +121,15 @@ public class Retro {
                 }
                 return chain.proceed(reqBuilder.build());
             });
+            // 3. 加 Token 刷新
             builder.addInterceptor(new TokenInterceptor());
         } catch (Exception e) {
-            Log.e(TAG, "buildRetrofit interceptor error", e);
+            android.util.Log.e(TAG, "buildRetrofit interceptor error", e);
         }
+        
+        // 4. 最后应用直连（Cronet 拦截器必须在最后，因为它会中断 OkHttp 链条）
         applyDirectConnect(builder, directConnect);
-        HttpLoggingInterceptor l = new HttpLoggingInterceptor(
-            message -> Log.i(TAG, message));
-        l.setLevel(HttpLoggingInterceptor.Level.BODY);
-        builder.addInterceptor(l);
+
         OkHttpClient client = builder.build();
         Gson gson = new GsonBuilder().setLenient().create();
         return new Retrofit.Builder()
@@ -171,6 +179,9 @@ public class Retro {
 
     public static OkHttpClient.Builder getLogClient() {
         return new OkHttpClient.Builder()
+                .connectTimeout(15, java.util.concurrent.TimeUnit.SECONDS)
+                .readTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+                .writeTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
                 .protocols(Collections.singletonList(Protocol.HTTP_1_1));
     }
 

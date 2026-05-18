@@ -57,12 +57,10 @@ public interface AppApi {
      * @return ListIllust Call<ListIllust>{@link ListIllust}
      */
     @GET("v1/illust/ranking?filter=for_android")
-    Call<ListIllust> getRank(
-        @Query("mode") String mode,
+    Call<ListIllust> getRank(@Query("mode") String mode,
                                    @Query("date") String date);
     @GET("v1/novel/ranking?filter=for_android")
-    Call<ListNovel> getRankNovel(
-        @Query("mode") String mode,
+    Call<ListNovel> getRankNovel(@Query("mode") String mode,
                                        @Query("date") String date);
 
     /**
@@ -111,23 +109,61 @@ public interface AppApi {
      * end_date 结束时间
      */
     @GET("v1/search/illust?filter=for_android&include_translated_tag_results=true&merge_plain_keyword_results=true")
-    Call<ListIllust> searchIllust(
-        @Query("word") String word,
+    Call<ListIllust> searchIllust(@Query("word") String word,
                                         @Query("sort") String sort,
                                         @Query("start_date") String startDate,
                                         @Query("end_date") String endDate,
                                         @Query("search_target") String search_target);
 
+    /** V3 filter ext —— bookmark_num_min/max + tool + lang + duration + search_ai_type + ratio_pattern + 分辨率档位 4 项，nullable 自动跳过。
+     *  与 [ceui.loxia.API.searchIllustManga] 对齐：默认 include_potential_violation_works=false（iOS 默认）。 */
+    @GET("v1/search/illust?filter=for_android&include_translated_tag_results=true&merge_plain_keyword_results=true&include_potential_violation_works=false")
+    Call<ListIllust> searchIllust(@Query("word") String word,
+                                        @Query("sort") String sort,
+                                        @Query("start_date") String startDate,
+                                        @Query("end_date") String endDate,
+                                        @Query("search_target") String search_target,
+                                        @Query("bookmark_num_min") Integer bookmark_num_min,
+                                        @Query("tool") String tool,
+                                        @Query("lang") String lang,
+                                        @Query("search_ai_type") Integer search_ai_type,
+                                        @Query("ratio_pattern") String ratio_pattern,
+                                        @Query("content_type") String content_type,
+                                        @Query("width_min") Integer width_min,
+                                        @Query("width_max") Integer width_max,
+                                        @Query("height_min") Integer height_min,
+                                        @Query("height_max") Integer height_max);
+
     /**
      * search_target=exact_match_for_tags,partial_match_for_tags,text(文本),keyword(关键词)
      */
     @GET("v1/search/novel?filter=for_android&include_translated_tag_results=true&merge_plain_keyword_results=true")
-    Call<ListNovel> searchNovel(
-        @Query("word") String word,
+    Call<ListNovel> searchNovel(@Query("word") String word,
                                       @Query("sort") String sort,
                                       @Query("start_date") String startDate,
                                       @Query("end_date") String endDate,
                                       @Query("search_target") String search_target);
+
+    /** V3 filter ext for novel —— 多了 genre / is_original_only / is_replaceable_only 而非 tool。
+     *  正文长度 3 单位（text_length_* / word_count_* / reading_time_*）iOS 8.6.6 抓包确认。 */
+    @GET("v1/search/novel?filter=for_android&include_translated_tag_results=true&merge_plain_keyword_results=true&include_potential_violation_works=false")
+    Call<ListNovel> searchNovel(@Query("word") String word,
+                                      @Query("sort") String sort,
+                                      @Query("start_date") String startDate,
+                                      @Query("end_date") String endDate,
+                                      @Query("search_target") String search_target,
+                                      @Query("bookmark_num_min") Integer bookmark_num_min,
+                                      @Query("genre") Integer genre,
+                                      @Query("lang") String lang,
+                                      @Query("search_ai_type") Integer search_ai_type,
+                                      @Query("is_original_only") Boolean is_original_only,
+                                      @Query("is_replaceable_only") Boolean is_replaceable_only,
+                                      @Query("text_length_min") Integer text_length_min,
+                                      @Query("text_length_max") Integer text_length_max,
+                                      @Query("word_count_min") Integer word_count_min,
+                                      @Query("word_count_max") Integer word_count_max,
+                                      @Query("reading_time_min") Integer reading_time_min,
+                                      @Query("reading_time_max") Integer reading_time_max);
 
 
     @GET("v2/illust/related?filter=for_android")
@@ -144,30 +180,25 @@ public interface AppApi {
 
 
     @GET("v1/user/bookmarks/illust")
-    Call<ListIllust> getUserLikeIllust(
-        @Query("user_id") int user_id,
+    Call<ListIllust> getUserLikeIllust(@Query("user_id") int user_id,
                                              @Query("restrict") String restrict,
                                              @Query("tag") String tag);
 
     @GET("v1/user/bookmarks/illust")
-    Call<ListIllust> getUserLikeIllust(
-        @Query("user_id") int user_id,
+    Call<ListIllust> getUserLikeIllust(@Query("user_id") int user_id,
                                              @Query("restrict") String restrict);
 
     @GET("v1/user/bookmarks/novel")
-    Call<ListNovel> getUserLikeNovel(
-        @Query("user_id") int user_id,
+    Call<ListNovel> getUserLikeNovel(@Query("user_id") int user_id,
                                            @Query("restrict") String restrict,
                                            @Query("tag") String tag);
 
     @GET("v1/user/bookmarks/novel")
-    Call<ListNovel> getUserLikeNovel(
-        @Query("user_id") int user_id,
+    Call<ListNovel> getUserLikeNovel(@Query("user_id") int user_id,
                                            @Query("restrict") String restrict);
 
     @GET("v1/user/illusts?filter=for_android")
-    Call<ListIllust> getUserSubmitIllust(
-        @Query("user_id") int user_id,
+    Call<ListIllust> getUserSubmitIllust(@Query("user_id") int user_id,
                                                @Query("type") String type);
 
     @GET("v1/user/novels")
@@ -194,8 +225,7 @@ public interface AppApi {
 
     @FormUrlEncoded
     @POST("v1/user/follow/add")
-    Call<NullResponse> postFollow(
-        @Field("user_id") int user_id,
+    Call<NullResponse> postFollow(@Field("user_id") int user_id,
                                         @Field("restrict") String followType);
 
     @FormUrlEncoded
@@ -214,9 +244,17 @@ public interface AppApi {
      * @return
      */
     @GET("v1/user/following?filter=for_android")
-    Call<ListUser> getFollowUser(
-        @Query("user_id") int user_id,
+    Call<ListUser> getFollowUser(@Query("user_id") int user_id,
                                        @Query("restrict") String restrict);
+
+    /**
+     * 同上，多一个 offset 入口，给页内"跳页"用：
+     * offset==null 时退化为首屏请求（Retrofit 会自动忽略空 Query）。
+     */
+    @GET("v1/user/following?filter=for_android")
+    Call<ListUser> getFollowUser(@Query("user_id") int user_id,
+                                       @Query("restrict") String restrict,
+                                       @Query("offset") Integer offset);
 
 
     //获取关注 这个userid 的人
@@ -236,53 +274,45 @@ public interface AppApi {
 
     @FormUrlEncoded
     @POST("v1/illust/comment/add")
-    Call<CommentHolder> postIllustComment(
-        @Field("illust_id") int illust_id,
+    Call<CommentHolder> postIllustComment(@Field("illust_id") int illust_id,
                                                 @Field("comment") String comment);
 
     @FormUrlEncoded
     @POST("v1/illust/comment/add")
-    Call<CommentHolder> postIllustComment(
-        @Field("illust_id") int illust_id,
+    Call<CommentHolder> postIllustComment(@Field("illust_id") int illust_id,
                                                 @Field("comment") String comment,
                                                 @Field("parent_comment_id") int parent_comment_id);
 
     @FormUrlEncoded
     @POST("v1/novel/comment/add")
-    Call<CommentHolder> postNovelComment(
-        @Field("novel_id") int novel_id,
+    Call<CommentHolder> postNovelComment(@Field("novel_id") int novel_id,
                                           @Field("comment") String comment);
 
     @FormUrlEncoded
     @POST("v1/novel/comment/add")
-    Call<CommentHolder> postNovelComment(
-        @Field("novel_id") int novel_id,
+    Call<CommentHolder> postNovelComment(@Field("novel_id") int novel_id,
                                           @Field("comment") String comment,
                                           @Field("parent_comment_id") int parent_comment_id);
 
     @FormUrlEncoded
     @POST("v2/illust/bookmark/add")
-    Call<NullResponse> postLikeIllust(
-        @Field("illust_id") int illust_id,
+    Call<NullResponse> postLikeIllust(@Field("illust_id") int illust_id,
                                             @Field("restrict") String restrict);
 
     @FormUrlEncoded
     @POST("v2/novel/bookmark/add")
-    Call<NullResponse> postLikeNovel(
-        @Field("novel_id") int novel_id,
+    Call<NullResponse> postLikeNovel(@Field("novel_id") int novel_id,
                                            @Field("restrict") String restrict);
 
     @FormUrlEncoded
     @POST("v2/illust/bookmark/add")
-    Call<NullResponse> postLikeIllustWithTags(
-        @Field("illust_id") int illust_id,
+    Call<NullResponse> postLikeIllustWithTags(@Field("illust_id") int illust_id,
                                                     @Field("restrict") String restrict,
                                                     @Field("tags[]") String... tags);
 
     @FormUrlEncoded
     @POST("v2/novel/bookmark/add")
-    Call<NullResponse> postLikeNovelWithTags(
-        @Field("novel_id") int novel_id,
+    Call<NullResponse> postLikeNovelWithTags(@Field("novel_id") int novel_id,
                                                     @Field("restrict") String restrict,
                                                     @Field("tags[]") String... tags);
 
@@ -304,18 +334,53 @@ public interface AppApi {
 
 
     @GET("v1/search/popular-preview/illust?filter=for_android&include_translated_tag_results=true&merge_plain_keyword_results=true")
-    Call<ListIllust> popularPreview(
-        @Query("word") String word,
+    Call<ListIllust> popularPreview(@Query("word") String word,
                                           @Query("start_date") String startDate,
                                           @Query("end_date") String endDate,
                                           @Query("search_target") String search_target);
 
+    /** V3 filter ext for popular illust preview。 */
+    @GET("v1/search/popular-preview/illust?filter=for_android&include_translated_tag_results=true&merge_plain_keyword_results=true&include_potential_violation_works=false")
+    Call<ListIllust> popularPreview(@Query("word") String word,
+                                          @Query("start_date") String startDate,
+                                          @Query("end_date") String endDate,
+                                          @Query("search_target") String search_target,
+                                          @Query("bookmark_num_min") Integer bookmark_num_min,
+                                          @Query("tool") String tool,
+                                          @Query("lang") String lang,
+                                          @Query("search_ai_type") Integer search_ai_type,
+                                          @Query("ratio_pattern") String ratio_pattern,
+                                          @Query("content_type") String content_type,
+                                          @Query("width_min") Integer width_min,
+                                          @Query("width_max") Integer width_max,
+                                          @Query("height_min") Integer height_min,
+                                          @Query("height_max") Integer height_max);
+
     @GET("v1/search/popular-preview/novel?filter=for_android&include_translated_tag_results=true&merge_plain_keyword_results=true")
-    Call<ListNovel> popularNovelPreview(
-        @Query("word") String word,
+    Call<ListNovel> popularNovelPreview(@Query("word") String word,
                                           @Query("start_date") String startDate,
                                           @Query("end_date") String endDate,
                                           @Query("search_target") String search_target);
+
+    /** V3 filter ext for popular novel preview。
+     *  正文长度 3 单位（text_length_* / word_count_* / reading_time_*）iOS 8.6.6 抓包确认。 */
+    @GET("v1/search/popular-preview/novel?filter=for_android&include_translated_tag_results=true&merge_plain_keyword_results=true&include_potential_violation_works=false")
+    Call<ListNovel> popularNovelPreview(@Query("word") String word,
+                                          @Query("start_date") String startDate,
+                                          @Query("end_date") String endDate,
+                                          @Query("search_target") String search_target,
+                                          @Query("bookmark_num_min") Integer bookmark_num_min,
+                                          @Query("genre") Integer genre,
+                                          @Query("lang") String lang,
+                                          @Query("search_ai_type") Integer search_ai_type,
+                                          @Query("is_original_only") Boolean is_original_only,
+                                          @Query("is_replaceable_only") Boolean is_replaceable_only,
+                                          @Query("text_length_min") Integer text_length_min,
+                                          @Query("text_length_max") Integer text_length_max,
+                                          @Query("word_count_min") Integer word_count_min,
+                                          @Query("word_count_max") Integer word_count_max,
+                                          @Query("reading_time_min") Integer reading_time_min,
+                                          @Query("reading_time_max") Integer reading_time_max);
 
 
     /**
@@ -350,8 +415,7 @@ public interface AppApi {
      */
     //GET v1/user/bookmark-tags/illust?user_id=41531382&restrict=public HTTP/1.1
     @GET("v1/user/bookmark-tags/illust")
-    Call<ListTag> getAllIllustBookmarkTags(
-        @Query("user_id") int user_id,
+    Call<ListTag> getAllIllustBookmarkTags(@Query("user_id") int user_id,
                                                  @Query("restrict") String restrict);
 
     /**
@@ -359,8 +423,7 @@ public interface AppApi {
      */
     //GET v1/user/bookmark-tags/novel?user_id=41531382&restrict=public HTTP/1.1
     @GET("v1/user/bookmark-tags/novel")
-    Call<ListTag> getAllNovelBookmarkTags(
-        @Query("user_id") int user_id,
+    Call<ListTag> getAllNovelBookmarkTags(@Query("user_id") int user_id,
                                                 @Query("restrict") String restrict);
 
 
@@ -485,8 +548,7 @@ public interface AppApi {
     // 添加小说书签 相同id只能有1个 不同页数会直接覆盖
     @FormUrlEncoded
     @POST("v1/novel/marker/add")
-    Call<NullResponse> postAddNovelMarker(
-        @Field("novel_id") int novel_id,
+    Call<NullResponse> postAddNovelMarker(@Field("novel_id") int novel_id,
                                            @Field("page") int page);
 
     // 删除小说书签

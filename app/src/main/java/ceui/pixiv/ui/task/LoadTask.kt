@@ -4,6 +4,9 @@ import android.net.Uri
 import android.util.Log
 import ceui.lisa.activities.Shaft
 import ceui.lisa.utils.GlideUrlChild
+import ceui.pixiv.utils.ProgressInfo
+import ceui.pixiv.utils.ProgressListener
+import ceui.pixiv.utils.ProgressManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -58,6 +61,7 @@ open class LoadTask(
         try {
             onStart()
             _status.value = TaskStatus.Executing(0)
+            observeProgress()
 
             val startMs = System.currentTimeMillis()
             val file = downloadFile()
@@ -81,6 +85,27 @@ open class LoadTask(
             )
             onError(ex)
         }
+    }
+
+    private fun observeProgress() {
+        val shortUrl = content.url.substringAfterLast('/')
+        ProgressManager.addResponseListener(content.url, object : ProgressListener {
+            override fun onProgress(progressInfo: ProgressInfo) {
+                val percent = progressInfo.percent
+                if (progressInfo.isFinish || percent == 100) {
+                    Log.d(TAG, "[LoadTask] PROGRESS 100%% finished. taskId=$taskId, url=$shortUrl")
+                    _status.value = TaskStatus.Finished
+                } else {
+                    if (_status.value != TaskStatus.Finished) {
+                        _status.value = TaskStatus.Executing(percent)
+                    }
+                }
+            }
+
+            override fun onError(id: Long, e: Exception) {
+                Log.e(TAG, "[LoadTask] PROGRESS error. taskId=$taskId, url=$shortUrl", e)
+            }
+        })
     }
 
     private suspend fun downloadFile(): File? {

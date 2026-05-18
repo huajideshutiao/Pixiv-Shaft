@@ -2,7 +2,6 @@ package ceui.lisa.activities
 
 
 import android.content.DialogInterface
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -218,11 +217,11 @@ class UActivity : BaseActivity<ActivityNewUserBinding>(), Display<UserDetailResp
 
             if (totalIllusts > 0) {
                 labels.add("跳转到插画…")
-                actions.add { jumpTo(user.id, UserIllustJumpHelper.Kind.ILLUST, "插画作品") }
+                actions.add { jumpTo(user.id, UserIllustJumpHelper.Kind.ILLUST) }
             }
             if (totalManga > 0) {
                 labels.add("跳转到漫画…")
-                actions.add { jumpTo(user.id, UserIllustJumpHelper.Kind.MANGA, "漫画作品") }
+                actions.add { jumpTo(user.id, UserIllustJumpHelper.Kind.MANGA) }
             }
             if (!isSelf) {
                 labels.add(
@@ -232,12 +231,12 @@ class UActivity : BaseActivity<ActivityNewUserBinding>(), Display<UserDetailResp
                 actions.add {
                     if (isMuted) {
                         PixivOperate.unMuteUser(user)
-                        mUserViewModel.isUserMuted.setValue(false)
+                        mUserViewModel.isUserMuted.value = false
                     } else {
                         PixivOperate.muteUser(user)
-                        mUserViewModel.isUserMuted.setValue(true)
+                        mUserViewModel.isUserMuted.value = true
                     }
-                    mUserViewModel.refreshEvent.setValue(Event(100, 0L))
+                    mUserViewModel.refreshEvent.value = Event(100, 0L)
                 }
             }
             if (labels.isEmpty()) return@setOnClickListener
@@ -298,7 +297,7 @@ class UActivity : BaseActivity<ActivityNewUserBinding>(), Display<UserDetailResp
         AppRoute.UrlImage(imageUrl, saveName).start(mContext)
     }
 
-    private fun jumpTo(userID: Int, kind: UserIllustJumpHelper.Kind, fragmentTag: String) {
+    private fun jumpTo(userID: Int, kind: UserIllustJumpHelper.Kind) {
         UserIllustJumpHelper.showJumpDialog(this, userID, kind) { offset, pickedDate ->
             if (isFinishing || isDestroyed) return@showJumpDialog
             when (kind) {

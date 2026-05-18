@@ -7,11 +7,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import ceui.lisa.activities.Shaft;
 import ceui.lisa.utils.Common;
 import okhttp3.Dns;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import org.jetbrains.annotations.NotNull;
 
 public class HttpDns implements Dns {
 
@@ -25,14 +28,12 @@ public class HttpDns implements Dns {
             "oauth.secure.pixiv.net",
     };
 
-    // Pixiv API/OAuth 已迁移至 Cloudflare CDN (2026-04)，与 CronetInterceptor 共享
-    private static final String[] FALLBACK_API_IPS = {
+    public static final String[] FALLBACK_API_IPS = {
             CronetInterceptor.CF_IP_PRIMARY,
             CronetInterceptor.CF_IP_SECONDARY,
     };
 
-    // 图片服务器还在旧 Pixiv 基础设施
-    private static final String[] FALLBACK_IMAGE_IPS = {
+    public static final String[] FALLBACK_IMAGE_IPS = {
             "210.140.139.134",
             "210.140.139.133",
             "210.140.139.131",
@@ -58,8 +59,10 @@ public class HttpDns implements Dns {
             } catch (UnknownHostException ignored) {
             }
         }
-        for (String domain : DOMAINS) {
-            resolveViaDoH(domain, 0);
+        if (isSecureDnsEnabled()) {
+            for (String domain : DOMAINS) {
+                resolveViaDoH(domain, 0);
+            }
         }
     }
 
@@ -74,9 +77,25 @@ public class HttpDns implements Dns {
         return sHttpDns;
     }
 
+    public static void invalidate() {
+        HttpDns instance = sHttpDns;
+        if (instance == null) {
+            return;
+        }
+        instance.resolvedHosts.clear();
+        if (isSecureDnsEnabled()) {
+            for (String domain : DOMAINS) {
+                instance.resolveViaDoH(domain, 0);
+            }
+        }
+    }
+
+    private static boolean isSecureDnsEnabled() {
+        return Shaft.sSettings != null && Shaft.sSettings.isUseSecureDns();
+    }
+
     private void resolveViaDoH(String hostname, int endpointIndex) {
         if (endpointIndex >= DOH_ENDPOINTS.length) {
-            Common.showLog("HttpDns all DoH failed for " + hostname + ", will use fallback IPs");
             return;
         }
         try {
@@ -97,7 +116,6 @@ public class HttpDns implements Dns {
                         }
                         if (!addresses.isEmpty()) {
                             resolvedHosts.put(hostname, addresses);
-                            Common.showLog("HttpDns resolved " + hostname + " -> " + addresses);
                         } else {
                             resolveViaDoH(hostname, endpointIndex + 1);
                         }
@@ -108,7 +126,6 @@ public class HttpDns implements Dns {
 
                 @Override
                 public void onFailure(Call<CloudFlareDNSResponse> call, Throwable t) {
-                    Common.showLog("HttpDns DoH failed for " + hostname + ": " + t.getMessage());
                     resolveViaDoH(hostname, endpointIndex + 1);
                 }
             });
@@ -117,17 +134,28 @@ public class HttpDns implements Dns {
         }
     }
 
+    @NotNull
     @Override
-    public List<InetAddress> lookup(String hostname) throws UnknownHostException {
+    public List<InetAddress> lookup(@NotNull String hostname) throws UnknownHostException {
         long start = System.nanoTime();
-        // 优先用 DoH 解析的结果
-        List<InetAddress> cached = resolvedHosts.get(hostname);
-        if (cached != null && !cached.isEmpty()) {
-            long elapsed = (System.nanoTime() - start) / 1_000_000;
-            Common.showLog("HttpDns lookup " + hostname + " → DoH cached " + cached + " [" + elapsed + "ms]");
-            return cached;
+        if (isSecureDnsEnabled()) {
+            List<InetAddress> cached = resolvedHosts.get(hostname);
+            if (cached != null && !cached.isEmpty()) {
+                long elapsed = (System.nanoTime() - start) / 1_000_000;
+                Common.showLog("HttpDns lookup " + hostname + " → DoH cached " + cached + " [" + elapsed + "ms]");
+                return cached;
+            }
+        } else {
+            try {
+                List<InetAddress> systemResult = Dns.SYSTEM.lookup(hostname);
+                if (!systemResult.isEmpty()) {
+                    long elapsed = (System.nanoTime() - start) / 1_000_000;
+                    Common.showLog("HttpDns lookup " + hostname + " → system " + systemResult + " [" + elapsed + "ms]");
+                    return systemResult;
+                }
+            } catch (UnknownHostException ignored) {
+            }
         }
-        // 图片域名用旧 Pixiv 服务器 IP，API 域名用 Cloudflare IP
         List<InetAddress> result;
         String source;
         if (hostname.endsWith("pximg.net")) {

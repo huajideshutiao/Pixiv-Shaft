@@ -1408,4 +1408,6 @@
     <string name="gif_info">获取GIF信息...</string>
     <string name="gif_download">下载GIF文件...</string>
     <string name="gif_save">正在生成GIF，完成后自动保存...</string>
+    <string name="use_secure_dns_title">安全 DNS（DoH）</string>
+    <string name="use_secure_dns_summary">通过 Cloudflare DoH 解析 Pixiv 域名；本地 DNS 已可信时可关闭</string>
 </resources>

@@ -1,0 +1,150 @@
+[versions]
+agp = "8.7.3"
+kotlin = "2.1.20"
+ksp = "2.1.20-2.0.1"
+
+core-ktx = "1.15.0"
+appcompat = "1.7.1"
+activity-ktx = "1.10.0"
+constraintlayout = "2.2.1"
+recyclerview = "1.4.0"
+material = "1.12.0"
+lifecycle = "2.8.7"
+navigation = "2.8.5"
+room = "2.8.4"
+work = "2.10.0"
+splashscreen = "1.0.1"
+webkit = "1.12.1"
+browser = "1.8.0"
+documentfile = "1.0.1"
+desugar = "2.1.4"
+
+coroutines = "1.9.0"
+
+retrofit = "2.11.0"
+okhttp = "4.12.0"
+
+glide = "5.0.7"
+glide-transformations = "4.3.0"
+
+refresh = "2.1.0"
+spinkit = "1.4.0"
+ucrop = "2.2.8"
+lottie = "6.7.1"
+qmui = "2.0.1"
+recyclerview-animators = "4.0.2"
+colorpicker = "1.1.0"
+panel-switch = "1.3.13"
+flexbox = "3.0.0"
+zoomimage = "1.4.0"
+fastscroll = "1.2.0"
+
+utilcodex = "1.31.1"
+html-textview = "4.0"
+viewpager-transforms = "2.0.24"
+cronet = "143.7445.0"
+pixiv-login = "1.2.0"
+jsoup = "1.18.1"
+toast-utils = "12.6"
+markwon = "4.6.2"
+
+review = "2.0.2"
+
+junit = "4.13.2"
+test-ext-junit = "1.2.1"
+espresso = "3.6.1"
+
+[libraries]
+core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
+appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activity-ktx" }
+documentfile = { group = "androidx.documentfile", name = "documentfile", version.ref = "documentfile" }
+splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashscreen" }
+webkit = { group = "androidx.webkit", name = "webkit", version.ref = "webkit" }
+browser = { group = "androidx.browser", name = "browser", version.ref = "browser" }
+
+lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycle" }
+lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
+
+navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigation" }
+navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigation" }
+
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+
+work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "work" }
+
+kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
+kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
+kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
+
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+retrofit-converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
+okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+okhttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
+
+glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
+glide-okhttp3-integration = { group = "com.github.bumptech.glide", name = "okhttp3-integration", version.ref = "glide" }
+glide-ksp = { group = "com.github.bumptech.glide", name = "ksp", version.ref = "glide" }
+glide-transformations = { group = "jp.wasabeef", name = "glide-transformations", version.ref = "glide-transformations" }
+
+refresh-layout-kernel = { group = "io.github.scwang90", name = "refresh-layout-kernel", version.ref = "refresh" }
+refresh-header-classics = { group = "io.github.scwang90", name = "refresh-header-classics", version.ref = "refresh" }
+refresh-header-falsify = { group = "io.github.scwang90", name = "refresh-header-falsify", version.ref = "refresh" }
+refresh-header-material = { group = "io.github.scwang90", name = "refresh-header-material", version.ref = "refresh" }
+refresh-footer-classics = { group = "io.github.scwang90", name = "refresh-footer-classics", version.ref = "refresh" }
+
+spinkit = { group = "com.github.ybq", name = "Android-SpinKit", version.ref = "spinkit" }
+ucrop = { group = "com.github.yalantis", name = "ucrop", version.ref = "ucrop" }
+html-textview = { group = "org.sufficientlysecure", name = "html-textview", version.ref = "html-textview" }
+qmui = { group = "com.qmuiteam", name = "qmui", version.ref = "qmui" }
+viewpager-transforms = { group = "com.ToxicBakery.viewpager.transforms", name = "view-pager-transforms", version.ref = "viewpager-transforms" }
+recyclerview-animators = { group = "jp.wasabeef", name = "recyclerview-animators", version.ref = "recyclerview-animators" }
+colorpicker = { group = "com.jaredrummler", name = "colorpicker", version.ref = "colorpicker" }
+panel-switch = { group = "com.effective.android", name = "panelSwitchHelper-androidx", version.ref = "panel-switch" }
+lottie = { group = "com.airbnb.android", name = "lottie", version.ref = "lottie" }
+flexbox = { group = "com.google.android.flexbox", name = "flexbox", version.ref = "flexbox" }
+zoomimage-view-sketch4 = { group = "io.github.panpf.zoomimage", name = "zoomimage-view-sketch4", version.ref = "zoomimage" }
+fastscroll = { group = "me.zhanghai.android.fastscroll", name = "library", version.ref = "fastscroll" }
+
+review = { group = "com.google.android.play", name = "review", version.ref = "review" }
+review-ktx = { group = "com.google.android.play", name = "review-ktx", version.ref = "review" }
+
+utilcodex = { group = "com.blankj", name = "utilcodex", version.ref = "utilcodex" }
+cronet-embedded = { group = "org.chromium.net", name = "cronet-embedded", version.ref = "cronet" }
+pixiv-login = { group = "com.github.SoxiaLiSA", name = "pixiv-login", version.ref = "pixiv-login" }
+jsoup = { group = "org.jsoup", name = "jsoup", version.ref = "jsoup" }
+toast-utils = { group = "com.github.getActivity", name = "ToastUtils", version.ref = "toast-utils" }
+markwon-core = { group = "io.noties.markwon", name = "core", version.ref = "markwon" }
+
+desugar-jdk-libs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugar" }
+
+ksp-symbol-processing-api = { group = "com.google.devtools.ksp", name = "symbol-processing-api", version.ref = "ksp" }
+
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "test-ext-junit" }
+espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso" }
+
+[bundles]
+lifecycle = ["lifecycle-livedata-ktx", "lifecycle-viewmodel-ktx"]
+navigation = ["navigation-fragment-ktx", "navigation-ui-ktx"]
+coroutines = ["kotlinx-coroutines-core", "kotlinx-coroutines-android"]
+retrofit = ["retrofit", "retrofit-converter-gson"]
+okhttp = ["okhttp", "okhttp-logging-interceptor"]
+room = ["room-runtime", "room-ktx"]
+refresh = ["refresh-layout-kernel", "refresh-header-classics", "refresh-header-falsify", "refresh-header-material", "refresh-footer-classics"]
+glide = ["glide"]
+review = ["review", "review-ktx"]
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+navigation-safeargs = { id = "androidx.navigation.safeargs.kotlin", version.ref = "navigation" }
