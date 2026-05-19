@@ -2,7 +2,7 @@ package ceui.lisa.helper;
 
 import android.os.Environment;
 
-import com.blankj.utilcode.util.PathUtils;
+import ceui.lisa.utils.AppKit;
 
 import java.io.File;
 
@@ -37,7 +37,7 @@ public class FileStorageHelper {
     }
 
     public static String getIllustAbsolutePath(IllustsBean illustsBean){
-        String absolutePath = PathUtils.getExternalPicturesPath() + sep;
+        String absolutePath = AppKit.getExternalPicturesPath() + sep;
         if (isSaveToAIDir(illustsBean)) {
             absolutePath += getShaftIllustDirWithInnerAIFolder(true);
         } else if (isSaveToR18Dir(illustsBean)) {

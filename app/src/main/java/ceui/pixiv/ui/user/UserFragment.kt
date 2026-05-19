@@ -38,7 +38,7 @@ import ceui.pixiv.ui.common.viewBinding
 import ceui.pixiv.utils.FastBlurTransformation
 import ceui.pixiv.utils.ppppx
 import ceui.pixiv.utils.setOnClick
-import com.blankj.utilcode.util.BarUtils
+import ceui.lisa.utils.AppKit
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
 import com.bumptech.glide.request.RequestOptions.bitmapTransform
@@ -59,7 +59,7 @@ class UserFragment : PixivFragment(R.layout.fragment_user), ViewPagerFragment, S
             binding.toolbar.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 topMargin = insets.top - 10.ppppx
             }
-            binding.headerContent.updatePaddingRelative(top = insets.top + BarUtils.getActionBarHeight())
+            binding.headerContent.updatePaddingRelative(top = insets.top + AppKit.getActionBarHeight(requireContext()))
             windowInsets
         }
         viewModel.userLiveData.observe(viewLifecycleOwner) { user ->

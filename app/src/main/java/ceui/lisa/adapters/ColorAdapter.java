@@ -17,7 +17,6 @@ import ceui.lisa.model.ColorItem;
 import ceui.lisa.utils.Common;
 import ceui.lisa.utils.Local;
 
-import static com.blankj.utilcode.util.StringUtils.getString;
 
 public class ColorAdapter extends BaseAdapter<ColorItem, RecyColorBinding> {
 
@@ -40,7 +39,7 @@ public class ColorAdapter extends BaseAdapter<ColorItem, RecyColorBinding> {
     public void bindData(ColorItem target, ViewHolder<RecyColorBinding> bindView, int position) {
         bindView.baseBind.card.setCardBackgroundColor(Color.parseColor(target.getColor()));
         if (target.isSelect()) {
-            bindView.baseBind.name.setText(String.format("%s" + getString(R.string.theme_nowUsing), target.getName()));
+            bindView.baseBind.name.setText(String.format("%s" + Shaft.getContext().getString(R.string.theme_nowUsing), target.getName()));
         } else {
             bindView.baseBind.name.setText(target.getName());
         }
@@ -64,7 +63,7 @@ public class ColorAdapter extends BaseAdapter<ColorItem, RecyColorBinding> {
                 Shaft.sSettings.setThemeIndex(position);
                 Local.setSettings(Shaft.sSettings);
                 Common.restart();
-                Common.showToast(getString(R.string.string_428), 2);
+                Common.showToast(Shaft.getContext().getString(R.string.string_428), 2);
             }
         });
     }

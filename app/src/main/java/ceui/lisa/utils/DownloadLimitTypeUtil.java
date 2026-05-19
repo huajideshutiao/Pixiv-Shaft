@@ -2,7 +2,7 @@ package ceui.lisa.utils;
 
 import android.content.res.Resources;
 
-import com.blankj.utilcode.util.NetworkUtils;
+import ceui.lisa.utils.AppKit;
 
 import ceui.lisa.R;
 import ceui.lisa.activities.Shaft;
@@ -27,7 +27,7 @@ public class DownloadLimitTypeUtil {
      * @return
      */
     public static boolean startTaskWhenCreate(){
-        return Shaft.sSettings.getDownloadLimitType() == 0 || (Shaft.sSettings.getDownloadLimitType() == 1 && NetworkUtils.isWifiConnected());
+        return Shaft.sSettings.getDownloadLimitType() == 0 || (Shaft.sSettings.getDownloadLimitType() == 1 && AppKit.isWifiConnected(Shaft.getContext()));
     }
 
     /**
@@ -35,6 +35,6 @@ public class DownloadLimitTypeUtil {
      * @return
      */
     public static boolean canDownloadNow(){
-        return Shaft.sSettings.getDownloadLimitType() == 0 || (Shaft.sSettings.getDownloadLimitType() != 0 && NetworkUtils.isWifiConnected());
+        return Shaft.sSettings.getDownloadLimitType() == 0 || (Shaft.sSettings.getDownloadLimitType() != 0 && AppKit.isWifiConnected(Shaft.getContext()));
     }
 }

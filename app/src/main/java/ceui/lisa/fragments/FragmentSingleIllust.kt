@@ -31,6 +31,7 @@ import ceui.lisa.download.IllustDownload
 import ceui.lisa.models.IllustsBean
 import ceui.lisa.models.TagsBean
 import ceui.lisa.notification.CallBackReceiver
+import ceui.lisa.utils.AppKit
 import ceui.lisa.utils.Common
 import ceui.lisa.utils.DensityUtil
 import ceui.lisa.utils.GlideUtil
@@ -45,9 +46,7 @@ import ceui.lisa.view.ScrollChange
 import ceui.lisa.viewmodel.AppLevelViewModel
 import ceui.loxia.ObjectPool
 import ceui.pixiv.utils.FastBlurTransformation
-import ceui.pixiv.utils.applyBlur
 import ceui.pixiv.utils.populate
-import com.blankj.utilcode.util.ColorUtils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
 import com.bumptech.glide.request.RequestOptions.bitmapTransform
@@ -84,24 +83,13 @@ class FragmentSingleIllust : BaseFragment<FragmentSingleIllustBinding>() {
         val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         when (currentNightMode) {
             Configuration.UI_MODE_NIGHT_NO, Configuration.UI_MODE_NIGHT_UNDEFINED -> {
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-                    illust?.let {
-                        baseBind.bgImage.applyBlur(25f)
-                        Glide.with(mContext)
-                            .load(GlideUtil.getSquare(it))
-                            .override(200)
-                            .transition(withCrossFade())
-                            .into(baseBind.bgImage)
-                    }
-                } else {
-                    illust?.let {
-                        Glide.with(mContext)
-                            .load(GlideUtil.getSquare(it))
-                            .override(200)
-                            .apply(bitmapTransform(FastBlurTransformation(25)))
-                            .transition(withCrossFade())
-                            .into(baseBind.bgImage)
-                    }
+                illust?.let {
+                    Glide.with(mContext)
+                        .load(GlideUtil.getSquare(it))
+                        .override(200)
+                        .apply(bitmapTransform(FastBlurTransformation(25)))
+                        .transition(withCrossFade())
+                        .into(baseBind.bgImage)
                 }
             }
         }
@@ -365,7 +353,7 @@ class FragmentSingleIllust : BaseFragment<FragmentSingleIllustBinding>() {
 
         val sizeString =
             SpannableString(getString(R.string.string_193, illust.width, illust.height))
-        val currentPrimaryColorId = ColorUtils.getColor(R.color.page_default_background)
+        val currentPrimaryColorId = AppKit.getColor(requireContext(), R.color.page_default_background)
         sizeString.setSpan(
             ForegroundColorSpan(currentPrimaryColorId),
             sizeString.length - illust.getSize().length,

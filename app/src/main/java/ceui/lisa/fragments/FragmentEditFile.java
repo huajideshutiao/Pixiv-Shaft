@@ -15,7 +15,7 @@ import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 
-import com.blankj.utilcode.util.UriUtils;
+import ceui.lisa.utils.AppKit;
 import com.bumptech.glide.Glide;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 
@@ -56,7 +56,7 @@ public class FragmentEditFile extends SwipeFragment<FragmentEditFileBinding> imp
     private final ActivityResultLauncher<PickVisualMediaRequest> pickMedia =
             registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
                 if (uri != null) {
-                    imageFile = UriUtils.uri2File(uri);
+                    imageFile = AppKit.uri2File(requireContext(), uri);
                     Glide.with(mContext)
                             .load(imageFile)
                             .into(baseBind.userHead);

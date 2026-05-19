@@ -13,8 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.ToxicBakery.viewpager.transforms.DrawerTransformer;
-import com.blankj.utilcode.util.BarUtils;
+import ceui.lisa.utils.AppKit;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -60,7 +59,7 @@ public class FragmentCollection extends BaseFragment<ViewpagerWithTablayoutBindi
     public void initView() {
         baseBind.placeHolder.setVisibility(View.VISIBLE);
         ViewGroup.LayoutParams p = baseBind.placeHolder.getLayoutParams();
-        p.height = BarUtils.getStatusBarHeight();
+        p.height = AppKit.getStatusBarHeight(getContext());
         baseBind.placeHolder.setLayoutParams(p);
 
         if (type == 0) {
@@ -130,7 +129,6 @@ public class FragmentCollection extends BaseFragment<ViewpagerWithTablayoutBindi
                 return false;
             }
         });
-        baseBind.viewPager.setPageTransformer(true, new DrawerTransformer());
         baseBind.viewPager.setAdapter(new FragmentStatePagerAdapter(
             getChildFragmentManager(),
             FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT

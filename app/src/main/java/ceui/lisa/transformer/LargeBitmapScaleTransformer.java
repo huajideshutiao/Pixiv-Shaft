@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.blankj.utilcode.util.ImageUtils;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 
@@ -27,7 +26,7 @@ public class LargeBitmapScaleTransformer extends BitmapTransformation {
             double scale = Math.sqrt((double) byteCount / MAX_BITMAP_SIZE);
             width = (int) Math.floor(width / scale);
             height = (int) Math.floor(height / scale);
-            toTransform = ImageUtils.compressByScale(toTransform, width, height);
+            toTransform = Bitmap.createScaledBitmap(toTransform, width, height, true);
         }
 
         return toTransform;

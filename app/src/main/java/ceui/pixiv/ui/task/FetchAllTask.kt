@@ -4,6 +4,8 @@ import android.os.Parcelable
 import androidx.fragment.app.FragmentActivity
 import androidx.core.content.edit
 import androidx.lifecycle.lifecycleScope
+import ceui.lisa.activities.Shaft
+import ceui.lisa.utils.AppKit
 import ceui.lisa.utils.Common
 import ceui.loxia.Client
 import ceui.loxia.Illust
@@ -15,7 +17,6 @@ import ceui.loxia.pushFragment
 import ceui.pixiv.ui.common.PixivFragment
 import ceui.pixiv.ui.common.findCurrentFragmentOrNull
 import ceui.pixiv.ui.common.getFileSize
-import com.blankj.utilcode.util.PathUtils
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.hjq.toast.Toaster
@@ -99,7 +100,7 @@ open class FetchAllTask<Item, ResponseT: KListShow<Item>>(
                     val taskUUID = UUID.randomUUID().toString()
                     // Serialize results to JSON and write to cache file
                     val json = gson.toJson(results)
-                    val cacheFile = File(PathUtils.getInternalAppCachePath(), "task-result-${taskUUID}.text")
+                    val cacheFile = File(AppKit.getInternalAppCachePath(Shaft.getContext()), "task-result-${taskUUID}.text")
 
                     BufferedWriter(OutputStreamWriter(FileOutputStream(cacheFile), "UTF-8")).use { writer ->
                         writer.write(json)
@@ -130,7 +131,7 @@ open class FetchAllTask<Item, ResponseT: KListShow<Item>>(
 }
 
 fun loadIllustsFromCache(taskUUID: String): List<Illust>? {
-    val cacheFile = File(PathUtils.getInternalAppCachePath(), "task-result-${taskUUID}.text")
+    val cacheFile = File(AppKit.getInternalAppCachePath(Shaft.getContext()), "task-result-${taskUUID}.text")
     return if (cacheFile.exists()) {
         try {
             val json = BufferedReader(InputStreamReader(FileInputStream(cacheFile), "UTF-8")).use { reader ->
@@ -148,7 +149,7 @@ fun loadIllustsFromCache(taskUUID: String): List<Illust>? {
 }
 
 fun loadNovelsFromCache(taskUUID: String): List<Novel>? {
-    val cacheFile = File(PathUtils.getInternalAppCachePath(), "task-result-${taskUUID}.text")
+    val cacheFile = File(AppKit.getInternalAppCachePath(Shaft.getContext()), "task-result-${taskUUID}.text")
     return if (cacheFile.exists()) {
         try {
             val json = BufferedReader(InputStreamReader(FileInputStream(cacheFile), "UTF-8")).use { reader ->

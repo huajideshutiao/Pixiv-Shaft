@@ -10,7 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
-import com.blankj.utilcode.util.BarUtils;
+import ceui.lisa.utils.AppKit;
 
 import android.view.LayoutInflater;
 
@@ -30,7 +30,7 @@ public class FragmentNew extends BaseFragment<ViewpagerWithTablayoutBinding> {
     public void initView() {
         baseBind.placeHolder.setVisibility(View.VISIBLE);
         ViewGroup.LayoutParams p = baseBind.placeHolder.getLayoutParams();
-        p.height = BarUtils.getStatusBarHeight();
+        p.height = AppKit.getStatusBarHeight(getContext());
         baseBind.placeHolder.setLayoutParams(p);
 
         String[] CHINESE_TITLES = new String[]{

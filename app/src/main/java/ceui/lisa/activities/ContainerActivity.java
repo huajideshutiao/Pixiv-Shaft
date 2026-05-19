@@ -9,8 +9,6 @@ import android.view.LayoutInflater;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
-
 import ceui.lisa.R;
 import ceui.lisa.databinding.ActivityFragmentBinding;
 import ceui.lisa.fragments.FragmentAboutApp;
@@ -75,8 +73,7 @@ import ceui.pixiv.ui.web.WebFragment;
 
 import ceui.pixiv.route.RouteType;
 
-public class ContainerActivity extends BaseActivity<ActivityFragmentBinding> implements
-    ColorPickerDialogListener {
+public class ContainerActivity extends BaseActivity<ActivityFragmentBinding> {
 
     public static final String EXTRA_FRAGMENT = "dataType";
     public static final String EXTRA_KEYWORD = "keyword";
@@ -381,15 +378,6 @@ public class ContainerActivity extends BaseActivity<ActivityFragmentBinding> imp
         } else {
             return getIntent().getBooleanExtra("hideStatusBar", true);
         }
-    }
-
-    @Override
-    public void onColorSelected(int dialogId, int color) {
-    }
-
-    @Override
-    public void onDialogDismissed(int dialogId) {
-
     }
 
     @Override

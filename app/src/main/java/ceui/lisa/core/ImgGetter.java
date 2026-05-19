@@ -2,29 +2,26 @@ package ceui.lisa.core;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.text.Html;
 import android.util.Log;
 import android.widget.TextView;
-
-import org.sufficientlysecure.htmltextview.HtmlAssetsImageGetter;
-import org.sufficientlysecure.htmltextview.HtmlTextView;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 import ceui.lisa.utils.Common;
+import ceui.lisa.view.HtmlTextView;
 
-public class ImgGetter extends HtmlAssetsImageGetter {
+public class ImgGetter implements Html.ImageGetter {
 
     private final Context mContext;
     public static final int BOUND = 54;
 
     public ImgGetter(Context context) {
-        super(context);
         this.mContext = context;
     }
 
     public ImgGetter(TextView textView) {
-        super(textView);
         this.mContext = textView.getContext();
     }
 
@@ -38,7 +35,6 @@ public class ImgGetter extends HtmlAssetsImageGetter {
             Common.showLog("wid: " + d.getIntrinsicWidth() + " heightL: " + d.getIntrinsicHeight());
             return d;
         } catch (IOException e) {
-            // prevent a crash if the resource still can't be found
             Log.e(HtmlTextView.TAG, "source could not be found: " + source);
             return null;
         }

@@ -169,7 +169,7 @@
                             </RelativeLayout>
 
 
-                            <org.sufficientlysecure.htmltextview.HtmlTextView
+                            <ceui.lisa.view.HtmlTextView
                                 android:id="@+id/description"
                                 android:layout_marginStart="@dimen/twelve_dp"
                                 android:layout_marginEnd="@dimen/twelve_dp"

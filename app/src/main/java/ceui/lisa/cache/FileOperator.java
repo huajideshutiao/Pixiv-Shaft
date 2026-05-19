@@ -2,7 +2,8 @@ package ceui.lisa.cache;
 
 import android.util.Log;
 
-import com.blankj.utilcode.util.PathUtils;
+import ceui.lisa.utils.AppKit;
+import ceui.lisa.activities.Shaft;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,7 +21,7 @@ public class FileOperator implements IOperate {
     @SuppressWarnings("unchecked")
     public <T> T getModel(String key, Class<T> pClass) {
         try {
-            File file = new File(PathUtils.getInternalAppCachePath(), key);
+            File file = new File(AppKit.getInternalAppCachePath(Shaft.getContext()), key);
             if (!file.exists()) {
                 return null;
             }
@@ -38,7 +39,7 @@ public class FileOperator implements IOperate {
     @Override
     public <T> void saveModel(String ket, T pT) {
         try {
-            File file = new File(PathUtils.getInternalAppCachePath(), ket);
+            File file = new File(AppKit.getInternalAppCachePath(Shaft.getContext()), ket);
             Log.d("file name ", file.getPath());
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             ObjectOutputStream oos = new ObjectOutputStream(fileOutputStream);

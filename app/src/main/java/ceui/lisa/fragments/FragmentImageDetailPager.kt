@@ -17,7 +17,6 @@ import ceui.lisa.activities.BaseActivity
 import ceui.lisa.activities.Shaft
 import ceui.lisa.databinding.ActivityImageDetailBinding
 import ceui.lisa.download.IllustDownload
-import ceui.lisa.helper.PageTransformerHelper
 import ceui.lisa.interfaces.FragmentBackHandler
 import ceui.lisa.interfaces.VolumeKeyHandler
 import ceui.lisa.models.IllustsBean
@@ -58,7 +57,6 @@ class FragmentImageDetailPager : BaseFragment<ActivityImageDetailBinding>(), Fra
 
     override fun initView() {
         val dataType = arguments?.getString("dataType")
-        baseBind.viewPager.setPageTransformer(PageTransformerHelper.getCurrentTransformer() as? ViewPager2.PageTransformer)
         baseBind.viewPager.offscreenPageLimit = 1
 
         val infoItems = listOfNotNull(baseBind.bottomRela)

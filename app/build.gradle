@@ -131,29 +131,14 @@ dependencies {
 
     implementation libs.bundles.okhttp
 
-    implementation libs.glide.transformations
-    implementation libs.spinkit
-    implementation libs.ucrop
-
     implementation libs.bundles.room
     ksp libs.room.compiler
 
-    implementation libs.html.textview
     implementation libs.qmui
-    implementation libs.viewpager.transforms
     implementation libs.recyclerview.animators
-    implementation(libs.utilcodex) {
-        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-android-extensions-runtime'
-    }
-
     implementation libs.bundles.review
 
-    implementation libs.colorpicker
     implementation libs.splashscreen
-
-    implementation(libs.panel.switch) {
-        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-android-extensions-runtime'
-    }
 
     implementation libs.cronet.embedded
 

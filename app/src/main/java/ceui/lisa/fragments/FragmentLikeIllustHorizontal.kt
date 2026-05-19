@@ -22,7 +22,6 @@ import ceui.lisa.utils.DensityUtil
 import ceui.lisa.utils.Params
 import ceui.lisa.view.LinearItemHorizontalDecoration
 import ceui.pixiv.route.AppRoute
-import com.github.ybq.android.spinkit.style.Wave
 import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator
 import retrofit2.Call
 import java.util.function.Function
@@ -44,9 +43,6 @@ class FragmentLikeIllustHorizontal : BaseFragment<FragmentLikeIllustHorizontalBi
     }
 
     override fun initView() {
-        val wave = Wave()
-        wave.setColor(androidx.appcompat.R.attr.colorPrimary)
-        baseBind.progress.setIndeterminateDrawable(wave)
         baseBind.recyclerView.addItemDecoration(
             LinearItemHorizontalDecoration(DensityUtil.dp2px(8.0f))
         )

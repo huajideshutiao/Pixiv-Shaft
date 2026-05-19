@@ -30,7 +30,7 @@ import ceui.pixiv.widgets.setUpWith
 import ceui.pixiv.utils.ppppx
 import ceui.pixiv.utils.setOnClick
 import ceui.pixiv.ui.common.viewBinding
-import com.blankj.utilcode.util.BarUtils
+import ceui.lisa.utils.AppKit
 import com.scwang.smart.refresh.header.MaterialHeader
 
 class CircleFragment : TitledViewPagerFragment(R.layout.fragment_circle) {
@@ -103,7 +103,7 @@ class CircleFragment : TitledViewPagerFragment(R.layout.fragment_circle) {
             binding.toolbar.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 topMargin = insets.top - 10.ppppx
             }
-            binding.headerContent.updatePaddingRelative(top = insets.top + BarUtils.getActionBarHeight())
+            binding.headerContent.updatePaddingRelative(top = insets.top + AppKit.getActionBarHeight(requireContext()))
             windowInsets
         }
 

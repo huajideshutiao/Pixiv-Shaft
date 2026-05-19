@@ -6,7 +6,7 @@ import static ceui.lisa.http.SignApi.SIGN_API;
 
 import android.util.Log;
 
-import com.blankj.utilcode.util.DeviceUtils;
+import android.os.Build;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -61,8 +61,8 @@ public class Retro {
 
     private static Request.Builder addHeader(Request.Builder before) {
         PixivHeaders pixivHeaders = new PixivHeaders();
-        String osVersion = DeviceUtils.getSDKVersionName();
-        String phoneName = DeviceUtils.getModel();
+        String osVersion = Build.VERSION.RELEASE;
+        String phoneName = Build.MODEL;
         before.addHeader("User-Agent", "PixivAndroidApp/5.0.234 (Android " + osVersion + "; " + phoneName + ")")
                 .addHeader("accept-language", LanguageHelper.getRequestHeaderAcceptLanguageFromAppLanguage())
                 .addHeader("x-client-time", pixivHeaders.getXClientTime())

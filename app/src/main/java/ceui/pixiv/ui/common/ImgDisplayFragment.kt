@@ -37,7 +37,7 @@ import ceui.pixiv.utils.animateFadeInQuickly
 import ceui.pixiv.utils.animateFadeOutQuickly
 import ceui.pixiv.utils.setOnClick
 import ceui.pixiv.widgets.alertYesOrCancel
-import com.blankj.utilcode.util.UriUtils
+import ceui.lisa.utils.AppKit
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions.bitmapTransform
 import com.github.panpf.sketch.loadImage
@@ -95,7 +95,7 @@ abstract class ImgDisplayFragment(layoutId: Int) : PixivFragment(layoutId) {
             val imageId = withContext(Dispatchers.IO) { getImageIdInGallery(activity, name) }
             if (imageId != null) {
                 val uri = Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, imageId.toString())
-                val filePath = UriUtils.uri2File(uri)
+                val filePath = AppKit.uri2File(requireContext(), uri)
                 if (alertYesOrCancel("图片已存在，确定覆盖下载吗? 文件路径: ${filePath?.path}")) {
                     withContext(Dispatchers.IO) {
                         deleteImageById(activity, imageId)

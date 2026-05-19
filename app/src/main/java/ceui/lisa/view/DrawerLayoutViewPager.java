@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
-import com.blankj.utilcode.util.ScreenUtils;
+import ceui.lisa.utils.AppKit;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,7 +14,7 @@ public class DrawerLayoutViewPager extends ViewPager {
 
     private float startX;
     private float startY;
-    private final float leftThreshold = ScreenUtils.getScreenWidth() * 0.1f;
+    private final float leftThreshold = AppKit.getScreenWidth(getContext()) * 0.1f;
 
     private IForwardTouchEvent touchEventForwarder = null;
 

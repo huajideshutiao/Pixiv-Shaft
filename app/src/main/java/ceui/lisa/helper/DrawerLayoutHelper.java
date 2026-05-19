@@ -1,6 +1,6 @@
 package ceui.lisa.helper;
 
-import com.blankj.utilcode.util.ScreenUtils;
+import ceui.lisa.utils.AppKit;
 
 import java.lang.reflect.Field;
 
@@ -23,7 +23,7 @@ public class DrawerLayoutHelper {
             edgeSizeField.setAccessible(true);
             int edgeSize = edgeSizeField.getInt(leftDragger);
             // set new edgesize
-            int widthPixels = ScreenUtils.getScreenWidth();
+            int widthPixels = AppKit.getScreenWidth(drawerLayout.getContext());
             edgeSizeField.setInt(leftDragger, Math.max(edgeSize, (int) (widthPixels * displayWidthPercentage)));
 
             //获取 Layout 的 ViewDragCallBack 实例mLeftCallback

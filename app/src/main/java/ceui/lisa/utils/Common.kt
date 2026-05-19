@@ -19,8 +19,6 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import com.blankj.utilcode.util.FileIOUtils
-import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
 import com.qmuiteam.qmui.skin.QMUISkinManager
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog
@@ -270,9 +268,9 @@ object Common {
     fun restart() {
         val intent = Intent()
         val realActivityClassName = MainActivity::class.java.name
-        intent.component = ComponentName(Utils.getApp(), realActivityClassName)
+        intent.component = ComponentName(Shaft.getContext(), realActivityClassName)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-        Utils.getApp().startActivity(intent)
+        Shaft.getContext().startActivity(intent)
     }
 
     @JvmStatic
@@ -415,9 +413,9 @@ object Common {
     fun copyUriToImageCacheFolder(uri: Uri): File? {
         var inputStream: InputStream? = null
         try {
-            inputStream = Utils.getApp().contentResolver.openInputStream(uri)
-            val file = File(LegacyFile.imageCacheFolder(Utils.getApp()), System.currentTimeMillis().toString())
-            FileIOUtils.writeFileFromIS(file.absolutePath, inputStream)
+            inputStream = Shaft.getContext().contentResolver.openInputStream(uri)
+            val file = File(LegacyFile.imageCacheFolder(Shaft.getContext()), System.currentTimeMillis().toString())
+            AppKit.writeFileFromIS(file.absolutePath, inputStream!!)
             return file
         } catch (e: FileNotFoundException) {
             e.printStackTrace()
@@ -436,15 +434,15 @@ object Common {
     @JvmStatic
     fun copyBitmapToImageCacheFolder(bitmap: Bitmap, fileName: String): Uri? {
         try {
-            val cachePath = File(Utils.getApp().externalCacheDir, "images")
+            val cachePath = File(Shaft.getContext().externalCacheDir, "images")
             cachePath.mkdirs()
             val file = File(cachePath, fileName)
             val fileOutputStream = FileOutputStream(file)
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream)
             fileOutputStream.close()
             return FileProvider.getUriForFile(
-                Utils.getApp(),
-                Utils.getApp().packageName + ".provider",
+                Shaft.getContext(),
+                Shaft.getContext().packageName + ".provider",
                 file
             )
         } catch (e: FileNotFoundException) {
@@ -464,7 +462,7 @@ object Common {
         shareText: String? = null
     ) {
         try {
-            val cachePath = File(Utils.getApp().externalCacheDir, "images")
+            val cachePath = File(Shaft.getContext().externalCacheDir, "images")
             cachePath.mkdirs()
             val sharedFile = File(cachePath, fileName)
             FileInputStream(imageFile).use { inputStream ->

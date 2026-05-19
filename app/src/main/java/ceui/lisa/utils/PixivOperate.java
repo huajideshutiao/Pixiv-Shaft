@@ -1,8 +1,7 @@
 package ceui.lisa.utils;
 
 
-import static com.blankj.utilcode.util.ColorUtils.getColor;
-import static com.blankj.utilcode.util.StringUtils.getString;
+import static ceui.lisa.utils.AppKit.getColor;
 import static ceui.lisa.core.CallExtKt.executeCall;
 
 import android.content.Context;
@@ -17,8 +16,6 @@ import android.widget.ImageView;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.blankj.utilcode.util.FileUtils;
-import com.blankj.utilcode.util.ZipUtils;
 import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
 
 import java.io.File;
@@ -110,10 +107,10 @@ public class PixivOperate {
                         ObjectPool.INSTANCE.followUser(userID);
                         if (pendingFollowType.equals(Params.TYPE_PUBLIC)) {
                             Shaft.appViewModel.updateFollowUserStatus(userID, AppLevelViewModel.FollowUserStatus.FOLLOWED_PUBLIC);
-                            Common.showToast(getString(R.string.like_success_public));
+                            Common.showToast(Shaft.getContext().getString(R.string.like_success_public));
                         } else {
                             Shaft.appViewModel.updateFollowUserStatus(userID, AppLevelViewModel.FollowUserStatus.FOLLOWED_PRIVATE);
-                            Common.showToast(getString(R.string.like_success_private));
+                            Common.showToast(Shaft.getContext().getString(R.string.like_success_private));
                         }
                     }
                 });
@@ -131,7 +128,7 @@ public class PixivOperate {
                         LocalBroadcastManager.getInstance(Shaft.getContext()).sendBroadcast(intent);
                         Shaft.appViewModel.updateFollowUserStatus(userID, AppLevelViewModel.FollowUserStatus.NOT_FOLLOW);
                         ObjectPool.INSTANCE.unFollowUser(userID);
-                        Common.showToast(getString(R.string.cancel_like));
+                        Common.showToast(Shaft.getContext().getString(R.string.cancel_like));
                     }
                 });
     }
@@ -166,7 +163,7 @@ public class PixivOperate {
                             intent.putExtra(Params.IS_LIKED, false);
                             LocalBroadcastManager.getInstance(Shaft.getContext()).sendBroadcast(intent);
 
-                            Common.showToast(getString(R.string.cancel_like_illust));
+                            Common.showToast(Shaft.getContext().getString(R.string.cancel_like_illust));
                         }
                     });
         } else { //没有收藏
@@ -184,9 +181,9 @@ public class PixivOperate {
                             LocalBroadcastManager.getInstance(Shaft.getContext()).sendBroadcast(intent);
 
                             if (Params.TYPE_PUBLIC.equals(starType)) {
-                                Common.showToast(getString(R.string.like_novel_success_public));
+                                Common.showToast(Shaft.getContext().getString(R.string.like_novel_success_public));
                             } else {
-                                Common.showToast(getString(R.string.like_novel_success_private));
+                                Common.showToast(Shaft.getContext().getString(R.string.like_novel_success_private));
                             }
 
                             //收藏后自动关注作者
@@ -238,9 +235,9 @@ public class PixivOperate {
                             LocalBroadcastManager.getInstance(Shaft.getContext()).sendBroadcast(intent);
 
                             if (view instanceof Button) {
-                                ((Button) view).setText(getString(R.string.string_180));
+                                ((Button) view).setText(Shaft.getContext().getString(R.string.string_180));
                             }
-                            Common.showToast(getString(R.string.cancel_like_illust));
+                            Common.showToast(Shaft.getContext().getString(R.string.cancel_like_illust));
                         }
                     });
         } else { //没有收藏
@@ -259,12 +256,12 @@ public class PixivOperate {
                             LocalBroadcastManager.getInstance(Shaft.getContext()).sendBroadcast(intent);
 
                             if (view instanceof Button) {
-                                ((Button) view).setText(getString(R.string.string_179));
+                                ((Button) view).setText(Shaft.getContext().getString(R.string.string_179));
                             }
                             if (Params.TYPE_PUBLIC.equals(pendingType)) {
-                                Common.showToast(getString(R.string.like_novel_success_public));
+                                Common.showToast(Shaft.getContext().getString(R.string.like_novel_success_public));
                             } else {
-                                Common.showToast(getString(R.string.like_novel_success_private));
+                                Common.showToast(Shaft.getContext().getString(R.string.like_novel_success_private));
                             }
 
                             //收藏后自动关注作者
@@ -288,7 +285,7 @@ public class PixivOperate {
         //Show "Loading" icon
         QMUITipDialog tipDialog = new QMUITipDialog.Builder(context)
                 .setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING)
-                .setTipWord(getString(R.string.string_429))
+                .setTipWord(Shaft.getContext().getString(R.string.string_429))
                 .create();
         tipDialog.show();
         //Get response data
@@ -640,7 +637,7 @@ public class PixivOperate {
 
     public static void justUnzipFile(File fromZipFile, File toFolder) {
         try {
-            ZipUtils.unzipFile(fromZipFile, toFolder);
+            AppKit.unzipFile(fromZipFile, toFolder);
             Common.showLog("justUnzipFile 解压成功");
         } catch (Exception e) {
             e.printStackTrace();
@@ -735,7 +732,7 @@ public class PixivOperate {
                     OutPut.outPutGif(context, gifFile, illustsBean);
                 }
 
-                Common.showLog("gifFile gifFile " + FileUtils.getSize(gifFile));
+                Common.showLog("gifFile gifFile " + AppKit.getSize(gifFile));
                 gifEncodingWorkSet.remove(illustsBean.getId());
 
                 Intent intent = new Intent(Params.PLAY_GIF);
@@ -799,9 +796,9 @@ public class PixivOperate {
                         @Override
                         public void next(NullResponse nullResponse) {
                             if (view instanceof ImageView) {
-                                ((ImageView) view).setImageTintList(ColorStateList.valueOf(getColor(R.color.novel_marker_add)));
+                                ((ImageView) view).setImageTintList(ColorStateList.valueOf(getColor(Shaft.getContext(), R.color.novel_marker_add)));
                             }
-                            Common.showToast(getString(R.string.string_368, page));
+                            Common.showToast(Shaft.getContext().getString(R.string.string_368, page));
                         }
                     });
         } else {
@@ -812,9 +809,9 @@ public class PixivOperate {
                         @Override
                         public void next(NullResponse nullResponse) {
                             if (view instanceof ImageView) {
-                                ((ImageView) view).setImageTintList(ColorStateList.valueOf(getColor(R.color.novel_marker_none)));
+                                ((ImageView) view).setImageTintList(ColorStateList.valueOf(getColor(Shaft.getContext(), R.color.novel_marker_none)));
                             }
-                            Common.showToast(getString(R.string.string_369));
+                            Common.showToast(Shaft.getContext().getString(R.string.string_369));
                         }
                     });
         }
@@ -831,9 +828,9 @@ public class PixivOperate {
                         @Override
                         public void next(NullResponse nullResponse) {
                             if(view instanceof ImageView){
-                                ((ImageView)view).setImageTintList(ColorStateList.valueOf(getColor(R.color.novel_marker_add)));
+                                ((ImageView)view).setImageTintList(ColorStateList.valueOf(getColor(Shaft.getContext(), R.color.novel_marker_add)));
                             }
-                            Common.showToast(getString(R.string.string_368, page));
+                            Common.showToast(Shaft.getContext().getString(R.string.string_368, page));
                         }
                     });
         } else {
@@ -844,9 +841,9 @@ public class PixivOperate {
                         @Override
                         public void next(NullResponse nullResponse) {
                             if(view instanceof ImageView){
-                                ((ImageView)view).setImageTintList(ColorStateList.valueOf(getColor(R.color.novel_marker_none)));
+                                ((ImageView)view).setImageTintList(ColorStateList.valueOf(getColor(Shaft.getContext(), R.color.novel_marker_none)));
                             }
-                            Common.showToast(getString(R.string.string_369));
+                            Common.showToast(Shaft.getContext().getString(R.string.string_369));
                         }
                     });
         }

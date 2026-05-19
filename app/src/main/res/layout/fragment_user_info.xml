@@ -71,7 +71,7 @@
                         style="@style/AboutUserLeft"/>
 
 
-                    <org.sufficientlysecure.htmltextview.HtmlTextView
+                    <ceui.lisa.view.HtmlTextView
                         android:id="@+id/description"
                         style="@style/AboutUserRight"/>
 
@@ -92,7 +92,7 @@
                         style="@style/AboutUserLeft"/>
 
 
-                    <org.sufficientlysecure.htmltextview.HtmlTextView
+                    <ceui.lisa.view.HtmlTextView
                         android:id="@+id/main_page"
                         style="@style/AboutUserRight"/>
 
@@ -113,7 +113,7 @@
                         style="@style/AboutUserLeft"/>
 
 
-                    <org.sufficientlysecure.htmltextview.HtmlTextView
+                    <ceui.lisa.view.HtmlTextView
                         android:id="@+id/twitter"
                         style="@style/AboutUserRight"/>
 
@@ -134,7 +134,7 @@
                         style="@style/AboutUserLeft"/>
 
 
-                    <org.sufficientlysecure.htmltextview.HtmlTextView
+                    <ceui.lisa.view.HtmlTextView
                         android:id="@+id/pawoo"
                         style="@style/AboutUserRight"/>
 

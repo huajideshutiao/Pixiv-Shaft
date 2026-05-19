@@ -469,27 +469,6 @@
                         </RelativeLayout>
 
                         <RelativeLayout
-                            android:id="@+id/transform_type_rela"
-                            style="@style/ripple_rela">
-
-                            <TextView
-                                style="@style/setting_text_left_and_center"
-                                android:text="@string/string_393" />
-
-                            <TextView
-                                android:id="@+id/transform_type"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentEnd="true"
-                                android:layout_centerVertical="true"
-                                android:layout_marginEnd="@dimen/sixteen_dp"
-                                android:text=""
-                                android:textColor="?attr/colorPrimary"
-                                android:textSize="14sp" />
-
-                        </RelativeLayout>
-
-                        <RelativeLayout
                             android:id="@+id/illust_detail_keep_screen_on_rela"
                             style="@style/ripple_rela">
 

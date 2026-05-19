@@ -47,7 +47,7 @@ import ceui.pixiv.ui.task.NamedUrl
 import ceui.pixiv.ui.task.TaskPool
 import ceui.pixiv.utils.FastBlurTransformation
 import ceui.pixiv.utils.populate
-import com.blankj.utilcode.util.ColorUtils
+import ceui.lisa.utils.AppKit
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
 import com.bumptech.glide.request.RequestOptions.bitmapTransform
@@ -515,7 +515,7 @@ class FragmentSingleUgora : BaseFragment<FragmentUgoraBinding>() {
 
         val sizeString =
             SpannableString(getString(R.string.string_193, illust.width, illust.height))
-        val currentPrimaryColorId = ColorUtils.getColor(R.color.page_default_background)
+        val currentPrimaryColorId = AppKit.getColor(requireContext(), R.color.page_default_background)
         sizeString.setSpan(
             ForegroundColorSpan(currentPrimaryColorId),
             sizeString.length - illust.getSize().length,

@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.blankj.utilcode.util.PathUtils;
+import ceui.lisa.activities.Shaft;
 import com.google.gson.annotations.SerializedName;
 
 import ceui.lisa.helper.NavigationLocationHelper;
@@ -15,26 +15,26 @@ import ceui.lisa.helper.ThemeHelper;
 public class Settings {
 
     //只包含1P图片的下载路径
-    public static final String FILE_PATH_SINGLE = PathUtils.getExternalPicturesPath() + "/ShaftImages";
-    public static final String FILE_PATH_NOVEL = PathUtils.getExternalDownloadsPath() + "/ShaftNovels";
-    public static final String FILE_PATH_SINGLE_R18 = PathUtils.getExternalPicturesPath() + "/ShaftImages-R18";
+    public static final String FILE_PATH_SINGLE = AppKit.getExternalPicturesPath() + "/ShaftImages";
+    public static final String FILE_PATH_NOVEL = AppKit.getExternalDownloadsPath() + "/ShaftNovels";
+    public static final String FILE_PATH_SINGLE_R18 = AppKit.getExternalPicturesPath() + "/ShaftImages-R18";
 
     //下载的GIF 压缩包存放在这里
-    public static final String FILE_GIF_PATH = PathUtils.getExternalDownloadsPath();
+    public static final String FILE_GIF_PATH = AppKit.getExternalDownloadsPath();
 
     //log日志，
-    public static final String FILE_LOG_PATH = PathUtils.getExternalDownloadsPath() + "/ShaftFiles";
+    public static final String FILE_LOG_PATH = AppKit.getExternalDownloadsPath() + "/ShaftFiles";
 
     //下载的GIF 压缩包解压之后的结果存放在这里
-    public static final String FILE_GIF_CHILD_PATH = PathUtils.getExternalAppCachePath();
+    public static final String FILE_GIF_CHILD_PATH = AppKit.getExternalAppCachePath(Shaft.getContext());
 
     //已制作好的GIF存放在这里
-    public static final String FILE_GIF_RESULT_PATH = PathUtils.getExternalPicturesPath() + "/ShaftGIFs";
+    public static final String FILE_GIF_RESULT_PATH = AppKit.getExternalPicturesPath() + "/ShaftGIFs";
 
     //WEB下载
-    public static final String WEB_DOWNLOAD_PATH = PathUtils.getExternalPicturesPath() + "/ShaftWeb";
+    public static final String WEB_DOWNLOAD_PATH = AppKit.getExternalPicturesPath() + "/ShaftWeb";
 
-    public static final String FILE_PATH_BACKUP = PathUtils.getExternalDownloadsPath() + "/ShaftBackups";
+    public static final String FILE_PATH_BACKUP = AppKit.getExternalDownloadsPath() + "/ShaftBackups";
 
     private int themeIndex = 2;
 
@@ -152,11 +152,9 @@ public class Settings {
 
     private int downloadWay = 0; //0传统模式，保存到Pictures目录下。    1 SAF模式保存到自选目录下
 
-    private boolean filterComment = false; // 过滤垃圾评论，默认不开启
+    private boolean filterComment = false;
 
-    private int transformerType = 0; // 二级详情转场动画，默认是默认
-
-    private boolean showRelatedWhenStar = true; // 收藏作品时展示关联作品
+    private boolean showRelatedWhenStar = true;
 
 
     private boolean illustLongPressDownload = false; // 插画详情长按下载
@@ -475,14 +473,6 @@ public class Settings {
 
     public void setFilterComment(boolean filterComment) {
         this.filterComment = filterComment;
-    }
-
-    public int getTransformerType() {
-        return transformerType;
-    }
-
-    public void setTransformerType(int transformerType) {
-        this.transformerType = transformerType;
     }
 
     public boolean isShowRelatedWhenStar() {

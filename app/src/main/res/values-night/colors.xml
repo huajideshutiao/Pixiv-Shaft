@@ -18,6 +18,7 @@
     <color name="loading_placeholder">#14FFFFFF</color>
 
     <color name="white">#FFFFFF</color>
+    <color name="black">#FF000000</color>
     <color name="white_and_black">#141414</color>
     <color name="f0_and_black">#141414</color>
 

@@ -16,7 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
-import com.blankj.utilcode.util.BarUtils;
+import ceui.lisa.utils.AppKit;
 
 import java.util.Calendar;
 
@@ -42,13 +42,12 @@ public class RankActivity extends BaseActivity<ActivityMultiViewPagerBinding> {
         setSupportActionBar(baseBind.toolbar);
         baseBind.placeHolder.setVisibility(View.VISIBLE);
         ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) baseBind.placeHolder.getLayoutParams();
-        p.height = BarUtils.getStatusBarHeight();
+        p.height = AppKit.getStatusBarHeight(this);
         baseBind.placeHolder.setLayoutParams(p);
         baseBind.toolbar.setNavigationOnClickListener(v -> finish());
         baseBind.toolbarTitle.setText(mContext.getString(R.string.ranking_illust));
         dataType = getIntent().getStringExtra("dataType");
         queryDate = getIntent().getStringExtra("date");
-//        baseBind.viewPager.setPageTransformer(true, new DrawerTransformer());
 
         final String[] CHINESE_TITLES = new String[]{
                 mContext.getString(R.string.daily_rank),

@@ -42,7 +42,6 @@ import ceui.pixiv.session.SessionManager
 import ceui.pixiv.utils.setOnClick
 import ceui.pixiv.widgets.RateAppManager
 import com.bumptech.glide.Glide
-import com.github.ybq.android.spinkit.style.Wave
 import com.qmuiteam.qmui.skin.QMUISkinManager
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog.MenuDialogBuilder
 import kotlinx.coroutines.delay
@@ -62,8 +61,6 @@ class UActivity : BaseActivity<ActivityNewUserBinding>(), Display<UserDetailResp
     }
 
     override fun initView() {
-        val wave = Wave()
-        baseBind.progress.indeterminateDrawable = wave
         baseBind.statusBarSpacer.layoutParams.height = Shaft.statusHeight
         baseBind.toolbar.setNavigationOnClickListener { _: View? -> finish() }
         baseBind.toolbarLayout.viewTreeObserver.addOnGlobalLayoutListener(object :

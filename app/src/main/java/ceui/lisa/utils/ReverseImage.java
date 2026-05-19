@@ -3,7 +3,8 @@ package ceui.lisa.utils;
 
 import android.net.Uri;
 
-import com.blankj.utilcode.util.UriUtils;
+import ceui.lisa.activities.Shaft;
+import ceui.lisa.utils.AppKit;
 
 import ceui.lisa.http.Ascii2DApi;
 import ceui.lisa.http.IqdbApi;
@@ -34,8 +35,8 @@ public class ReverseImage {
     }
 
     public static void reverse(Uri imageUri, ReverseProvider reverseProvider, Callback callback) {
-        byte[] file = UriUtils.uri2Bytes(imageUri);
-        RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        byte[] file = AppKit.uri2Bytes(Shaft.getContext(), imageUri);
+        RequestBody requestBody = RequestBody.create(file, MediaType.parse("multipart/form-data"));
         Object o = Retro.create(reverseProvider.base_url, reverseProvider.apiClass);
         //    enum不能使用泛型,刚好Retrofit的Api Interface 不能继承,搞不了花里胡哨了
         Call<Response<ResponseBody>> call;

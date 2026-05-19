@@ -13,7 +13,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
-import com.blankj.utilcode.util.BarUtils;
+import ceui.lisa.utils.AppKit;
 
 import ceui.lisa.R;
 import ceui.lisa.activities.Shaft;
@@ -32,7 +32,7 @@ public class FragmentNewNovel extends BaseFragment<ViewpagerWithTablayoutBinding
     public void initView() {
         baseBind.placeHolder.setVisibility(View.VISIBLE);
         ViewGroup.LayoutParams p = baseBind.placeHolder.getLayoutParams();
-        p.height = BarUtils.getStatusBarHeight();
+        p.height = AppKit.getStatusBarHeight(getContext());
         baseBind.placeHolder.setLayoutParams(p);
 
         final String[] TITLES = new String[]{

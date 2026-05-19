@@ -11,7 +11,7 @@ import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
 
-import org.sufficientlysecure.htmltextview.HtmlTextView;
+import ceui.lisa.view.HtmlTextView;
 
 import java.io.IOException;
 import java.io.InputStream;

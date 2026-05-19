@@ -20,8 +20,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.blankj.utilcode.util.FileUtils;
-import com.blankj.utilcode.util.UriUtils;
+import ceui.lisa.utils.AppKit;
 import com.qmuiteam.qmui.skin.QMUISkinManager;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.scwang.smart.refresh.header.FalsifyFooter;
@@ -38,7 +37,6 @@ import ceui.lisa.databinding.FragmentSettingsBinding;
 import ceui.lisa.download.IllustDownload;
 import ceui.lisa.file.LegacyFile;
 import ceui.lisa.helper.NavigationLocationHelper;
-import ceui.lisa.helper.PageTransformerHelper;
 import ceui.lisa.helper.ThemeHelper;
 import ceui.lisa.http.Retro;
 import ceui.lisa.utils.BackupUtils;
@@ -63,7 +61,7 @@ public class FragmentSettings extends SwipeFragment<FragmentSettingsBinding> {
                 if (result.getResultCode() != RESULT_OK || result.getData() == null) return;
                 try {
                     Uri uri = result.getData().getData();
-                    String fileString = new String(UriUtils.uri2Bytes(uri));
+                    String fileString = new String(AppKit.uri2Bytes(mContext, uri));
                     boolean restoreResult = BackupUtils.restoreBackups(mContext, fileString);
                     Common.showToast(restoreResult ? getString(R.string.restore_success) : getString(R.string.restore_failed));
                 } catch (Exception e) {
@@ -788,21 +786,6 @@ public class FragmentSettings extends SwipeFragment<FragmentSettingsBinding> {
             });
             baseBind.selectAllTagRela.setOnClickListener(v -> baseBind.selectAllTag.performClick());
 
-            String[] transformerNames = PageTransformerHelper.getTransformerNames();
-            baseBind.transformType.setText(transformerNames[PageTransformerHelper.getCurrentTransformerIndex()]);
-            baseBind.transformTypeRela.setOnClickListener(v -> new QMUIDialog.CheckableDialogBuilder(mActivity).setCheckedIndex(
-                    PageTransformerHelper.getCurrentTransformerIndex())
-                .setSkinManager(QMUISkinManager.defaultInstance(mContext)).addItems(
-                    transformerNames, (dialog, which) -> {
-                        if (which != PageTransformerHelper.getCurrentTransformerIndex()) {
-                            PageTransformerHelper.setCurrentTransformer(which);
-                            baseBind.transformType.setText(transformerNames[which]);
-                            Local.setSettings(Shaft.sSettings);
-                        }
-                        dialog.dismiss();
-                    }
-                ).show());
-
             baseBind.showRelatedWhenStar.setChecked(Shaft.sSettings.isShowRelatedWhenStar());
             baseBind.showRelatedWhenStar.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 Shaft.sSettings.setShowRelatedWhenStar(isChecked);
@@ -839,19 +822,19 @@ public class FragmentSettings extends SwipeFragment<FragmentSettingsBinding> {
 
         // 6. 缓存
         {
-            baseBind.imageCacheSize.setText(FileUtils.getSize(LegacyFile.imageCacheFolder(mContext)));
+            baseBind.imageCacheSize.setText(AppKit.getSize(LegacyFile.imageCacheFolder(mContext)));
             baseBind.clearImageCache.setOnClickListener(v -> {
-                FileUtils.deleteAllInDir(LegacyFile.imageCacheFolder(mContext));
+                AppKit.deleteAllInDir(LegacyFile.imageCacheFolder(mContext));
                 Common.showToast(getString(R.string.success_clearImageCache));
-                baseBind.imageCacheSize.setText(FileUtils.getSize(LegacyFile.imageCacheFolder(
+                baseBind.imageCacheSize.setText(AppKit.getSize(LegacyFile.imageCacheFolder(
                     mContext)));
             });
 
-            baseBind.gifCacheSize.setText(FileUtils.getSize(LegacyFile.gifCacheFolder(mContext)));
+            baseBind.gifCacheSize.setText(AppKit.getSize(LegacyFile.gifCacheFolder(mContext)));
             baseBind.clearGifCache.setOnClickListener(v -> {
-                FileUtils.deleteAllInDir(LegacyFile.gifCacheFolder(mContext));
+                AppKit.deleteAllInDir(LegacyFile.gifCacheFolder(mContext));
                 Common.showToast(getString(R.string.success_clearGifCache), 2);
-                baseBind.gifCacheSize.setText(FileUtils.getSize(LegacyFile.gifCacheFolder(
+                baseBind.gifCacheSize.setText(AppKit.getSize(LegacyFile.gifCacheFolder(
                     mContext)));
             });
         }
