@@ -71,6 +71,9 @@ class UActivity : BaseActivity<ActivityNewUserBinding>(), Display<UserDetailResp
                 val offset =
                     baseBind.toolbarLayout.height - baseBind.toolbarLayout.minimumHeight
                 baseBind.appBar.addOnOffsetChangedListener { _, verticalOffset ->
+                    if (mUserViewModel.user.value == null) {
+                        return@addOnOffsetChangedListener
+                    }
                     if (abs(verticalOffset) < 15) {
                         baseBind.centerHeader.alpha = 1.0f
                         baseBind.centerHeader.visibility = View.VISIBLE
@@ -196,6 +199,8 @@ class UActivity : BaseActivity<ActivityNewUserBinding>(), Display<UserDetailResp
                 .replace(R.id.fragment_container, newInstance())
                 .commitNowAllowingStateLoss()
         }
+        baseBind.tabLayout.visibility = View.VISIBLE
+        baseBind.toolbarTitle.text = user.name
         val isSelf = userId.toLong() == SessionManager.loggedInUid
         if (isSelf) {
             baseBind.followLayout.visibility = View.GONE
