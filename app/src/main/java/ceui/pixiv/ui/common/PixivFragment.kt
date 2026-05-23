@@ -553,16 +553,12 @@ object RefreshHelper {
             }
         }
         
-        // 3. 彻底解决 View 体系的裁剪问题。
-        // 通过递归禁用所有父容器的裁剪限制，允许 Header 动画在弹跳过程中“溢出”其容器边界。
+        // 3. 仅放宽 SmartRefreshLayout 自身的裁剪，允许 Header 弹跳动画在自己内部完整绘制。
+        // 注意：不要向上递归禁用祖先容器的裁剪，否则在嵌套滚动 / 内容平移时，
+        // 列表条目会被绘制到 SmartRefreshLayout 上方的 toolbar、radio_tab 等顶部元素上，
+        // 造成 "列表项盖住顶部文本与按钮" 的视觉错乱。
         layout.clipChildren = false
         layout.clipToPadding = false
-        var p = layout.parent
-        while (p is ViewGroup) {
-            p.clipChildren = false
-            p.clipToPadding = false
-            p = p.parent
-        }
     }
 }
 
